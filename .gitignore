@@ -273,3 +273,5 @@ TSWLatexianTemp*
 
 # macos
 *.DS_Store
+
+codebook_cp/
