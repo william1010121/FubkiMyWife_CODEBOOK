@@ -8,3 +8,5 @@ inoremap {<CR> {<CR>}<Esc>ko<tab>
 "Select region and then type :Hash to hash your selection."
 "Useful for verifying that there aren't mistypes."
 ca Hash w !cpp -dD -P -fpreprocessed \| tr -d '[:space:]' \| md5sum \| cut -c-6
+ca Hash w !cpp -dD -P \| sed "/^\#.*$/d" \| tr -d '[:space:]' \| md5sum \| cut -c-6
+ca Hash w !g++ -E - \| sed "/^\#.*$/d" \| tr -d '[:space:]' \| md5sum \| cut -c-6
