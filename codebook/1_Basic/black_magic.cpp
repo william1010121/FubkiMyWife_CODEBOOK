@@ -9,6 +9,10 @@ typedef cc_hash_table<int, int> umap;
 typedef priority_queue<int> heap;
 
 int main() {
+  // random
+  mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+  int get_rand(int l, int r){ return uniform_int_distribution<int>(l, r)(rng); }
+  shuffle(v.begin(), v.end(), rng);
   // rb tree
   tree_set s;
   s.insert(71); s.insert(22);

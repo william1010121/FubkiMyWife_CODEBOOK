@@ -28,6 +28,7 @@ struct L {
   P project(P p) { return pa + (pb - pa).unit() * ((pb - pa) * (p - pa) / (pb - pa).abs()); }
   P reflect(P p) { return p + (project(p) - p) * 2; }
   double get_ratio(P p) { return (p - pa) * (pb - pa) / ((pb - pa).abs() * (pb - pa).abs()); }
+  bool inside(P p) {return min(pa.x, pb.x) <= p.x && p.x <= max(pa.x, pb.x) && min(pa.y, pb.y) <= p.y && p.y <= max(pa.y, pb.y) && same(a * p.x + b * p.y, -c);}
 };
 
 bool SegmentIntersect(P p1, P p2, P p3, P p4) {
