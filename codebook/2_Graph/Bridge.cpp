@@ -26,3 +26,4 @@ struct ECC { // 0-base
       if (!dfn[i]) dfs(i, -1);
   }
 }; // ecc_id(i): bln[i]
+   // 4da29a
