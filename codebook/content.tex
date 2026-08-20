@@ -23,32 +23,43 @@
 
 
 \section{Graph}
-\inputcode{BCC Vertex*}{2_Graph/BCC_Vertex.cpp} % test by Library Checker Biconnected Components, block-cut tree test by CF 102512 A
-\inputcode{Bridge*}{2_Graph/Bridge.cpp} % test by Library Checker Two-Edge-Connected Components
-\inputcode{SCC*}{2_Graph/SCC.cpp} % SCC test by Library Checker Strongly Connected Components
-\inputcode{2SAT*}{2_Graph/2SAT.cpp} % test by ARC069 F
-\inputcode{MinimumMeanCycle*}{2_Graph/MinimumMeanCycle.cpp} % test by TIOJ 1934
-\inputcode{Virtual Tree*}{2_Graph/Virtual_Tree.cpp} % test by luogu P2495
-\inputcode{Maximum Clique Dyn*}{2_Graph/Maximum_Clique_Dyn.cpp} % test by TIOJ 1978, CF 101221 I (World Finals' problem)
-\inputcode{Minimum Steiner Tree*}{2_Graph/MinimumSteinerTree.cpp} % test by luogu P6192
-\inputcode{Dominator Tree*}{2_Graph/Dominator_Tree.cpp} % test by CF 100513 L
+\inputcodedesc{BCC Vertex*}{2_Graph/BCC_Vertex.cpp}%
+{Vertex biconnected components and articulation points, $O(V+E)$. Block-cut tree has \textbf{up to $2n-2$ nodes} --- size arrays accordingly. 0-base.}
+\inputcodedesc{Bridge*}{2_Graph/Bridge.cpp}%
+{Bridges and 2-edge-connected components, $O(V+E)$. Uses edge ids rather than the parent vertex, so \textbf{multi-edges are handled correctly}. 0-base.}
+\inputcodedesc{SCC*}{2_Graph/SCC.cpp}%
+{Tarjan SCC, $O(V+E)$. \texttt{bln} ids come out in \textbf{reverse topological order} --- 2SAT relies on this. 0-base.}
+\inputcodedesc{2SAT*}{2_Graph/2SAT.cpp}%
+{$O(V+E)$ via implication graph + SCC. Variable $i$ is node $i$ (true) / $i+n$ (false). Requires SCC.cpp. 0-base.}
+\inputcodedesc{MinimumMeanCycle*}{2_Graph/MinimumMeanCycle.cpp}%
+{Karp's minimum mean cycle, $O(V^3)$ on an adjacency matrix. Returns the mean as a reduced fraction, $(-1,-1)$ if acyclic.}
+\inputcodedesc{Virtual Tree*}{2_Graph/Virtual_Tree.cpp}%
+{Compresses $k$ key vertices into an $O(k)$ auxiliary tree in $O(k\log k)$. Needs external \texttt{LCA()}, \texttt{dfn}, \texttt{dep}.}
+\inputcodedesc{Maximum Clique Dyn*}{2_Graph/Maximum_Clique_Dyn.cpp}%
+{Max clique by branch and bound with dynamic colouring. Exponential, but fast for $n\le100$.}
+\inputcodeex{Minimum Steiner Tree*}{2_Graph/MinimumSteinerTree.cpp}%
+{$O(V3^T+V^22^T)$ for $T$ terminals. Supports \textbf{vertex costs} via \texttt{vcst}; \texttt{add\_edge} is directed. 0-base.}{examples/MinimumSteinerTree.cpp}
+\inputcodeex{Dominator Tree*}{2_Graph/Dominator_Tree.cpp}%
+{Lengauer-Tarjan, $O((V+E)\log V)$. Only vertices reachable from \texttt{root} are meaningful. \textbf{1-base.}}{examples/Dominator_Tree.cpp}
 %\inputcode{Minimum Arborescence*}{2_Graph/Minimum_Arborescence_fast.cpp} % test by luogu P4716 
 %\inputcode{Vizing's theorem*}{2_Graph/Vizing.cpp} % test by CF 101933 G
 \inputcode{Four Cycle}{2_Graph/FourCircleCount.cpp}
-\inputcode{Minimum Clique Cover*}{2_Graph/Minimum_Clique_Cover.cpp} % test by TIOJ 1472
-\inputcode{NumberofMaximalClique*}{2_Graph/NumberofMaximalClique.cpp} % test by POJ 2989
+\inputcodedesc{Minimum Clique Cover*}{2_Graph/Minimum_Clique_Cover.cpp}%
+{$O(n2^n)$ \textbf{probabilistic} cover count via subset-sum transform. Needs \texttt{fwt()}; $n$ limited by the $2^n$ arrays.}
+\inputcodedesc{NumberofMaximalClique*}{2_Graph/NumberofMaximalClique.cpp}%
+{Bron-Kerbosch with pivot, $O(3^{n/3})$. \textbf{Hard-stops once the count passes 1000} --- raise the guard for a full count. 1-base.}
 
 
 \section{Data Structure}
 \subsection{Discrete Trick}
 {\scriptsize Coordinate compression: sort+unique, then binary search. \textbf{Both ``index of x'' and ``max idx $\le$ x'' are written as \texttt{upper\_bound}; the former should be \texttt{lower\_bound}.}\par}\vspace{-0.6em}%
 \lstinputlisting{3_Data_Structure/discrete_trick.cpp}
-\inputcodeex{BIT kth*}{3_Data_Structure/BIT_kth.cpp}%
-{$k$-th smallest from a value-domain BIT in $O(\log N)$ by descending the tree. \textbf{$N$ must be a power of two.}}{examples/BIT_kth.cpp}
+\inputcodedesc{BIT kth*}{3_Data_Structure/BIT_kth.cpp}%
+{$k$-th smallest from a value-domain BIT in $O(\log N)$ by descending the tree. \textbf{$N$ must be a power of two.}}
 \inputcodeex{Interval Container*}{3_Data_Structure/IntervalContainer.cpp}%
 {Maintains disjoint half-open $[L,R)$ intervals with auto-merge; amortised $O(\log n)$.}{examples/IntervalContainer.cpp}
-\inputcodeex{Leftist Tree}{3_Data_Structure/Leftist_Tree.cpp}%
-{Mergeable \emph{max}-heap, \texttt{merge}/\texttt{pop} $O(\log n)$, keeps subtree size and sum. No lazy tags.}{examples/Leftist_Tree.cpp}
+\inputcodedesc{Leftist Tree}{3_Data_Structure/Leftist_Tree.cpp}%
+{Mergeable \emph{max}-heap, \texttt{merge}/\texttt{pop} $O(\log n)$, keeps subtree size and sum. No lazy tags.}
 \inputcodeex{Heavy light Decomposition*}{3_Data_Structure/Heavy_light_Decomposition.cpp}%
 {Path queries in $O(\log^2 n)$ with a segment tree. 1-base, root 1. \textbf{Skeleton: build/query still need the segtree wired in.}}{examples/Heavy_light_Decomposition.cpp}
 \inputcodeex{Centroid Decomposition*}{3_Data_Structure/Centroid_Decomposition.cpp}%
@@ -95,25 +106,25 @@
 \section{String}
 \inputcodeex{KMP}{5_String/KMP.cpp}%
 {Pattern search, $O(|A|+|B|)$. Returns every 0-based occurrence. \texttt{F} is the optimised fail table, not a plain border array.}{examples/KMP.cpp}
-\inputcodeex{Z-value*}{5_String/Z-value.cpp}%
-{$z[i]=\mathrm{lcp}(s,s[i..])$ in $O(n)$. \textbf{$z[0]$ is left unset.}}{examples/Z-value.cpp}
-\inputcodeex{Manacher*}{5_String/Manacher.cpp}%
-{All palindromic radii in $O(n)$ by interleaving \texttt{\%}. 0-base.}{examples/Manacher.cpp}
+\inputcodedesc{Z-value*}{5_String/Z-value.cpp}%
+{$z[i]=\mathrm{lcp}(s,s[i..])$ in $O(n)$. \textbf{$z[0]$ is left unset.}}
+\inputcodedesc{Manacher*}{5_String/Manacher.cpp}%
+{All palindromic radii in $O(n)$ by interleaving \texttt{\%}. 0-base.}
 %\inputcode{Suffix Array}{5_String/Suffix_Array.cpp}
 \inputcodeex{SAIS*}{5_String/SAIS-C++20.cpp}%
 {Suffix array in $O(n)$ plus Kasai height. \textbf{Needs C++20}; input must not contain a 0 byte.}{examples/SAIS-C++20.cpp}
 \inputcodeex{Aho-Corasick Automatan*}{5_String/Aho-Corasick_Automatan.cpp}%
 {Multi-pattern matching. Build $O(\sum|s_i|\sigma)$, scan $O(|T|)$. Use \texttt{rnx} for $O(1)$ transitions; root is node 1, chars are \texttt{c-\textquotesingle A\textquotesingle}.}{examples/Aho-Corasick_Automatan.cpp}
-\inputcodeex{Smallest Rotation}{5_String/Smallest_Rotation.cpp}%
-{Lexicographically smallest rotation (Booth/min-notation) in $O(n)$.}{examples/Smallest_Rotation.cpp}
-\inputcodeex{De Bruijn sequence*}{5_String/De_Bruijn_sequence.cpp}%
-{Sequence of length $N+K-1$ whose length-$N$ windows are all distinct ($K\le C^N$).}{examples/De_Bruijn_sequence.cpp}
+\inputcodedesc{Smallest Rotation}{5_String/Smallest_Rotation.cpp}%
+{Lexicographically smallest rotation (Booth/min-notation) in $O(n)$.}
+\inputcodedesc{De Bruijn sequence*}{5_String/De_Bruijn_sequence.cpp}%
+{Sequence of length $N+K-1$ whose length-$N$ windows are all distinct ($K\le C^N$).}
 \inputcodeex{Extended SAM*}{5_String/exSAM.cpp}%
 {Generalised suffix automaton over many strings; \texttt{cnt} gives occurrences per state. Chars are \texttt{c-\textquotesingle a\textquotesingle}.}{examples/exSAM.cpp}
 \inputcodeex{PalTree*}{5_String/PalTree.cpp}%
 {Eertree: counts distinct palindromic substrings and their occurrences in $O(n\sigma)$.}{examples/PalTree.cpp}
-\inputcodeex{Main Lorentz}{5_String/MainLorentz.cpp}%
-{All tandem repeats in $O(n\log n)$, stored as start-ranges per length. Requires an external \texttt{Zalgo()}.}{examples/MainLorentz.cpp}
+\inputcodedesc{Main Lorentz}{5_String/MainLorentz.cpp}%
+{All tandem repeats in $O(n\log n)$, stored as start-ranges per length. Requires an external \texttt{Zalgo()}.}
 
 
 \section{Math}
