@@ -1,7 +1,5 @@
 struct MaxFlow { // 0-base
-  struct edge {
-    int to, cap, flow, rev;
-  };
+  struct edge { int to, cap, flow, rev; };
   vector<edge> G[MAXN];
   int s, t, dis[MAXN], cur[MAXN], n;
   int dfs(int u, int cap) {
@@ -22,11 +20,9 @@ struct MaxFlow { // 0-base
   }
   bool bfs() {
     fill_n(dis, n, -1);
-    queue<int> q;
-    q.push(s), dis[s] = 0;
+    queue<int> q; q.push(s), dis[s] = 0;
     while (!q.empty()) {
-      int tmp = q.front();
-      q.pop();
+      int tmp = q.front(); q.pop();
       for (auto &u : G[tmp])
         if (!~dis[u.to] && u.flow != u.cap) {
           q.push(u.to);
