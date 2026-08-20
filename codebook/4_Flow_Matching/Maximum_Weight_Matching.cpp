@@ -50,7 +50,7 @@ struct WeightGraph { // 1-based
     }
   }
   int lca(int u, int v) {
-    static int t = 0; ++t;
+    static int t = 0;
     for (++t; u || v; swap(u, v)) if (u) {
       if (vis[u] == t) return u;
       vis[u] = t, u = st[match[u]];
@@ -132,7 +132,7 @@ struct WeightGraph { // 1-based
       REP(b, n + 1, nx)
         if (st[b] == b && S[b] == 1 && lab[b] == 0)
           expand_blossom(b);
-    } return false;
+    }
   }
   pair<ll, int> solve() {
     fill(ALL(match), 0);
@@ -146,8 +146,7 @@ struct WeightGraph { // 1-based
     while (matching()) ++n_matches;
     REP(u, 1, n) if (match[u] && match[u] < u)
       tot_weight += g[u][match[u]].w;
-    return make_pair(tot_weight, n_matches);
+    return {tot_weight, n_matches};
   }
-  void add_edge(int u, int v, int w)
-  { g[u][v].w = g[v][u].w = w; }
+  void add_edge(int u, int v, int w) { g[u][v].w = g[v][u].w = w; }
 };

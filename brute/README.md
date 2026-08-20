@@ -12,10 +12,10 @@ Run the complete local suite with:
 ./brute/run_all.sh
 ```
 
-The runner is deliberately capped at four processes.  `JOBS` may lower the
-limit, but values above four are clamped to four; every child also gets one
-thread.  A non-zero exit status means the corresponding template is not
-verified.
+The runner defaults to two processes and is hard-capped at four.  `JOBS` may
+lower the limit, but values above four are clamped to four; every child also
+gets one thread.  A non-zero exit status means the corresponding template is
+not verified.
 
 Documentation-only material is listed explicitly in the relevant manifest.
 Every active callable code entry in `content.tex` has a passing executable

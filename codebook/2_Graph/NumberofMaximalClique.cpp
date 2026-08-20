@@ -6,9 +6,7 @@ struct BronKerbosch { // 1-base
     for (int i = 1; i <= n; ++i)
       for (int j = 1; j <= n; ++j) g[i][j] = 0;
   }
-  void add_edge(int u, int v) {
-    g[u][v] = g[v][u] = 1;
-  }
+  void add_edge(int u, int v) { g[u][v] = g[v][u] = 1; }
   void dfs(int d, int an, int sn, int nn) {
     if (S > 1000) return; // pruning
     if (sn == 0 && nn == 0) ++S;

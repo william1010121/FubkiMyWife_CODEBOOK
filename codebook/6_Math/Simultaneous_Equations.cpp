@@ -13,7 +13,6 @@ struct matrix { //m variables, n equations
         fraction tmp = -M[j][col] / M[rank][col];
         for (int k = 0; k <= m; ++k) M[j][k] = tmp * M[rank][k] + M[j][k];
       }
-      sol[col] = M[rank][m] / M[rank][col];
       ++rank;
     }
     for (int i = 0; i < n; ++i) {

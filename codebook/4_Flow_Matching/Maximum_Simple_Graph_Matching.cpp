@@ -37,8 +37,7 @@ struct Matching { // 0-base
         }
     } return false;
   }
-  Matching(int _n) : n(_n), fa(n + 1), s(n + 1),
-    vis(n + 1), pre(n + 1, n), match(n + 1, n), G(n) {}
+  Matching(int _n) : n(_n), fa(n + 1), s(n + 1), vis(n + 1), pre(n + 1, n), match(n + 1, n), G(n) {}
   void add_edge(int u, int v) { G[u].pb(v), G[v].pb(u); }
   int solve() {
     int ans = 0;

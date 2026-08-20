@@ -16,8 +16,7 @@ struct AC_Automatan {
     } return X; // return the end node of string
   }
   void make_fl() {
-    queue<int> q;
-    q.push(1), fl[1] = 0;
+    queue<int> q; q.push(1);
     for (int t = 0; !q.empty(); ) {
       int R = q.front();
       q.pop(), ord[t++] = R;
@@ -31,7 +30,6 @@ struct AC_Automatan {
     }
   }
   void solve() {
-    for (int i = top - 2; i > 0; --i)
-      cnt[fl[ord[i]]] += cnt[ord[i]];
+    for (int i = top - 2; i > 0; --i) cnt[fl[ord[i]]] += cnt[ord[i]];
   }
 } ac;

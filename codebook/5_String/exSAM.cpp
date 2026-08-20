@@ -48,7 +48,6 @@ struct exSAM {
     for (int i = 1; i < tot; ++i) lenSorted[--lc[len[i]]] = i;
   }
   void solve() {
-    for (int i = tot - 2; i >= 0; --i)
-      cnt[link[lenSorted[i]]] += cnt[lenSorted[i]];
+    for (int i = tot - 2; i >= 0; --i) cnt[link[lenSorted[i]]] += cnt[lenSorted[i]];
   }
 };

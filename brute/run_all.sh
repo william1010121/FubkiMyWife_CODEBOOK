@@ -7,9 +7,9 @@ bin_dir="$root/brute/bin"
 log_dir="$root/brute/logs"
 mkdir -p "$bin_dir" "$log_dir"
 
-requested=${JOBS:-4}
+requested=${JOBS:-2}
 case "$requested" in
-  ''|*[!0-9]*) requested=4 ;;
+  ''|*[!0-9]*) requested=2 ;;
 esac
 if [ "$requested" -lt 1 ]; then requested=1; fi
 if [ "$requested" -gt 4 ]; then requested=4; fi

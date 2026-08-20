@@ -9,12 +9,10 @@ struct BoundedFlow { // 0-base
   }
   void add_edge(int u, int v, int lcap, int rcap) {
     cnt[u] -= lcap, cnt[v] += lcap;
-    G[u].pb(edge{v, rcap, lcap, SZ(G[v])});
-    G[v].pb(edge{u, 0, 0, SZ(G[u]) - 1});
+    G[u].pb(edge{v, rcap, lcap, SZ(G[v])}), G[v].pb(edge{u, 0, 0, SZ(G[u]) - 1});
   }
   void add_edge(int u, int v, int cap) {
-    G[u].pb(edge{v, cap, 0, SZ(G[v])});
-    G[v].pb(edge{u, 0, 0, SZ(G[u]) - 1});
+    G[u].pb(edge{v, cap, 0, SZ(G[v])}), G[v].pb(edge{u, 0, 0, SZ(G[u]) - 1});
   }
   int dfs(int u, int cap) {
     if (u == t || !cap) return cap;

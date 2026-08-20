@@ -43,7 +43,6 @@ struct MinCostCirculation { // 0-base
   void init(int _n)
   { n = _n; for (int i = 0; i < n; ++i) G[i].clear(); }
   void add_edge(ll a, ll b, ll cap, ll cost) {
-    G[a].pb(Edge{a, b, 0, cap, 0, cost, SZ(G[b]) + (a == b)});
-    G[b].pb(Edge{b, a, 0, 0, 0, -cost, SZ(G[a]) - 1});
+    G[a].pb(Edge{a, b, 0, cap, 0, cost, SZ(G[b]) + (a == b)}), G[b].pb(Edge{b, a, 0, 0, 0, -cost, SZ(G[a]) - 1});
   }
 } mcmf; // O(VE * ElogC)

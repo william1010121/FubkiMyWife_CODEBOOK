@@ -11,8 +11,7 @@ struct Cent_Dec { // 1-base
     fill_n(upinfo, n + 1, pll());
     for (int i = 1; i <= n; ++i) G[i].clear();
   }
-  void add_edge(int a, int b, int w)
-  { G[a].pb(pll(b, w)), G[b].pb(pll(a, w)); }
+  void add_edge(int a, int b, int w) { G[a].pb(pll(b, w)), G[b].pb(pll(a, w)); }
   void get_cent(int u, int f, int &mx, int &c, int num) {
     int mxsz = 0; sz[u] = 1;
     for (pll e : G[u])

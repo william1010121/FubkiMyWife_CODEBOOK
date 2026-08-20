@@ -19,8 +19,7 @@ struct palindromic_tree {
     St[0].fail = 1, s.pb(-1);
   }
   inline int get_fail(int x) {
-    while (s[n - St[x].len - 1] != s[n])
-      x = St[x].fail;
+    while (s[n - St[x].len - 1] != s[n]) x = St[x].fail;
     return x;
   }
   inline void add(int c) {
@@ -36,10 +35,8 @@ struct palindromic_tree {
     } last = St[cur].next[c], ++St[last].cnt;
   }
   inline void count() { // counting cnt
-    auto i = St.rbegin();
-    for (; i != St.rend(); ++i) {
+    for (auto i = St.rbegin(); i != St.rend(); ++i)
       St[i->fail].cnt += i->cnt;
-    }
   }
   inline int size() { // The number of diff. pal.
     return SZ(St) - 2;

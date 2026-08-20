@@ -1,4 +1,4 @@
-cpus   = 4
+cpus   = 2
 memory = "6g"
 pids   = 512
 image  = "rbox:local"

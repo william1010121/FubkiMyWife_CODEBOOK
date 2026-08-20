@@ -2,8 +2,7 @@ struct Splay { // xor-sum
   static Splay nil;
   Splay *ch[2], *f;
   int val, sum, rev, size;
-  Splay (int _val = 0) : val(_val), sum(_val), rev(0), size(1)
-  { f = ch[0] = ch[1] = &nil; }
+  Splay (int _val = 0) : val(_val), sum(_val), rev(0), size(1) { f = ch[0] = ch[1] = &nil; }
   bool isr()
   { return f->ch[0] != this && f->ch[1] != this; }
   int dir()
@@ -33,7 +32,6 @@ void rotate(Splay *x) {
   if (!p->isr()) p->f->setCh(x, p->dir());
   else x->f = p->f;
   p->setCh(x->ch[!d], d); x->setCh(p, !d);
-  p->pull(), x->pull();
 }
 void splay(Splay *x) {
   vector<Splay*> splayVec;
@@ -57,7 +55,7 @@ Splay* access(Splay *x) {
 }
 void root_path(Splay *x) { access(x), splay(x); }
 void chroot(Splay *x)
-{ root_path(x), x->give_tag(1); x->push(), x->pull(); }
+{ root_path(x), x->give_tag(1); x->push(); }
 void split(Splay *x, Splay *y) { chroot(x), root_path(y); }
 void link(Splay *x, Splay *y)
 { root_path(x), chroot(y); x->setCh(y, 1); }

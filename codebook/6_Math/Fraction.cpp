@@ -1,8 +1,7 @@
 struct fraction {
   ll n, d;
   fraction(const ll &_n=0, const ll &_d=1): n(_n), d(_d) {
-    ll t = gcd(n, d);
-    n /= t, d /= t;
+    ll t = gcd(n, d); n /= t, d /= t;
     if (d < 0) n = -n, d = -d;
   } fraction operator-() const
   { return fraction(-n, d); }

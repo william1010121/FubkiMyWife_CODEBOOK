@@ -1,6 +1,5 @@
 void GAS(V<V<double>>&vc) {
-    int len = vc.size();
-    int row = 0;
+    int len = vc.size(), row = 0;
     for (int col = 0; col < len && row < len; ++col) {
         int idx = row;
         while (idx < len && fabs(vc[idx][col]) < 1e-12) ++idx;

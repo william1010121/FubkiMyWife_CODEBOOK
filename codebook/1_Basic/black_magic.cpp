@@ -31,10 +31,8 @@ int main() {
   // persistant
   rope<char> r[2];
   r[1] = r[0];
-  std::string st = "abc";
-  r[1].insert(0, st.c_str());
+  r[1].insert(0, "abc");
   r[1].erase(1, 1);
   std::cout << r[1].substr(0, 2) << std::endl;
-  return 0;
 }
 #endif

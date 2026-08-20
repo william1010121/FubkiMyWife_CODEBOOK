@@ -21,7 +21,7 @@ vector<P> HPI(vector<L> &ls){
   }
   meow(dq.front(),dq.back(),dq[dq.size()-2])dq.pop_back();
   meow(dq.back(),dq[0],dq[1])dq.pop_front();
-  if(dq.size()<3u)return vector<P>(); // no solution or solution is not a convex
+  if(dq.size()<3u)return {}; // no solution or solution is not a convex
   vector<P> rt;
   for(int i=0;i<(int)dq.size();++i)rt.push_back(Intersect(pls[dq[i]],pls[dq[(i+1)%dq.size()]]));
   return rt;

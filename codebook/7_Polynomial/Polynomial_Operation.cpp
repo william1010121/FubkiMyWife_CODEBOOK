@@ -91,7 +91,7 @@ struct Poly : vector<ll> { // coefficients in [0, P)
     return up;
   }
   vector<ll> Eval(const vector<ll> &x) const { // 1e5, 1s
-    auto up = _tree1(x); return _eval(x, up);
+    return _eval(x, _tree1(x));
   }
   static Poly Interpolate(const vector<ll> &x,
       const vector<ll> &y) { // 1e5, 1.4s

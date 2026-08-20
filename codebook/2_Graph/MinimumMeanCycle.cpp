@@ -21,18 +21,13 @@ struct MinimumMeanCycle {
       if (!have) continue;
       if (!found || a * tb > ta * b) a = ta, b = tb, found = true;
     } if (found) {
-      if (b < 0) {
-        a = -a;
-        b = -b;
-      }
       ll g = std::gcd(a < 0 ? -a : a, b);
       return pll(a / g, b / g);
     } return pll(-1LL, -1LL);
   }
   void init(int _n) {
     n = _n;
-    for (int j = 0; j < n; ++j) dp[1][j] = 0;
-    for (int i = 0; i < n; ++i)
-      for (int j = 0; j < n; ++j) dp[i + 2][j] = INF;
+    for (int i = 1; i <= n + 1; ++i)
+      fill_n(dp[i], n, i == 1 ? 0 : INF);
   }
 };

@@ -3,8 +3,8 @@ vector<int> rotatingSweepLineOrder(const vector<pair<int,int>> &ps){
   if (n == 0) return {};
   vector<int> id(n),pos(n);
   vector<pair<int,int>> line(n*(n-1)/2);
-  int m=-1;
-  for(int i=0;i<n;++i)for(int j=i+1;j<n;++j)line[++m]=make_pair(i,j); ++m;
+  int m=0;
+  for(int i=0;i<n;++i)for(int j=i+1;j<n;++j)line[m++]={i,j};
   sort(line.begin(),line.end(),[&](const pair<int,int> &a,const pair<int,int> &b){
     long long ax=ps[a.first].first-ps[a.second].first;
     long long ay=ps[a.first].second-ps[a.second].second;

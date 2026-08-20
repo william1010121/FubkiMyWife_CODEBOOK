@@ -6,5 +6,5 @@
   "tests": {"random_cases": 4200, "n_range": "1..12", "single_process": true, "max_parallel_jobs": 1, "cpu_budget": 4},
   "problem_url": "https://acmore.cc/problem/HDU/1530",
   "problem_match": "exact maximum-clique objective; judge format differs from this library snippet",
-  "verification_status": "harness and oracle on disk; not run in the final shortened pass"
+  "verification_status": "passed in latest ./brute/run_all.sh with JOBS=2 (107/107)"
 }

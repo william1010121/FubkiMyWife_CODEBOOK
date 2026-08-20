@@ -9,8 +9,7 @@ struct Clique_Cover { // 0-base, O(n2^n)
   int solve() {
     for (int i = 0; i < n; ++i)
       co[1 << i] = E[i] | (1 << i);
-    co[0] = (1 << n) - 1;
-    dp[0] = (n & 1) * 2 - 1;
+    co[0] = (1 << n) - 1, dp[0] = (n & 1) * 2 - 1;
     for (int i = 1; i < (1 << n); ++i) {
       int t = i & -i;
       dp[i] = -dp[i ^ t];

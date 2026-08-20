@@ -1,5 +1,4 @@
 Point TriangleCircumCenter(Point a, Point b, Point c) {
-  Point res;
   double a1 = atan2(b.y - a.y, b.x - a.x) + pi / 2;
   double a2 = atan2(c.y - b.y, c.x - b.x) + pi / 2;
   double ax = (a.x + b.x) / 2;

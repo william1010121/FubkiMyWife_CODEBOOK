@@ -1,6 +1,6 @@
 const int maxn = 131072;
 using cplx = complex<double>;
-const cplx I = cplx(0, 1);
+const cplx I(0, 1);
 const double pi = acos(-1);
 cplx omega[maxn + 1];
 void prefft() {

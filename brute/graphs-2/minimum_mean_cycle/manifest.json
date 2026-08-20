@@ -6,5 +6,5 @@
   "tests": {"random_cases": 4200, "single_process": true, "max_parallel_jobs": 1, "cpu_budget": 4},
   "problem_url": "https://onlinejudge.org/external/110/11090.pdf",
   "problem_match": "minimum mean cycle; the judge uses positive weights and decimal output",
-  "verification_status": "partial; harness was created and an early run exposed/fixed template initialization, INF, and negative/zero-ratio issues; final rerun was not performed after the last source edit"
+  "verification_status": "passed in latest ./brute/run_all.sh with JOBS=2 (107/107) after the recorded source fixes"
 }

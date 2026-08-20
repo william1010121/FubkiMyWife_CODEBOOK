@@ -1,4 +1,4 @@
-template<typename Func, typename d = double>
+template<class Func, class d = double>
 struct Simpson {
   using pdd = pair<d, d>;
   Func f;
@@ -23,5 +23,5 @@ struct Simpson {
     return s;
   }
 };
-template<typename Func>
+template<class Func>
 Simpson<Func> make_simpson(Func f) { return {f}; }

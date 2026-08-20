@@ -43,8 +43,7 @@ void dfs(
   if (!bound(q, o, d)) return;
   long long cd = dist(p[o], q);
   if (cd != 0) d = min(d, cd);
-  if ((dep & 1) && q.x < p[o].x ||
-    !(dep & 1) && q.y < p[o].y) {
+  if (dep & 1 ? q.x < p[o].x : q.y < p[o].y) {
     if (~lc[o]) dfs(q, d, lc[o], dep + 1);
     if (~rc[o]) dfs(q, d, rc[o], dep + 1);
   } else {
@@ -53,7 +52,7 @@ void dfs(
   }
 }
 void init(const vector<point> &v) {
-  for (int i = 0; i < v.size(); ++i) p[i] = v[i];
+  copy(v.begin(), v.end(), p);
   root = build(0, v.size());
 }
 long long nearest(const point &q) {

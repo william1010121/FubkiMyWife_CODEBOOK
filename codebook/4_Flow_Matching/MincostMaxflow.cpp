@@ -40,7 +40,6 @@ struct MinCostMaxFlow { // 0-base
     for (int i = 0; i < n; ++i) G[i].clear();
   }
   void add_edge(ll a, ll b, ll cap, ll cost) {
-    G[a].pb(Edge{a, b, cap, 0, cost, SZ(G[b])});
-    G[b].pb(Edge{b, a, 0, 0, -cost, SZ(G[a]) - 1});
+    G[a].pb(Edge{a, b, cap, 0, cost, SZ(G[b])}), G[b].pb(Edge{b, a, 0, 0, -cost, SZ(G[a]) - 1});
   }
 };

@@ -3,9 +3,8 @@ void Init() {
   omega.resize(kN + 1);
   long long x = fpow(kRoot, (kMod - 1) / kN);
   omega[0] = 1;
-  for (int i = 1; i <= kN; ++i) {
+  for (int i = 1; i <= kN; ++i)
     omega[i] = 1LL * omega[i - 1] * x % kMod;
-  }
 }
 void Transform(vector<int> &v, int n) {
   BitReverse(v, n);

@@ -5,7 +5,6 @@ struct L {
   ll at(ll x) { return m * x + k; }
 };
 class LiChao { // maintain max
-private:
   int n; vector<L> nodes;
   void insert(int l, int r, int rt, L ln) {
     int m = (l + r) >> 1;

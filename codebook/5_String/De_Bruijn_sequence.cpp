@@ -5,8 +5,7 @@ struct DBSeq {
     if (ptr >= L) return;
     if (t > N) {
       if (N % p) return;
-      for (int i = 1; i <= p && ptr < L; ++i)
-        out[ptr++] = buf[i];
+      for (int i = 1; i <= p && ptr < L; ++i) out[ptr++] = buf[i];
     } else {
       buf[t] = buf[t - p], dfs(out, t + 1, p, ptr);
       for (int j = buf[t - p] + 1; j < C; ++j)

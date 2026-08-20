@@ -2,9 +2,7 @@ struct SW{ // global min cut, O(V^3)
   #define REP for (int i = 0; i < n; ++i)
   static const int MXN = 514, INF = 2147483647;
   int vst[MXN], edge[MXN][MXN], wei[MXN];
-  void init(int n) {
-    REP fill_n(edge[i], n, 0);
-  }
+  void init(int n) { REP fill_n(edge[i], n, 0); }
   void addEdge(int u, int v, int w){
     edge[u][v] += w; edge[v][u] += w;
   }

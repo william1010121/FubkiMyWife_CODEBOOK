@@ -4,13 +4,11 @@ struct SteinerTree { // 0-base
   void init(int _n) {
     n = _n;
     for (int i = 0; i < n; ++i) {
-      fill_n(dst[i], n, INF);
-      dst[i][i] = vcst[i] = 0;
+      fill_n(dst[i], n, INF), dst[i][i] = vcst[i] = 0;
     }
   }
   void chmin(int &x, int val) { x = min(x, val); }
-  void add_edge(int ui, int vi, int wi)
-  { chmin(dst[ui][vi], wi); }
+  void add_edge(int ui, int vi, int wi) { chmin(dst[ui][vi], wi); }
   void shortest_path() {
     // Convert edge-only distances into path costs that include every
     // entered vertex.  The source vertex is charged by the singleton state.
