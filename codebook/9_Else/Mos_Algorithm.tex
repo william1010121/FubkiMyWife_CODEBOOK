@@ -1,8 +1,6 @@
-\begin{itemize}
+\begin{itemize}\itemsep-0.3em
 \item Mo's Algorithm With Addition Only
-
-\begin{itemize}
-    %\itemsep-0.5em
+\begin{itemize}\itemsep-0.3em
     \item Sort querys same as the normal Mo's algorithm.
     \item For each query $[l, r]$:
     \item If $l / blk = r / blk$, brute-force.
@@ -10,11 +8,8 @@
     \item If $r > curR$, increase $curR$
     \item decrease $curL$ to fit $l$, and then undo after answering
 \end{itemize}
-
 \item Mo's Algorithm With Offline Second Time
-
-\begin{itemize}
-    %\itemsep-0.5em
+\begin{itemize}\itemsep-0.3em
     \item Require: Changing answer $\equiv$ adding $f([l, r], r + 1)$.
     \item Require: $f([l, r], r + 1) = f([1, r], r + 1) - f([1, l), r + 1)$.
     \item Part1: Answer all $f([1, r], r + 1)$ first.
