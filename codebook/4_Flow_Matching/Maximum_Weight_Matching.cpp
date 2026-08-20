@@ -15,8 +15,7 @@ struct WeightGraph { // 1-based
   void update_slk(int u, int x, int &s) 
   { if (!s || E(g[u][x]) < E(g[s][x])) s = u; }
   void set_slk(int x) {
-    slk[x] = 0;
-    REP(u, 1, n)
+    slk[x] = 0; REP(u, 1, n)
       if (g[u][x].w > 0 && st[u] != x && S[st[u]] == 0)
         update_slk(u, x, slk[x]);
   }
@@ -56,8 +55,7 @@ struct WeightGraph { // 1-based
       if (vis[u] == t) return u;
       vis[u] = t, u = st[match[u]];
       if (u) u = st[pa[u]];
-    }
-    return 0;
+    } return 0;
   }
   void add_blossom(int u, int o, int v) {
     int b = find(n + 1 + ALL(st), 0) - begin(st);
@@ -67,8 +65,7 @@ struct WeightGraph { // 1-based
       reverse(1 + ALL(f));
       for (int x = t, y; x != o; x = st[pa[y]])
         f.pb(x), f.pb(y = st[match[x]]), q_push(y);
-    }
-    flo[b] = f; set_st(b, b);
+    } flo[b] = f; set_st(b, b);
     REP(x, 1, nx) g[b][x].w = g[x][b].w = 0;
     fill(ALL(flo_from[b]), 0);
     for (int xs : flo[b]) {
@@ -77,8 +74,7 @@ struct WeightGraph { // 1-based
           g[b][x] = g[xs][x], g[x][b] = g[x][xs];
       REP(x, 1, n) 
         if (flo_from[xs][x]) flo_from[b][x] = xs;
-    }
-    set_slk(b);
+    } set_slk(b);
   }
   void expand_blossom(int b) {
     for (int x : flo[b]) set_st(x, x);
@@ -87,8 +83,7 @@ struct WeightGraph { // 1-based
       if (xs == -1) { xs = x; continue; }
       pa[xs] = g[x][xs].u, S[xs] = 1, S[x] = 0;
       slk[xs] = 0, set_slk(x), q_push(x), xs = -1;
-    }
-    for (int x : flo[b])
+    } for (int x : flo[b])
       if (x == xr) S[x] = 1, pa[x] = pa[b];
       else S[x] = -1, set_slk(x);
     st[b] = 0;
@@ -104,8 +99,7 @@ struct WeightGraph { // 1-based
     return false;
   }
   bool matching() {
-    fill(ALL(S), -1), fill(ALL(slk), 0);
-    q = queue<int>();
+    fill(ALL(S), -1), fill(ALL(slk), 0); q = queue<int>();
     REP(x, 1, nx) if (st[x] == x && !match[x])
       pa[x] = S[x] = 0, q_push(x);
     if (q.empty()) return false;
@@ -119,8 +113,7 @@ struct WeightGraph { // 1-based
               update_slk(u, st[v], slk[st[v]]);
             else if (on_found_edge(g[u][v])) return true;
           }
-      }
-      int d = INF;
+      } int d = INF;
       REP(b, n + 1, nx) if (st[b] == b && S[b] == 1)
         d = min(d, lab[b] / 2);
       REP(x, 1, nx)
@@ -141,8 +134,7 @@ struct WeightGraph { // 1-based
       REP(b, n + 1, nx)
         if (st[b] == b && S[b] == 1 && lab[b] == 0)
           expand_blossom(b);
-    }
-    return false;
+    } return false;
   }
   pair<ll, int> solve() {
     fill(ALL(match), 0);
@@ -151,8 +143,7 @@ struct WeightGraph { // 1-based
     REP(u, 1, n) REP(v, 1, n) {
       flo_from[u][v] = (u == v ? u : 0);
       w_max = max(w_max, g[u][v].w);
-    }
-    fill(ALL(lab), w_max);
+    } fill(ALL(lab), w_max);
     int n_matches = 0; ll tot_weight = 0;
     while (matching()) ++n_matches;
     REP(u, 1, n) if (match[u] && match[u] < u)
