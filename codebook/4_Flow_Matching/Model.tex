@@ -5,70 +5,67 @@
     %\vspace{-1em}
     \begin{enumerate}
         \itemsep-0.3em
-        \item Construct super source $S$ and sink $T$.
-        \item For each edge $(x, y, l, u)$, connect $x \rightarrow y$ with capacity $u - l$.
-        \item For each vertex $v$, denote by $in(v)$ the difference between the sum of incoming lower bounds and the sum of outgoing lower bounds.
-        \item If $in(v) > 0$, connect $S \rightarrow v$ with capacity $in(v)$, otherwise, connect $v \rightarrow T$ with capacity $-in(v)$.
+        \item Construct super source $S$, sink $T$.
+        \item Edge $(x, y, l, u)$: connect $x \rightarrow y$ with cap $u - l$.
+        \item $in(v)$ := sum of incoming lower bounds minus sum of outgoing ones.
+        \item $in(v) > 0$: connect $S \rightarrow v$ with cap $in(v)$; else $v \rightarrow T$ with cap $-in(v)$.
         \begin{itemize}
             \itemsep-0.2em
-            \item To maximize, connect $t \rightarrow s$ with capacity $\infty$ (skip this in circulation problem), and let $f$ be the maximum flow from $S$ to $T$. If $f \neq \sum_{v \in V, in(v) > 0}{in(v)}$, there's no solution. Otherwise, the maximum flow from $s$ to $t$ is the answer.
-            \item To minimize, let $f$ be the maximum flow from $S$ to $T$. Connect $t \rightarrow s$ with capacity $\infty$ and let the flow from $S$ to $T$ be $f^\prime$. If $f + f^\prime \neq \sum_{v \in V, in(v) > 0}{in(v)}$, there's no solution. Otherwise, $f^\prime$ is the answer.
+            \item Max: connect $t \rightarrow s$ with cap $\infty$ (skip for circulation), $f$ := maxflow $S \to T$. No solution if $f \neq \sum_{in(v) > 0}{in(v)}$; else maxflow $s \to t$ is the answer.
+            \item Min: $f$ := maxflow $S \to T$; connect $t \rightarrow s$ with cap $\infty$, $f^\prime$ := flow $S \to T$. No solution if $f + f^\prime \neq \sum_{in(v) > 0}{in(v)}$; else $f^\prime$.
         \end{itemize}
-        \item The solution of each edge $e$ is $l_e + f_e$, where $f_e$ corresponds to the flow of edge $e$ on the graph.
+        \item Each edge $e$ has solution $l_e + f_e$, $f_e$ its flow.
     \end{enumerate}
     \item Construct minimum vertex cover from maximum matching $M$ on bipartite graph $(X, Y)$
     %\vspace{-1em}
     \begin{enumerate}
         \itemsep-0.3em
-        \item Redirect every edge: $y \rightarrow x$ if $(x, y) \in M$, $x \rightarrow y$ otherwise.
+        \item Redirect: $y \rightarrow x$ if $(x, y) \in M$, else $x \rightarrow y$.
         \item DFS from unmatched vertices in $X$.
-        \item $x \in X$ is chosen iff $x$ is unvisited.
-        \item $y \in Y$ is chosen iff $y$ is visited.
+        \item Choose $x \in X$ iff unvisited; $y \in Y$ iff visited.
     \end{enumerate}
     \item Minimum cost cyclic flow
     %\vspace{-0.5em}
     \begin{enumerate}
         \itemsep-0.3em
-        \item Consruct super source $S$ and sink $T$
-        \item For each edge $(x, y, c)$, connect $x \rightarrow y$ with $(cost, cap) = (c, 1)$ if $c > 0$, otherwise connect $y \rightarrow x$ with $(cost, cap) = (-c, 1)$
-        \item For each edge with $c < 0$, sum these cost as $K$, then increase $d(y)$ by 1, decrease $d(x)$ by 1
-        \item For each vertex $v$ with $d(v) > 0$, connect $S \rightarrow v$ with $(cost, cap) = (0, d(v))$
-        \item For each vertex $v$ with $d(v) < 0$, connect $v \rightarrow T$ with $(cost, cap) = (0, -d(v))$
-        \item Flow from $S$ to $T$, the answer is the cost of the flow $C + K$
+        \item Construct super source $S$, sink $T$.
+        \item Edge $(x, y, c)$: if $c > 0$ connect $x \rightarrow y$ with $(cost, cap) = (c, 1)$, else $y \rightarrow x$ with $(-c, 1)$.
+        \item For $c < 0$ edges, sum cost as $K$, then $d(y){+}{+}$, $d(x){-}{-}$.
+        \item $d(v) > 0$: connect $S \rightarrow v$ with $(0, d(v))$; $d(v) < 0$: $v \rightarrow T$ with $(0, -d(v))$.
+        \item Flow $S \to T$; answer is the flow cost $C + K$.
     \end{enumerate}
     \item Maximum density induced subgraph
     %\vspace{-1em}
     \begin{enumerate}
         \itemsep-0.3em
-        \item Binary search on answer, suppose we're checking answer $T$
-        \item Construct a max flow model, let $K$ be the sum of all weights
-        \item Connect source $s \rightarrow v$, $v \in G$ with capacity $K$
-        \item For each edge $(u, v, w)$ in $G$, connect $u \rightarrow v$ and $v \rightarrow u$ with capacity $w$
-        \item For $v \in G$, connect it with sink $v \rightarrow t$ with capacity $K + 2T - (\sum_{e \in E(v)}{w(e)}) - 2w(v)$
-        \item $T$ is a valid answer if the maximum flow $f < K \lvert V \rvert$
+        \item Binary search the answer $T$; let $K$ be the sum of all weights.
+        \item Connect $s \rightarrow v$, $v \in G$, with cap $K$.
+        \item Edge $(u, v, w)$: connect both ways with cap $w$.
+        \item Connect $v \rightarrow t$ with cap $K + 2T - (\sum_{e \in E(v)}{w(e)}) - 2w(v)$.
+        \item $T$ is valid if maxflow $f < K \lvert V \rvert$.
     \end{enumerate}
     \item Minimum weight edge cover
     %\vspace{-1em}
     \begin{enumerate}
         \itemsep-0.3em
-      \item For each $v \in V$ create a copy $v^\prime$, and connect $u^\prime \to v^\prime$ with weight $w(u, v)$.
-      \item Connect $v \to v^\prime$ with weight $2\mu(v)$, where $\mu(v)$ is the cost of the cheapest edge incident to $v$.
-      \item Find the minimum weight perfect matching on $G^\prime$.
+      \item Copy each $v \in V$ as $v^\prime$; connect $u^\prime \to v^\prime$ with weight $w(u, v)$.
+      \item Connect $v \to v^\prime$ with weight $2\mu(v)$, $\mu(v)$ := cheapest edge at $v$.
+      \item Min weight perfect matching on $G^\prime$.
     \end{enumerate}
     \item Project selection problem
     %\vspace{-1em}
     \begin{enumerate}
       \itemsep-0.3em
-      \item If $p_v > 0$, create edge $(s, v)$ with capacity $p_v$; otherwise, create edge $(v, t)$ with capacity $-p_v$.
-      \item Create edge $(u, v)$ with capacity $w$ with $w$ being the cost of choosing $u$ without choosing $v$.
-      \item The mincut is equivalent to the maximum profit of a subset of projects.
+      \item $p_v > 0$: edge $(s, v)$ cap $p_v$; else $(v, t)$ cap $-p_v$.
+      \item Edge $(u, v)$ cap $w$ := cost of choosing $u$ without $v$.
+      \item The mincut equals the max profit over subsets of projects.
     \end{enumerate}
     \item Dual of minimum cost maximum flow
     %\vspace{-1em}
     \begin{enumerate}
       \itemsep-0.3em
-      \item Capacity $c_{uv}$, Flow $f_{uv}$, Cost $w_{uv}$, Required Flow difference for vertex $b_u$.
-      \item If all $w_{uv}$ are integers, then optimal solution can happen when all $p_u$ are integers.
+      \item Cap $c_{uv}$, flow $f_{uv}$, cost $w_{uv}$, required flow difference $b_u$.
+      \item If all $w_{uv}$ are integers, an optimum with all $p_u$ integral exists.
     \end{enumerate}
     $$
     \begin{aligned}\min\sum_{uv} w_{uv}f_{uv} \\ -f_{uv} \geq -c_{uv} \\ \sum_{v} f_{vu} - \sum_{v} f_{uv} = -b_u\end{aligned}

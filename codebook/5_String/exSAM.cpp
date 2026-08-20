@@ -37,14 +37,11 @@ struct exSAM {
     }
   }
   void build() {
-    queue<int> q;
-    q.push(0);
+    queue<int> q; q.push(0);
     while (!q.empty()) {
-      int cur = q.front();
-      q.pop();
+      int cur = q.front(); q.pop();
       for (int i = 0; i < CNUM; ++i)
-        if (next[cur][i])
-          q.push(insertSAM(cur, i));
+        if (next[cur][i]) q.push(insertSAM(cur, i));
     }
     vector<int> lc(tot);
     for (int i = 1; i < tot; ++i) ++lc[len[i]];
