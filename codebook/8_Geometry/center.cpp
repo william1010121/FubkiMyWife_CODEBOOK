@@ -6,8 +6,7 @@ Point BaryCenter(vector<Point> &p, int n) {
     s += t;
     res.x += (p[0].x + p[i].x + p[i + 1].x) * t;
     res.y += (p[0].y + p[i].y + p[i + 1].y) * t;
-  }
-  res.x /= (3 * s);
+  } res.x /= (3 * s);
   res.y /= (3 * s);
   return res;
 }

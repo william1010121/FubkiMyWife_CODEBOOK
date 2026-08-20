@@ -12,15 +12,13 @@ vector<P> convex(vector<P> ps) {
         crx(p[p.size() - 2], ps[i], p[p.size() - 1]) >= 0)
       p.pop_back();
     p.push_back(ps[i]);
-  }
-  int t = p.size();
+  } int t = p.size();
   for (int i = (int)ps.size() - 2; i >= 0; --i) {
     while (p.size() > t &&
         crx(p[p.size() - 2], ps[i], p[p.size() - 1]) >= 0)
       p.pop_back();
     p.push_back(ps[i]);
-  }
-  p.pop_back();
+  } p.pop_back();
   return p;
 }
 int sgn(double x) { return same(x, 0) ? 0 : x > 0 ? 1 : -1; }

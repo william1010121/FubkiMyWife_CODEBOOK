@@ -7,8 +7,7 @@ ll PrimeCount(ll n) { // n ~ 10^13 => < 2s
   for (int i = 0; i < s; ++i) {
     roughs[i] = 2 * i + 1;
     larges[i] = (n / (2 * i + 1) + 1) / 2;
-  }
-  for (int p = 3; p <= v; ++p) {
+  } for (int p = 3; p <= v; ++p) {
     if (smalls[p] > smalls[p - 1]) {
       int q = p * p;
       ++pc;
@@ -29,8 +28,7 @@ ll PrimeCount(ll n) { // n ~ 10^13 => < 2s
         for (int i = j * p; i < e; ++i) smalls[i] -= c;
       }
     }
-  }
-  for (int k = 1; k < s; ++k) {
+  } for (int k = 1; k < s; ++k) {
     const ll m = n / roughs[k];
     ll t = larges[k] - (pc + k - 1);
     for (int l = 1; l < k; ++l) {
@@ -38,6 +36,5 @@ ll PrimeCount(ll n) { // n ~ 10^13 => < 2s
       if (1LL * p * p > m) break;
       t -= smalls[m / p] - (pc + l - 1);
     } larges[0] -= t;
-  }
-  return larges[0];
+  } return larges[0];
 }

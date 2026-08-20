@@ -25,6 +25,5 @@ circle min_enclosing(vector<pt> &p) {
         r = norm2(p[k] - cent);
       }
     }
-  }
-  return circle(cent, sqrt(r));
+  } return circle(cent, sqrt(r));
 }

@@ -7,13 +7,11 @@ set<pii>::iterator addInterval(set<pii>& is, int L, int R) {
   while (it != is.end() && it->X <= R) {
     R = max(R, it->Y);
     before = it = is.erase(it);
-  }
-  if (it != is.begin() && (--it)->Y >= L) {
+  } if (it != is.begin() && (--it)->Y >= L) {
     L = min(L, it->X);
     R = max(R, it->Y);
     is.erase(it);
-  }
-  return is.insert(before, pii(L, R));
+  } return is.insert(before, pii(L, R));
 }
 void removeInterval(set<pii>& is, int L, int R) {
   if (L == R) return;

@@ -114,8 +114,7 @@ struct Poly : vector<ll> { // coefficients in [0, P)
     fi(0, n())
       if ((Y[i] = (*this)[i] - Y[i]) < 0) Y[i] += P;
     return X.Mul(Y).isz(n());
-  }
-  // M := P(P - 1). If k >= M, k := k % M + M.
+  } // M := P(P - 1). If k >= M, k := k % M + M.
   Poly Pow(ll k) const {
     int nz = 0;
     while (nz < n() && !(*this)[nz]) ++nz;
@@ -125,8 +124,7 @@ struct Poly : vector<ll> { // coefficients in [0, P)
     const ll c = ntt.mpow(X[0], k % (P - 1));
     return X.Ln().imul(k % P).Exp().imul(c)
       .irev().isz(n()).irev();
-  }
-  // a_n = \sum c_j a_(n-j)
+  } // a_n = \sum c_j a_(n-j)
   static ll LinearRecursion(const vector<ll> &a,
       const vector<ll> &coef, ll n) {
     const int k = (int)a.size();

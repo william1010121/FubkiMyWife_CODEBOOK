@@ -8,7 +8,6 @@ double ConvexHullMaxTriangleArea(Point p[], int res[], int chnum) {
     while (fabs(Cross(p[res[(j + 1) % chnum]] - p[res[i]], p[res[k]] - p[res[i]])) > fabs(Cross(p[res[j]] - p[res[i]], p[res[k]] - p[res[i]]))) j = (j + 1) % chnum;
     tmp = fabs(Cross(p[res[j]] - p[res[i]], p[res[k]] - p[res[i]]));
     if (tmp > area) area = tmp;
-  }
-  return area / 2;
+  } return area / 2;
 }
 

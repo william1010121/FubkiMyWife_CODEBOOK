@@ -10,6 +10,5 @@ double TwoConvexHullMinDist(Point P[], Point Q[], int n, int m) {
     if (tmp < 0) ans = min(ans, PointToSegDist(P[YMinP], P[YMinP + 1], Q[YMaxQ]));
     else ans = min(ans, TwoSegMinDist(P[YMinP], P[YMinP + 1], Q[YMaxQ], Q[YMaxQ + 1]));
     YMinP = (YMinP + 1) % n;
-  }
-  return ans;
+  } return ans;
 }

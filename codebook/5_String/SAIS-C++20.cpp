@@ -27,8 +27,7 @@ auto sais(const auto &s) {
           begin(s) + j, begin(s) + j + len,
           begin(s) + i, begin(s) + i + len);
     } j = i;
-  }
-  fill(ALL(sa), 0); auto nsa = sais(ns);
+  } fill(ALL(sa), 0); auto nsa = sais(ns);
   for (auto x = c; int y : nsa | views::reverse)
     y = lms[y], sa[--x[s[y]]] = y;
   return induce(), sa;

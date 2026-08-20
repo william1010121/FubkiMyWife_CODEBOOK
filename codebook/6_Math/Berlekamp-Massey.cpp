@@ -15,6 +15,5 @@ vector<T> BerlekampMassey(const vector<T> &output) {
     for (int j = 0; j < SZ(me); ++j) o[j] += me[j];
     if (i - f + SZ(he) >= SZ(me)) he = me, f = i;
     me = o;
-  }
-  return me;
+  } return me;
 }

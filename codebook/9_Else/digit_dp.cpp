@@ -7,8 +7,7 @@ int dfs(int pos, int pre, int lead, int limit, int cnt){
     ret *= dfs(pos - 1, i, lead & (i == 0),
         limit & (i == rb), cnt + (i==1));
     ret %= mod;
-  }
-  if(!lead && !limit)dp[pos][pre][cnt] = ret;
+  } if(!lead && !limit)dp[pos][pre][cnt] = ret;
   return ret;
 }
 int calc(int x){

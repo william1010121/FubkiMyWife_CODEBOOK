@@ -19,6 +19,5 @@ Q frac_bs(ll N) {
       else len += step;
     swap(lo, hi = hi.go(lo, len));
     (dir ? L : H) = !!len;
-  }
-  return dir ? hi : lo;
+  } return dir ? hi : lo;
 }

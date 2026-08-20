@@ -12,6 +12,5 @@ double closest_pair(int l, int r) {
     for (int j = i + 1; j < vec.size() && fabs(p[vec[j]].y - p[vec[i]].y) < d; ++j) {
       d = min(d, dist(p[vec[i]], p[vec[j]]));
     }
-  }
-  return d;
+  } return d;
 }

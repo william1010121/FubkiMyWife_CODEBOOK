@@ -8,6 +8,5 @@ int cyc_tsearch(int n, auto pred) {
     int m = (l + r) / 2;
     if (pred(0, m) ? rv: pred(m, (m + 1) % n)) r = m;
     else l = m;
-  }
-  return pred(l, r % n) ? l : r % n;
+  } return pred(l, r % n) ? l : r % n;
 }

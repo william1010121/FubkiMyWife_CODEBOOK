@@ -13,8 +13,7 @@ vector<pair<double, double>> CoverSegment(C &a, C &b) {
     if (r > 2 * pi) r -= 2 * pi;
     if (l > r) res.emplace_back(l, 2 * pi), res.emplace_back(0, r);
     else res.emplace_back(l, r);
-  }
-  return res;
+  } return res;
 }
 double CircleUnionArea(vector<C> c) { // circle should be identical
   int n = c.size();
@@ -31,6 +30,5 @@ double CircleUnionArea(vector<C> c) { // circle should be identical
       if (e.first > w) a += F(e.first) - F(w);
       w = max(w, e.second);
     }
-  }
-  return a * 0.5;
+  } return a * 0.5;
 }

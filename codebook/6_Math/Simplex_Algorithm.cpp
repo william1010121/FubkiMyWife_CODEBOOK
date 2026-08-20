@@ -17,8 +17,7 @@ double simplex(int n, int m){
     d[i][m - 1] = 1;
     d[i][m] = b[i];
     if (d[r][m] > d[i][m]) r = i;
-  }
-  copy_n(c, m - 1, d[n]);
+  } copy_n(c, m - 1, d[n]);
   d[n + 1][m - 1] = -1;
   for (double dd;; ) {
     if (r < n) {
@@ -44,8 +43,7 @@ double simplex(int n, int m){
           (dd < eps && ix[r + m] > ix[i + m]))
         r = i;
     } if (r < 0) return -1; // not bounded
-  }
-  if (d[n + 1][m] < -eps) return -1; // not executable
+  } if (d[n + 1][m] < -eps) return -1; // not executable
   double ans = 0;
   fill_n(x, m, 0);
   // the missing enumerated x[i] = 0
@@ -54,6 +52,5 @@ double simplex(int n, int m){
       ans += d[i - m][m] * c[ix[i]];
       x[ix[i]] = d[i-m][m];
     }
-  }
-  return ans; 
+  } return ans;
 }

@@ -16,8 +16,7 @@ void bin(vector<cplx> &a, int n) {
     for (int j = 0; (1 << j) < n; ++j)
       to |= (((i >> j) & 1) << (lg - j));
     tmp[to] = a[i];
-  }
-  for (int i = 0; i < n; ++i) a[i] = tmp[i];
+  } for (int i = 0; i < n; ++i) a[i] = tmp[i];
 }
 void fft(vector<cplx> &a, int n) {
   bin(a, n);

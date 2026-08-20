@@ -7,8 +7,7 @@ int main() {
     E[u].push_back(v);
     E[v].push_back(u);
     deg[u]++, deg[v]++;
-  }
-  for (int u = 1; u <= n; u++)
+  } for (int u = 1; u <= n; u++)
     for (int v : E[u])
       if (deg[u] > deg[v] || (deg[u] == deg[v] && u > v)) E1[u].push_back(v);
   for (int a = 1; a <= n; a++) {
@@ -18,7 +17,6 @@ int main() {
         total += cnt[c]++;
       } for (int b : E1[a])
       for (int c : E[b]) cnt[c] = 0;
-  }
-  cout << total << '\n';
+  } cout << total << '\n';
   return 0;
 }

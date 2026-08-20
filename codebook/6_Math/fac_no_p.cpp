@@ -9,6 +9,5 @@ ll fac_no_p(ll n, ll p, ll pk) {
   for (; n; n /= p) {
     rt = rt * mpow(prod[pk], n / pk, pk) % pk;
     rt = rt * prod[n % pk] % pk;
-  }
-  return rt;
+  } return rt;
 } // (n! without factor p) % p^k

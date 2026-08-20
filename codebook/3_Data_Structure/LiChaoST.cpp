@@ -24,8 +24,7 @@ private:
     if (r - l == 1) return ret;
     if (x < m) return max(ret, query(l, m, rt << 1, x));
     return max(ret, query(m, r, rt << 1 | 1, x));
-  }
-public:
+  } public:
   LiChao(int n_) : n(n_), nodes(n * 4) {}
   void insert(L ln) { insert(0, n, 1, ln); }
   ll query(ll x) { return query(0, n, 1, x); }

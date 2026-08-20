@@ -48,8 +48,7 @@ bool erase(node *&o, int k) {
     o->down(), o = merge(o->l, o->r);
     delete t;
     return 1;
-  }
-  node *&t = k < o->data ? o->l : o->r;
+  } node *&t = k < o->data ? o->l : o->r;
   return erase(t, k) ? o->up(), 1 : 0;
 }
 void insert(node *&o, int k) {

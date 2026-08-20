@@ -19,15 +19,13 @@ int build(int l, int r, int dep = 0) {
     xr[m] = max(xr[m], xr[lc[m]]);
     yl[m] = min(yl[m], yl[lc[m]]);
     yr[m] = max(yr[m], yr[lc[m]]);
-  }
-  rc[m] = build(m + 1, r, dep + 1);
+  } rc[m] = build(m + 1, r, dep + 1);
   if (~rc[m]) {
     xl[m] = min(xl[m], xl[rc[m]]);
     xr[m] = max(xr[m], xr[rc[m]]);
     yl[m] = min(yl[m], yl[rc[m]]);
     yr[m] = max(yr[m], yr[rc[m]]);
-  }
-  return m;
+  } return m;
 }
 bool bound(const point &q, int o, long long d) {
   double ds = sqrt(d + 1.0);

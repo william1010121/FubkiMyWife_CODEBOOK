@@ -15,8 +15,7 @@ vector<L> tangent(C a, C b) {
     deo(-,+);
     if (same(d, a.r + b.r)) { Pij; } 
     else if (d > a.r + b.r) { deo(+,-); }
-  }
-  return z;
+  } return z;
 }
 
 vector<L> tangent(C c, P p) {
@@ -30,6 +29,5 @@ vector<L> tangent(C c, P p) {
     P i = (p - c.c).unit(), j = i.rot(o) * c.r, k = i.rot(-o) * c.r;
     z.emplace_back(c.c + j, p);
     z.emplace_back(c.c + k, p);
-  }
-  return z;
+  } return z;
 }
