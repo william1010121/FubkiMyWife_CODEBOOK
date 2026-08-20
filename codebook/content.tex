@@ -41,17 +41,27 @@
 
 \section{Data Structure}
 \subsection{Discrete Trick}
+{\scriptsize Coordinate compression: sort+unique, then binary search. \textbf{Both ``index of x'' and ``max idx $\le$ x'' are written as \texttt{upper\_bound}; the former should be \texttt{lower\_bound}.}\par}\vspace{-0.6em}%
 \lstinputlisting{3_Data_Structure/discrete_trick.cpp}
-\inputcode{BIT kth*}{3_Data_Structure/BIT_kth.cpp} % test by CSES 1076
-\inputcode{Interval Container*}{3_Data_Structure/IntervalContainer.cpp} % test by kactl stress test
-\inputcode{Leftist Tree}{3_Data_Structure/Leftist_Tree.cpp}
-\inputcode{Heavy light Decomposition*}{3_Data_Structure/Heavy_light_Decomposition.cpp} % test by CSES Path Queries II
-\inputcode{Centroid Decomposition*}{3_Data_Structure/Centroid_Decomposition.cpp} % test by TIOJ 1171
+\inputcodeex{BIT kth*}{3_Data_Structure/BIT_kth.cpp}%
+{$k$-th smallest from a value-domain BIT in $O(\log N)$ by descending the tree. \textbf{$N$ must be a power of two.}}{examples/BIT_kth.cpp}
+\inputcodeex{Interval Container*}{3_Data_Structure/IntervalContainer.cpp}%
+{Maintains disjoint half-open $[L,R)$ intervals with auto-merge; amortised $O(\log n)$.}{examples/IntervalContainer.cpp}
+\inputcodeex{Leftist Tree}{3_Data_Structure/Leftist_Tree.cpp}%
+{Mergeable \emph{max}-heap, \texttt{merge}/\texttt{pop} $O(\log n)$, keeps subtree size and sum. No lazy tags.}{examples/Leftist_Tree.cpp}
+\inputcodeex{Heavy light Decomposition*}{3_Data_Structure/Heavy_light_Decomposition.cpp}%
+{Path queries in $O(\log^2 n)$ with a segment tree. 1-base, root 1. \textbf{Skeleton: build/query still need the segtree wired in.}}{examples/Heavy_light_Decomposition.cpp}
+\inputcodeex{Centroid Decomposition*}{3_Data_Structure/Centroid_Decomposition.cpp}%
+{Build $O(n\log n)$, modify/query $O(\log n)$. \texttt{upinfo} subtracts the same-subtree overcount. 1-base.}{examples/Centroid_Decomposition.cpp}
 % \inputcode{Smart Pointer}{3_Data_Structure/Smart_Pointer.cpp}
-\inputcode{LiChaoST*}{3_Data_Structure/LiChaoST.cpp} % test by Library Checker Line Add Get Min
-\inputcode{Link cut tree*}{3_Data_Structure/link_cut_tree.cpp} % test by luogu P3690
-\inputcode{KDTree}{3_Data_Structure/KDTree.cpp}
-\inputcode{Treap}{3_Data_Structure/Treap.cpp}
+\inputcodeex{LiChaoST*}{3_Data_Structure/LiChaoST.cpp}%
+{Line container over an integer $x$ domain, $O(\log n)$. Keeps the \textbf{maximum}; negate for minimum.}{examples/LiChaoST.cpp}
+\inputcodeex{Link cut tree*}{3_Data_Structure/link_cut_tree.cpp}%
+{Dynamic trees, amortised $O(\log n)$; path aggregate is XOR. \textbf{\texttt{cut} tests \texttt{size != 5}, which looks like a leftover.}}{examples/link_cut_tree.cpp}
+\inputcodeex{KDTree}{3_Data_Structure/KDTree.cpp}%
+{Nearest neighbour, build $O(n\log n)$, query $O(\log n)$ average. Returns \textbf{squared} distance and skips distance-0 points.}{examples/KDTree.cpp}
+\inputcodeex{Treap}{3_Data_Structure/Treap.cpp}%
+{Rotation-free treap, expected $O(\log n)$; \texttt{split} by key, \texttt{split2} by size. \texttt{down()} is empty --- add lazy tags there.}{examples/Treap.cpp}
 % \inputcode{Range Chmin Chmax Add Range Sum*}{3_Data_Structure/Range_Chmin_Chmax_Add_Range_Sum.cpp} % test by Lib-Checker Range Chmin Chmax Add Range Sum
 
 
