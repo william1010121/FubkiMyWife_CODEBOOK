@@ -157,10 +157,26 @@ stringstyle=\itshape\color{Green4},
     \subsection[#1]{#1 \footnotesize{[\texttt{\captureshell{g++ -E #2 | sed '/^\#.*$/d' | tr -d '[:space:]' | md5sum | cut -c-6}}]}}%
     \lstinputlisting{#2}
 }
+% #1 title, #2 code path, #3 description (usage + complexity)
+% NOTE: \subsection[#1] keeps the ToC entry free of the description.
+\newcommand{\inputcodedesc}[3]{
+    \subsection[#1]{#1 \footnotesize{[\texttt{\captureshell{g++ -E #2 | sed '/^\#.*$/d' | tr -d '[:space:]' | md5sum | cut -c-6}}]}}%
+    {\scriptsize #3\par}\vspace{-0.6em}%
+    \lstinputlisting{#2}
+}
+% #1 title, #2 code path, #3 description, #4 example snippet path
+% basicstyle must be overridden here: \lstset sets \footnotesize globally,
+% which would otherwise ignore an enclosing \scriptsize.
+\newcommand{\inputcodeex}[4]{
+    \inputcodedesc{#1}{#2}{#3}%
+    \vspace{-0.8em}%
+    \lstinputlisting[basicstyle=\scriptsize\ttfamily]{#4}%
+}
 
 \textbf{
 \scriptsize
-\begin{multicols}{2}
+\setcounter{tocdepth}{1}
+\begin{multicols}{3}
   \tableofcontents
 \end{multicols}
 }

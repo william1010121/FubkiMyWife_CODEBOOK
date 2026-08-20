@@ -73,9 +73,8 @@ struct Poly : vector<ll> { // coefficients in [0, P)
     const int m = (int)x.size();
     if (!m) return {};
     vector<Poly> down(m * 2);
-    // down[1] = DivMod(up[1]).second;
-    // fi(2, m * 2) down[i] = down[i / 2].DivMod(up[i]).second;
-    down[1] = Poly(up[1]).irev().isz(n()).Inv().irev()._tmul(m, *this);
+    down[1] = Poly(up[1]).irev().isz(n())
+                  .Inv().irev()._tmul(m, *this);
     fi(2, m * 2) down[i] = up[i ^ 1]._tmul(up[i].n() - 1, down[i / 2]);
     vector<ll> y(m);
     fi(0, m) y[i] = down[m + i][0];
@@ -97,7 +96,9 @@ struct Poly : vector<ll> { // coefficients in [0, P)
     vector<ll> z = up[1].Dx()._eval(x, up);
     fi(0, m) z[i] = y[i] * ntt.minv(z[i]) % P;
     fi(0, m) down[m + i] = {z[i]};
-    for (int i = m - 1; i > 0; --i) down[i] = down[i * 2].Mul(up[i * 2 + 1]).iadd(down[i * 2 + 1].Mul(up[i * 2]));
+    for (int i = m - 1; i > 0; --i)
+      down[i] = down[i * 2].Mul(up[i * 2 + 1])
+          .iadd(down[i * 2 + 1].Mul(up[i * 2]));
     return down[1];
   }
   Poly Ln() const { // (*this)[0] == 1, 1e5/170ms
@@ -120,7 +121,9 @@ struct Poly : vector<ll> { // coefficients in [0, P)
     const ll c = ntt.mpow(X[0], k % (P - 1));
     return X.Ln().imul(k % P).Exp().imul(c).irev().isz(n()).irev();
   }
-  static ll LinearRecursion(const vector<ll> &a, const vector<ll> &coef, ll n) { // a_n = \sum c_j a_(n-j)
+  // a_n = \sum c_j a_(n-j)
+  static ll LinearRecursion(const vector<ll> &a,
+      const vector<ll> &coef, ll n) {
     const int k = (int)a.size();
     assert((int)coef.size() == k + 1);
     Poly C(k + 1), W(Poly {1}, k), M = {0, 1};
