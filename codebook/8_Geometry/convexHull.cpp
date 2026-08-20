@@ -1,30 +1,29 @@
-bool operator<(const P &a, const P &b) {
-  return same(a.x, b.x) ? a.y < b.y : a.x < b.x;
-}
-bool operator>(const P &a, const P &b) {
-  return same(a.x, b.x) ? a.y > b.y : a.x > b.x;
-}
-
+bool operator<(const P &a, const P &b)
+{ return same(a.x, b.x) ? a.y < b.y : a.x < b.x; }
+bool operator>(const P &a, const P &b)
+{ return same(a.x, b.x) ? a.y > b.y : a.x > b.x; }
 #define crx(a, b, c) ((b - a) ^ (c - a))
-
 vector<P> convex(vector<P> ps) {
   vector<P> p;
-  sort(ps.begin(), ps.end(), [&] (P a, P b) { return same(a.x, b.x) ? a.y < b.y : a.x < b.x; });
+  sort(ps.begin(), ps.end(), [&] (P a, P b)
+    { return same(a.x, b.x) ? a.y < b.y : a.x < b.x; });
   for (int i = 0; i < ps.size(); ++i) {
-    while (p.size() >= 2 && crx(p[p.size() - 2], ps[i], p[p.size() - 1]) >= 0) p.pop_back();
+    while (p.size() >= 2 &&
+        crx(p[p.size() - 2], ps[i], p[p.size() - 1]) >= 0)
+      p.pop_back();
     p.push_back(ps[i]);
   }
   int t = p.size();
   for (int i = (int)ps.size() - 2; i >= 0; --i) {
-    while (p.size() > t && crx(p[p.size() - 2], ps[i], p[p.size() - 1]) >= 0) p.pop_back();
+    while (p.size() > t &&
+        crx(p[p.size() - 2], ps[i], p[p.size() - 1]) >= 0)
+      p.pop_back();
     p.push_back(ps[i]);
   }
   p.pop_back();
   return p;
 }
-
 int sgn(double x) { return same(x, 0) ? 0 : x > 0 ? 1 : -1; }
-
 P isLL(P p1, P p2, P q1, P q2) {
   double a = crx(q1, q2, p1), b = -crx(q1, q2, p2);
   return (p1 * b + p2 * a) / (a + b);
@@ -53,7 +52,8 @@ struct CH {
     return x;
   }
   int findFarest(P v) {
-    if (v.y > 0 || v.y == 0 && v.x > 0) return ((int)d.size() - 1 + find(u, v)) % p.size();
+    if (v.y > 0 || v.y == 0 && v.x > 0)
+      return ((int)d.size() - 1 + find(u, v)) % p.size();
     return find(d, v);
   }
   P get(int l, int r, P a, P b) {
@@ -62,14 +62,14 @@ struct CH {
       int m = (l + r) >> 1;
       if (sgn(crx(a, b, p[m % n])) == s) l = m;
       else r = m;
-    }
-    return isLL(a, b, p[l % n], p[(l + 1) % n]);
+    } return isLL(a, b, p[l % n], p[(l + 1) % n]);
   }
   vector<P> getLineIntersect(P a, P b) {
     int X = findFarest((b - a).rot(pi / 2));
     int Y = findFarest((a - b).rot(pi / 2));
     if (X > Y) swap(X, Y);
-    if (sgn(crx(a, b, p[X])) * sgn(crx(a, b, p[Y])) < 0) return {get(X, Y, a, b), get(Y, X + n, a, b)};
+    if (sgn(crx(a, b, p[X])) * sgn(crx(a, b, p[Y])) < 0)
+      return {get(X, Y, a, b), get(Y, X + n, a, b)};
     return {}; // tangent case falls here
   }
   void update_tangent(P q, int i, int &a, int &b) {
@@ -84,8 +84,7 @@ struct CH {
       int m = (l + r) >> 1;
       if (sgn(crx(q, p[m % n], p[(m + 1) % n])) == s) l = m;
       else r = m;
-    }
-    update_tangent(q, r % n, a, b);
+    } update_tangent(q, r % n, a, b);
   }
   bool contain(P p) {
     if (p.x < d[0].x || p.x > d.back().x) return 0;

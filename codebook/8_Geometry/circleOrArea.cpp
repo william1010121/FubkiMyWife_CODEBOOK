@@ -5,7 +5,8 @@ vector<pair<double, double>> CoverSegment(C &a, C &b) {
   else if (d <= abs(a.r - b.r) + eps) {
     if (a.r < b.r) res.emplace_back(0, 2 * pi);
   } else if (d < abs(a.r + b.r) - eps) {
-    double o = acos((sq(a.r) + sq(d) - sq(b.r)) / (2 * a.r * d)), z = (b.c - a.c).angle();
+    double o = acos((sq(a.r) + sq(d) - sq(b.r)) / (2 * a.r * d)),
+      z = (b.c - a.c).angle();
     if (z < 0) z += 2 * pi;
     double l = z - o, r = z + o;
     if (l < 0) l += 2 * pi;
@@ -25,7 +26,8 @@ double CircleUnionArea(vector<C> c) { // circle should be identical
       for (auto &e : z) s.push_back(e);
     }
     sort(s.begin(), s.end());
-    auto F = [&] (double t) { return c[i].r * (c[i].r * t + c[i].c.x * sin(t) - c[i].c.y * cos(t)); };
+    auto F = [&] (double t) { return c[i].r * (c[i].r * t
+      + c[i].c.x * sin(t) - c[i].c.y * cos(t)); };
     for (auto &e : s) {
       if (e.first > w) a += F(e.first) - F(w);
       w = max(w, e.second);

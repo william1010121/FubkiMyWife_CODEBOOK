@@ -1,9 +1,7 @@
 struct C {
-  P c;
-  double r;
+  P c; double r;
   C(P c = P(0, 0), double r = 0) : c(c), r(r) {}
 };
-
 vector<P> Intersect(C a, C b) {
   if (a.r > b.r) swap(a, b);
   double d = (a.c - b.c).abs();
@@ -15,8 +13,7 @@ vector<P> Intersect(C a, C b) {
     P i = (b.c - a.c).unit();
     p.push_back(a.c + i.rot(o) * a.r);
     p.push_back(a.c + i.rot(-o) * a.r);
-  }
-  return p;
+  } return p;
 }
 double IntersectArea(C a, C b) {
   if (a.r > b.r) swap(a, b);
@@ -27,8 +24,7 @@ double IntersectArea(C a, C b) {
   double q = acos((sq(b.r) + sq(d) - sq(a.r)) / (2 * b.r * d));
   return p * sq(a.r) + q * sq(b.r) - a.r * d * sin(p);
 }
-// drop 2nd level to get points for a line
-// (default: segment)
+// drop 2nd level to get points for a line (default: segment)
 vector<P> CircleCrossLine(P a, P b, P o, double r) {
   double x = b.x - a.x, y = b.y - a.y, A = sq(x) + sq(y);
   double B = 2 * x * (a.x - o.x) + 2 * y * (a.y - o.y);
@@ -43,8 +39,7 @@ vector<P> CircleCrossLine(P a, P b, P o, double r) {
       t.emplace_back(a.x + i * x, a.y + i * y);
     if (j - 1.0 <= eps && j >= -eps)
       t.emplace_back(a.x + j * x, a.y + j * y);
-  }
-  return t;
+  } return t;
 }
 // area of circle(r) cap triangle OAB
 double AreaOfCircleTriangle(P a, P b, double r) {
@@ -69,6 +64,5 @@ double AreaOfCircleTriangle(vector<P> ps, double r) {
     if (o >= pi) o = o - 2 * pi;
     if (o <= -pi) o = o + 2 * pi;
     ans += AreaOfCircleTriangle(ps[i], ps[j], r) * (o >= 0 ? 1 : -1);
-  }
-  return abs(ans);
+  } return abs(ans);
 }
