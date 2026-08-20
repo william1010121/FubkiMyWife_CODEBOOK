@@ -18,8 +18,8 @@ struct Cent_Dec { // 1-base
       if (!done[e.X] && e.X != f) {
         get_cent(e.X, u, mx, c, num);
         sz[u] += sz[e.X], mxsz = max(mxsz, sz[e.X]);
-      } if (mx > max(mxsz, num - sz[u]))
-      mx = max(mxsz, num - sz[u]), c = u;
+      } if (mx > (mxsz = max(mxsz, num - sz[u])))
+      mx = mxsz, c = u;
   }
   void dfs(int u, int f, ll d, int org) {
     // if required, add self info or climbing info
@@ -35,9 +35,7 @@ struct Cent_Dec { // 1-base
     dis[layer[c]][c] = 0;
     for (pll e : G[c])
       if (!done[e.X]) {
-        if (sz[e.X] > sz[c])
-          lc = cut(e.X, c, num - sz[c]);
-        else lc = cut(e.X, c, sz[e.X]);
+        lc = sz[e.X] > sz[c] ? cut(e.X, c, num - sz[c]) : cut(e.X, c, sz[e.X]);
         upinfo[lc] = pll(), dfs(e.X, c, e.Y, c);
       } return done[c] = 0, c;
   }

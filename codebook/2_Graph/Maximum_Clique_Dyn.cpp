@@ -2,8 +2,7 @@ struct MaxClique { // fast when N <= 100
   bitset<N> G[N], cs[N];
   int ans, sol[N], q, cur[N], d[N], n;
   void init(int _n) {
-    n = _n;
-    for (int i = 0; i < n; ++i) G[i].reset();
+    n = _n; for (int i = 0; i < n; ++i) G[i].reset();
   }
   void add_edge(int u, int v) { G[u][v] = G[v][u] = 1; }
   void pre_dfs(vector<int> &r, int l, bitset<N> mask) {
@@ -39,8 +38,7 @@ struct MaxClique { // fast when N <= 100
     }
   }
   int solve() {
-    vector<int> r(n);
-    ans = q = 0, iota(ALL(r), 0);
+    vector<int> r(n); ans = q = 0, iota(ALL(r), 0);
     pre_dfs(r, 0, bitset<N>(string(n, '1')));
     return ans;
   }

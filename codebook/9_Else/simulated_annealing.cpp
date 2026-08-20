@@ -5,8 +5,7 @@ State simulated_annealing(State current, Score score, NextState next_state,
                            mt19937_64 &rng, int iterations = 100000,
                            double temperature = 100000.0,
                            double cooling = 0.99995) {
-  State best = current;
-  double cur = score(current), best_score = cur;
+  State best = current; double cur = score(current), best_score = cur;
   uniform_real_distribution<double> unit(0.0, 1.0);
   for (int it = 0; it < iterations; ++it) {
     State candidate = next_state(current, rng);

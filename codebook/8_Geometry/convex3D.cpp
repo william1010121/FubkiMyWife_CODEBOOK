@@ -10,8 +10,7 @@ struct convex3D {
   P p[maxn];
   T f[maxn*8];
   int id[maxn][maxn];
-  bool on(T &t,P &q)
-  { return ((p[t.c]-p[t.b])^(p[t.a]-p[t.b]))*(q-p[t.a])>eps; }
+  bool on(T &t,P &q) { return ((p[t.c]-p[t.b])^(p[t.a]-p[t.b]))*(q-p[t.a])>eps; }
   void meow(int q,int a,int b){
     int g=id[a][b];
     if(f[g].res){
@@ -22,12 +21,8 @@ struct convex3D {
       }
     }
   }
-  void dfs(int p,int i){
-    f[i].res=0;
-    meow(p,f[i].b,f[i].a);
-    meow(p,f[i].c,f[i].b);
-    meow(p,f[i].a,f[i].c);
-  }
+  void dfs(int p,int i){ f[i].res=0; meow(p,f[i].b,f[i].a);
+    meow(p,f[i].c,f[i].b); meow(p,f[i].a,f[i].c); }
   void operator()(){
     if(n<4)return;
     if([&](){

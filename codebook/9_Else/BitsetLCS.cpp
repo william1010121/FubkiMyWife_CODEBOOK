@@ -9,17 +9,14 @@ int bitset_lcs(const vector<int> &a, const vector<int> &b) {
     if (it == mask.end()) continue;
     unsigned long long carry = 1;
     for (int i = 0; i < W; ++i) {
-      unsigned long long next = f[i] >> 63;
       y[i] = (f[i] << 1) | carry;
-      carry = next;
-      x[i] = f[i] | it->second[i];
+      carry = f[i] >> 63, x[i] = f[i] | it->second[i];
     }
     unsigned long long borrow = 0;
     for (int i = 0; i < W; ++i) {
       unsigned long long rhs = y[i] + borrow;
-      unsigned long long next_borrow = (rhs < y[i]) || (x[i] < rhs);
+      borrow = (rhs < y[i]) || (x[i] < rhs);
       diff[i] = x[i] - rhs;
-      borrow = next_borrow;
     }
     for (int i = 0; i < W; ++i) f[i] = x[i] & ~diff[i];
     if (m & 63) f.back() &= (1ULL << (m & 63)) - 1;

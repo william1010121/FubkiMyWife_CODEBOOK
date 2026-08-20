@@ -3,14 +3,15 @@ vector<L> tangent(C a, C b) {
   P i = (b.c - a.c).unit() * a.r, j = P(i.y, -i.x);\
   z.emplace_back(a.c + i, a.c + i + j);
 #define deo(I,J) \
-  double d = (a.c - b.c).abs(), e = a.r I b.r, o = acos(e / d);\
+  double e = a.r I b.r, o = acos(e / d);\
   P i = (b.c - a.c).unit(), j = i.rot(o), k = i.rot(-o);\
   z.emplace_back(a.c + j * a.r, b.c J j * b.r);\
   z.emplace_back(a.c + k * a.r, b.c J k * b.r);
   if (a.r < b.r) swap(a, b);
   vector<L> z;
-  if ((a.c - b.c).abs() + b.r < a.r) return z;
-  else if (same((a.c - b.c).abs() + b.r, a.r)) { Pij; } 
+  double d = (a.c - b.c).abs();
+  if (d + b.r < a.r) return z;
+  else if (same(d + b.r, a.r)) { Pij; }
   else {
     deo(-,+);
     if (same(d, a.r + b.r)) { Pij; } 

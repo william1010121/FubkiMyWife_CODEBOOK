@@ -1,12 +1,9 @@
 #include <bits/stdc++.h>
 #include <bits/extc++.h>
 #include <ext/rope>
-using namespace __gnu_pbds;
-using namespace __gnu_cxx;
+using namespace __gnu_pbds; using namespace __gnu_cxx;
 #include <ext/pb_ds/assoc_container.hpp>
-typedef tree<int, null_type, std::less<int>, rb_tree_tag, tree_order_statistics_node_update> tree_set;
-typedef cc_hash_table<int, int> umap;
-typedef priority_queue<int> heap;
+typedef tree<int, null_type, std::less<int>, rb_tree_tag, tree_order_statistics_node_update> tree_set; typedef cc_hash_table<int, int> umap; typedef priority_queue<int> heap;
 
 #ifndef BLACK_MAGIC_NO_MAIN
 int main() {

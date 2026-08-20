@@ -7,7 +7,7 @@ struct SCC { // 0-base
     for (int v : G[u])
       if (!dfn[v])
         dfs(v), low[u] = min(low[u], low[v]);
-      else if (instack[v] && dfn[v] < dfn[u])
+      else if (instack[v])
         low[u] = min(low[u], dfn[v]);
     if (low[u] == dfn[u]) {
       for (; stk.back() != u; stk.pop_back())
@@ -17,8 +17,5 @@ struct SCC { // 0-base
   }
   SCC(int _n): n(_n), dft(), nscc(), low(n), dfn(n), bln(n), instack(n), G(n) {}
   void add_edge(int u, int v) { G[u].pb(v); }
-  void solve() {
-    for (int i = 0; i < n; ++i)
-      if (!dfn[i]) dfs(i);
-  }
+  void solve() { for (int i = 0; i < n; ++i) if (!dfn[i]) dfs(i); }
 }; // scc_id(i): bln[i]

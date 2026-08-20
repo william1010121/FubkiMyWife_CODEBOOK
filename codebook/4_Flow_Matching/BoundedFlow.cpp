@@ -4,15 +4,14 @@ struct BoundedFlow { // 0-base
   int n, s, t, dis[N], cur[N], cnt[N];
   void init(int _n) {
     n = _n;
-    for (int i = 0; i < n + 2; ++i)
-      G[i].clear(), cnt[i] = 0;
+    for (int i = 0; i < n + 2; ++i) G[i].clear(), cnt[i] = 0;
   }
   void add_edge(int u, int v, int lcap, int rcap) {
     cnt[u] -= lcap, cnt[v] += lcap;
-    G[u].pb(edge{v, rcap, lcap, SZ(G[v])}), G[v].pb(edge{u, 0, 0, SZ(G[u]) - 1});
+    G[u].pb({v, rcap, lcap, SZ(G[v])}), G[v].pb({u, 0, 0, SZ(G[u]) - 1});
   }
   void add_edge(int u, int v, int cap) {
-    G[u].pb(edge{v, cap, 0, SZ(G[v])}), G[v].pb(edge{u, 0, 0, SZ(G[u]) - 1});
+    G[u].pb({v, cap, 0, SZ(G[v])}), G[v].pb({u, 0, 0, SZ(G[u]) - 1});
   }
   int dfs(int u, int cap) {
     if (u == t || !cap) return cap;
@@ -62,11 +61,7 @@ struct BoundedFlow { // 0-base
   }
   int solve(int _s, int _t) {
     add_edge(_t, _s, INF);
-    if (!solve()) return -1; // invalid flow
-    // The artificial edge stores the value of the feasible s-t flow.  Disable
-    // both residual directions before augmenting on the original network;
-    // otherwise maxflow could cancel the artificial edge instead of increasing
-    // the requested flow.
+    if (!solve()) return -1;
     int fake = SZ(G[_t]) - 1, rev = G[_t][fake].rev;
     int x = G[_t][fake].flow;
     G[_t][fake].cap = G[_t][fake].flow;

@@ -1,6 +1,5 @@
 vector<int> rotatingSweepLineOrder(const vector<pair<int,int>> &ps){
-  int n=int(ps.size());
-  if (n == 0) return {};
+  int n=int(ps.size()); if (!n) return {};
   vector<int> id(n),pos(n);
   vector<pair<int,int>> line(n*(n-1)/2);
   int m=0;
@@ -13,7 +12,7 @@ vector<int> rotatingSweepLineOrder(const vector<pair<int,int>> &ps){
     if (ax == 0 || bx == 0) return ax == 0 && bx != 0;
     return ay * bx < by * ax;
   });
-  for(int i=0;i<n;++i)id[i]=i;
+  iota(id.begin(), id.end(), 0);
   sort(id.begin(),id.end(),[&](const int &a,const int &b){ return ps[a]<ps[b]; });
   for(int i=0;i<n;++i)pos[id[i]]=i;
 

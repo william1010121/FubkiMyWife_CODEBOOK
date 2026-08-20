@@ -2,9 +2,7 @@ struct node {
   int data, sz; node *l, *r;
   node(int k) : data(k), sz(1), l(0), r(0) {}
   void up() {
-    sz = 1;
-    if (l) sz += l->sz;
-    if (r) sz += r->sz;
+    sz = 1 + (l ? l->sz : 0) + (r ? r->sz : 0);
   }
   void down() {}
 };
@@ -25,21 +23,22 @@ void split(node *o, node *&a, node *&b, int k) {
 void split2(node *o, node *&a, node *&b, int k) {
   if (sz(o) <= k) return a = o, b = 0, void();
   o->down();
-  if (sz(o->l) + 1 <= k)
+  if (sz(o->l) < k)
     a = o, split2(o->r, a->r, b, k - sz(o->l) - 1);
   else b = o, split2(o->l, a, b->l, k);
   o->up();
 }
 node *kth(node *o, int k) {
-  if (k <= sz(o->l)) return kth(o->l, k);
-  if (k == sz(o->l) + 1) return o;
-  return kth(o->r, k - sz(o->l) - 1);
+  int s = sz(o->l);
+  if (k <= s) return kth(o->l, k);
+  if (k == ++s) return o;
+  return kth(o->r, k - s);
 }
 int Rank(node *o, int key) {
   if (!o) return 0;
   if (o->data < key)
     return sz(o->l) + 1 + Rank(o->r, key);
-  else return Rank(o->l, key);
+  return Rank(o->l, key);
 }
 bool erase(node *&o, int k) {
   if (!o) return 0;
@@ -58,5 +57,5 @@ void insert(node *&o, int k) {
 void interval(node *&o, int l, int r) {
   node *a, *b, *c;
   split2(o, a, b, l - 1), split2(b, b, c, r);
-  o = merge(a, merge(b, c)); // operate above
+  o = merge(a, merge(b, c));
 }

@@ -6,7 +6,7 @@ struct Splay { // xor-sum
   bool isr()
   { return f->ch[0] != this && f->ch[1] != this; }
   int dir()
-  { return f->ch[0] == this ? 0 : 1; }
+  { return f->ch[1] == this; }
   void setCh(Splay *c, int d) {
     ch[d] = c;
     if (c != &nil) c->f = this;
@@ -19,11 +19,9 @@ struct Splay { // xor-sum
     if (ch[1] != &nil) ch[1]->give_tag(rev);
     rev = 0;
   }
-  void pull() { // take care of the nil!
+  void pull() {
     size = ch[0]->size + ch[1]->size + 1;
     sum = ch[0]->sum ^ ch[1]->sum ^ val;
-    if (ch[0] != &nil) ch[0]->f = this;
-    if (ch[1] != &nil) ch[1]->f = this;
   }
 } Splay::nil;
 Splay *nil = &Splay::nil;
@@ -75,8 +73,7 @@ bool conn(Splay *x, Splay *y)
 { return get_root(x) == get_root(y); }
 Splay* lca(Splay *x, Splay *y) {
   access(x), root_path(y);
-  if (y->f == nil) return y;
-  return y->f;
+  return y->f == nil ? y : y->f;
 }
 void change(Splay *x, int val)
 { splay(x), x->val = val, x->pull(); }

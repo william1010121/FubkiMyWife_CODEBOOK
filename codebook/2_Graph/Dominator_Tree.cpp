@@ -17,17 +17,13 @@ struct dominator_tree { // 1-base
   int find(int y, int x) {
     if (y <= x) return y;
     int tmp = find(pa[y], x);
-    if (semi[best[y]] > semi[best[pa[y]]])
-      best[y] = best[pa[y]];
+    if (semi[best[y]] > semi[best[pa[y]]]) best[y] = best[pa[y]];
     return pa[y] = tmp;
   }
   void tarjan(int root) {
-    Time = 0;
-    for (int i = 1; i <= n; ++i) {
-      dfn[i] = idom[i] = 0;
-      tree[i].clear();
-      best[i] = semi[i] = i;
-    } dfs(root);
+    Time = 0; for (int i = 1; i <= n; ++i)
+      dfn[i] = idom[i] = 0, tree[i].clear(), best[i] = semi[i] = i;
+    dfs(root);
     for (int i = Time; i > 1; --i) {
       int u = id[i];
       for (auto v : rG[u])

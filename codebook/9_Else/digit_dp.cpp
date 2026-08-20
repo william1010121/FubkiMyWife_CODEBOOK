@@ -2,7 +2,7 @@
 // one bits.  This is a compact, reusable digit-DP example.
 int calc(int x) {
   if (x < 0) return 0;
-  long long dp[32][2][2] = {};
+  long long dp[32][2][2]{};
   dp[31][0][1] = 1;
   for (int pos = 30; pos >= 0; --pos) {
     int bit = (x >> pos) & 1;

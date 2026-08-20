@@ -9,8 +9,7 @@ struct Q {
 template<class Pred>
 Q frac_bs(ll N, Pred pred) {
   Q lo{0, 1}, hi{1, 0};
-  if (pred(lo)) return lo;
-  assert(pred(hi));
+  if (pred(lo)) return lo; assert(pred(hi));
   bool dir = 1, L = 1, H = 1;
   for (; L || H; dir = !dir) {
     ll len = 0, step = 1;

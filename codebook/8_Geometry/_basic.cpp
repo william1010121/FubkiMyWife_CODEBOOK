@@ -13,15 +13,15 @@ struct P {
   P unit() const { return *this / abs(); }
   P rot(double o) const {
     double c = cos(o), s = sin(o);
-    return P(c * x - s * y, s * x + c * y);
+    return {c * x - s * y, s * x + c * y};
   }
   double angle() const { return atan2(y, x); }
 };
 struct L { // ax + by + c = 0
   double a, b, c, o; P pa, pb;
   L() : a(0), b(0), c(0), o(0), pa(), pb() {}
-  L(P pa, P pb) : a(pa.y - pb.y), b(pb.x - pa.x),
-    c(pa ^ pb), o(atan2(-a, b)), pa(pa), pb(pb) {}
+  L(P pa, P pb) : a(pa.y - pb.y), b(pb.x - pa.x), c(pa ^ pb),
+    o(atan2(-a, b)), pa(pa), pb(pb) {}
   P project(P p) { return pa + (pb - pa).unit() *
     ((pb - pa) * (p - pa) / (pb - pa).abs()); }
   P reflect(P p) { return p + (project(p) - p) * 2; }

@@ -16,7 +16,5 @@ node *merge(node *a, node *b) {
   return a;
 }
 void pop(node *&o) {
-  node *tmp = o;
-  o = merge(o->l, o->r);
-  delete tmp;
+  delete exchange(o, merge(o->l, o->r));
 }

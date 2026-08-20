@@ -26,7 +26,7 @@ struct SW{ // global min cut, O(V^3)
       REP {
         edge[y][i] = edge[n - 1][i];
         edge[i][y] = edge[i][n - 1];
-      } // edge[y][y] = 0;
+      }
     } return res;
   }
 } sw;

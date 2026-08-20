@@ -12,13 +12,11 @@ struct Maxflow {
   void init(int x) {
     tot = x + 2;
     s = x + 1, t = x + 2;
-    for (int i = 0; i <= tot; i++) {
-      G[i].clear();
-      iter[i] = d[i] = gap[i] = 0;
-    }
+    for (int i = 0; i <= tot; i++)
+      G[i].clear(), iter[i] = d[i] = gap[i] = 0;
   }
   void addEdge(int u, int v, int c) {
-    G[u].push_back(Edge(v, c, SZ(G[v]))), G[v].push_back(Edge(u, 0, SZ(G[u]) - 1));
+    G[u].push_back({v, c, SZ(G[v])}), G[v].push_back({u, 0, SZ(G[u]) - 1});
   }
   void bfs() {
     fill(d, d + tot + 1, tot);
@@ -37,7 +35,7 @@ struct Maxflow {
     if (p == t) return flow;
     for (int &i = iter[p]; i < SZ(G[p]); i++) {
       Edge &e = G[p][i];
-      if (e.c > 0 && d[p] == d[e.v] + 1) {
+      if (e.c && d[p] == d[e.v] + 1) {
         int f = dfs(e.v, min(flow, e.c));
         if (f) {
           e.c -= f;
@@ -46,11 +44,9 @@ struct Maxflow {
         }
       }
     }
-    if ((--gap[d[p]]) == 0) d[s] = tot;
+    if (!--gap[d[p]]) d[s] = tot;
     else {
-      d[p]++;
-      iter[p] = 0;
-      ++gap[d[p]];
+      d[p]++, iter[p] = 0, ++gap[d[p]];
     }
     return 0;
   }
@@ -58,8 +54,7 @@ struct Maxflow {
     int res = 0;
     fill(iter, iter + tot + 1, 0);
     bfs();
-    for (; d[s] < tot; res += dfs(s, INF))
-      ;
+    for (; d[s] < tot; res += dfs(s, INF));
     return res;
   }
 } flow;

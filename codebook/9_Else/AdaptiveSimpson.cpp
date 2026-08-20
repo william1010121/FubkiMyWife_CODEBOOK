@@ -6,10 +6,8 @@ struct Simpson {
     d h = (r.first - l.first) / 2, v = fm.value_or(f(l.first + h));
     return {v, h / 3 * (l.second + 4 * v + r.second)};
   } d eval(pdd l, pdd r, d fm, d eps) {
-    pdd m((l.first + r.first) / 2, fm);
-    d s = mix(l, r, fm).second;
-    auto [flm, sl] = mix(l, m);
-    auto [fmr, sr] = mix(m, r);
+    pdd m((l.first + r.first) / 2, fm); d s = mix(l, r, fm).second;
+    auto [flm, sl] = mix(l, m); auto [fmr, sr] = mix(m, r);
     d delta = sl + sr - s;
     if (abs(delta) <= 15 * eps) return sl + sr + delta / 15;
     return eval(l, m, flm, eps / 2) +

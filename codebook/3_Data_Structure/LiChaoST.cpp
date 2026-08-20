@@ -8,13 +8,12 @@ class LiChao { // maintain max
   int n; vector<L> nodes;
   void insert(int l, int r, int rt, L ln) {
     int m = (l + r) >> 1;
-    if (nodes[rt].id == -1)
-      return nodes[rt] = ln, void();
-    bool atLeft = nodes[rt].at(l) < ln.at(l);
-    if (nodes[rt].at(m) < ln.at(m))
-      atLeft ^= 1, swap(nodes[rt], ln);
+    L &o = nodes[rt];
+    if (o.id == -1) return o = ln, void();
+    bool a = o.at(l) < ln.at(l);
+    if (o.at(m) < ln.at(m)) a ^= 1, swap(o, ln);
     if (r - l == 1) return;
-    if (atLeft) insert(l, m, rt << 1, ln);
+    if (a) insert(l, m, rt << 1, ln);
     else insert(m, r, rt << 1 | 1, ln);
   }
   ll query(int l, int r, int rt, ll x) {

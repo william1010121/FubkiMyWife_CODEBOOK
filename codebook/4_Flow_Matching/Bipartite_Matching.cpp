@@ -25,7 +25,7 @@ struct Bipartite_Matching { // 0-base
       fill_n(cur, l, 0);
       for (int i = 0; i < l; ++i)
         res += (!~mp[i] && dfs(i));
-    } return res; // (i, mp[i] != -1)
+    } return res;
   }
   void add_edge(int s, int t) { G[s].pb(t); }
   void init(int _l, int _r) {

@@ -2,9 +2,7 @@ struct BronKerbosch { // 1-base
   int n, a[N], g[N][N];
   int S, all[N][N], some[N][N], none[N][N];
   void init(int _n) {
-    n = _n;
-    for (int i = 1; i <= n; ++i)
-      for (int j = 1; j <= n; ++j) g[i][j] = 0;
+    n = _n; for (int i = 1; i <= n; ++i) fill_n(g[i], n + 1, 0);
   }
   void add_edge(int u, int v) { g[u][v] = g[v][u] = 1; }
   void dfs(int d, int an, int sn, int nn) {
@@ -49,8 +47,7 @@ struct BronKerbosch { // 1-base
     }
   }
   int solve() {
-    vector<int> P(n), X;
-    iota(P.begin(), P.end(), 1);
+    vector<int> P(n), X; iota(P.begin(), P.end(), 1);
     S = 0, dfs_vec(P, X);
     return S;
   }

@@ -1,12 +1,9 @@
-bool operator<(const P &a, const P &b)
-{ return same(a.x, b.x) ? a.y < b.y : a.x < b.x; }
-bool operator>(const P &a, const P &b)
-{ return same(a.x, b.x) ? a.y > b.y : a.x > b.x; }
+bool operator<(const P &a, const P &b) { return same(a.x, b.x) ? a.y < b.y : a.x < b.x; }
+bool operator>(const P &a, const P &b) { return same(a.x, b.x) ? a.y > b.y : a.x > b.x; }
 #define crx(a, b, c) ((b - a) ^ (c - a))
 vector<P> convex(vector<P> ps) {
   vector<P> p;
-  sort(ps.begin(), ps.end(), [&] (P a, P b)
-    { return same(a.x, b.x) ? a.y < b.y : a.x < b.x; });
+  sort(ps.begin(), ps.end());
   for (int i = 0; i < ps.size(); ++i) {
     while (p.size() >= 2 &&
         crx(p[p.size() - 2], ps[i], p[p.size() - 1]) >= 0)
@@ -31,8 +28,7 @@ struct CH {
   int n;
   vector<P> p, u, d;
   CH() {}
-  CH(vector<P> ps) : p(ps) {
-    n = ps.size();
+  CH(vector<P> ps) : n(ps.size()), p(ps) {
     rotate(p.begin(), min_element(p.begin(), p.end()), p.end());
     auto t = max_element(p.begin(), p.end());
     d = vector<P>(p.begin(), next(t));

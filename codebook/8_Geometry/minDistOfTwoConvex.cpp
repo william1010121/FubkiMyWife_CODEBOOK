@@ -1,7 +1,4 @@
-// P and Q are convex polygons in cyclic order.  This deliberately favours a
-// small, self-contained O(nm) implementation over the old unfinished
-// rotating-calipers fragment.  It is fast enough for the intended small
-// polygon use and, unlike the old code, has no hidden PointToSegDist helpers.
+// Convex polygons in cyclic order; self-contained O(nm) implementation.
 double _point_seg_dist(Point p, Point a, Point b) {
   double dx = b.x - a.x, dy = b.y - a.y;
   double t = ((p.x - a.x) * dx + (p.y - a.y) * dy) / (dx * dx + dy * dy);
@@ -23,8 +20,7 @@ bool _on_segment(Point a, Point b, Point p) {
 bool _segments_intersect(Point a, Point b, Point c, Point d) {
   double x1 = _cross(a, b, c), x2 = _cross(a, b, d);
   double x3 = _cross(c, d, a), x4 = _cross(c, d, b);
-  if (_on_segment(a, b, c) || _on_segment(a, b, d) ||
-      _on_segment(c, d, a) || _on_segment(c, d, b)) return true;
+  if (_on_segment(a, b, c) || _on_segment(a, b, d) || _on_segment(c, d, a) || _on_segment(c, d, b)) return true;
   return (x1 > 0) != (x2 > 0) && (x3 > 0) != (x4 > 0);
 }
 

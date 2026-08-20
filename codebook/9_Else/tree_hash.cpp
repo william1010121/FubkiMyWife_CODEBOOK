@@ -1,9 +1,7 @@
 using tree_hash_u64 = unsigned long long;
 
 tree_hash_u64 tree_hash_shift(tree_hash_u64 x) {
-  x ^= x << 13;
-  x ^= x >> 7;
-  x ^= x << 17;
+  x ^= x << 13, x ^= x >> 7, x ^= x << 17;
   return x;
 }
 

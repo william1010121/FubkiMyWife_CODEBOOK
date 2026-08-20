@@ -44,5 +44,5 @@ struct Matching { // 0-base
     for (int x = 0; x < n; ++x)
       if (match[x] == n) ans += Bfs(x);
     return ans;
-  } // match[x] == n means not matched
+  }
 }; 

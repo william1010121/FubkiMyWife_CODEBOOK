@@ -3,9 +3,8 @@ struct SteinerTree { // 0-base
   int vcst[N]; // the cost of vertexs
   void init(int _n) {
     n = _n;
-    for (int i = 0; i < n; ++i) {
+    for (int i = 0; i < n; ++i)
       fill_n(dst[i], n, INF), dst[i][i] = vcst[i] = 0;
-    }
   }
   void chmin(int &x, int val) { x = min(x, val); }
   void add_edge(int ui, int vi, int wi) { chmin(dst[ui][vi], wi); }
@@ -23,8 +22,7 @@ struct SteinerTree { // 0-base
   int solve(const vector<int>& ter) {
     shortest_path();
     int t = SZ(ter), full = (1 << t) - 1;
-    for (int i = 0; i <= full; ++i)
-      fill_n(dp[i], n, INF);
+    for (int i = 0; i <= full; ++i) fill_n(dp[i], n, INF);
     copy_n(vcst, n, dp[0]);
     for (int msk = 1; msk <= full; ++msk) {
       if (!(msk & (msk - 1))) {

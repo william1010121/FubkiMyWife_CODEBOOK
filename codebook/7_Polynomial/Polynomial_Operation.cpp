@@ -10,13 +10,10 @@ struct Poly : vector<ll> { // coefficients in [0, P)
   Poly& irev() { return reverse(data(), data() + n()), *this; }
   Poly& isz(int m) { return resize(m), *this; }
   Poly& iadd(const Poly &rhs) { // n() == rhs.n()
-    fi(0, n())
-      if (((*this)[i] += rhs[i]) >= P) (*this)[i] -= P;
-    return *this;
+    fi(0, n()) if (((*this)[i] += rhs[i]) >= P) (*this)[i] -= P; return *this;
   }
   Poly& imul(ll k) {
-    fi(0, n()) (*this)[i] = (*this)[i] * k % P;
-    return *this;
+    fi(0, n()) (*this)[i] = (*this)[i] * k % P; return *this;
   }
   Poly Mul(const Poly &rhs) const {
     int m = 1;
@@ -74,8 +71,7 @@ struct Poly : vector<ll> { // coefficients in [0, P)
     const int m = (int)x.size();
     if (!m) return {};
     vector<Poly> down(m * 2);
-    down[1] = Poly(up[1]).irev().isz(n())
-                  .Inv().irev()._tmul(m, *this);
+    down[1] = Poly(up[1]).irev().isz(n()).Inv().irev()._tmul(m, *this);
     fi(2, m * 2)
       down[i] = up[i ^ 1]._tmul(up[i].n() - 1, down[i / 2]);
     vector<ll> y(m);

@@ -53,7 +53,7 @@ double AreaOfCircleTriangle(P a, P b, double r) {
   if (p.size() == 2u)
     return SectorArea(a, p[0], r) +
       SectorArea(p[1], b, r) + abs(p[0] ^ p[1]) / 2;
-  else return SectorArea(a, b, r);
+  return SectorArea(a, b, r);
 }
 // for any triangle
 double AreaOfCircleTriangle(vector<P> ps, double r) {
