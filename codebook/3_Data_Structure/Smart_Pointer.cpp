@@ -34,18 +34,19 @@ inline reference_pointer<T> new_reference(
   return reference_pointer<T>(new _RefCounter<T>(nd));
 }
 #endif
-// note:
+struct P {
+  int a, b;
+  P(int _a, int _b) : a(_a), b(_b) {}
+} p(2, 3);
+
+#ifdef REFERENCE_POINTER_EXAMPLE
 reference_pointer<int> a;
 a = new_reference(5);
 a = new_reference<int>(5);
 a = new_reference((int)5);
 reference_pointer<int> b = a;
-
-struct P {
-  int a, b;
-  P(int _a, int _b) : a(_a), b(_b) {}
-} p(2, 3);
-reference_pointer<P> a;
+reference_pointer<P> c;
 c = new_reference(P(1, 2));
 c = new_reference<P>(P(1, 2));
 c = new_reference(p);
+#endif

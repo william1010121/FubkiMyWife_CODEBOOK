@@ -1,28 +1,30 @@
 struct Binary_Index_Tree {
   int bit[MAXN + 1], lazy[MAXN + 1], n;
   int lb(int x) { return x & -x; }
+  void add(int *t, int x, int v) {
+    for (; x <= n; x += lb(x)) t[x] += v;
+  }
+  int sum(int *t, int x) {
+    int r = 0;
+    for (; x; x -= lb(x)) r += t[x];
+    return r;
+  }
+  void range_add(int l, int r, int v) {
+    add(bit, l, v), add(bit, r + 1, -v);
+    add(lazy, l, v * (l - 1)), add(lazy, r + 1, -v * r);
+  }
   void init(int _n, int *data) {
     n = _n;
-    for (int i = 1, t; i <= n; ++i) {
-      bit[i] = data[i], lazy[i] = 0, t = i - lb(i);
-      for (int j = i - 1; j > t; j -= lb(j))
-        bit[i] += bit[j];
-    }
+    fill_n(bit, n + 1, 0), fill_n(lazy, n + 1, 0);
+    for (int i = 1; i <= n; ++i) range_add(i, i, data[i]);
   }
   void suf_modify(int x, int v) {
-    for (int t = x; t; t -= lb(t)) lazy[t] += v;
-    for (int t = x + lb(x); t && t <= n; t += lb(t))
-      bit[t] += v * (x - t + lb(t));
+    range_add(x, n, v);
   }
   void modify(int x, int v) {
-    for (; x; x -= lb(x)) bit[x] += v;
+    range_add(x, x, v);
   }
   int query(int x) {
-    int re = 0;
-    for (int t = x; t; t -= lb(t))
-      re += lazy[t] * lb(t) + bit[t];
-    for (int t = x + lb(x); t && t <= n; t += lb(t))
-      re += lazy[t] * (x - t + lb(t));
-    return re;
+    return sum(bit, x) * x - sum(lazy, x);
   }
 };

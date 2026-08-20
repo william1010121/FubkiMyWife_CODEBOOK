@@ -1,0 +1,10 @@
+{
+  "template": "codebook/4_Flow_Matching/Maximum_Simple_Graph_Matching.cpp",
+  "harness": "brute/flow_matching/maximum_simple_graph_matching/main.cpp",
+  "oracle": "recursive enumeration of all vertex-disjoint edge sets",
+  "checks": ["all simple graphs through 6 vertices", "random simple graphs through 13 vertices", "odd cycles/blossoms"],
+  "problem_url": "https://judge.yosupo.jp/problem/general_matching",
+  "problem": "Library Checker Matching on General Graph",
+  "compile": "g++ -std=c++20 -O2 -Wall -Wextra -pedantic main.cpp -o run",
+  "run": "./run"
+}

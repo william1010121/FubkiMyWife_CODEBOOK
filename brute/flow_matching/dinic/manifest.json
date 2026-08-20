@@ -1,0 +1,10 @@
+{
+  "template": "codebook/4_Flow_Matching/Dinic.cpp",
+  "harness": "brute/flow_matching/dinic/main.cpp",
+  "oracle": "Edmonds-Karp on the same aggregated directed capacity matrix",
+  "checks": ["random directed capacities", "parallel edges", "reset then rerun"],
+  "problem_url": "https://cses.fi/problemset/task/1694/",
+  "problem": "CSES Download Speed",
+  "compile": "g++ -std=c++20 -O2 -Wall -Wextra -pedantic main.cpp -o run",
+  "run": "./run"
+}

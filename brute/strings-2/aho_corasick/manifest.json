@@ -1,0 +1,12 @@
+{
+  "template": "codebook/5_String/Aho-Corasick_Automatan.cpp",
+  "harness": "brute/strings-2/aho_corasick/harness.cpp",
+  "compile": "c++ -std=c++17 -O2 -Wall -Wextra -pedantic harness.cpp -o harness",
+  "run": "./harness",
+  "oracle": "For every text position, count every dictionary pattern ending there, preserving duplicate patterns.",
+  "cases": "deterministic overlap/fail-link cases plus 1200 seeded random dictionaries and texts",
+  "problems": [
+    "https://www.luogu.com.cn/problem/P3808",
+    "http://acm.hdu.edu.cn/showproblem.php?pid=2222"
+  ]
+}

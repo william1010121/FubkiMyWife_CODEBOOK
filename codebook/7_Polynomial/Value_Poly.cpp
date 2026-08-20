@@ -4,7 +4,7 @@ struct Poly {
   Poly(mint b = 0, mint x = 0): base(b), poly(1, x) {}
   mint get_val(const mint &x) {
     if (x >= base && x < base + SZ(poly))
-      return poly[x - base];
+      return poly[(x - base).v];
     mint rt = 0;
     vector<mint> lmul(SZ(poly), 1), rmul(SZ(poly), 1);
     for (int i = 1; i < SZ(poly); ++i)

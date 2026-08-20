@@ -2,10 +2,12 @@ struct Q {
   ll p, q;
   Q go(Q b, ll d) { return {p + b.p*d, q + b.q*d}; }
 };
-bool pred(Q);
+// The predicate is supplied by the caller and must be monotone along the
+// Stern--Brocot interval.
 // returns smallest p/q in [lo, hi] such that
 // pred(p/q) is true, and 0 <= p,q <= N
-Q frac_bs(ll N) {
+template<class Pred>
+Q frac_bs(ll N, Pred pred) {
   Q lo{0, 1}, hi{1, 0};
   if (pred(lo)) return lo;
   assert(pred(hi));

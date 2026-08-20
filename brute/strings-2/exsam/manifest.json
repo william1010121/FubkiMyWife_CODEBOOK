@@ -1,0 +1,11 @@
+{
+  "template": "codebook/5_String/exSAM.cpp",
+  "harness": "brute/strings-2/exsam/harness.cpp",
+  "compile": "c++ -std=c++17 -O2 -Wall -Wextra -pedantic harness.cpp -o harness",
+  "run": "./harness",
+  "oracle": "Enumerate every non-empty substring of every input string; compare the distinct set and occurrence count after automaton traversal.",
+  "cases": "two adversarial multi-string cases plus 900 seeded random lists over {a,b}, including duplicate strings",
+  "problems": [
+    "https://www.luogu.com.cn/problem/P6139"
+  ]
+}

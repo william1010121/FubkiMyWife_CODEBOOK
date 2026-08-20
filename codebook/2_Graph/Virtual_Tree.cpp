@@ -17,12 +17,19 @@ void reset(int u) {
   vG[u].clear();
 }
 
-void solve(vector<int> &v) {
+int build(vector<int> &v) {
+  if (v.empty()) return -1;
   top = -1;
   sort(ALL(v),
     [&](int a, int b) { return dfn[a] < dfn[b]; });
   for (int i : v) insert(i);
   while (top > 0) vG[st[top - 1]].pb(st[top]), --top;
+  return st[0];
+}
+
+void solve(vector<int> &v) {
+  int root = build(v);
+  if (root == -1) return;
   // do something
-  reset(v[0]);
+  reset(root);
 }

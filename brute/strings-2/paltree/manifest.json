@@ -1,0 +1,11 @@
+{
+  "template": "codebook/5_String/PalTree.cpp",
+  "harness": "brute/strings-2/paltree/harness.cpp",
+  "compile": "c++ -std=c++17 -O2 -Wall -Wextra -pedantic harness.cpp -o harness",
+  "run": "./harness",
+  "oracle": "Enumerate palindromic substrings, compare the number ending at every position, distinct count, and the frequency multiset after count().",
+  "cases": "three deterministic cases plus every binary string of lengths 0..10 (2047 total), reusing clear()",
+  "problems": [
+    "https://www.luogu.com.cn/problem/P5496"
+  ]
+}

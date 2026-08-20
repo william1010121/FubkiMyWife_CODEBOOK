@@ -1,0 +1,4 @@
+template	codebook/7_Polynomial/Newton.tex
+problem_url	https://judge.yosupo.jp/problem/sqrt_of_formal_power_series
+oracle	O(n^2) formal-series square-root coefficients; Newton updates checked through every doubling
+status	covered (formula/documentation contract)

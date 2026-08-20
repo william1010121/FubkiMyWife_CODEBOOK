@@ -1,0 +1,9 @@
+{
+  "template": "codebook/5_String/Manacher.cpp",
+  "harness": "brute/5_String/manacher_brute.cpp",
+  "compile": "c++ -std=c++20 -O2 -Wall -Wextra -pedantic brute/5_String/manacher_brute.cpp -o /tmp/manacher_brute",
+  "run": "/tmp/manacher_brute",
+  "oracle": "/tmp/manacher_brute --oracle  # stdin: string; outputs brute transformed-string radii",
+  "cases": 501,
+  "problem_urls": ["https://cses.fi/problemset/task/1111"]
+}

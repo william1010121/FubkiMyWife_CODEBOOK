@@ -3,19 +3,19 @@ struct P {
   double x, y;
   P() : x(0), y(0) {}
   P(double x, double y) : x(x), y(y) {}
-  P operator + (P b) { return P(x + b.x, y + b.y); }
-  P operator - (P b) { return P(x - b.x, y - b.y); }
-  P operator * (double b) { return P(x * b, y * b); }
-  P operator / (double b) { return P(x / b, y / b); }
-  double operator * (P b) { return x * b.x + y * b.y; }
-  double operator ^ (P b) { return x * b.y - y * b.x; }
-  double abs() { return hypot(x, y); }
-  P unit() { return *this / abs(); }
-  P rot(double o) {
+  P operator + (P b) const { return P(x + b.x, y + b.y); }
+  P operator - (P b) const { return P(x - b.x, y - b.y); }
+  P operator * (double b) const { return P(x * b, y * b); }
+  P operator / (double b) const { return P(x / b, y / b); }
+  double operator * (P b) const { return x * b.x + y * b.y; }
+  double operator ^ (P b) const { return x * b.y - y * b.x; }
+  double abs() const { return hypot(x, y); }
+  P unit() const { return *this / abs(); }
+  P rot(double o) const {
     double c = cos(o), s = sin(o);
     return P(c * x - s * y, s * x + c * y);
   }
-  double angle() { return atan2(y, x); }
+  double angle() const { return atan2(y, x); }
 };
 struct L { // ax + by + c = 0
   double a, b, c, o; P pa, pb;

@@ -1,0 +1,27 @@
+# source	harness	oracle/mode	assumption	actual problem or reference URL
+Berlekamp-Massey.cpp	harness_bm.cpp	finite-field recurrence oracle	field is F_1000000007; sequence length 80	https://judge.yosupo.jp/problem/find_linear_recurrence
+Big_number.cpp	harness_big_number.cpp	__int128 exact oracle for bounded operands	division by zero excluded; source has no zero-divisor contract	https://judge.yosupo.jp/problem/addition_of_big_integers
+Determinant.cpp	harness_det.cpp	permutation/cofactor exact oracle modulo P	entries are reduced modulo prime P=1000000007	https://judge.yosupo.jp/problem/matrix_det
+DiscreteLog.cpp	harness_nt.cpp	exhaustive smallest-k oracle	m<=100; includes non-coprime x,m	https://judge.yosupo.jp/problem/discrete_logarithm_mod
+Fraction.cpp	harness_simultaneous.cpp	exact rational behavior through linear-system oracle	ll numerator/denominator overflow is outside template contract	https://judge.yosupo.jp/problem/system_of_linear_equations
+Gaussian_Eliminatin.cpp	harness_gaussian.cpp	exact known-solution oracle	full-rank square systems only; source documents free-variable limitation	https://judge.yosupo.jp/problem/system_of_linear_equations
+Gaussian_gcd.cpp	harness_gaussian.cpp	Gaussian divisibility oracle	small Gaussian integers; gcd is only defined up to a unit	https://judge.yosupo.jp/problem/gcd_of_gaussian_integers
+Miller_Rabin.cpp	harness_nt.cpp	trial-division primality oracle	n tested through 100000; mul uses __int128	https://judge.yosupo.jp/problem/primality_test
+ModMin.cpp	harness_modmin.cpp	exhaustive k oracle	0<=l<=r<m; a is tested modulo ranges	https://judge.yosupo.jp/problem/min_of_mod_of_linear
+Mod_Inverse.cpp	harness_combinatorics.cpp	multiplicative identity oracle	mod=101 is prime and N<mod	https://cp-algorithms.com/algebra/module-inverse.html
+PiCount.cpp	harness_nt.cpp	sieve prime-count oracle	n<=10000 in local harness	https://judge.yosupo.jp/problem/counting_primes
+Pollard_Rho.cpp	harness_nt.cpp	factor-product oracle	needs supplied prime() and __int128 mul(); n<=5000 locally	https://judge.yosupo.jp/problem/factorize
+Primes.cpp	manifest-only	constant-list review	file is a commented list, not an algorithm or compilable API	https://judge.yosupo.jp/problem/enumerate_primes
+QuadraticResidue.cpp	harness_quadratic_residue.cpp	exhaustive square oracle over small primes	p<=97; rand seeded; root is any valid square root	https://judge.yosupo.jp/problem/sqrt_mod
+SchreierSims.cpp	harness_schreier_sims.cpp	finite permutation-group closure oracle	degree<=6; group order fits ll	https://blog.mitrichev.ch/2015/11/?m=0
+Simplex_Algorithm.cpp	harness_simplex.cpp	known LP optimum and status oracle	small double LPs; return -1 means infeasible or unbounded	https://open.kattis.com/problems/linearprogramming
+Simultaneous_Equations.cpp	harness_simultaneous.cpp	long-double rank/status cross-check plus exact pivot case	fraction storage must not overflow ll	https://judge.yosupo.jp/problem/system_of_linear_equations
+ax+by=gcd.cpp	harness_floor_mod.cpp	Bezout identity oracle	nonnegative small a,b; zero edge included	https://cp-algorithms.com/algebra/extended-euclid-algorithm.html
+ax=b%n.cpp	harness_floor_mod.cpp	exhaustive residues oracle	0<=a<m and 0<=b<m in local range	https://cp-algorithms.com/algebra/linear-diophantine-equation.html
+cantor_expansion.cpp	harness_combinatorics.cpp	all-permutation encode/decode oracle	n<=7; factorial table fixed to MAXN bounds	https://cp-algorithms.com/combinatorics/factorial-modulo.html
+chineseRemainder.cpp	harness_floor_mod.cpp	exhaustive least nonnegative CRT oracle	small moduli; lcm avoids ll overflow	https://cp-algorithms.com/algebra/chinese-remainder-theorem.html
+fac_no_p.cpp	harness_combinatorics.cpp	direct n! with p factors removed	p prime; pk=p^3 and n<=100	https://cp-algorithms.com/algebra/factorial-modulo.html
+floor_ceil.cpp	harness_floor_mod.cpp	built-in long-double floor/ceil oracle	b!=0 and operands are small	https://en.cppreference.com/w/cpp/language/operator_arithmetic
+floor_enumeration.cpp	harness:math-1/floor_enumeration/harness.cpp	direct quotient-interval oracle	n tested through 10000; source loop is exercised verbatim	https://judge.yosupo.jp/problem/enumerate_quotients
+floor_sum.cpp	harness_floor_mod.cpp	direct summation oracle	0<=n,m,a,b small and m>0	https://judge.yosupo.jp/problem/sum_of_floor_of_linear
+getMu.cpp	harness_combinatorics.cpp	prime-factor definition of Mobius	linear sieve n<=200	https://judge.yosupo.jp/problem/counting_square_free_numbers

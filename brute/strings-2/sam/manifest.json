@@ -1,0 +1,11 @@
+{
+  "template": "codebook/5_String/SAM.cpp",
+  "harness": "brute/strings-2/sam/harness.cpp",
+  "compile": "c++ -std=c++17 -O2 -Wall -Wextra -pedantic harness.cpp -o harness",
+  "run": "./harness",
+  "oracle": "Enumerate every substring, count overlapping occurrences, and compare the SAM state reached by each substring.",
+  "cases": "three deterministic repetition/clone cases plus every binary string of lengths 1..9 (1530 total)",
+  "problems": [
+    "https://www.luogu.com.cn/problem/P3804"
+  ]
+}

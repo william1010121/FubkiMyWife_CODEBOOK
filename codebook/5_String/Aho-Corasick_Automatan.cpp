@@ -3,6 +3,8 @@ struct AC_Automatan {
   int rnx[len][sigma]; // node actually be reached
   int newnode() {
     fill_n(nx[top], sigma, -1);
+    fill_n(rnx[top], sigma, 0);
+    fl[top] = cnt[top] = ord[top] = 0;
     return top++;
   }
   void init() { top = 1, newnode(); }

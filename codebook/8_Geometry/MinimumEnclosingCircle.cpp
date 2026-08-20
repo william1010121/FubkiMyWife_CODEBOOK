@@ -8,7 +8,8 @@ pt center(const pt &a, const pt &b, const pt &c) {
 }
 
 circle min_enclosing(vector<pt> &p) {
-  random_shuffle(p.begin(), p.end());
+  static mt19937 rng(712367821);
+  shuffle(p.begin(), p.end(), rng);
   double r = 0.0;
   pt cent;
   for (int i = 0; i < p.size(); ++i) {

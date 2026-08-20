@@ -1,0 +1,47 @@
+{
+  "owner": "flow-2",
+  "cpu_policy": "single-process only; never invoke this partition in parallel",
+  "harnesses": [
+    {
+      "template": "codebook/4_Flow_Matching/Maximum_Weight_Matching.cpp",
+      "harness": "brute/tests/flow_matching/maximum_weight_matching.cpp",
+      "oracle": "recursive enumeration of every matching on n<=8 vertices; compare total maximum weight",
+      "problem_url": "https://judge.yosupo.jp/problem/general_weighted_matching",
+      "problem": "Library Checker - General Weighted Matching",
+      "verification": "completed before requested stop"
+    },
+    {
+      "template": "codebook/4_Flow_Matching/BoundedFlow.cpp",
+      "harness": "brute/tests/flow_matching/bounded_flow.cpp",
+      "oracle": "enumerate every integer edge flow for circulation feasibility and bounded s-t maximum flow",
+      "problem_url": "https://loj.ac/p/115",
+      "problem": "LibreOJ #115 - feasible circulation with lower/upper bounds",
+      "related_problem_url": "https://loj.ac/p/116",
+      "verification": "completed before requested stop"
+    },
+    {
+      "template": "codebook/4_Flow_Matching/Gomory_Hu_tree.cpp",
+      "harness": "brute/tests/flow_matching/gomory_hu_tree.cpp",
+      "oracle": "enumerate all vertex cuts and compare every tree-path bottleneck",
+      "problem_url": "https://www.luogu.com.cn/problem/P4897",
+      "problem": "Luogu P4897 - Gomory-Hu minimum cut tree",
+      "verification": "completed before requested stop"
+    },
+    {
+      "template": "codebook/4_Flow_Matching/MinCostCirculation.cpp",
+      "harness": "brute/tests/flow_matching/min_cost_circulation.cpp",
+      "oracle": "enumerate all integral edge flows, retain balanced circulations, compare minimum cost",
+      "problem_url": "https://judge.yosupo.jp/problem/min_cost_b_flow",
+      "problem": "Library Checker - Minimum Cost b-flow (circulation formulation)",
+      "verification": "completed before requested stop"
+    },
+    {
+      "template": "codebook/4_Flow_Matching/isap.cpp",
+      "harness": "brute/tests/flow_matching/isap.cpp",
+      "oracle": "enumerate every s-side cut and compare its capacity with max flow",
+      "problem_url": "https://www.luogu.com.cn/problem/P3376",
+      "problem": "Luogu P3376 - Network Maximum Flow (ISAP applicable)",
+      "verification": "completed before requested stop"
+    }
+  ]
+}

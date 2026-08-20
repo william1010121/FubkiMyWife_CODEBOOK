@@ -65,7 +65,15 @@ struct BoundedFlow { // 0-base
   int solve(int _s, int _t) {
     add_edge(_t, _s, INF);
     if (!solve()) return -1; // invalid flow
-    int x = G[_t].back().flow;
+    // The artificial edge stores the value of the feasible s-t flow.  Disable
+    // both residual directions before augmenting on the original network;
+    // otherwise maxflow could cancel the artificial edge instead of increasing
+    // the requested flow.
+    int fake = SZ(G[_t]) - 1, rev = G[_t][fake].rev;
+    int x = G[_t][fake].flow;
+    G[_t][fake].cap = G[_t][fake].flow;
+    G[_s][rev].cap = G[_s][rev].flow;
+    x += maxflow(_s, _t);
     return G[_t].pop_back(), G[_s].pop_back(), x;
   }
 };

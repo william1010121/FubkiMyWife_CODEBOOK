@@ -1,9 +1,7 @@
-int main() {
-  cin.tie(nullptr)->sync_with_stdio(false);
-  cin >> n >> m;
-  for (int i = 1; i <= m; i++) {
-    int u, v;
-    cin >> u >> v;
+long long count_four_cycles(int _n, const vector<pair<int, int>> &edges) {
+  n = _n, m = edges.size(), total = 0;
+  for (int i = 0; i <= n; ++i) E[i].clear(), E1[i].clear(), deg[i] = cnt[i] = 0;
+  for (auto [u, v] : edges) {
     E[u].push_back(v);
     E[v].push_back(u);
     deg[u]++, deg[v]++;
@@ -17,6 +15,13 @@ int main() {
         total += cnt[c]++;
       } for (int b : E1[a])
       for (int c : E[b]) cnt[c] = 0;
-  } cout << total << '\n';
-  return 0;
+  } return total;
+}
+
+int main() {
+  cin.tie(nullptr)->sync_with_stdio(false);
+  cin >> n >> m;
+  vector<pair<int, int>> edges(m);
+  for (auto &[u, v] : edges) cin >> u >> v;
+  cout << count_four_cycles(n, edges) << '\n';
 }

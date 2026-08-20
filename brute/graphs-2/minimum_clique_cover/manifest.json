@@ -1,0 +1,10 @@
+{
+  "template": "codebook/2_Graph/Minimum_Clique_Cover.cpp",
+  "harness": "brute/graphs-2/minimum_clique_cover/main.cpp",
+  "compile": "c++ -std=c++17 -O2 brute/graphs-2/minimum_clique_cover/main.cpp",
+  "oracle": "exact subset DP over all clique subsets; harness supplies the required subset-zeta fwt",
+  "tests": {"random_cases": 2500, "n_range": "1..10", "single_process": true, "max_parallel_jobs": 1, "cpu_budget": 4},
+  "problem_url": "https://www.csc.kth.se/~viggo/wwwcompendium/node28.html",
+  "problem_match": "formal minimum clique-cover definition; not a contest I/O page",
+  "verification_status": "harness and oracle on disk; not run in the final shortened pass"
+}

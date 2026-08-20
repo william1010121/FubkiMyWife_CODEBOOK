@@ -3,7 +3,7 @@ struct Sparse_table {
   void init(int _n, int *data) {
     n = _n;
     for (int i = 0; i < n; ++i) st[0][i] = data[i];
-    for (int i = 1, t = 2; t < n; t <<= 1, i++)
+    for (int i = 1, t = 2; t <= n; t <<= 1, i++)
       for (int j = 0; j + t <= n; j++)
         st[i][j] = max(st[i - 1][j], st[i - 1][j + t / 2]);
   }

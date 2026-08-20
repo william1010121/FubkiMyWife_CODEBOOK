@@ -3,14 +3,14 @@
 %\lstinputlisting{1_Basic/Shell_script.cpp}
 %\subsection{Default code}
 %\lstinputlisting{1_Basic/Default_code.cpp}
+\inputcodeex{Dinic}{4_Flow_Matching/Dinic.cpp}%
+{Max flow. $O(V^2E)$; unit caps $O(E\sqrt{E})$; bipartite $O(E\sqrt{V})$. \texttt{cap} is \texttt{int}. 0-base.}{examples/Dinic.cpp}
 \subsection{vimrc}
 {\scriptsize Editor config. The \texttt{:Hash} commands md5 a visual selection so you can check a typed template against the printed hash.\par}\vspace{-0.6em}%
 \lstinputlisting{1_Basic/vimrc.cpp}
-\inputcodeex{Dinic}{4_Flow_Matching/Dinic.cpp}%
-{Max flow. $O(V^2E)$; unit caps $O(E\sqrt{E})$; bipartite $O(E\sqrt{V})$. \texttt{cap} is \texttt{int}. 0-base.}{examples/Dinic.cpp}
 \inputcodedesc{readchar}{1_Basic/readchar.cpp}%
 {Buffered getchar via \texttt{fread\_unlocked}, amortised $O(1)$. Returns stale data at EOF, so guard the loop.}
-\inputcodedesc{BigIntIO}{1_Basic/BigIntIO.cpp}%
+\inputcodedesc{BigIntIO}{1_Basic/bigIntIO.cpp}%
 {Read/print \texttt{\_\_int128} (no \texttt{cin}/\texttt{cout} support). Handles sign.}
 \inputcodedesc{Black Magic}{1_Basic/black_magic.cpp}%
 {GNU extensions: \texttt{mt19937}; pb\_ds red-black tree with \texttt{find\_by\_order}/\texttt{order\_of\_key} $O(\log n)$; mergeable heap \texttt{join}; persistent \texttt{rope}. Snippet, not compilable as-is.}
@@ -53,7 +53,7 @@
 
 \section{Data Structure}
 \subsection{Discrete Trick}
-{\scriptsize Coordinate compression: sort+unique, then binary search. \textbf{Both ``index of x'' and ``max idx $\le$ x'' are written as \texttt{upper\_bound}; the former should be \texttt{lower\_bound}.}\par}\vspace{-0.6em}%
+{\scriptsize Binary-search helpers for an already sorted value list. Coordinate compression (sort+unique) is intentionally omitted; ``index of x'' uses \texttt{lower\_bound}, while the count / first 1-based position after values $\le x$ uses \texttt{upper\_bound}.\par}\vspace{-0.6em}%
 \lstinputlisting{3_Data_Structure/discrete_trick.cpp}
 \inputcodedesc{BIT kth*}{3_Data_Structure/BIT_kth.cpp}%
 {$k$-th smallest from a value-domain BIT in $O(\log N)$ by descending the tree. \textbf{$N$ must be a power of two.}}
@@ -62,7 +62,7 @@
 \inputcodedesc{Leftist Tree}{3_Data_Structure/Leftist_Tree.cpp}%
 {Mergeable \emph{max}-heap, \texttt{merge}/\texttt{pop} $O(\log n)$, keeps subtree size and sum. No lazy tags.}
 \inputcodeex{Heavy light Decomposition*}{3_Data_Structure/Heavy_light_Decomposition.cpp}%
-{Path queries in $O(\log^2 n)$ with a segment tree. 1-base, root 1. \textbf{Skeleton: build/query still need the segtree wired in.}}{examples/Heavy_light_Decomposition.cpp}
+{Path queries in $O(\log^2 n)$ with the included segment tree. 1-base, root 1.}{examples/Heavy_light_Decomposition.cpp}
 \inputcodeex{Centroid Decomposition*}{3_Data_Structure/Centroid_Decomposition.cpp}%
 {Build $O(n\log n)$, modify/query $O(\log n)$. \texttt{upinfo} subtracts the same-subtree overcount. 1-base.}{examples/Centroid_Decomposition.cpp}
 % \inputcode{Smart Pointer}{3_Data_Structure/Smart_Pointer.cpp}
@@ -101,7 +101,8 @@
 \input{4_Flow_Matching/Model.tex}
 \subsection{matching}
 \input{4_Flow_Matching/matching.tex}
-% \inputcode{isap}{4_Flow_Matching/isap.cpp}
+\inputcodeex{ISAP*}{4_Flow_Matching/isap.cpp}%
+{Max flow with the improved shortest-augmenting-path method. The template uses vertices $0\ldots n-1$ and reserves $n+1,n+2$ as source/sink.}{examples/isap.cpp}
 
 
 \section{String}
@@ -144,7 +145,7 @@
 \inputcodedesc{Gaussian integer gcd}{6_Math/Gaussian_gcd.cpp}%
 {GCD over $\mathbb{Z}[i]$; the \texttt{rnd} macro rounds the quotient to the nearest Gaussian integer.}
 \inputcodedesc{GaussElimination}{6_Math/Gaussian_Eliminatin.cpp}%
-{Gauss-Jordan on doubles, $O(n^3)$. \textbf{Compares against 0 without an epsilon and ignores free variables} --- use the fraction version when exactness matters.}
+{Gauss-Jordan on doubles, $O(n^3)$. Uses a small pivot epsilon and leaves free variables at zero; use the fraction version when exactness matters.}
 \inputcodedesc{floor sum*}{6_Math/floor_sum.cpp}%
 {$\sum_{i=0}^{n-1}\lfloor(ai+b)/m\rfloor$ in $O(\log)$ by a Euclid-like recursion.}
 \inputcodedesc{Miller Rabin*}{6_Math/Miller_Rabin.cpp}%
@@ -215,13 +216,13 @@
 \inputcodedesc{Half Plane Intersection}{8_Geometry/halfPlaneIntersect.cpp}%
 {Intersection polygon of half planes in $O(n\log n)$; the feasible side is to the \emph{left} of each line. Empty result means degenerate or infeasible.}
 \inputcodedesc{Rotating Sweep Line}{8_Geometry/rotatingSweepLine.cpp}%
-{Sweeps all $\binom n2$ directions in $O(n^2\log n)$, swapping adjacent points as the line turns. Skeleton --- put the work where marked.}
+{Sweeps all $\binom n2$ directions in $O(n^2\log n)$; \texttt{rotatingSweepLineOrder} returns the final order, while the legacy void wrapper preserves the old call shape.}
 \inputcodedesc{Triangle Center}{8_Geometry/triangleCenter.cpp}%
 {Circumcentre, centroid, orthocentre (via the Euler line) and incentre, each $O(1)$. \textbf{Degenerate (collinear) input divides by zero.}}
 \inputcodedesc{Polygon Center}{8_Geometry/center.cpp}%
 {Area centroid of a simple polygon in $O(n)$ by signed-area weighting, so concave shapes are fine.}
 \inputcodedesc{Maximum Triangle}{8_Geometry/maxTriangleOfConvex.cpp}%
-{Largest triangle inscribed in a convex polygon by two rotating pointers. \textbf{Writes \texttt{res[chnum]}, so allocate one extra slot.}}
+{Largest triangle inscribed in a convex polygon by exhaustive triples in $O(n^3)$. \textbf{Writes \texttt{res[chnum]}, so allocate one extra slot; this prioritises a verified reference implementation.}}
 \inputcodedesc{Point in Polygon}{8_Geometry/pointInPolygon.cpp}%
 {Ray casting for any simple polygon, $O(n)$. \textbf{Returns 1 on the boundary, 2 strictly inside}, 0 outside.}
 \inputcodedesc{Circle}{8_Geometry/circle.cpp}%
@@ -231,7 +232,7 @@
 \inputcodedesc{Area of Union of Circles}{8_Geometry/circleOrArea.cpp}%
 {Union area by integrating uncovered arcs with Green's theorem, $O(n^2\log n)$. \textbf{Duplicate circles must be removed first} or the area is double counted.}
 \inputcodedesc{Minimun Distance of 2 Polygons}{8_Geometry/minDistOfTwoConvex.cpp}%
-{Rotating calipers between two convex hulls, $O(n+m)$. \textbf{Broken as written: \texttt{tmp = Cross(...) > Cross(...)} binds as a comparison, so the \texttt{tmp < 0} branch never runs}; also needs \texttt{PointToSegDist}/\texttt{TwoSegMinDist}.}
+{Minimum distance of two convex polygons. The self-contained implementation checks edge pairs and containment in $O(nm)$, avoiding hidden distance-helper contracts.}
 \inputcodedesc{2D Convex Hull}{8_Geometry/convexHull.cpp}%
 {Monotone chain in $O(n\log n)$ (collinear points dropped), plus \texttt{CH} for $O(\log n)$ extreme-point, line-intersection, containment and tangent queries.}
 \inputcodedesc{3D Convex Hull}{8_Geometry/convex3D.cpp}%
@@ -245,9 +246,9 @@
 \inputcodedesc{Cyclic Ternary Search*}{9_Else/cyc_tsearch.cpp}%
 {Minimum of a \textbf{cyclically shifted} unimodal array in $O(\log n)$; \texttt{pred(a,b)} compares two positions.}
 \inputcodedesc{Mo's Algorithm(With modification)}{9_Else/Mos_Algorithm_With_modification.cpp}%
-{Mo's with point updates, block $N^{2/3}$, $O(N^{5/3})$. Skeleton: fill the six TODOs. \textbf{The comparator's \texttt{b.T} should be \texttt{q.T}.}}
+{Mo's with point updates, block $N^{2/3}$, $O(N^{5/3})$. The callback-based \texttt{solve} applies/rolls back updates and reports each query.}
 \inputcodedesc{Mo's Algorithm On Tree}{9_Else/Mos_Algorithm_On_Tree.cpp}%
-{Path queries via the Euler bracket sequence, $O(N\sqrt N)$; the LCA is handled separately. \textbf{The constructor refers to an undeclared \texttt{q} and to \texttt{q.Lid} instead of \texttt{LBid}.}}
+{Path queries via the Euler bracket sequence, $O(N\sqrt N)$; the callback-based constructor takes the caller's LCA and \texttt{solve} handles the extra LCA vertex.}
 \subsection{Additional Mo's Algorithm Trick}
 \input{9_Else/Mos_Algorithm.tex}
 \inputcodedesc{Hilbert Curve}{9_Else/HilbertCurve.cpp}%
@@ -256,26 +257,26 @@
 {Line container (CHT) with arbitrary insert order, amortised $O(\log n)$, keeps the \textbf{maximum}. \textbf{Integer coordinates only.}}
 %\inputcode{cyclicLCS}{9_Else/cyclicLCS.cpp}
 \inputcodedesc{All LCS*}{9_Else/All_LCS.cpp}%
-{After one $O(|s||t|)$ pass, answers LCS of any prefix of $s$ against any substring of $t$. \textbf{Entries of \texttt{h} may become $-1$.}}
+{Returns every distinct longest common subsequence in lexicographic order. The result is directly testable and uses the standard $O(|s||t|)$ DP plus memoised reconstruction.}
 %\inputcode{DLX*}{9_Else/DLX.cpp} % test by TIOJ 1333, 1381
 %\subsection{Matroid Intersection}
 %\input{9_Else/Matroid.tex}
 \inputcodedesc{AdaptiveSimpson*}{9_Else/AdaptiveSimpson.cpp}%
 {Adaptive Simpson integration with Richardson extrapolation. Use \texttt{eval2} to pre-split multi-peak integrands.}
 \inputcodedesc{Simulated Annealing}{9_Else/simulated_annealing.cpp}%
-{Annealing loop (minimising), cooling $0.99995$ over $10^6$ steps. \textbf{Restart it about ten times and keep the best.}}
+{Generic minimising annealing routine: caller supplies a score and neighbour proposal, and receives the best state found.}
 \inputcodedesc{Tree Hash*}{9_Else/tree_hash.cpp}%
-{Rooted tree hash in $O(n)$, order independent. For unrooted trees hash at each centroid and take the min; randomise \texttt{seed}.}
+{Order-independent rooted tree hash in $O(n)$ through \texttt{rooted\_tree\_hash}; for unrooted trees hash at each centroid and take the minimum.}
 \inputcodedesc{Binary Search On Fraction}{9_Else/BinarySearchOnFraction.cpp}%
-{Smallest fraction $p/q\le N$ satisfying a monotone \texttt{pred}, via Stern-Brocot descent with doubling.}
+{Smallest fraction satisfying a caller-supplied monotone predicate, via Stern-Brocot descent with doubling; call \texttt{frac\_bs(N, pred)}.}
 \inputcodedesc{Min Plus Convolution*}{9_Else/min_plus_convolution.cpp}%
 {$c_k=\min_{i+j=k}(a_i+b_j)$ by divide and conquer on monotone decisions. \textbf{Requires $a$ convex}, $b$ arbitrary.}
 \inputcodedesc{Bitset LCS}{9_Else/BitsetLCS.cpp}%
-{LCS in $O(nm/w)$ using subtract-and-borrow on bitsets. \textbf{Needs a bitset providing \texttt{shiftLeftByOne()}} --- \texttt{std::bitset} does not.}
+{LCS in $O(nm/w)$ using subtract-and-borrow on 64-bit words; call \texttt{bitset\_lcs(a,b)}.}
 \inputcodedesc{N Queens Problem}{9_Else/NQueens.cpp}%
 {Constructs one solution in $O(n)$ by cases on $n\bmod 6$ --- no search. \textbf{No solution exists for $n=2,3$.}}
 \inputcodedesc{Digit DP}{9_Else/digit_dp.cpp}%
-{Binary digit DP with \texttt{lead}/\texttt{limit} flags; \texttt{calc(x)} counts over $[0,x]$. Memo is cleared per call --- adapt the state to the problem.}
+{Binary digit DP with \texttt{tight} and previous-digit state; \texttt{calc(x)} counts values in $[0,x]$ with no adjacent one bits.}
 \section{Python}
 \subsection{Misc}
 {\scriptsize Python fallbacks: \texttt{decimal}/\texttt{Fraction} for exact big values, \texttt{pow(a,b,M)}, fast stdin. \texttt{set\_int\_max\_str\_digits} is required on 3.11+ for huge integers.\par}\vspace{-0.6em}%

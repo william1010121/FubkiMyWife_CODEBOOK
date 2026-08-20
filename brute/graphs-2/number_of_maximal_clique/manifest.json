@@ -1,0 +1,10 @@
+{
+  "template": "codebook/2_Graph/NumberofMaximalClique.cpp",
+  "harness": "brute/graphs-2/number_of_maximal_clique/main.cpp",
+  "compile": "c++ -std=c++17 -O2 brute/graphs-2/number_of_maximal_clique/main.cpp",
+  "oracle": "enumerate all nonempty vertex subsets and count cliques that cannot be extended",
+  "tests": {"random_cases": 3500, "n_range": "1..10", "single_process": true, "max_parallel_jobs": 1, "cpu_budget": 4},
+  "problem_url": "https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.clique.number_of_cliques.html",
+  "problem_match": "actual maximal-clique counting reference; not a contest I/O page",
+  "verification_status": "harness and oracle on disk; not run in the final shortened pass"
+}

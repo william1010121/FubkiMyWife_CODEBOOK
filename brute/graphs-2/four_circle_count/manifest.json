@@ -1,0 +1,10 @@
+{
+  "template": "codebook/2_Graph/FourCircleCount.cpp",
+  "harness": "brute/graphs-2/four_circle_count/main.cpp",
+  "compile": "c++ -std=c++17 -O2 brute/graphs-2/four_circle_count/main.cpp",
+  "oracle": "enumerate ordered distinct 4-tuples and divide by 8 to count undirected simple 4-cycles",
+  "tests": {"random_cases": 4000, "n_range": "1..10", "simple_undirected": true, "single_process": true, "max_parallel_jobs": 1, "cpu_budget": 4},
+  "problem_url": "https://codeforces.com/contest/11/problem/D",
+  "problem_match": "related actual simple-cycle counting problem; its statement explicitly includes length-4 cycles, while this template counts only them",
+  "verification_status": "harness and oracle on disk; not run in the final shortened pass"
+}

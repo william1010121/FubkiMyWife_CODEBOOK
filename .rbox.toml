@@ -1,0 +1,5 @@
+cpus   = 4
+memory = "6g"
+pids   = 512
+image  = "rbox:local"
+isolate_node_modules = false

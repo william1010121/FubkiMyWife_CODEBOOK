@@ -1,0 +1,4 @@
+template	codebook/7_Polynomial/Value_Poly.cpp
+problem_url	https://judge.yosupo.jp/problem/shift_of_sampling_points_of_polynomial
+oracle	Direct Horner evaluation and prefix sums over consecutive points; 300 cases
+status	covered

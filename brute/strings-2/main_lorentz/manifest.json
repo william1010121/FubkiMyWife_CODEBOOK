@@ -1,0 +1,13 @@
+{
+  "template": "codebook/5_String/MainLorentz.cpp",
+  "harness": "brute/strings-2/main_lorentz/harness.cpp",
+  "compile": "c++ -std=c++17 -O2 -Wall -Wextra -pedantic harness.cpp -o harness",
+  "run": "./harness",
+  "oracle": "Enumerate every period l and start p, compare all squares s[p..p+l)=s[p+l..p+2l) with expanded output ranges.",
+  "cases": "empty input, deterministic repetition cases, and every binary string of lengths 1..14 (32771 total)",
+  "reference": "https://cp-algorithms.com/string/main_lorentz.html",
+  "problems": [
+    "https://codeforces.com/problemset/problem/1948/D",
+    "https://codeforces.com/gym/102331/problem/K"
+  ]
+}

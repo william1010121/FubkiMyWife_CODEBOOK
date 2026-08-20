@@ -1,0 +1,4 @@
+template	codebook/7_Polynomial/Polynomial_Operation.cpp
+problem_url	https://judge.yosupo.jp/problem/inv_of_formal_power_series ; https://judge.yosupo.jp/problem/exp_of_formal_power_series ; https://judge.yosupo.jp/problem/log_of_formal_power_series ; https://judge.yosupo.jp/problem/pow_of_formal_power_series ; https://judge.yosupo.jp/problem/sqrt_of_formal_power_series ; https://judge.yosupo.jp/problem/multipoint_evaluation ; https://judge.yosupo.jp/problem/polynomial_interpolation ; https://judge.yosupo.jp/problem/division_of_polynomials
+oracle	O(n^2) coefficient convolution/Horner/recurrence checks; 100 random cases plus formal-series identities
+status	covered

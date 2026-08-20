@@ -1,0 +1,10 @@
+{
+  "template": "codebook/4_Flow_Matching/SW-mincut.cpp",
+  "harness": "brute/flow_matching/sw_mincut/main.cpp",
+  "oracle": "enumerate every non-trivial vertex bipartition and sum crossing weights",
+  "checks": ["all simple weighted 0/1 graphs through 4 vertices", "random multigraph weights through 9 vertices", "disconnected graphs"],
+  "problem_url": "https://www.luogu.com.cn/problem/P5632",
+  "problem": "Luogu P5632 Stoer-Wagner Template",
+  "compile": "g++ -std=c++20 -O2 -Wall -Wextra -pedantic main.cpp -o run",
+  "run": "./run"
+}

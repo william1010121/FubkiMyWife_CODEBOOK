@@ -1,0 +1,4 @@
+template	codebook/7_Polynomial/Number_Theory_Transform_Prime
+problem_url	https://judge.yosupo.jp/problem/convolution_mod
+oracle	Deterministic primality and primitive-root order checks for every listed pair
+status	covered

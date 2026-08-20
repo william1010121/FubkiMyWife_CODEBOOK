@@ -154,6 +154,7 @@ ll query(int L, int R, int l, int r, int rt) {
     query(L, R, mid + 1, r, rt << 1 | 1);
 }
 
+#ifndef RANGE_CHMIN_CHMAX_ADD_RANGE_SUM_NO_MAIN
 int main() {
   ios::sync_with_stdio(0), cin.tie(0);
   int n, m;
@@ -172,3 +173,4 @@ int main() {
     else cout << query(x, y, 1, n, 1) << "\n";
   }
 }
+#endif

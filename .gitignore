@@ -275,3 +275,6 @@ TSWLatexianTemp*
 *.DS_Store
 
 codebook_cp/
+
+# Brute-force test binaries
+brute/bin/

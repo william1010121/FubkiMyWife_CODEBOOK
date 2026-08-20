@@ -1,0 +1,10 @@
+{
+  "template": "codebook/2_Graph/MinimumSteinerTree.cpp",
+  "harness": "brute/graphs-2/minimum_steiner_tree/main.cpp",
+  "compile": "c++ -std=c++17 -O2 brute/graphs-2/minimum_steiner_tree/main.cpp",
+  "oracle": "enumerate edge subsets and candidate common roots; charge selected vertices and directed edges",
+  "tests": {"random_cases": 1560, "n_range": "2..7", "max_edges": 9, "single_process": true, "max_parallel_jobs": 1, "cpu_budget": 4},
+  "problem_url": "https://pacechallenge.org/2018/steiner-tree/",
+  "problem_match": "Steiner tree objective and small-terminal setting; harness additionally checks the snippet's directed and vertex-cost contract",
+  "verification_status": "harness and oracle on disk; not run in the final shortened pass"
+}

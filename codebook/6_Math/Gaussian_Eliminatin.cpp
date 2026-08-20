@@ -1,20 +1,19 @@
 void GAS(V<V<double>>&vc) {
     int len = vc.size();
-    for( int i = 0; i < len; ++i ) {
-        int idx = find_if(vc.begin()+i,vc.end(),[&](auto&v) {return v[i] != 0;} ) - vc.begin();
-        if( idx == len ) continue;
-        if( i != idx ) swap( vc[idx], vc[i] );
-        double pivot = vc[i][i];
-        for_each( vc[i].begin(), vc[i].end(), [&]( auto &a ) { a/=pivot; } );
-        for( int j = 0; j < len; ++j ) {
-            if( i == j ) continue;
-            if( vc[j][i] != 0 ) {
-                double mul = vc[j][i]/vc[i][i];
-                transform( vc[j].begin(), vc[j].end(), vc[i].begin(), vc[j].begin(),
-                        [&](auto &a, auto &b ) {
-                        return a-b*mul;
-                        });
-            }
+    int row = 0;
+    for (int col = 0; col < len && row < len; ++col) {
+        int idx = row;
+        while (idx < len && fabs(vc[idx][col]) < 1e-12) ++idx;
+        if (idx == len) continue;
+        swap(vc[idx], vc[row]);
+        double pivot = vc[row][col];
+        for (double &x : vc[row]) x /= pivot;
+        for (int j = 0; j < len; ++j) {
+            if (j == row || fabs(vc[j][col]) < 1e-12) continue;
+            double mul = vc[j][col];
+            for (int k = 0; k < (int)vc[j].size(); ++k)
+                vc[j][k] -= mul * vc[row][k];
         }
+        ++row;
     }
 };

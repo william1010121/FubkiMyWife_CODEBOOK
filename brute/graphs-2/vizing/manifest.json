@@ -1,0 +1,10 @@
+{
+  "template": "codebook/2_Graph/Vizing.cpp",
+  "harness": "brute/graphs-2/vizing/main.cpp",
+  "compile": "c++ -std=c++17 -O2 brute/graphs-2/vizing/main.cpp",
+  "oracle": "exactly enumerate edge colorings for the chromatic index, then validate template output within Delta+1 colors",
+  "tests": {"random_cases": 3600, "n_range": "1..8", "simple_undirected": true, "single_process": true, "max_parallel_jobs": 1, "cpu_budget": 4},
+  "problem_url": "https://en.wikipedia.org/wiki/Vizing%27s_theorem",
+  "problem_match": "actual theorem reference for the template's Delta+1 edge-coloring contract; no contest I/O was asserted",
+  "verification_status": "harness and oracle on disk; not run in the final shortened pass"
+}

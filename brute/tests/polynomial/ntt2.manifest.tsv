@@ -1,0 +1,4 @@
+template	codebook/7_Polynomial/NTT.2.cpp
+problem_url	https://judge.yosupo.jp/problem/convolution_mod
+oracle	O(n^2) convolution modulo 998244353 plus round-trip; 250 cases
+status	covered (example main renamed only in harness)

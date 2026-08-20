@@ -1,27 +1,31 @@
 /*
-Mo's Algorithm With modification
-Block: N^{2/3}, Complexity: N^{5/3}
+Mo's algorithm with point updates.
+`add_time(t, L, R)` applies update t, `sub_time` rolls it back, and the other
+callbacks maintain the current [L,R] answer.  Updates are numbered from 1.
 */
 struct Query {
-  int L, R, LBid, RBid, T;
-  Query(int l, int r, int t):
-    L(l), R(r), LBid(l / blk), RBid(r / blk), T(t) {}
+  int L, R, LBid, RBid, T, id;
+  Query(int l, int r, int t, int block = 1, int query_id = -1)
+      : L(l), R(r), LBid(l / block), RBid(r / block), T(t), id(query_id) {}
   bool operator<(const Query &q) const {
     if (LBid != q.LBid) return LBid < q.LBid;
     if (RBid != q.RBid) return RBid < q.RBid;
-    return T < b.T;
+    return T < q.T;
   }
 };
-void solve(vector<Query> query) {
-  sort(ALL(query));
-  int L=0, R=0, T=-1;
-  for (auto q : query) {
-    while (T < q.T) addTime(L, R, ++T); // TODO
-    while (T > q.T) subTime(L, R, T--); // TODO
-    while (R < q.R) add(arr[++R]); // TODO
-    while (L > q.L) add(arr[--L]); // TODO
-    while (R > q.R) sub(arr[R--]); // TODO
-    while (L < q.L) sub(arr[L++]); // TODO
-    // answer query
+
+template<class AddTime, class SubTime, class Add, class Sub, class Answer>
+void solve(vector<Query> query, AddTime add_time, SubTime sub_time,
+           Add add, Sub sub, Answer answer) {
+  sort(query.begin(), query.end());
+  int L = 0, R = -1, T = 0;
+  for (const Query &q : query) {
+    while (T < q.T) add_time(++T, L, R);
+    while (T > q.T) sub_time(T--, L, R);
+    while (R < q.R) add(++R);
+    while (L > q.L) add(--L);
+    while (R > q.R) sub(R--);
+    while (L < q.L) sub(L++);
+    answer(q);
   }
 }

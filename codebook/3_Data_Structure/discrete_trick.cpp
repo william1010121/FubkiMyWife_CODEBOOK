@@ -1,9 +1,14 @@
-vector<int> val;
-// build
-sort(ALL(val)), val.resize(unique(ALL(val)) - val.begin());
-// index of x
-upper_bound(ALL(val), x) - val.begin();
-// max idx <= x
-upper_bound(ALL(val), x) - val.begin();
-// max idx < x
-lower_bound(ALL(val), x) - val.begin();
+#include <algorithm>
+#include <vector>
+using namespace std;
+
+// The caller supplies an already sorted list. No sort/unique is performed.
+int index_of(const vector<int> &val, int x) {
+  return lower_bound(val.begin(), val.end(), x) - val.begin();
+}
+int count_le(const vector<int> &val, int x) {
+  return upper_bound(val.begin(), val.end(), x) - val.begin();
+}
+int count_lt(const vector<int> &val, int x) {
+  return lower_bound(val.begin(), val.end(), x) - val.begin();
+}

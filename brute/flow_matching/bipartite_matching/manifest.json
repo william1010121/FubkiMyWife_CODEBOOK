@@ -1,0 +1,10 @@
+{
+  "template": "codebook/4_Flow_Matching/Bipartite_Matching.cpp",
+  "harness": "brute/flow_matching/bipartite_matching/main.cpp",
+  "oracle": "row-by-row subset enumeration of all matchings",
+  "checks": ["all graphs through 4 x 4", "random graphs through 8 x 8"],
+  "problem_url": "https://cses.fi/problemset/task/1696/",
+  "problem": "CSES School Dance",
+  "compile": "g++ -std=c++20 -O2 -Wall -Wextra -pedantic main.cpp -o run",
+  "run": "./run"
+}

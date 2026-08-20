@@ -1,7 +1,7 @@
 vector<pair<int, int>> rep[kN]; // 0-base [l, r]
 void main_lorentz(const string &s, int sft = 0) {
   const int n = s.size();
-  if (n == 1) return;
+  if (n <= 1) return;
   const int nu = n / 2, nv = n - nu;
   const string u = s.substr(0, nu), v = s.substr(nu),
         ru(u.rbegin(), u.rend()), rv(v.rbegin(), v.rend());

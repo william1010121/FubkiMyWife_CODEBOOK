@@ -63,8 +63,10 @@ void link(Splay *x, Splay *y)
 { root_path(x), chroot(y); x->setCh(y, 1); }
 void cut(Splay *x, Splay *y) {
   split(x, y);
-  if (y->size != 5) return;
-  y->push(); y->ch[0] = y->ch[0]->f = nil;
+  y->push();
+  if (y->ch[0] != x || x->ch[1] != nil) return;
+  y->ch[0] = nil, x->f = nil;
+  y->pull();
 }
 Splay* get_root(Splay *x) {
   for (root_path(x); x->ch[0] != nil; x = x->ch[0])

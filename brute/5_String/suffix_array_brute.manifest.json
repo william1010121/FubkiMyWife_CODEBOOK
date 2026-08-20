@@ -1,0 +1,9 @@
+{
+  "template": "codebook/5_String/Suffix_Array.cpp",
+  "harness": "brute/5_String/suffix_array_brute.cpp",
+  "compile": "c++ -std=c++20 -O2 -Wall -Wextra -pedantic brute/5_String/suffix_array_brute.cpp -o /tmp/suffix_array_brute",
+  "run": "/tmp/suffix_array_brute",
+  "oracle": "/tmp/suffix_array_brute --oracle  # stdin: string; outputs brute SA and LCP",
+  "cases": 500,
+  "problem_urls": ["https://judge.yosupo.jp/problem/suffixarray"]
+}

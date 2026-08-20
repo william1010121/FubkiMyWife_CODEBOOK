@@ -1,0 +1,4 @@
+template	codebook/7_Polynomial/Fast_Walsh_Transform.cpp
+problem_url	https://judge.yosupo.jp/problem/bitwise_or_convolution ; https://judge.yosupo.jp/problem/subset_convolution
+oracle	Direct O(2^(2L)) OR convolution and disjoint-subset convolution; L<=7/L<=6
+status	covered

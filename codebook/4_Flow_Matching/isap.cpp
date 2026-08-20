@@ -21,6 +21,19 @@ struct Maxflow {
     G[u].push_back(Edge(v, c, SZ(G[v])));
     G[v].push_back(Edge(u, 0, SZ(G[u]) - 1));
   }
+  void bfs() {
+    fill(d, d + tot + 1, tot);
+    queue<int> q;
+    d[t] = 0, q.push(t);
+    while (!q.empty()) {
+      int u = q.front(); q.pop();
+      for (auto &e : G[u])
+        if (G[e.v][e.r].c > 0 && d[e.v] == tot)
+          d[e.v] = d[u] + 1, q.push(e.v);
+    }
+    fill(gap, gap + tot + 1, 0);
+    for (int i = 0; i <= tot; ++i) ++gap[d[i]];
+  }
   int dfs(int p, int flow) {
     if (p == t) return flow;
     for (int &i = iter[p]; i < SZ(G[p]); i++) {
@@ -44,7 +57,8 @@ struct Maxflow {
   }
   int solve() {
     int res = 0;
-    gap[0] = tot;
+    fill(iter, iter + tot + 1, 0);
+    bfs();
     for (res = 0; d[s] < tot; res += dfs(s, INF))
       ;
     return res;

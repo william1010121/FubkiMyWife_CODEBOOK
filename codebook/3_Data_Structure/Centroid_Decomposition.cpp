@@ -7,6 +7,8 @@ struct Cent_Dec { // 1-base
   void init(int _n) {
     n = _n, layer[0] = -1;
     fill_n(pa + 1, n, 0), fill_n(done + 1, n, 0);
+    fill_n(info, n + 1, pll());
+    fill_n(upinfo, n + 1, pll());
     for (int i = 1; i <= n; ++i) G[i].clear();
   }
   void add_edge(int a, int b, int w)
@@ -31,6 +33,7 @@ struct Cent_Dec { // 1-base
     int mx = 1e9, c = 0, lc;
     get_cent(u, f, mx, c, num);
     done[c] = 1, pa[c] = f, layer[c] = layer[f] + 1;
+    dis[layer[c]][c] = 0;
     for (pll e : G[c])
       if (!done[e.X]) {
         if (sz[e.X] > sz[c])

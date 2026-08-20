@@ -1,0 +1,9 @@
+{
+  "template": "codebook/5_String/De_Bruijn_sequence.cpp",
+  "harness": "brute/5_String/de_bruijn_brute.cpp",
+  "compile": "c++ -std=c++20 -O2 -Wall -Wextra -pedantic brute/5_String/de_bruijn_brute.cpp -o /tmp/de_bruijn_brute",
+  "run": "/tmp/de_bruijn_brute",
+  "oracle": "/tmp/de_bruijn_brute --oracle  # stdin: c n followed by candidate symbols; outputs VALID/INVALID",
+  "cases": 7,
+  "problem_urls": ["https://cses.fi/problemset/task/1692"]
+}

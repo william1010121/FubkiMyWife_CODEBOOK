@@ -29,9 +29,31 @@ struct BronKerbosch { // 1-base
       some[d][i] = 0, none[d][nn++] = v;
     }
   }
+  void dfs_vec(vector<int> P, vector<int> X) {
+    if (P.empty() && X.empty()) { ++S; return; }
+    int pivot = -1, best = -1;
+    vector<int> both = P;
+    both.insert(both.end(), X.begin(), X.end());
+    for (int u : both) {
+      int score = 0;
+      for (int v : P) score += g[u][v];
+      if (score > best) best = score, pivot = u;
+    }
+    vector<int> cand;
+    for (int v : P) if (pivot == -1 || !g[pivot][v]) cand.push_back(v);
+    for (int v : cand) {
+      vector<int> nP, nX;
+      for (int u : P) if (g[v][u]) nP.push_back(u);
+      for (int u : X) if (g[v][u]) nX.push_back(u);
+      dfs_vec(nP, nX);
+      P.erase(find(P.begin(), P.end(), v));
+      X.push_back(v);
+    }
+  }
   int solve() {
-    iota(some[0], some[0] + n, 1);
-    S = 0, dfs(0, 0, n, 0);
+    vector<int> P(n), X;
+    iota(P.begin(), P.end(), 1);
+    S = 0, dfs_vec(P, X);
     return S;
   }
 };

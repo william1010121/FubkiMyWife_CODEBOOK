@@ -1,0 +1,10 @@
+{
+  "template": "codebook/4_Flow_Matching/Kuhn_Munkres.cpp",
+  "harness": "brute/flow_matching/kuhn_munkres/main.cpp",
+  "oracle": "permutation enumeration of every perfect assignment",
+  "checks": ["negative and positive weights", "sizes 1 through 8"],
+  "problem_url": "https://judge.yosupo.jp/problem/assignment",
+  "problem": "Library Checker Assignment Problem",
+  "compile": "g++ -std=c++20 -O2 -Wall -Wextra -pedantic main.cpp -o run",
+  "run": "./run"
+}
