@@ -42,8 +42,7 @@ struct exSAM {
       int cur = q.front(); q.pop();
       for (int i = 0; i < CNUM; ++i)
         if (next[cur][i]) q.push(insertSAM(cur, i));
-    }
-    vector<int> lc(tot);
+    } vector<int> lc(tot);
     for (int i = 1; i < tot; ++i) ++lc[len[i]];
     partial_sum(ALL(lc), lc.begin());
     for (int i = 1; i < tot; ++i) lenSorted[--lc[len[i]]] = i;

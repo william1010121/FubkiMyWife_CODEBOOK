@@ -10,8 +10,7 @@ void PollardRho(ll n) {
       PollardRho(n / d);
       PollardRho(d);
       return;
-    }
-    if (d == n) ++p;
+    } if (d == n) ++p;
     x = f(x, n, p), y = f(f(y, n, p), n, p);
     d = gcd(abs(x - y), n);
   }

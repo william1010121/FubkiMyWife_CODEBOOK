@@ -18,8 +18,7 @@ struct SW{ // global min cut, O(V^3)
       vst[cur] = 1, wei[cur] = -1;
       s = t; t = cur;
       REP if (!vst[i]) wei[i] += edge[cur][i];
-    }
-    return mx;
+    } return mx;
   }
   int solve(int n) {
     int res = INF;
@@ -30,7 +29,6 @@ struct SW{ // global min cut, O(V^3)
         edge[y][i] = edge[n - 1][i];
         edge[i][y] = edge[i][n - 1];
       } // edge[y][y] = 0;
-    }
-    return res;
+    } return res;
   }
 } sw;

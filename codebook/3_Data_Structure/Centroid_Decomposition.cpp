@@ -17,8 +17,7 @@ struct Cent_Dec { // 1-base
       if (!done[e.X] && e.X != f) {
         get_cent(e.X, u, mx, c, num);
         sz[u] += sz[e.X], mxsz = max(mxsz, sz[e.X]);
-      }
-    if (mx > max(mxsz, num - sz[u]))
+      } if (mx > max(mxsz, num - sz[u]))
       mx = max(mxsz, num - sz[u]), c = u;
   }
   void dfs(int u, int f, ll d, int org) {
@@ -38,8 +37,7 @@ struct Cent_Dec { // 1-base
           lc = cut(e.X, c, num - sz[c]);
         else lc = cut(e.X, c, sz[e.X]);
         upinfo[lc] = pll(), dfs(e.X, c, e.Y, c);
-      }
-    return done[c] = 0, c;
+      } return done[c] = 0, c;
   }
   void build() { cut(1, 0, n); }
   void modify(int u) {
@@ -55,7 +53,6 @@ struct Cent_Dec { // 1-base
       rt += info[a].X + info[a].Y * dis[ly][u];
       if (pa[a])
         rt -= upinfo[a].X + upinfo[a].Y * dis[ly - 1][u];
-    }
-    return rt;
+    } return rt;
   }
 };

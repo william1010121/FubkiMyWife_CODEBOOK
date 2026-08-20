@@ -11,8 +11,7 @@ struct AC_Automatan {
     for (char c : s) {
       if (!~nx[X][c - 'A']) nx[X][c - 'A'] = newnode();
       X = nx[X][c - 'A'];
-    }
-    return X; // return the end node of string
+    } return X; // return the end node of string
   }
   void make_fl() {
     queue<int> q;

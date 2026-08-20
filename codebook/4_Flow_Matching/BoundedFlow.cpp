@@ -27,8 +27,7 @@ struct BoundedFlow { // 0-base
           return df;
         }
       }
-    }
-    dis[u] = -1;
+    } dis[u] = -1;
     return 0;
   }
   bool bfs() {
@@ -39,8 +38,7 @@ struct BoundedFlow { // 0-base
       for (edge &e : G[u])
         if (!~dis[e.to] && e.flow != e.cap)
           q.push(e.to), dis[e.to] = dis[u] + 1;
-    }
-    return dis[t] != -1;
+    } return dis[t] != -1;
   }
   int maxflow(int _s, int _t) {
     s = _s, t = _t;
@@ -48,8 +46,7 @@ struct BoundedFlow { // 0-base
     while (bfs()) {
       fill_n(cur, n + 3, 0);
       while ((df = dfs(s, INF))) flow += df;
-    }
-    return flow;
+    } return flow;
   }
   bool solve() {
     int sum = 0;

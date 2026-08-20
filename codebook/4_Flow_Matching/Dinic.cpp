@@ -14,8 +14,7 @@ struct MaxFlow { // 0-base
           return df;
         }
       }
-    }
-    dis[u] = -1;
+    } dis[u] = -1;
     return 0;
   }
   bool bfs() {
@@ -28,8 +27,7 @@ struct MaxFlow { // 0-base
           q.push(u.to);
           dis[u.to] = dis[tmp] + 1;
         }
-    }
-    return dis[t] != -1;
+    } return dis[t] != -1;
   }
   int maxflow(int _s, int _t) {
     s = _s, t = _t;
@@ -37,8 +35,7 @@ struct MaxFlow { // 0-base
     while (bfs()) {
       fill_n(cur, n, 0);
       while ((df = dfs(s, INF))) flow += df;
-    }
-    return flow;
+    } return flow;
   }
   void init(int _n) {
     n = _n;

@@ -95,8 +95,7 @@ struct WeightGraph { // 1-based
     } else if (S[v] == 0) {
       if (int o = lca(u, v)) add_blossom(u, o, v);
       else return augment(u, v), augment(v, u), true;
-    }
-    return false;
+    } return false;
   }
   bool matching() {
     fill(ALL(S), -1), fill(ALL(slk), 0); q = queue<int>();
@@ -124,8 +123,7 @@ struct WeightGraph { // 1-based
         else if (S[st[u]] == 0) {
           if (lab[u] <= d) return false;
           lab[u] -= d;
-        }
-      REP(b, n + 1, nx) if (st[b] == b && S[b] >= 0)
+        } REP(b, n + 1, nx) if (st[b] == b && S[b] >= 0)
         lab[b] += d * (2 - 4 * S[b]);
       REP(x, 1, nx)
         if (int s = slk[x]; st[x] == x &&

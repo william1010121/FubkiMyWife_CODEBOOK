@@ -24,8 +24,7 @@ double CircleUnionArea(vector<C> c) { // circle should be identical
     for (int j = 0; j < n; ++j) if (i != j) {
       z = CoverSegment(c[i], c[j]);
       for (auto &e : z) s.push_back(e);
-    }
-    sort(s.begin(), s.end());
+    } sort(s.begin(), s.end());
     auto F = [&] (double t) { return c[i].r * (c[i].r * t
       + c[i].c.x * sin(t) - c[i].c.y * cos(t)); };
     for (auto &e : s) {

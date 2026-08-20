@@ -19,8 +19,7 @@ struct MinCostMaxFlow { // 0-base
         ll d2 = dis[u] + e.cost + pot[u] - pot[e.to];
         relax(e.to, d2, min(up[u], e.cap - e.flow), &e);
       }
-    }
-    return dis[t] != INF;
+    } return dis[t] != INF;
   }
   void solve(int _s, int _t, ll &flow, ll &cost,
       bool neg = true) {

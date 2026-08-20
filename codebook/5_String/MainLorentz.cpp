@@ -26,8 +26,7 @@ void main_lorentz(const string &s, int sft = 0) {
       l = cntr - nu + 1;
       k1 = get_z(z3, nu + 1 + nv - 1 - (cntr - nu));
       k2 = get_z(z4, (cntr - nu) + 1);
-    }
-    if (k1 + k2 >= l)
+    } if (k1 + k2 >= l)
       add_rep(cntr < nu, cntr, l, k1, k2);
   }
 } // p \in [l, r] => s[p, p + i) = s[p + i, p + 2i)

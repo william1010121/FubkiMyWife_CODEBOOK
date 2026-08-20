@@ -27,23 +27,19 @@ struct dominator_tree { // 1-base
       dfn[i] = idom[i] = 0;
       tree[i].clear();
       best[i] = semi[i] = i;
-    }
-    dfs(root);
+    } dfs(root);
     for (int i = Time; i > 1; --i) {
       int u = id[i];
       for (auto v : rG[u])
         if (v = dfn[v]) {
           find(v, i);
           semi[i] = min(semi[i], semi[best[v]]);
-        }
-      tree[semi[i]].pb(i);
+        } tree[semi[i]].pb(i);
       for (auto v : tree[pa[i]]) {
         find(v, pa[i]);
         idom[v] = semi[best[v]] == pa[i] ? pa[i] : best[v];
-      }
-      tree[pa[i]].clear();
-    }
-    for (int i = 2; i <= Time; ++i) {
+      } tree[pa[i]].clear();
+    } for (int i = 2; i <= Time; ++i) {
       if (idom[i] != semi[i]) idom[i] = idom[idom[i]];
       tree[id[idom[i]]].pb(id[i]);
     }

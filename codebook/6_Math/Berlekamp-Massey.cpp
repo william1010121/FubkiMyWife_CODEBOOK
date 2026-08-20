@@ -8,8 +8,7 @@ vector<T> BerlekampMassey(const vector<T> &output) {
     if (me.empty()) {
       me.resize(f = i);
       continue;
-    }
-    vector<T> o(i - f - 1);
+    } vector<T> o(i - f - 1);
     T k = -d[i] / d[f]; o.pb(-k);
     for (T x : he) o.pb(x * k);
     o.resize(max(SZ(o), SZ(me)));

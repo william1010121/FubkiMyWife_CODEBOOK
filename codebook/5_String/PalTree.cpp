@@ -33,8 +33,7 @@ struct palindromic_tree {
         St[get_fail(St[cur].fail)].next[c];
       St[cur].next[c] = now;
       St[now].num = St[St[now].fail].num + 1;
-    }
-    last = St[cur].next[c], ++St[last].cnt;
+    } last = St[cur].next[c], ++St[last].cnt;
   }
   inline void count() { // counting cnt
     auto i = St.rbegin();

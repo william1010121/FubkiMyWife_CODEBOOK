@@ -15,7 +15,6 @@ struct SAT { // 0-base
       if (scc.bln[i] == scc.bln[i + n]) return false;
       istrue[i] = scc.bln[i] < scc.bln[i + n];
       istrue[i + n] = !istrue[i];
-    }
-    return true;
+    } return true;
   }
 };

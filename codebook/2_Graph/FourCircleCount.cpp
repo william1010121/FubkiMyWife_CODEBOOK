@@ -16,8 +16,7 @@ int main() {
       for (int c : E[b]) {
         if (deg[a] < deg[c] || (deg[a] == deg[c] && a <= c)) continue;
         total += cnt[c]++;
-      }
-    for (int b : E1[a])
+      } for (int b : E1[a])
       for (int c : E[b]) cnt[c] = 0;
   }
   cout << total << '\n';

@@ -30,14 +30,12 @@ struct Matching { // 0-base
                 b != n; a = last, b = pre[a])
               last = match[b], match[b] = a, match[a] = b;
             return true;
-          }
-          q.push(match[u]); s[match[u]] = 0;
+          } q.push(match[u]); s[match[u]] = 0;
         } else if (!s[u] && Find(u) != Find(x)) {
           int l = LCA(u, x);
           Blossom(x, u, l); Blossom(u, x, l);
         }
-    }
-    return false;
+    } return false;
   }
   Matching(int _n) : n(_n), fa(n + 1), s(n + 1),
     vis(n + 1), pre(n + 1, n), match(n + 1, n), G(n) {}

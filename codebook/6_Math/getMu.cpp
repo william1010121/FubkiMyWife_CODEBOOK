@@ -7,8 +7,7 @@ void getMu() {
       if (i % p[j] == 0) {
         mu[i * p[j]] = 0;
         break;
-      }
-      mu[i * p[j]] = -mu[i];
+      } mu[i * p[j]] = -mu[i];
     }
   }
 }

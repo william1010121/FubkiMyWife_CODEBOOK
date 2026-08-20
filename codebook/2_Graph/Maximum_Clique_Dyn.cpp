@@ -10,8 +10,7 @@ struct MaxClique { // fast when N <= 100
     if (l < 4) {
       for (int i : r) d[i] = (G[i] & mask).count();
       sort(ALL(r), [&](int x, int y) { return d[x] > d[y]; });
-    }
-    vector<int> c(SZ(r));
+    } vector<int> c(SZ(r));
     int lft = max(ans - q + 1, 1), rgt = 1, tp = 0;
     cs[1].reset(), cs[2].reset();
     for (int p : r) {
@@ -20,8 +19,7 @@ struct MaxClique { // fast when N <= 100
       if (k > rgt) cs[++rgt + 1].reset();
       cs[k][p] = 1;
       if (k < lft) r[tp++] = p;
-    }
-    for (int k = lft; k <= rgt; ++k)
+    } for (int k = lft; k <= rgt; ++k)
       for (int p = cs[k]._Find_first(); p < N;
           p = cs[k]._Find_next(p))
         r[tp] = p, c[tp] = k, ++tp; 

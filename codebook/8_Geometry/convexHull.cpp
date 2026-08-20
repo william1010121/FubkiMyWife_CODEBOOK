@@ -46,8 +46,7 @@ struct CH {
       int L = (l * 2 + r) / 3, R = (l + r * 2) / 3;
       if (v[L] * d > v[R] * d) r = R;
       else l = L;
-    }
-    int x = l;
+    } int x = l;
     for (int i = l + 1; i < r; ++i) if (v[i] * d > v[x] * d) x = i;
     return x;
   }

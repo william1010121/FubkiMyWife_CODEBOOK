@@ -28,8 +28,7 @@ struct SteinerTree { // 0-base
         int who = __lg(msk);
         for (int i = 0; i < n; ++i)
           dp[msk][i] = vcst[ter[who]] + dst[ter[who]][i];
-      }
-      for (int i = 0; i < n; ++i)
+      } for (int i = 0; i < n; ++i)
         for (int sub = (msk - 1) & msk; sub; sub = (sub - 1) & msk)
           chmin(dp[msk][i],
             dp[sub][i] + dp[msk ^ sub][i] - vcst[i]);
@@ -37,9 +36,7 @@ struct SteinerTree { // 0-base
         tdst[i] = INF;
         for (int j = 0; j < n; ++j)
           chmin(tdst[i], dp[msk][j] + dst[j][i]);
-      }
-      copy_n(tdst, n, dp[msk]);
-    }
-    return *min_element(dp[full], dp[full] + n);
+      } copy_n(tdst, n, dp[msk]);
+    } return *min_element(dp[full], dp[full] + n);
   }
 }; // O(V 3^T + V^2 2^T)

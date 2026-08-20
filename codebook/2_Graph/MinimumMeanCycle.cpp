@@ -17,12 +17,10 @@ struct MinimumMeanCycle {
           ta = dp[L][i] - dp[j][i], tb = L - j;
       if (ta == 0) continue;
       if (a == -1 || a * tb > ta * b) a = ta, b = tb;
-    }
-    if (a != -1) {
+    } if (a != -1) {
       ll g = __gcd(a, b);
       return pll(a / g, b / g);
-    }
-    return pll(-1LL, -1LL);
+    } return pll(-1LL, -1LL);
   }
   void init(int _n) {
     n = _n;

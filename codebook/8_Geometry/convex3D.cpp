@@ -50,8 +50,7 @@ struct convex3D {
       if(on(t,p[i]))swap(t.b,t.c);
       id[t.a][t.b]=id[t.b][t.c]=id[t.c][t.a]=m;
       f[m++]=t;
-    }
-    for(int i=4;i<n;++i)for(int j=0;j<m;++j)
+    } for(int i=4;i<n;++i)for(int j=0;j<m;++j)
       if(f[j].res && on(f[j],p[i])){ dfs(i,j); break; }
     int mm=m; m=0;
     for(int i=0;i<mm;++i)if(f[i].res)f[m++]=f[i];
@@ -67,7 +66,6 @@ struct convex3D {
       int iden=1;
       for(int j=0;j<i;++j)if(same(i,j))iden=0;
       r+=iden;
-    }
-    return r;
+    } return r;
   }
 } tb;

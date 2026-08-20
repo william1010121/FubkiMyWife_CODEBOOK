@@ -23,8 +23,7 @@ ll PrimeCount(ll n) { // n ~ 10^13 => < 2s
         larges[ns] = larges[k] -
           (d <= v ? larges[smalls[d] - pc] : smalls[n / d]) + pc;
         roughs[ns++] = i;
-      }
-      s = ns;
+      } s = ns;
       for (int j = v / p; j >= p; --j) {
         int c = smalls[j] - pc, e = min(j * p + p, v + 1);
         for (int i = j * p; i < e; ++i) smalls[i] -= c;
@@ -38,8 +37,7 @@ ll PrimeCount(ll n) { // n ~ 10^13 => < 2s
       int p = roughs[l];
       if (1LL * p * p > m) break;
       t -= smalls[m / p] - (pc + l - 1);
-    }
-    larges[0] -= t;
+    } larges[0] -= t;
   }
   return larges[0];
 }

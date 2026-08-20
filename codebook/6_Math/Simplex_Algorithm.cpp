@@ -31,22 +31,19 @@ double simplex(int n, int m){
           d[i][j] += d[r][j] * d[i][s];
         d[i][s] *= d[r][s];
       }
-    }
-    r = s = -1;
+    } r = s = -1;
     for (int j = 0; j < m; ++j)
       if (s < 0 || ix[s] > ix[j]) {
         if (d[n + 1][j] > eps ||
             (d[n + 1][j] > -eps && d[n][j] > eps))
           s = j;
-      }
-    if (s < 0) break;
+      } if (s < 0) break;
     for (int i = 0; i < n; ++i) if (d[i][s] < -eps) {
       if (r < 0 || (dd = d[r][m] / d[r][s]
             - d[i][m] / d[i][s]) < -eps ||
           (dd < eps && ix[r + m] > ix[i + m]))
         r = i;
-    }
-    if (r < 0) return -1; // not bounded
+    } if (r < 0) return -1; // not bounded
   }
   if (d[n + 1][m] < -eps) return -1; // not executable
   double ans = 0;

@@ -23,16 +23,14 @@ struct KM { // 0-base, maximum matching
               slk[x] >= (d = hl[x] + hr[y] - w[x][y])) {
             if (pre[x] = y, d) slk[x] = d;
             else if (!Check(x)) return;
-        }
-      d = INF;
+        } d = INF;
       for (int x = 0; x < n; ++x)
         if (!vl[x] && d > slk[x]) d = slk[x];
       for (int x = 0; x < n; ++x) {
         if (vl[x]) hl[x] += d;
         else slk[x] -= d;
         if (vr[x]) hr[x] -= d;
-      }
-      for (int x = 0; x < n; ++x)
+      } for (int x = 0; x < n; ++x)
         if (!vl[x] && !slk[x] && !Check(x)) return;
     }
   }

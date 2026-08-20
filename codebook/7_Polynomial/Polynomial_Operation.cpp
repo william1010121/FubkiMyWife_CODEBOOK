@@ -37,8 +37,7 @@ struct Poly : vector<ll> { // coefficients in [0, P)
     fi(0, m) {
       Xi[i] *= (2 - Xi[i] * Y[i]) % P;
       if ((Xi[i] %= P) < 0) Xi[i] += P;
-    }
-    ntt(Xi.data(), m, true);
+    } ntt(Xi.data(), m, true);
     return Xi.isz(n());
   }
   Poly Sqrt() const { // Jacobi(t[0],P) = 1, 1e5/235ms
@@ -138,8 +137,7 @@ struct Poly : vector<ll> { // coefficients in [0, P)
     while (n) {
       if (n % 2) W = W.Mul(M).DivMod(C).second;
       n /= 2, M = M.Mul(M).DivMod(C).second;
-    }
-    ll ret = 0;
+    } ll ret = 0;
     fi(0, k) ret = (ret + W[i] * a[i]) % P;
     return ret;
   }
