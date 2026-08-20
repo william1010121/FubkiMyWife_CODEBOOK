@@ -83,17 +83,27 @@
 
 
 \section{String}
-\inputcode{KMP}{5_String/KMP.cpp}
-\inputcode{Z-value*}{5_String/Z-value.cpp} % test by Lib-Checker Z Algorithm
-\inputcode{Manacher*}{5_String/Manacher.cpp} % test by Lib-Checker Enumerate Palindromes
+\inputcodeex{KMP}{5_String/KMP.cpp}%
+{Pattern search, $O(|A|+|B|)$. Returns every 0-based occurrence. \texttt{F} is the optimised fail table, not a plain border array.}{examples/KMP.cpp}
+\inputcodeex{Z-value*}{5_String/Z-value.cpp}%
+{$z[i]=\mathrm{lcp}(s,s[i..])$ in $O(n)$. \textbf{$z[0]$ is left unset.}}{examples/Z-value.cpp}
+\inputcodeex{Manacher*}{5_String/Manacher.cpp}%
+{All palindromic radii in $O(n)$ by interleaving \texttt{\%}. 0-base.}{examples/Manacher.cpp}
 %\inputcode{Suffix Array}{5_String/Suffix_Array.cpp}
-\inputcode{SAIS*}{5_String/SAIS-C++20.cpp} % test by CF 104901 H, Lib-Checker Suffix Array
-\inputcode{Aho-Corasick Automatan*}{5_String/Aho-Corasick_Automatan.cpp} % test by CF 102511 G (World Finals' problem)
-\inputcode{Smallest Rotation}{5_String/Smallest_Rotation.cpp}
-\inputcode{De Bruijn sequence*}{5_String/De_Bruijn_sequence.cpp} % test by CF 102001 C
-\inputcode{Extended SAM*}{5_String/exSAM.cpp} % test by CF 616 C
-\inputcode{PalTree*}{5_String/PalTree.cpp} % test by APIO 2014 palindrome
-\inputcode{Main Lorentz}{5_String/MainLorentz.cpp}
+\inputcodeex{SAIS*}{5_String/SAIS-C++20.cpp}%
+{Suffix array in $O(n)$ plus Kasai height. \textbf{Needs C++20}; input must not contain a 0 byte.}{examples/SAIS-C++20.cpp}
+\inputcodeex{Aho-Corasick Automatan*}{5_String/Aho-Corasick_Automatan.cpp}%
+{Multi-pattern matching. Build $O(\sum|s_i|\sigma)$, scan $O(|T|)$. Use \texttt{rnx} for $O(1)$ transitions; root is node 1, chars are \texttt{c-\textquotesingle A\textquotesingle}.}{examples/Aho-Corasick_Automatan.cpp}
+\inputcodeex{Smallest Rotation}{5_String/Smallest_Rotation.cpp}%
+{Lexicographically smallest rotation (Booth/min-notation) in $O(n)$.}{examples/Smallest_Rotation.cpp}
+\inputcodeex{De Bruijn sequence*}{5_String/De_Bruijn_sequence.cpp}%
+{Sequence of length $N+K-1$ whose length-$N$ windows are all distinct ($K\le C^N$).}{examples/De_Bruijn_sequence.cpp}
+\inputcodeex{Extended SAM*}{5_String/exSAM.cpp}%
+{Generalised suffix automaton over many strings; \texttt{cnt} gives occurrences per state. Chars are \texttt{c-\textquotesingle a\textquotesingle}.}{examples/exSAM.cpp}
+\inputcodeex{PalTree*}{5_String/PalTree.cpp}%
+{Eertree: counts distinct palindromic substrings and their occurrences in $O(n\sigma)$.}{examples/PalTree.cpp}
+\inputcodeex{Main Lorentz}{5_String/MainLorentz.cpp}%
+{All tandem repeats in $O(n\log n)$, stored as start-ranges per length. Requires an external \texttt{Zalgo()}.}{examples/MainLorentz.cpp}
 
 
 \section{Math}
