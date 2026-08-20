@@ -3,11 +3,9 @@ const double eps = 1E-10;
 double a[MAXN][MAXM], b[MAXN], c[MAXM];
 double d[MAXN][MAXM], x[MAXM];
 int ix[MAXN + MAXM]; // !!! array all indexed from 0
-// max{cx} subject to {Ax<=b,x>=0}
-// n: constraints, m: vars !!!
+// max{cx} s.t. {Ax<=b,x>=0}; n: constraints, m: vars !!!
 // x[] is the optimal solution vector
-// usage : 
-// value = simplex(a, b, c, N, M);
+// usage: value = simplex(a, b, c, N, M);
 double simplex(int n, int m){
   ++m;
   fill_n(d[n], m + 1, 0);
@@ -43,8 +41,8 @@ double simplex(int n, int m){
       }
     if (s < 0) break;
     for (int i = 0; i < n; ++i) if (d[i][s] < -eps) {
-      if (r < 0 ||
-          (dd = d[r][m] / d[r][s] - d[i][m] / d[i][s]) < -eps ||
+      if (r < 0 || (dd = d[r][m] / d[r][s]
+            - d[i][m] / d[i][s]) < -eps ||
           (dd < eps && ix[r + m] > ix[i + m]))
         r = i;
     }
@@ -53,7 +51,8 @@ double simplex(int n, int m){
   if (d[n + 1][m] < -eps) return -1; // not executable
   double ans = 0;
   fill_n(x, m, 0);
-  for (int i = m; i < n + m; ++i) { // the missing enumerated x[i] = 0
+  // the missing enumerated x[i] = 0
+  for (int i = m; i < n + m; ++i) {
     if (ix[i] < m - 1){
       ans += d[i - m][m] * c[ix[i]];
       x[ix[i]] = d[i-m][m];

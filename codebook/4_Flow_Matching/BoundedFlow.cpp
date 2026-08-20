@@ -1,7 +1,5 @@
 struct BoundedFlow { // 0-base
-  struct edge {
-    int to, cap, flow, rev;
-  };
+  struct edge { int to, cap, flow, rev; };
   vector<edge> G[N];
   int n, s, t, dis[N], cur[N], cnt[N];
   void init(int _n) {
@@ -35,11 +33,9 @@ struct BoundedFlow { // 0-base
   }
   bool bfs() {
     fill_n(dis, n + 3, -1);
-    queue<int> q;
-    q.push(s), dis[s] = 0;
+    queue<int> q; q.push(s), dis[s] = 0;
     while (!q.empty()) {
-      int u = q.front();
-      q.pop();
+      int u = q.front(); q.pop();
       for (edge &e : G[u])
         if (!~dis[e.to] && e.flow != e.cap)
           q.push(e.to), dis[e.to] = dis[u] + 1;

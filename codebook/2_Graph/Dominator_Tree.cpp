@@ -8,9 +8,7 @@ struct dominator_tree { // 1-base
     for (int i = 1; i <= n; ++i)
       G[i].clear(), rG[i].clear();
   }
-  void add_edge(int u, int v) {
-    G[u].pb(v), rG[v].pb(u);
-  }
+  void add_edge(int u, int v) { G[u].pb(v), rG[v].pb(u); }
   void dfs(int u) {
     id[dfn[u] = ++Time] = u;
     for (auto v : G[u])
@@ -41,8 +39,7 @@ struct dominator_tree { // 1-base
       tree[semi[i]].pb(i);
       for (auto v : tree[pa[i]]) {
         find(v, pa[i]);
-        idom[v] =
-          semi[best[v]] == pa[i] ? pa[i] : best[v];
+        idom[v] = semi[best[v]] == pa[i] ? pa[i] : best[v];
       }
       tree[pa[i]].clear();
     }

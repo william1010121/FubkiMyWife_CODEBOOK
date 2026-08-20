@@ -4,12 +4,9 @@ struct KM { // 0-base, maximum matching
   bool vl[N], vr[N];
   void init(int _n) {
     n = _n;
-    for (int i = 0; i < n; ++i)
-      fill_n(w[i], n, -INF);
+    for (int i = 0; i < n; ++i) fill_n(w[i], n, -INF);
   }
-  void add_edge(int a, int b, ll wei) {
-    w[a][b] = wei;
-  }
+  void add_edge(int a, int b, ll wei) { w[a][b] = wei; }
   bool Check(int x) {
     if (vl[x] = 1, ~fl[x])
       return vr[qu[qr++] = fl[x]] = 1;
@@ -22,7 +19,8 @@ struct KM { // 0-base, maximum matching
     for (ll d;;) {
       while (ql < qr)
         for (int x = 0, y = qu[ql++]; x < n; ++x)
-          if (!vl[x] && slk[x] >= (d = hl[x] + hr[y] - w[x][y])) {
+          if (!vl[x] &&
+              slk[x] >= (d = hl[x] + hr[y] - w[x][y])) {
             if (pre[x] = y, d) slk[x] = d;
             else if (!Check(x)) return;
         }
