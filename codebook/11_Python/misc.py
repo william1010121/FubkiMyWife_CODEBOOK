@@ -15,18 +15,15 @@ pow(a, b, M)
 from random import *
 randrange(L, R, step)  # [L,R) L+k*step
 randint(L, R)  # int from [L,R]
-choice(list)  # pick 1 item from list
-choices(list, k)  # pick k item
+choice(list)  # pick 1 item;  choices(list, k) # pick k
 shuffle(list)
 Uniform(L, R)  # float from [L,R]
 # print
 print(f"num: {num}, pi: {pi:.2f}, str: {text}")
 print(1, 2, 3, 4, sep=" | ", end=" <-- END\n")
 # file IO
-r = open("filename.in")
-a = r.read()  # whole content as one string
-w = open("filename.out", "w")
-w.write("123\n")
+r = open("filename.in"); a = r.read()  # all as one str
+w = open("filename.out", "w"); w.write("123\n")
 # IO redirection
 import sys
 sys.stdin = open("filename.in")
