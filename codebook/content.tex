@@ -185,11 +185,11 @@
 \input{6_Math/Generating_function.tex}
 
 \section{Polynomial}
-\inputcodeex{Fast Fourier Transform}{7_Polynomial/Fast_Fourier_Transform.cpp}%
-{Complex FFT convolution. $O(n\log n)$. Call \texttt{prefft()} once; double precision limits coefficient size.}{examples/Fast_Fourier_Transform.cpp}
+\inputcodeex{Fast Fourier Transform}{7_Polynomial/FFT_chrislaiisme.cpp}%
+{Iterative complex FFT and integer convolution via \texttt{mult}, $O(n\log n)$. Returns exactly $|a|+|b|-1$ rounded coefficients; double precision limits coefficient size.}{examples/Fast_Fourier_Transform.cpp}
 \input{7_Polynomial/Number_Theory_Transform_Prime}
-\inputcodeex{Number Theory Transform*}{7_Polynomial/Number_Theory_Transform.cpp}%
-{Modular convolution, exact (no precision loss). $O(n\log n)$, $n$ a power of two.}{examples/Number_Theory_Transform.cpp}
+\inputcodeex{Number Theory Transform*}{7_Polynomial/NTT_chrislaiisme.cpp}%
+{Iterative NTT and convolution via \texttt{mult}, $O(n\log n)$ modulo 998244353. The listing defines \texttt{int} as \texttt{long long}; contain or undefine the macro after use.}{examples/Number_Theory_Transform.cpp}
 \inputcodeex{Fast Walsh Transform*}{7_Polynomial/Fast_Walsh_Transform.cpp}%
 {or/and/xor convolution, $O(n\log n)$; file implements or. Also subset convolution in $O(2^LL^2)$.}{examples/Fast_Walsh_Transform.cpp}
 \inputcodeex{Polynomial Operation}{7_Polynomial/Polynomial_Operation.cpp}%

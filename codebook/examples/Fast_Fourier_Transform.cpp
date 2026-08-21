@@ -1,4 +1,2 @@
-prefft(); // MUST call once first
-vector<int> c = multiply(a, b, true);
-// true = trim trailing zeros
-// double: safe when sum(a*b) < ~1e14
+vector<int> c = mult(a, b); // exact output length
+// rounded from double; keep coefficients moderate

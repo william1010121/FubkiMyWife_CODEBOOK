@@ -17,6 +17,10 @@ void BitReverse(vector<int> &a, int n) {
   }
 }
 #include "codebook/7_Polynomial/Number_Theory_Transform.cpp"
+namespace chris_ntt {
+#include "codebook/7_Polynomial/NTT_chrislaiisme.cpp"
+}
+#undef int
 
 static vector<int> oracle(const vector<int> &a, const vector<int> &b) {
   vector<int> c(a.size() + b.size() - 1);
@@ -42,6 +46,12 @@ int main() {
     for (int i = 0; i < nb; ++i) y[i] = rng() % 1000;
     auto want = oracle(vector<int>(x.begin(), x.begin() + na),
                        vector<int>(y.begin(), y.begin() + nb));
+    vector<long long> cx(x.begin(), x.begin() + na), cy(y.begin(), y.begin() + nb);
+    auto got_chris = chris_ntt::mult(cx, cy);
+    if (got_chris.size() != want.size() ||
+        !equal(want.begin(), want.end(), got_chris.begin())) {
+      cerr << "Chris NTT convolution mismatch\n"; return 1;
+    }
     Transform(x, z); Transform(y, z);
     for (int i = 0; i < z; ++i) x[i] = 1LL * x[i] * y[i] % kMod;
     InverseTransform(x, z);

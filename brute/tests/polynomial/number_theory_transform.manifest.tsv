@@ -1,4 +1,5 @@
 template	codebook/7_Polynomial/Number_Theory_Transform.cpp
+template_alt	codebook/7_Polynomial/NTT_chrislaiisme.cpp
 problem_url	https://judge.yosupo.jp/problem/convolution_mod
 oracle	O(n^2) convolution modulo 998244353 plus transform round-trip; 500 cases
 status	covered
