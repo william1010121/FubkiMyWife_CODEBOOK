@@ -143,31 +143,31 @@
 {Gauss-Jordan on doubles, $O(n^3)$. Uses a small pivot epsilon and leaves free variables at zero; use the fraction version when exactness matters.}
 \inputcodedesc{floor sum*}{6_Math/floor_sum.cpp}%
 {$\sum_{i=0}^{n-1}\lfloor(ai+b)/m\rfloor$ in $O(\log)$ by a Euclid-like recursion.}
-\inputcodedesc{Miller Rabin*}{6_Math/Miller_Rabin.cpp}%
-{Deterministic primality with the witness sets listed in the file (7 bases below $2^{64}$). Needs a 128-bit \texttt{mul()}.}
+\inputcodeex{Miller Rabin*}{6_Math/Miller_Rabin.cpp}%
+{Deterministic primality with the witness sets listed in the file (7 bases below $2^{64}$). Needs a 128-bit \texttt{mul()}.}{examples/Miller_Rabin.cpp}
 %\inputcode{Big number}{6_Math/Big_number.cpp} % 超級大數（沒用）
 \inputcodedesc{Fraction}{6_Math/Fraction.cpp}%
 {Exact rational with auto-reduction. \textbf{\texttt{ll} numerator/denominator overflow easily} after a few operations; no divide-by-zero check.}
 \inputcodedesc{Simultaneous Equations}{6_Math/Simultaneous_Equations.cpp}%
 {Exact Gauss-Jordan over \texttt{fraction}; returns $-1$ if inconsistent, else the rank. Requires Fraction.cpp.}
-\inputcodedesc{Pollard Rho*}{6_Math/Pollard_Rho.cpp}%
-{Factorises in about $O(n^{1/4})$; results accumulate in \texttt{cnt}. Needs \texttt{prime()} and a 128-bit \texttt{mul()}.}
+\inputcodeex{Pollard Rho*}{6_Math/Pollard_Rho.cpp}%
+{Factorises in about $O(n^{1/4})$; results accumulate in \texttt{cnt}. Needs \texttt{prime()} and a 128-bit \texttt{mul()}.}{examples/Pollard_Rho.cpp}
 \inputcodedesc{Simplex Algorithm}{6_Math/Simplex_Algorithm.cpp}%
 {$\max cx$ s.t. $Ax\le b,x\ge0$; $-1$ means unbounded or infeasible. \textbf{$n$ is the constraint count, $m$ the variable count, and all arrays are 0-indexed.}}
 \subsubsection{Construction}
 \input{6_Math/SimplexConstruction.tex}
 %\inputcode{Schreier-Sims Algorithm*}{6_Math/SchreierSims.cpp} % test by XVI Opencup GP of Ekaterinburg H
-\inputcodedesc{chineseRemainder}{6_Math/chineseRemainder.cpp}%
-{CRT for \textbf{non-coprime} moduli; $-1$ if no solution. \textbf{Overflows \texttt{ll} easily} --- use \texttt{\_\_int128} for large moduli. Iterate for more than two congruences.}
+\inputcodeex{chineseRemainder}{6_Math/chineseRemainder.cpp}%
+{CRT for \textbf{non-coprime} moduli; $-1$ if no solution. \textbf{Overflows \texttt{ll} easily} --- use \texttt{\_\_int128} for large moduli. Iterate for more than two congruences.}{examples/chineseRemainder.cpp}
 \inputcodedesc{Factorial without prime factor*}{6_Math/fac_no_p.cpp}%
 {$n!$ with all factors $p$ removed, mod $p^k$, in $O(p^k+\log^2 n)$. Core of Lucas for prime-power moduli.}
 %\inputcode{QuadraticResidue*}{6_Math/QuadraticResidue.cpp} % test by Lib-Checker Sqrt Mod
 \inputcodedesc{PiCount*}{6_Math/PiCount.cpp}%
 {$\pi(n)$ in about $O(n^{2/3})$; handles $n\sim10^{13}$ in under 2s.}
-\inputcodedesc{Discrete Log*}{6_Math/DiscreteLog.cpp}%
-{Smallest $k$ with $x^k\equiv y\pmod m$ in $O(\sqrt m)$. \textbf{Does not require $\gcd(x,m)=1$}; verifies the answer before returning.}
-\inputcodedesc{Berlekamp Massey}{6_Math/Berlekamp-Massey.cpp}%
-{Shortest linear recurrence of a sequence in $O(n^2)$; feed the result to \texttt{LinearRecursion} for the $n$-th term.}
+\inputcodeex{Discrete Log*}{6_Math/DiscreteLog.cpp}%
+{Smallest $k$ with $x^k\equiv y\pmod m$ in $O(\sqrt m)$. \textbf{Does not require $\gcd(x,m)=1$}; verifies the answer before returning.}{examples/DiscreteLog.cpp}
+\inputcodeex{Berlekamp Massey}{6_Math/Berlekamp-Massey.cpp}%
+{Shortest linear recurrence of a sequence in $O(n^2)$; feed the result to \texttt{LinearRecursion} for the $n$-th term.}{examples/Berlekamp-Massey.cpp}
 \subsection{Primes}
 {\scriptsize Handy primes for hashing and NTT moduli, from small values up to $2^{61}-1$ and near $2^{64}$.\par}\vspace{-0.6em}%
 \lstinputlisting{6_Math/Primes.cpp}
@@ -208,8 +208,8 @@
 %\inputcodewithtext{Voronoi Diagram}{8_Geometry/Triangulation_Vonoroi_short.cpp}{Vertices in Voronoi Diagram are circumcenters of triangles in the Delaunay Triangulation.}
 \inputcodedesc{Sector Area}{8_Geometry/sectorArea.cpp}%
 {Area of the sector between two vectors, $O(1)$. \textbf{Returns the minor arc} --- subtract from the full disc for the major one.}
-\inputcodedesc{Half Plane Intersection}{8_Geometry/halfPlaneIntersect.cpp}%
-{Intersection polygon of half planes in $O(n\log n)$; the feasible side is to the \emph{left} of each line. Empty result means degenerate or infeasible.}
+\inputcodeex{Half Plane Intersection}{8_Geometry/halfPlaneIntersect.cpp}%
+{Intersection polygon of half planes in $O(n\log n)$; the feasible side is to the \emph{left} of each line. Empty result means degenerate or infeasible.}{examples/halfPlaneIntersect.cpp}
 \inputcodedesc{Rotating Sweep Line}{8_Geometry/rotatingSweepLine.cpp}%
 {Sweeps all $\binom n2$ directions in $O(n^2\log n)$; \texttt{rotatingSweepLineOrder} returns the final order, while the legacy void wrapper preserves the old call shape.}
 \inputcodedesc{Triangle Center}{8_Geometry/triangleCenter.cpp}%
@@ -218,8 +218,8 @@
 {Area centroid of a simple polygon in $O(n)$ by signed-area weighting, so concave shapes are fine.}
 \inputcodedesc{Maximum Triangle}{8_Geometry/maxTriangleOfConvex.cpp}%
 {Largest triangle inscribed in a convex polygon by exhaustive triples in $O(n^3)$.}
-\inputcodedesc{Point in Polygon}{8_Geometry/pointInPolygon.cpp}%
-{Ray casting for any simple polygon, $O(n)$. \textbf{Returns 1 on the boundary, 2 strictly inside}, 0 outside.}
+\inputcodeex{Point in Polygon}{8_Geometry/pointInPolygon.cpp}%
+{Ray casting for any simple polygon, $O(n)$. \textbf{Returns 1 on the boundary, 2 strictly inside}, 0 outside.}{examples/pointInPolygon.cpp}
 \inputcodedesc{Circle}{8_Geometry/circle.cpp}%
 {Circle intersection points and area, circle-segment crossing, and circle $\cap$ triangle area. All $O(1)$.}
 \inputcodedesc{Tangent of Circles and Points to Circle}{8_Geometry/CircleTangent.cpp}%
@@ -228,28 +228,28 @@
 {Union area by integrating uncovered arcs with Green's theorem, $O(n^2\log n)$. \textbf{Duplicate circles must be removed first} or the area is double counted.}
 \inputcodedesc{Minimun Distance of 2 Polygons}{8_Geometry/minDistOfTwoConvex.cpp}%
 {Minimum distance of two convex polygons. The self-contained implementation checks edge pairs and containment in $O(nm)$, avoiding hidden distance-helper contracts.}
-\inputcodedesc{2D Convex Hull}{8_Geometry/convexHull.cpp}%
-{Monotone chain in $O(n\log n)$ (collinear points dropped), plus \texttt{CH} for $O(\log n)$ extreme-point, line-intersection, containment and tangent queries.}
+\inputcodeex{2D Convex Hull}{8_Geometry/convexHull.cpp}%
+{Monotone chain in $O(n\log n)$ (collinear points dropped), plus \texttt{CH} for $O(\log n)$ extreme-point, line-intersection, containment and tangent queries.}{examples/convexHull.cpp}
 \inputcodedesc{3D Convex Hull}{8_Geometry/convex3D.cpp}%
 {Incremental 3D hull in $O(n^2)$; \texttt{faces()} merges coplanar triangles. \textbf{Input must not contain duplicate points.}}
-\inputcodedesc{Minimum Enclosing Circle}{8_Geometry/MinimumEnclosingCircle.cpp}%
-{Welzl randomised incremental with \texttt{shuffle}, expected $O(n)$.}
-\inputcodedesc{Closest Pair}{8_Geometry/ClosestPair.cpp}%
-{Divide and conquer in $O(n\log^2 n)$ (re-sorts the strip by $y$). \textbf{\texttt{p[]} must already be sorted by $x$.}}
+\inputcodeex{Minimum Enclosing Circle}{8_Geometry/MinimumEnclosingCircle.cpp}%
+{Welzl randomised incremental with \texttt{shuffle}, expected $O(n)$.}{examples/MinimumEnclosingCircle.cpp}
+\inputcodeex{Closest Pair}{8_Geometry/ClosestPair.cpp}%
+{Divide and conquer in $O(n\log^2 n)$ (re-sorts the strip by $y$). \textbf{\texttt{p[]} must already be sorted by $x$.}}{examples/ClosestPair.cpp}
 
 \section{Else}
 \inputcodedesc{Cyclic Ternary Search*}{9_Else/cyc_tsearch.cpp}%
 {Minimum of a \textbf{cyclically shifted} unimodal array in $O(\log n)$; \texttt{pred(a,b)} compares two positions.}
-\inputcodedesc{Mo's Algorithm(With modification)}{9_Else/Mos_Algorithm_With_modification.cpp}%
-{Mo's with point updates, block $N^{2/3}$, $O(N^{5/3})$. The callback-based \texttt{solve} applies/rolls back updates and reports each query.}
-\inputcodedesc{Mo's Algorithm On Tree}{9_Else/Mos_Algorithm_On_Tree.cpp}%
-{Path queries via the Euler bracket sequence, $O(N\sqrt N)$; the callback-based constructor takes the caller's LCA and \texttt{solve} handles the extra LCA vertex.}
+\inputcodeex{Mo's Algorithm(With modification)}{9_Else/Mos_Algorithm_With_modification.cpp}%
+{Mo's with point updates, block $N^{2/3}$, $O(N^{5/3})$. The callback-based \texttt{solve} applies/rolls back updates and reports each query.}{examples/Mos_Algorithm_With_modification.cpp}
+\inputcodeex{Mo's Algorithm On Tree}{9_Else/Mos_Algorithm_On_Tree.cpp}%
+{Path queries via the Euler bracket sequence, $O(N\sqrt N)$; the callback-based constructor takes the caller's LCA and \texttt{solve} handles the extra LCA vertex.}{examples/Mos_Algorithm_On_Tree.cpp}
 \subsection{Additional Mo's Algorithm Trick}
 \input{9_Else/Mos_Algorithm.tex}
 \inputcodedesc{Hilbert Curve}{9_Else/HilbertCurve.cpp}%
 {Hilbert index of $(x,y)$ in $O(\log n)$, $n=2^k$. Use it to order Mo's queries instead of block sorting.}
-\inputcodedesc{DynamicConvexTrick*}{9_Else/DynamicConvexTrick.cpp}%
-{Line container (CHT) with arbitrary insert order, amortised $O(\log n)$, keeps the \textbf{maximum}. \textbf{Integer coordinates only.}}
+\inputcodeex{DynamicConvexTrick*}{9_Else/DynamicConvexTrick.cpp}%
+{Line container (CHT) with arbitrary insert order, amortised $O(\log n)$, keeps the \textbf{maximum}. \textbf{Integer coordinates only.}}{examples/DynamicConvexTrick.cpp}
 %\inputcode{cyclicLCS}{9_Else/cyclicLCS.cpp}
 \inputcodedesc{All LCS*}{9_Else/All_LCS.cpp}%
 {Returns every distinct longest common subsequence in lexicographic order. The result is directly testable and uses the standard $O(|s||t|)$ DP plus memoised reconstruction.}
