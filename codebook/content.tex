@@ -190,11 +190,13 @@
 \input{6_Math/Generating_function.tex}
 
 \section{Polynomial}
-\inputcodedesc{Fast Fourier Transform}{7_Polynomial/Fast_Fourier_Transform.cpp}%
-{Complex FFT convolution. $O(n\log n)$. Call \texttt{prefft()} once; double precision limits coefficient size.}
+% \inputcodedesc{Fast Fourier Transform}{7_Polynomial/Fast_Fourier_Transform.cpp}%
+% {Complex FFT convolution. $O(n\log n)$. Call \texttt{prefft()} once; double precision limits coefficient size.}
+\inputcodedesc{Fast Fourier Transform}{7_Polynomial/FFT_chrislaiisme.cpp}%
 \input{7_Polynomial/Number_Theory_Transform_Prime}
-\inputcodedesc{Number Theory Transform*}{7_Polynomial/Number_Theory_Transform.cpp}%
-{Modular convolution, exact (no precision loss). $O(n\log n)$, $n$ a power of two.}
+\inputcodedesc{Number Theory Transform*}{7_Polynomial/NTT_chrislaiisme.cpp}%
+% \inputcodedesc{Number Theory Transform*}{7_Polynomial/Number_Theory_Transform.cpp}%
+% {Modular convolution, exact (no precision loss). $O(n\log n)$, $n$ a power of two.}
 \inputcodeex{Fast Walsh Transform*}{7_Polynomial/Fast_Walsh_Transform.cpp}%
 {or/and/xor convolution, $O(n\log n)$; file implements or. Also subset convolution in $O(2^LL^2)$.}{examples/Fast_Walsh_Transform.cpp}
 \inputcodeex{Polynomial Operation}{7_Polynomial/Polynomial_Operation.cpp}%
