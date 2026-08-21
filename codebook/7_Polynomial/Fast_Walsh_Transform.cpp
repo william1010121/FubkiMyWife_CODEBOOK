@@ -9,17 +9,15 @@ void fwt(int *a, int n, int op) { //or
         a[j + (L >> 1)] += a[j] * op;
 }
 const int N = 21;
-int f[N][1 << N], g[N][1 << N], h[N][1 << N], ct[1 << N];
+int f[N + 1][1 << N], g[N + 1][1 << N], h[N + 1][1 << N];
 void subset_convolution(int *a, int *b, int *c, int L) {
   // c_k = \sum_{i | j = k, i & j = 0} a_i * b_j
   int n = 1 << L;
   for (int i = 0; i <= L; ++i)
     fill(f[i], f[i] + n, 0), fill(g[i], g[i] + n, 0),
       fill(h[i], h[i] + n, 0);
-  for (int i = 1; i < n; ++i)
-    ct[i] = ct[i & (i - 1)] + 1;
   for (int i = 0; i < n; ++i)
-    f[ct[i]][i] = a[i], g[ct[i]][i] = b[i];
+    f[popcount((unsigned)i)][i] = a[i], g[popcount((unsigned)i)][i] = b[i];
   for (int i = 0; i <= L; ++i)
     fwt(f[i], n, 1), fwt(g[i], n, 1);
   for (int i = 0; i <= L; ++i)
@@ -29,5 +27,5 @@ void subset_convolution(int *a, int *b, int *c, int L) {
   for (int i = 0; i <= L; ++i)
     fwt(h[i], n, -1);
   for (int i = 0; i < n; ++i)
-    c[i] = h[ct[i]][i];
+    c[i] = h[popcount((unsigned)i)][i];
 }

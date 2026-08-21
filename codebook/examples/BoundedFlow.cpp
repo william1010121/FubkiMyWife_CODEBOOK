@@ -1,4 +1,4 @@
-bf.init(n);
+static BoundedFlow bf; bf.init(n);
 bf.add_edge(u, v, lo, hi); // lower bound lo
-if (!bf.solve()) puts("infeasible");
-int f = bf.solve(s, t); // -1 if infeasible
+bool feasible = bf.solve(); // circulation
+// or: int f = bf.solve(s, t); // bounded max flow

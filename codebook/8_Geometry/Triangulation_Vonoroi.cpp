@@ -3,12 +3,7 @@ using namespace std;
 
 struct VoronoiPoint {
   long double x = 0, y = 0;
-  bool operator<(const VoronoiPoint &other) const {
-    return tie(x, y) < tie(other.x, other.y);
-  }
-  bool operator==(const VoronoiPoint &other) const {
-    return x == other.x && y == other.y;
-  }
+  auto operator<=>(const VoronoiPoint &) const = default;
 };
 
 long double voronoi_cross(VoronoiPoint a, VoronoiPoint b, VoronoiPoint c) {

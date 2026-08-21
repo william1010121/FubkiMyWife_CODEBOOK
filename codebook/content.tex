@@ -8,10 +8,10 @@
 \subsection{vimrc}
 {\scriptsize Editor config. The \texttt{:Hash} commands md5 a visual selection so you can check a typed template against the printed hash.\par}\vspace{-0.6em}%
 \lstinputlisting{1_Basic/vimrc.cpp}
-\inputcodedesc{readchar}{1_Basic/readchar.cpp}%
-{Buffered getchar via \texttt{fread\_unlocked}, amortised $O(1)$. Returns stale data at EOF, so guard the loop.}
-\inputcodedesc{BigIntIO}{1_Basic/bigIntIO.cpp}%
-{Read/print \texttt{\_\_int128} (no \texttt{cin}/\texttt{cout} support). Handles sign.}
+\inputcodeex{readchar}{1_Basic/readchar.cpp}%
+{Buffered getchar via \texttt{fread\_unlocked}, amortised $O(1)$. Returns stale data at EOF, so guard the loop.}{examples/readchar.cpp}
+\inputcodeex{BigIntIO}{1_Basic/bigIntIO.cpp}%
+{Read/print \texttt{\_\_int128} (no \texttt{cin}/\texttt{cout} support). Handles sign.}{examples/BigIntIO.cpp}
 \inputcodedesc{Black Magic}{1_Basic/black_magic.cpp}%
 {GNU extensions: \texttt{mt19937}; pb\_ds red-black tree with \texttt{find\_by\_order}/\texttt{order\_of\_key} $O(\log n)$; mergeable heap \texttt{join}; persistent \texttt{rope}. Snippet, not compilable as-is.}
 \inputcodedesc{Pragma Optimization}{1_Basic/Pragma.cpp}%
@@ -23,44 +23,39 @@
 
 
 \section{Graph}
-\inputcodedesc{BCC Vertex*}{2_Graph/BCC_Vertex.cpp}%
-{Vertex biconnected components and articulation points, $O(V+E)$. Block-cut tree has \textbf{up to $2n-2$ nodes} --- size arrays accordingly. 0-base.}
-\inputcodedesc{Bridge*}{2_Graph/Bridge.cpp}%
-{Bridges and 2-edge-connected components, $O(V+E)$. Uses edge ids rather than the parent vertex, so \textbf{multi-edges are handled correctly}. 0-base.}
-\inputcodedesc{SCC*}{2_Graph/SCC.cpp}%
-{Tarjan SCC, $O(V+E)$. \texttt{bln} ids come out in \textbf{reverse topological order} --- 2SAT relies on this. 0-base.}
-\inputcodedesc{2SAT*}{2_Graph/2SAT.cpp}%
-{$O(V+E)$ via implication graph + SCC. Variable $i$ is node $i$ (true) / $i+n$ (false). Requires SCC.cpp. 0-base.}
-\inputcodedesc{MinimumMeanCycle*}{2_Graph/MinimumMeanCycle.cpp}%
-{Karp's minimum mean cycle, $O(V^3)$ on an adjacency matrix. Returns the mean as a reduced fraction, $(-1,-1)$ if acyclic.}
-\inputcodedesc{Virtual Tree*}{2_Graph/Virtual_Tree.cpp}%
-{Compresses $k$ key vertices into an $O(k)$ auxiliary tree in $O(k\log k)$. Needs external \texttt{LCA()}, \texttt{dfn}, \texttt{dep}.}
-\inputcodedesc{Maximum Clique Dyn*}{2_Graph/Maximum_Clique_Dyn.cpp}%
-{Max clique by branch and bound with dynamic colouring. Exponential, but fast for $n\le100$.}
-\inputcodedesc{Minimum Steiner Tree*}{2_Graph/MinimumSteinerTree.cpp}%
-{$O(V3^T+V^22^T)$ for $T$ terminals. Supports \textbf{vertex costs} via \texttt{vcst}; \texttt{add\_edge} is directed. 0-base.}
-\inputcodedesc{Dominator Tree*}{2_Graph/Dominator_Tree.cpp}%
-{Lengauer-Tarjan, $O((V+E)\log V)$. Only vertices reachable from \texttt{root} are meaningful. \textbf{1-base.}}
+\inputcodeex{BCC Vertex*}{2_Graph/BCC_Vertex.cpp}%
+{Vertex biconnected components and articulation points, $O(V+E)$. Block-cut tree has \textbf{up to $2n-2$ nodes} --- size arrays accordingly. 0-base.}{examples/BCC_Vertex.cpp}
+\inputcodeex{Bridge*}{2_Graph/Bridge.cpp}%
+{Bridges and 2-edge-connected components, $O(V+E)$. Uses edge ids rather than the parent vertex, so \textbf{multi-edges are handled correctly}. 0-base.}{examples/Bridge.cpp}
+\inputcodeex{SCC*}{2_Graph/SCC.cpp}%
+{Tarjan SCC, $O(V+E)$. \texttt{bln} ids come out in \textbf{reverse topological order} --- 2SAT relies on this. 0-base.}{examples/SCC.cpp}
+\inputcodeex{2SAT*}{2_Graph/2SAT.cpp}%
+{$O(V+E)$ via implication graph + SCC. Variable $i$ is node $i$ (true) / $i+n$ (false). Requires SCC.cpp. 0-base.}{examples/2SAT.cpp}
+\inputcodeex{MinimumMeanCycle*}{2_Graph/MinimumMeanCycle.cpp}%
+{Karp's minimum mean cycle, $O(V^3)$ on an adjacency matrix. Returns the mean as a reduced fraction, $(-1,-1)$ if acyclic.}{examples/MinimumMeanCycle.cpp}
+\inputcodeex{Virtual Tree*}{2_Graph/Virtual_Tree.cpp}%
+{Compresses $k$ key vertices into an $O(k)$ auxiliary tree in $O(k\log k)$. Needs external \texttt{LCA()}, \texttt{dfn}, \texttt{dep}.}{examples/Virtual_Tree.cpp}
+\inputcodeex{Maximum Clique Dyn*}{2_Graph/Maximum_Clique_Dyn.cpp}%
+{Max clique by branch and bound with dynamic colouring. Exponential, but fast for $n\le100$.}{examples/Maximum_Clique_Dyn.cpp}
+\inputcodeex{Minimum Steiner Tree*}{2_Graph/MinimumSteinerTree.cpp}%
+{$O(V3^T+V^22^T)$ for $T$ terminals. Supports \textbf{vertex costs} via \texttt{vcst}; \texttt{add\_edge} is directed. 0-base.}{examples/MinimumSteinerTree.cpp}
+\inputcodeex{Dominator Tree*}{2_Graph/Dominator_Tree.cpp}%
+{Lengauer-Tarjan, $O((V+E)\log V)$. Only vertices reachable from \texttt{root} are meaningful. \textbf{1-base.}}{examples/Dominator_Tree.cpp}
 %\inputcode{Minimum Arborescence*}{2_Graph/Minimum_Arborescence_fast.cpp} % test by luogu P4716 
 %\inputcode{Vizing's theorem*}{2_Graph/Vizing.cpp} % test by CF 101933 G
-\inputcodedesc{Four Cycle}{2_Graph/FourCircleCount.cpp}%
-{Counts 4-cycles in $O(E\sqrt E)$ by orienting edges along a degree order. \textbf{This is a complete \texttt{main}, not a library function} (reads $n$, $m$, 1-base).}
-\inputcodedesc{Minimum Clique Cover*}{2_Graph/Minimum_Clique_Cover.cpp}%
-{$O(n2^n)$ \textbf{probabilistic} cover count via subset-sum transform. Needs \texttt{fwt()}; $n$ limited by the $2^n$ arrays.}
-\inputcodedesc{NumberofMaximalClique*}{2_Graph/NumberofMaximalClique.cpp}%
-{Bron-Kerbosch with pivot, $O(3^{n/3})$. \textbf{Hard-stops once the count passes 1000} --- raise the guard for a full count. 1-base.}
+\inputcodeex{Minimum Clique Cover*}{2_Graph/Minimum_Clique_Cover.cpp}%
+{$O(n2^n)$ \textbf{probabilistic} cover count via subset-sum transform. Needs \texttt{fwt()}; $n$ limited by the $2^n$ arrays.}{examples/Minimum_Clique_Cover.cpp}
+\inputcodeex{NumberofMaximalClique*}{2_Graph/NumberofMaximalClique.cpp}%
+{Bron-Kerbosch with pivot, $O(3^{n/3})$. Returns the full count. 1-base.}{examples/NumberofMaximalClique.cpp}
 
 
 \section{Data Structure}
-\subsection{Discrete Trick}
-{\scriptsize Binary-search helpers for an already sorted value list. Coordinate compression (sort+unique) is intentionally omitted; ``index of x'' uses \texttt{lower\_bound}, while the count / first 1-based position after values $\le x$ uses \texttt{upper\_bound}.\par}\vspace{-0.6em}%
-\lstinputlisting{3_Data_Structure/discrete_trick.cpp}
-\inputcodedesc{BIT kth*}{3_Data_Structure/BIT_kth.cpp}%
-{$k$-th smallest from a value-domain BIT in $O(\log N)$ by descending the tree. \textbf{$N$ must be a power of two.}}
-\inputcodedesc{Interval Container*}{3_Data_Structure/IntervalContainer.cpp}%
-{Maintains disjoint half-open $[L,R)$ intervals with auto-merge; amortised $O(\log n)$.}
-\inputcodedesc{Leftist Tree}{3_Data_Structure/Leftist_Tree.cpp}%
-{Mergeable \emph{max}-heap, \texttt{merge}/\texttt{pop} $O(\log n)$, keeps subtree size and sum. No lazy tags.}
+\inputcodeex{BIT kth*}{3_Data_Structure/BIT_kth.cpp}%
+{$k$-th smallest from a value-domain BIT in $O(\log N)$ by descending the tree. \textbf{$N$ must be a power of two.}}{examples/BIT_kth.cpp}
+\inputcodeex{Interval Container*}{3_Data_Structure/IntervalContainer.cpp}%
+{Maintains disjoint half-open $[L,R)$ intervals with auto-merge; amortised $O(\log n)$.}{examples/IntervalContainer.cpp}
+\inputcodeex{Leftist Tree}{3_Data_Structure/Leftist_Tree.cpp}%
+{Mergeable \emph{max}-heap, \texttt{merge}/\texttt{pop} $O(\log n)$, keeps subtree size and sum. No lazy tags.}{examples/Leftist_Tree.cpp}
 \inputcodeex{Heavy light Decomposition*}{3_Data_Structure/Heavy_light_Decomposition.cpp}%
 {Path queries in $O(\log^2 n)$ with the included segment tree. 1-base, root 1.}{examples/Heavy_light_Decomposition.cpp}
 \inputcodeex{Centroid Decomposition*}{3_Data_Structure/Centroid_Decomposition.cpp}%
@@ -70,33 +65,33 @@
 {Line container over an integer $x$ domain, $O(\log n)$. Keeps the \textbf{maximum}; negate for minimum.}{examples/LiChaoST.cpp}
 \inputcodeex{Link cut tree*}{3_Data_Structure/link_cut_tree.cpp}%
 {Dynamic trees, amortised $O(\log n)$; path aggregate is XOR. Supports reroot, link, cut, connectivity, LCA, point updates and path queries.}{examples/link_cut_tree.cpp}
-\inputcodedesc{KDTree}{3_Data_Structure/KDTree.cpp}%
-{Nearest neighbour, build $O(n\log n)$, query $O(\log n)$ average. Returns \textbf{squared} distance and skips distance-0 points.}
-\inputcodedesc{Treap}{3_Data_Structure/Treap.cpp}%
-{Rotation-free treap, expected $O(\log n)$; \texttt{split} by key, \texttt{split2} by size. \texttt{down()} is empty --- add lazy tags there.}
+\inputcodeex{KDTree}{3_Data_Structure/KDTree.cpp}%
+{Nearest neighbour, build $O(n\log n)$, query $O(\log n)$ average. Returns \textbf{squared} distance and skips distance-0 points.}{examples/KDTree.cpp}
+\inputcodeex{Treap}{3_Data_Structure/Treap.cpp}%
+{Rotation-free treap, expected $O(\log n)$; \texttt{split} by key, \texttt{split2} by size. \texttt{down()} is empty --- add lazy tags there.}{examples/Treap.cpp}
 % \inputcode{Range Chmin Chmax Add Range Sum*}{3_Data_Structure/Range_Chmin_Chmax_Add_Range_Sum.cpp} % test by Lib-Checker Range Chmin Chmax Add Range Sum
 
 
 \section{Flow/Matching}
 % \inputcode{Dinic}{4_Flow_Matching/Dinic.cpp}
-\inputcodedesc{Bipartite Matching*}{4_Flow_Matching/Bipartite_Matching.cpp}%
-{Max bipartite matching, Hopcroft-Karp. $O(E\sqrt{V})$. 0-base.}
+\inputcodeex{Bipartite Matching*}{4_Flow_Matching/Bipartite_Matching.cpp}%
+{Max bipartite matching, Hopcroft-Karp. $O(E\sqrt{V})$. 0-base.}{examples/Bipartite_Matching.cpp}
 \inputcodeex{Kuhn Munkres*}{4_Flow_Matching/Kuhn_Munkres.cpp}%
 {Max weight \emph{perfect} matching on a square bipartite graph. $O(V^3)$. 0-base.}{examples/Kuhn_Munkres.cpp}
 \inputcodeex{MincostMaxflow*}{4_Flow_Matching/MincostMaxflow.cpp}%
 {Min cost max flow, SPFA + Johnson potentials (handles negative cost). 0-base.}{examples/MincostMaxflow.cpp}
-\inputcodedesc{Maximum Simple Graph Matching*}{4_Flow_Matching/Maximum_Simple_Graph_Matching.cpp}%
-{Max matching on a general graph (blossom). $O(V^3)$. Needs C++20. 0-base.}
+\inputcodeex{Maximum Simple Graph Matching*}{4_Flow_Matching/Maximum_Simple_Graph_Matching.cpp}%
+{Max matching on a general graph (blossom). $O(V^3)$. 0-base.}{examples/Maximum_Simple_Graph_Matching.cpp}
 \inputcodeex{Maximum Weight Matching*}{4_Flow_Matching/Maximum_Weight_Matching.cpp}%
 {Max weight matching on a general graph (weighted blossom). $O(V^3)$. 1-base.}{examples/Maximum_Weight_Matching.cpp}
-\inputcodedesc{SW-mincut}{4_Flow_Matching/SW-mincut.cpp}%
-{Global min cut, Stoer-Wagner. $O(V^3)$, adjacency matrix, undirected. 0-base.}
+\inputcodeex{SW-mincut}{4_Flow_Matching/SW-mincut.cpp}%
+{Global min cut, Stoer-Wagner. $O(V^3)$, adjacency matrix, undirected. 0-base.}{examples/SW-mincut.cpp}
 \inputcodeex{BoundedFlow*(Dinic*)}{4_Flow_Matching/BoundedFlow.cpp}%
 {Flow with lower bounds; feasible circulation or bounded max flow. Size arrays $n+3$. 0-base.}{examples/BoundedFlow.cpp}
-\inputcodedesc{Gomory Hu tree*}{4_Flow_Matching/Gomory_Hu_tree.cpp}%
-{All-pairs min cut as a tree ($n-1$ max-flow runs, Gusfield). Needs a MaxFlow named Dinic. 0-base.}
-\inputcodedesc{Minimum Cost Circulation*}{4_Flow_Matching/MinCostCirculation.cpp}%
-{Min cost circulation via capacity scaling; cancels negative cycles. $O(VE\cdot E\log C)$. 0-base.}
+\inputcodeex{Gomory Hu tree*}{4_Flow_Matching/Gomory_Hu_tree.cpp}%
+{All-pairs min cut as a tree ($n-1$ max-flow runs, Gusfield). Needs a MaxFlow named Dinic. 0-base.}{examples/Gomory_Hu_tree.cpp}
+\inputcodeex{Minimum Cost Circulation*}{4_Flow_Matching/MinCostCirculation.cpp}%
+{Min cost circulation via capacity scaling; cancels negative cycles. $O(VE\cdot E\log C)$. 0-base.}{examples/MinCostCirculation.cpp}
 \subsection{Flow Models}
 \input{4_Flow_Matching/Model.tex}
 \subsection{matching}
@@ -106,27 +101,27 @@
 
 
 \section{String}
-\inputcodedesc{KMP}{5_String/KMP.cpp}%
-{Pattern search, $O(|A|+|B|)$. Prints every 1-based occurrence; an empty pattern matches all $|A|+1$ boundaries. \texttt{nxt} is the prefix-function table.}
-\inputcodedesc{Z-value*}{5_String/Z-value.cpp}%
-{$z[i]=\mathrm{lcp}(s,s[i..])$ in $O(n)$. \textbf{$z[0]$ is left unset.}}
-\inputcodedesc{Manacher*}{5_String/Manacher.cpp}%
-{All palindromic radii in $O(n)$ by interleaving \texttt{\%}. 0-base.}
+\inputcodeex{KMP}{5_String/KMP.cpp}%
+{Pattern search, $O(|A|+|B|)$. Prints every 1-based occurrence; an empty pattern matches all $|A|+1$ boundaries. \texttt{nxt} is the prefix-function table.}{examples/KMP.cpp}
+\inputcodeex{Z-value*}{5_String/Z-value.cpp}%
+{$z[i]=\mathrm{lcp}(s,s[i..])$ in $O(n)$. \textbf{$z[0]$ is left unset.}}{examples/Z-value.cpp}
+\inputcodeex{Manacher*}{5_String/Manacher.cpp}%
+{All palindromic radii in $O(n)$ by interleaving \texttt{\%}. 0-base.}{examples/Manacher.cpp}
 %\inputcode{Suffix Array}{5_String/Suffix_Array.cpp}
-\inputcodedesc{SAIS*}{5_String/SAIS-C++20.cpp}%
-{Suffix array in $O(n)$ plus Kasai height. \textbf{Needs C++20}; input must not contain a 0 byte.}
+\inputcodeex{SAIS*}{5_String/SAIS-C++20.cpp}%
+{Suffix array in $O(n)$ plus Kasai height. \textbf{Needs C++20}; input must not contain a 0 byte.}{examples/SAIS-C++20.cpp}
 \inputcodeex{Aho-Corasick Automatan*}{5_String/Aho-Corasick_Automatan.cpp}%
 {Multi-pattern matching. Build $O(\sum|s_i|\sigma)$, scan $O(|T|)$. Use \texttt{rnx} for $O(1)$ transitions; root is node 1, chars are \texttt{c-\textquotesingle A\textquotesingle}.}{examples/Aho-Corasick_Automatan.cpp}
-\inputcodedesc{Smallest Rotation}{5_String/Smallest_Rotation.cpp}%
-{Lexicographically smallest rotation (Booth/min-notation) in $O(n)$.}
-\inputcodedesc{De Bruijn sequence*}{5_String/De_Bruijn_sequence.cpp}%
-{Sequence of length $N+K-1$ whose length-$N$ windows are all distinct ($K\le C^N$).}
+\inputcodeex{Smallest Rotation}{5_String/Smallest_Rotation.cpp}%
+{Lexicographically smallest rotation (Booth/min-notation) in $O(n)$.}{examples/Smallest_Rotation.cpp}
+\inputcodeex{De Bruijn sequence*}{5_String/De_Bruijn_sequence.cpp}%
+{Sequence of length $N+K-1$ whose length-$N$ windows are all distinct ($K\le C^N$).}{examples/De_Bruijn_sequence.cpp}
 \inputcodeex{Extended SAM*}{5_String/exSAM.cpp}%
 {Generalised suffix automaton over many strings; \texttt{cnt} gives occurrences per state. Chars are \texttt{c-\textquotesingle a\textquotesingle}.}{examples/exSAM.cpp}
-\inputcodedesc{PalTree*}{5_String/PalTree.cpp}%
-{Eertree: counts distinct palindromic substrings and their occurrences in $O(n\sigma)$.}
-\inputcodedesc{Main Lorentz}{5_String/MainLorentz.cpp}%
-{All tandem repeats in $O(n\log n)$, stored as start-ranges per length. Handles every byte value by encoding an out-of-alphabet separator internally.}
+\inputcodeex{PalTree*}{5_String/PalTree.cpp}%
+{Eertree: counts distinct palindromic substrings and their occurrences in $O(n\sigma)$.}{examples/PalTree.cpp}
+\inputcodeex{Main Lorentz}{5_String/MainLorentz.cpp}%
+{All tandem repeats in $O(n\log n)$, stored as start-ranges per length. Handles every byte value by encoding an out-of-alphabet separator internally.}{examples/MainLorentz.cpp}
 
 
 \section{Math}
@@ -190,17 +185,17 @@
 \input{6_Math/Generating_function.tex}
 
 \section{Polynomial}
-\inputcodedesc{Fast Fourier Transform}{7_Polynomial/Fast_Fourier_Transform.cpp}%
-{Complex FFT convolution. $O(n\log n)$. Call \texttt{prefft()} once; double precision limits coefficient size.}
+\inputcodeex{Fast Fourier Transform}{7_Polynomial/Fast_Fourier_Transform.cpp}%
+{Complex FFT convolution. $O(n\log n)$. Call \texttt{prefft()} once; double precision limits coefficient size.}{examples/Fast_Fourier_Transform.cpp}
 \input{7_Polynomial/Number_Theory_Transform_Prime}
-\inputcodedesc{Number Theory Transform*}{7_Polynomial/Number_Theory_Transform.cpp}%
-{Modular convolution, exact (no precision loss). $O(n\log n)$, $n$ a power of two.}
+\inputcodeex{Number Theory Transform*}{7_Polynomial/Number_Theory_Transform.cpp}%
+{Modular convolution, exact (no precision loss). $O(n\log n)$, $n$ a power of two.}{examples/Number_Theory_Transform.cpp}
 \inputcodeex{Fast Walsh Transform*}{7_Polynomial/Fast_Walsh_Transform.cpp}%
 {or/and/xor convolution, $O(n\log n)$; file implements or. Also subset convolution in $O(2^LL^2)$.}{examples/Fast_Walsh_Transform.cpp}
 \inputcodeex{Polynomial Operation}{7_Polynomial/Polynomial_Operation.cpp}%
 {Mul/Inv/Sqrt/DivMod/Ln/Exp/Pow/Eval/Interpolate over $\bmod\,998244353$. Mostly $O(n\log n)$, Eval $O(n\log^2 n)$.}{examples/Polynomial_Operation.cpp}
-\inputcodedesc{Value Polynomial}{7_Polynomial/Value_Poly.cpp}%
-{Polynomial held as consecutive point values; Lagrange eval and prefix-sum lift in $O(n)$.}
+\inputcodeex{Value Polynomial}{7_Polynomial/Value_Poly.cpp}%
+{Polynomial held as consecutive point values; Lagrange eval and prefix-sum lift in $O(n)$.}{examples/Value_Poly.cpp}
 \subsection{Newton's Method}
 \input{7_Polynomial/Newton.tex}
 
@@ -222,7 +217,7 @@
 \inputcodedesc{Polygon Center}{8_Geometry/center.cpp}%
 {Area centroid of a simple polygon in $O(n)$ by signed-area weighting, so concave shapes are fine.}
 \inputcodedesc{Maximum Triangle}{8_Geometry/maxTriangleOfConvex.cpp}%
-{Largest triangle inscribed in a convex polygon by exhaustive triples in $O(n^3)$. \textbf{Writes \texttt{res[chnum]}, so allocate one extra slot; this prioritises a verified reference implementation.}}
+{Largest triangle inscribed in a convex polygon by exhaustive triples in $O(n^3)$.}
 \inputcodedesc{Point in Polygon}{8_Geometry/pointInPolygon.cpp}%
 {Ray casting for any simple polygon, $O(n)$. \textbf{Returns 1 on the boundary, 2 strictly inside}, 0 outside.}
 \inputcodedesc{Circle}{8_Geometry/circle.cpp}%
@@ -238,7 +233,7 @@
 \inputcodedesc{3D Convex Hull}{8_Geometry/convex3D.cpp}%
 {Incremental 3D hull in $O(n^2)$; \texttt{faces()} merges coplanar triangles. \textbf{Input must not contain duplicate points.}}
 \inputcodedesc{Minimum Enclosing Circle}{8_Geometry/MinimumEnclosingCircle.cpp}%
-{Welzl randomised incremental, expected $O(n)$. \textbf{\texttt{random\_shuffle} was removed in C++17} --- swap in \texttt{shuffle}.}
+{Welzl randomised incremental with \texttt{shuffle}, expected $O(n)$.}
 \inputcodedesc{Closest Pair}{8_Geometry/ClosestPair.cpp}%
 {Divide and conquer in $O(n\log^2 n)$ (re-sorts the strip by $y$). \textbf{\texttt{p[]} must already be sorted by $x$.}}
 
@@ -276,7 +271,7 @@
 \inputcodedesc{N Queens Problem}{9_Else/NQueens.cpp}%
 {Constructs one solution in $O(n)$ by cases on $n\bmod 6$ --- no search. \textbf{No solution exists for $n=2,3$.}}
 \inputcodedesc{Digit DP}{9_Else/digit_dp.cpp}%
-{Binary digit DP with \texttt{tight} and previous-digit state; \texttt{calc(x)} counts values in $[0,x]$ with no adjacent one bits.}
+{Binary digit DP compressed to Fibonacci counts; \texttt{calc(x)} counts values in $[0,x]$ with no adjacent one bits.}
 \section{Python}
 \subsection{Misc}
 {\scriptsize Importable Python fallbacks for exact decimals/fractions, matrix and fast-array parsing, modular powers, seeded random helpers, and formatting. Huge integer input raises Python 3.11+'s digit limit.\par}\vspace{-0.6em}%

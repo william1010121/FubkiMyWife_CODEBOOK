@@ -31,11 +31,11 @@ struct Maximum_Clique {
   void add_edge(int u, int v) {
     N[u][v] = N[v][u] = 1;
   }
-  int solve() { // remember srand
+  int solve() {
     bst R, P, X;
     ans = 0, P.flip();
     for (int i = 0; i < n; ++i) p[i] = i;
-    random_shuffle(p, p + n), BronKerbosch2(R, P, X);
+    shuffle(p, p + n, mt19937(712367821)), BronKerbosch2(R, P, X);
     return ans;
   }
 };

@@ -6,7 +6,7 @@ cplx omega[maxn + 1];
 void prefft() { for (int i = 0; i <= maxn; ++i)
   omega[i] = exp(i * 2 * pi / maxn * I); }
 void bin(vector<cplx> &a, int n) {
-  int lg = 0; for (; (1 << lg) < n; ++lg); --lg;
+  int lg = bit_width((unsigned)n) - 2;
   vector<cplx> tmp(n);
   for (int i = 0; i < n; ++i) {
     int to = 0;

@@ -3,7 +3,7 @@ int Jacobi(int a, int m) {
   for (; m > 1; ) {
     a %= m;
     if (a == 0) return 0;
-    const int r = __builtin_ctz(a);
+    const int r = countr_zero((unsigned)a);
     if ((r & 1) && ((m + 2) & 4)) s = -s;
     a >>= r;
     if (a & m & 2) s = -s;

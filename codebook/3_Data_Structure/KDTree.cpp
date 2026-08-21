@@ -42,12 +42,9 @@ void dfs(
   if (~b) dfs(q, d, b, dep + 1);
 }
 void init(const vector<point> &v) {
-  copy(v.begin(), v.end(), p);
-  root = build(0, v.size());
+  copy(v.begin(), v.end(), p); root = build(0, v.size());
 }
 long long nearest(const point &q) {
-  long long res = 1e18;
-  dfs(q, res, root);
-  return res;
+  long long res = 1e18; if (~root) dfs(q, res, root); return res;
 }
 } // namespace kdt

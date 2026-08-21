@@ -1,8 +1,7 @@
 // Convex polygons in cyclic order; self-contained O(nm) implementation.
 double _point_seg_dist(Point p, Point a, Point b) {
-  double dx = b.x - a.x, dy = b.y - a.y;
-  double t = ((p.x - a.x) * dx + (p.y - a.y) * dy) / (dx * dx + dy * dy);
-  t = max(0.0, min(1.0, t));
+  double dx = b.x - a.x, dy = b.y - a.y, z = dx * dx + dy * dy;
+  double t = z ? clamp(((p.x - a.x) * dx + (p.y - a.y) * dy) / z, 0., 1.) : 0;
   return hypot(p.x - (a.x + t * dx), p.y - (a.y + t * dy));
 }
 

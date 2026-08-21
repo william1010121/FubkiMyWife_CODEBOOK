@@ -8,9 +8,7 @@ struct Query {
   Query(int l, int r, int t, int block = 1, int query_id = -1)
       : L(l), R(r), LBid(l / block), RBid(r / block), T(t), id(query_id) {}
   bool operator<(const Query &q) const {
-    if (LBid != q.LBid) return LBid < q.LBid;
-    if (RBid != q.RBid) return RBid < q.RBid;
-    return T < q.T;
+    return tie(LBid, RBid, T) < tie(q.LBid, q.RBid, q.T);
   }
 };
 

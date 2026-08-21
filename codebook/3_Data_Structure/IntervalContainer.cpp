@@ -13,8 +13,7 @@ set<pii>::iterator addInterval(set<pii>& is, int L, int R) {
 void removeInterval(set<pii>& is, int L, int R) {
   if (L == R) return;
   auto it = addInterval(is, L, R);
-  auto r2 = it->Y;
-  if (it->X == L) is.erase(it);
-  else (int&)it->Y = L;
+  auto [l2, r2] = *it; is.erase(it);
+  if (l2 != L) is.emplace(l2, L);
   if (R != r2) is.emplace(R, r2);
 }

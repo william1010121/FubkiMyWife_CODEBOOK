@@ -22,11 +22,9 @@ struct L { // ax + by + c = 0
   L() : a(0), b(0), c(0), o(0), pa(), pb() {}
   L(P pa, P pb) : a(pa.y - pb.y), b(pb.x - pa.x), c(pa ^ pb),
     o(atan2(-a, b)), pa(pa), pb(pb) {}
-  P project(P p) { return pa + (pb - pa).unit() *
-    ((pb - pa) * (p - pa) / (pb - pa).abs()); }
+  P project(P p) { P d = pb - pa; return pa + d * (d * (p - pa) / (d * d)); }
   P reflect(P p) { return p + (project(p) - p) * 2; }
-  double get_ratio(P p) { return (p - pa) * (pb - pa)
-    / ((pb - pa).abs() * (pb - pa).abs()); }
+  double get_ratio(P p) { P d = pb - pa; return (p - pa) * d / (d * d); }
   bool inside(P p) { return
     min(pa.x, pb.x) <= p.x && p.x <= max(pa.x, pb.x) &&
     min(pa.y, pb.y) <= p.y && p.y <= max(pa.y, pb.y) &&

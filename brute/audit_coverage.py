@@ -8,6 +8,7 @@ from silently missing those harnesses.
 
 from __future__ import annotations
 
+from collections import Counter
 from pathlib import Path
 import re
 import sys
@@ -58,6 +59,27 @@ def active_callable_artifacts() -> list[Path]:
     return sorted(paths)
 
 
+def example_coverage() -> tuple[list[str], list[str], list[str], int]:
+    """Return missing, extra, and duplicate active example snippet paths."""
+    content = (CODEBOOK / "content.tex").read_text()
+    active_text = "\n".join(
+        line for line in content.splitlines() if not line.lstrip().startswith("%")
+    )
+    found = re.findall(r"examples/[^}%\s]+\.cpp", active_text)
+    counts = Counter(found)
+    expected = {
+        path.relative_to(CODEBOOK).as_posix()
+        for path in (CODEBOOK / "examples").glob("*.cpp")
+    }
+    got = set(found)
+    return (
+        sorted(expected - got),
+        sorted(got - expected),
+        sorted(path for path, count in counts.items() if count != 1),
+        len(expected),
+    )
+
+
 def searchable_brute_files() -> list[tuple[Path, str]]:
     result: list[tuple[Path, str]] = []
     for path in sorted(BRUTE.rglob("*")):
@@ -102,23 +124,34 @@ def main() -> int:
                 print(f"NO-EXEC\t{template.relative_to(ROOT).as_posix()}")
     executable_set = set(executable_referenced)
     missing_all = [template for template in all_sources if template not in executable_set]
+    example_missing, example_extra, example_duplicate, example_count = example_coverage()
 
-    if missing or missing_all:
+    if missing or missing_all or example_missing or example_extra or example_duplicate:
         print(
             "coverage audit: "
             f"active={len(active_sources)} active-missing={len(missing)} "
             f"all-sources={len(all_sources)} accounted={len(referenced)} "
-            f"executable={len(executable_referenced)} all-missing={len(missing_all)}"
+            f"executable={len(executable_referenced)} all-missing={len(missing_all)} "
+            f"example-missing={len(example_missing)} example-extra={len(example_extra)} "
+            f"example-duplicate={len(example_duplicate)}"
         )
         for path in missing:
             print(path.relative_to(ROOT).as_posix())
+        for label, paths in (
+            ("EXAMPLE-MISSING", example_missing),
+            ("EXAMPLE-EXTRA", example_extra),
+            ("EXAMPLE-DUPLICATE", example_duplicate),
+        ):
+            for path in paths:
+                print(f"{label}\t{path}")
         return 1
 
     print(
         "coverage audit: "
         f"active={len(active_sources)} active-missing=0 "
         f"all-sources={len(all_sources)} accounted={len(referenced)} "
-        f"executable={len(executable_referenced)} all-missing=0"
+        f"executable={len(executable_referenced)} all-missing=0 "
+        f"examples={example_count}/{example_count}"
     )
     return 0
 

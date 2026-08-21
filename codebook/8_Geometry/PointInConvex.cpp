@@ -50,7 +50,7 @@ bool inside(const vector<point> &ch, point t) {
     }
     p = ch[1] - ch[0];
     double ang = acos(1.0 * (p * q) / p.len() / q.len());
-    int d = 20, z = ch.size() - 1;
+    int d = bit_width((unsigned)ch.size()), z = ch.size() - 1;
     while (d--) {
         if (z - (1 << d) < 1) continue;
         point p1 = ch[1] - ch[0];

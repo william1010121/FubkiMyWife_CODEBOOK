@@ -23,7 +23,7 @@ struct Matching { // 0-base
     iota(ALL(fa), 0); fill(ALL(s), -1);
     q = queue<int>(); q.push(r); s[r] = 0;
     for (; !q.empty(); q.pop()) {
-      for (int x = q.front(); int u : G[x])
+      int x = q.front(); for (int u : G[x])
         if (s[u] == -1) {
           if (pre[u] = x, s[u] = 1, match[u] == n) {
             for (int a = u, b = x, last;

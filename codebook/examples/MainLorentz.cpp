@@ -1,2 +1,2 @@
-main_lorentz(s); // needs Zalgo()
-// for p in rep[l]: s[p,p+l) == s[p+l,p+2l)
+main_lorentz(s); // fills rep[length]
+// [L,R] in rep[l]: every p has s[p,p+l)==s[p+l,p+2l)

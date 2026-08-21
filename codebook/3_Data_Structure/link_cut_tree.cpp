@@ -1,8 +1,8 @@
 struct Splay { // xor-sum
   static Splay nil;
   Splay *ch[2], *f;
-  int val, sum, rev, size;
-  Splay (int _val = 0) : val(_val), sum(_val), rev(0), size(1) { f = ch[0] = ch[1] = &nil; }
+  int val, sum, rev;
+  Splay (int _val = 0) : val(_val), sum(_val), rev(0) { f = ch[0] = ch[1] = &nil; }
   bool isr()
   { return f->ch[0] != this && f->ch[1] != this; }
   int dir()
@@ -20,7 +20,6 @@ struct Splay { // xor-sum
     rev = 0;
   }
   void pull() {
-    size = ch[0]->size + ch[1]->size + 1;
     sum = ch[0]->sum ^ ch[1]->sum ^ val;
   }
 } Splay::nil;

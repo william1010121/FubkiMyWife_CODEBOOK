@@ -1,4 +1,4 @@
-BM.init(nl, nr); // left 0..nl-1
-BM.add_edge(l, r);
-int m = BM.matching();
-// pair (i, BM.mp[i]) when mp[i] != -1
+static Bipartite_Matching bm; bm.init(nl, nr); // left 0..nl-1
+bm.add_edge(l, r);
+int m = bm.matching();
+// pair (i, bm.mp[i]) when bm.mp[i] != -1

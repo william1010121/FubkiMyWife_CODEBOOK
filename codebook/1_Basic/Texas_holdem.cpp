@@ -28,7 +28,7 @@ struct cards{
     if(SZ(v)==5&&v[0].Y==v[1].Y+1&&v[1].Y==v[2].Y+1&&v[2].Y==v[3].Y+1&&v[3].Y==v[4].Y+1)
       Straight=1;
     else if(SZ(v)==5&&v[0].Y==12&&v[1].Y==3&&v[2].Y==2&&v[3].Y==1&&v[4].Y==0)
-      v[0].Y=3,v[1].Y=2,v[2].Y=1,v[1].Y=0,v[0].Y=-1,Straight=1;
+      v[0].Y=3,v[1].Y=2,v[2].Y=1,v[3].Y=0,v[4].Y=-1,Straight=1;
     if(Straight&&Flush) hands=1;
     else if(v[0].X==4) hands=2;
     else if(v[0].X==3&&v[1].X==2) hands=3;

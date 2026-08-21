@@ -2,6 +2,7 @@ bool operator<(const P &a, const P &b) { return same(a.x, b.x) ? a.y < b.y : a.x
 bool operator>(const P &a, const P &b) { return same(a.x, b.x) ? a.y > b.y : a.x > b.x; }
 #define crx(a, b, c) ((b - a) ^ (c - a))
 vector<P> convex(vector<P> ps) {
+  if (ps.empty()) return {};
   vector<P> p;
   sort(ps.begin(), ps.end());
   for (int i = 0; i < ps.size(); ++i) {

@@ -14,8 +14,7 @@ struct Query {
     LBid = L / block;
   }
   bool operator<(const Query &q) const {
-    if (LBid != q.LBid) return LBid < q.LBid;
-    return R < q.R;
+    return tie(LBid, R) < tie(q.LBid, q.R);
   }
 };
 

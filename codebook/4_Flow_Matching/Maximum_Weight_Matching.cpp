@@ -27,7 +27,7 @@ struct WeightGraph { // 1-based
     st[x] = b;
     if (x > n) for (int y : flo[x]) set_st(y, b);
   }
-  vector<int> split_flo(auto &f, int xr) {
+  vector<int> split_flo(vector<int> &f, int xr) {
     auto it = find(ALL(f), xr);
     if (auto pr = it - f.begin(); pr % 2 == 1)
       reverse(1 + ALL(f)), it = f.end() - pr;

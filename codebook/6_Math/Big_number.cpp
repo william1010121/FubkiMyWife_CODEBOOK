@@ -48,12 +48,8 @@ struct bigN:vector<ll>{
     if(negative!=b.negative)return negative?-1:1;
     return negative?-abscmp(b):abscmp(b);
   }
-  bool operator<(const bigN&b)const{return cmp(b)<0;}
-  bool operator>(const bigN&b)const{return cmp(b)>0;}
-  bool operator<=(const bigN&b)const{return cmp(b)<=0;}
-  bool operator>=(const bigN&b)const{return cmp(b)>=0;}
+  strong_ordering operator<=>(const bigN&b)const{return cmp(b)<=>0;}
   bool operator==(const bigN&b)const{return !cmp(b);}
-  bool operator!=(const bigN&b)const{return cmp(b)!=0;}
   bigN abs()const{
     bigN res=*this;
     return res.negative=0, res;
@@ -88,7 +84,7 @@ struct bigN:vector<ll>{
         if((res[i+j]+=at(i)*b[j])>=base){
           res[i+j+1]+=res[i+j]/base;
           res[i+j]%=base;
-        }//乘法用carry會溢位
+        }
     return res.trim(),res;
   }
   bigN operator/(const bigN &b)const{

@@ -1,11 +1,7 @@
 struct Maxflow {
   static const int MAXV = 20010;
   static const int INF = 1000000;
-  struct Edge {
-    int v, c, r;
-    Edge(int _v, int _c, int _r)
-      : v(_v), c(_c), r(_r) {}
-  };
+  struct Edge { int v, c, r; };
   int s, t;
   vector<Edge> G[MAXV * 2];
   int iter[MAXV * 2], d[MAXV * 2], gap[MAXV * 2], tot;
