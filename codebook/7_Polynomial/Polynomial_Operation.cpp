@@ -7,13 +7,17 @@ struct Poly : vector<ll> { // coefficients in [0, P)
   Poly(const Poly &p, int m) : vector<ll>(m) {
     copy_n(p.data(), min(p.n(), m), data());
   }
-  Poly& irev() { return reverse(data(), data() + n()), *this; }
+  Poly& irev() {
+    return reverse(data(), data() + n()), *this; }
   Poly& isz(int m) { return resize(m), *this; }
   Poly& iadd(const Poly &rhs) { // n() == rhs.n()
-    fi(0, n()) if (((*this)[i] += rhs[i]) >= P) (*this)[i] -= P; return *this;
+    fi(0, n()) if (((*this)[i] += rhs[i]) >=
+      P) (*this)[i] -= P;
+    return *this;
   }
   Poly& imul(ll k) {
-    fi(0, n()) (*this)[i] = (*this)[i] * k % P; return *this;
+    fi(0, n()) (*this)[i] = (*this)[i] * k % P;
+    return *this;
   }
   Poly Mul(const Poly &rhs) const {
     int m = 1;
@@ -38,12 +42,16 @@ struct Poly : vector<ll> { // coefficients in [0, P)
     return Xi.isz(n());
   }
   Poly Sqrt() const { // Jacobi(t[0],P) = 1, 1e5/235ms
-    if (n() == 1) return {QuadraticResidue((*this)[0], P)};
-    Poly X = Poly(*this, (n() + 1) / 2).Sqrt().isz(n());
-    return X.iadd(Mul(X.Inv()).isz(n())).imul(P / 2 + 1);
+    if (n() == 1) return {
+      QuadraticResidue((*this)[0], P)};
+    Poly X = Poly(*this,
+      (n() + 1) / 2).Sqrt().isz(n());
+    return X.iadd(Mul(X.Inv()).isz(n())).imul(P /
+      2 + 1);
   }
   pair<Poly, Poly> DivMod(const Poly &rhs) const {
-    if (n() < rhs.n()) return {{0}, *this}; // back() != 0
+    if (n() < rhs.n()) return {{0}, *this};
+    // back() != 0
     const int m = n() - rhs.n() + 1;
     Poly X(rhs); X.irev().isz(m);
     Poly Y(*this); Y.irev().isz(m);
@@ -54,12 +62,14 @@ struct Poly : vector<ll> { // coefficients in [0, P)
   }
   Poly Dx() const {
     Poly ret(n() - 1);
-    fi(0, ret.n()) ret[i] = (i + 1) * (*this)[i + 1] % P;
+    fi(0,
+      ret.n()) ret[i] = (i + 1) * (*this)[i + 1] % P;
     return ret.isz(max(1, ret.n()));
   }
   Poly Sx() const {
     Poly ret(n() + 1);
-    fi(0, n()) ret[i + 1] = ntt.minv(i + 1) * (*this)[i] % P;
+    fi(0, n()) ret[i + 1] =
+      ntt.minv(i + 1) * (*this)[i] % P;
     return ret;
   }
   Poly _tmul(int nn, const Poly &rhs) const {
@@ -71,9 +81,12 @@ struct Poly : vector<ll> { // coefficients in [0, P)
     const int m = (int)x.size();
     if (!m) return {};
     vector<Poly> down(m * 2);
-    down[1] = Poly(up[1]).irev().isz(n()).Inv().irev()._tmul(m, *this);
+    down[1] =
+      Poly(up[1]).irev().isz(n()).Inv().irev()._tmul(m,
+      *this);
     fi(2, m * 2)
-      down[i] = up[i ^ 1]._tmul(up[i].n() - 1, down[i / 2]);
+      down[i] = up[i ^ 1]._tmul(up[i].n() - 1,
+        down[i / 2]);
     vector<ll> y(m);
     fi(0, m) y[i] = down[m + i][0];
     return y;
@@ -86,7 +99,8 @@ struct Poly : vector<ll> { // coefficients in [0, P)
       up[i] = up[i * 2].Mul(up[i * 2 + 1]);
     return up;
   }
-  vector<ll> Eval(const vector<ll> &x) const { // 1e5, 1s
+  vector<ll> Eval(const vector<ll> &x) const {
+  // 1e5, 1s
     return _eval(x, _tree1(x));
   }
   static Poly Interpolate(const vector<ll> &x,

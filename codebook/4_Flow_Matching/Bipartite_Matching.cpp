@@ -4,7 +4,8 @@ struct Bipartite_Matching { // 0-base
   bool dfs(int u) {
     for (int &i = cur[u]; i < SZ(G[u]); ++i) {
       int e = G[u][i];
-      if (mq[e] == l || (dis[mq[e]] == dis[u] + 1 && dfs(mq[e])))
+      if (mq[e] == l ||
+        (dis[mq[e]] == dis[u] + 1 && dfs(mq[e])))
         return mp[mq[e] = u] = e, 1;
     } return dis[u] = -1, 0;
   }

@@ -16,9 +16,13 @@ struct ECC { // 0-base
       bln[u] = necc++, stk.pop_back();
     }
   }
-  ECC(int _n): n(_n), dft(), ecnt(), necc(), low(n), dfn(n), bln(n), G(n) {}
+  ECC(int _n): n(_n), dft(), ecnt(),
+    necc(), low(n), dfn(n), bln(n), G(n) {}
   void add_edge(int u, int v) {
     G[u].pb({v, ecnt}), G[v].pb({u, ecnt++});
   }
-  void solve() { is_bridge.resize(ecnt); for (int i = 0; i < n; ++i) if (!dfn[i]) dfs(i, -1); }
+  void solve() { is_bridge.resize(ecnt);
+    for (int i = 0; i < n; ++i) if (!dfn[i]) dfs(i,
+      -1);
+    }
 }; // ecc_id(i): bln[i]

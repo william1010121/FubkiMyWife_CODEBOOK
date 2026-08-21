@@ -9,12 +9,14 @@ struct Heavy_light_Decomposition { // 1-base
     for (int i = 1; i <= n; ++i)
       G[i].clear(), mxson[i] = 0;
   }
-  void add_edge(int a, int b) { G[a].pb(b), G[b].pb(a); }
+  void add_edge(int a, int b) { G[a].pb(b), G[b].pb(a);
+    }
   void dfs(int u, int f, int d) {
     w[u] = 1, pa[u] = f, deep[u] = d++;
     for (int &i : G[u])
       if (i != f)
-        dfs(i, u, d), w[u] += w[i], mxson[u] = w[mxson[u]] < w[i] ? i : mxson[u];
+        dfs(i, u, d), w[u] += w[i],
+          mxson[u] = w[mxson[u]] < w[i] ? i : mxson[u];
   }
   void cut(int u, int link) {
     data[pl[u] = ++t] = val[u], ulink[u] = link;
@@ -26,20 +28,25 @@ struct Heavy_light_Decomposition { // 1-base
   void seg_build(int p, int l, int r) {
     if (l == r) return seg[p] = data[l], void();
     int m = (l + r) >> 1;
-    seg_build(p << 1, l, m), seg_build(p << 1 | 1, m + 1, r);
+    seg_build(p << 1, l, m),
+      seg_build(p << 1 | 1, m + 1, r);
     seg[p] = seg[p << 1] + seg[p << 1 | 1];
   }
   int seg_query(int p, int l, int r, int L, int R) {
     if (L <= l && r <= R) return seg[p];
     int m = (l + r) >> 1;
-    return (L <= m ? seg_query(p << 1, l, m, L, R) : 0) +
-      (R > m ? seg_query(p << 1 | 1, m + 1, r, L, R) : 0);
+    return (L <= m ? seg_query(p << 1,
+      l, m, L, R) : 0) +
+      (R > m ? seg_query(p << 1 | 1,
+        m + 1, r, L, R) : 0);
   }
-  void build() { t = 0, dfs(1, 1, 1), cut(1, 1), seg_build(1, 1, n); }
+  void build() { t = 0, dfs(1, 1, 1),
+    cut(1, 1), seg_build(1, 1, n); }
   int query(int a, int b) {
     int ta = ulink[a], tb = ulink[b], res = 0;
     while (ta != tb) {
-      if (deep[ta] > deep[tb]) swap(ta, tb), swap(a, b);
+      if (deep[ta] > deep[tb]) swap(ta,
+        tb), swap(a, b);
       res += seg_query(1, 1, n, pl[tb], pl[b]);
       tb = ulink[b = pa[tb]];
     } if (pl[a] > pl[b]) swap(a, b);

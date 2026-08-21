@@ -12,7 +12,8 @@ struct Maxflow {
       G[i].clear(), iter[i] = d[i] = gap[i] = 0;
   }
   void addEdge(int u, int v, int c) {
-    G[u].push_back({v, c, SZ(G[v])}), G[v].push_back({u, 0, SZ(G[u]) - 1});
+    G[u].push_back({v, c, SZ(G[v])}
+      ), G[v].push_back({u, 0, SZ(G[u]) - 1});
   }
   void bfs() {
     fill(d, d + tot + 1, tot);

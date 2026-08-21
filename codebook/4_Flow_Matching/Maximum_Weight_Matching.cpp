@@ -98,7 +98,8 @@ struct WeightGraph { // 1-based
     } return false;
   }
   bool matching() {
-    fill(ALL(S), -1), fill(ALL(slk), 0); q = queue<int>();
+    fill(ALL(S), -1), fill(ALL(slk), 0);
+    q = queue<int>();
     REP(x, 1, nx) if (st[x] == x && !match[x])
       pa[x] = S[x] = 0, q_push(x);
     if (q.empty()) return false;
@@ -110,20 +111,23 @@ struct WeightGraph { // 1-based
           if (g[u][v].w > 0 && st[u] != st[v]) {
             if (E(g[u][v]) != 0)
               update_slk(u, st[v], slk[st[v]]);
-            else if (on_found_edge(g[u][v])) return true;
+            else if (on_found_edge(g[u][v]))
+              return true;
           }
       } int d = INF;
       REP(b, n + 1, nx) if (st[b] == b && S[b] == 1)
         d = min(d, lab[b] / 2);
       REP(x, 1, nx)
-        if (int s = slk[x]; st[x] == x && s && S[x] <= 0)
+        if (int s = slk[x]; st[x] == x &&
+          s && S[x] <= 0)
           d = min(d, E(g[s][x]) / (S[x] + 2));
       REP(u, 1, n)
         if (S[st[u]] == 1) lab[u] += d;
         else if (S[st[u]] == 0) {
           if (lab[u] <= d) return false;
           lab[u] -= d;
-        } REP(b, n + 1, nx) if (st[b] == b && S[b] >= 0)
+        } REP(b, n + 1,
+          nx) if (st[b] == b && S[b] >= 0)
         lab[b] += d * (2 - 4 * S[b]);
       REP(x, 1, nx)
         if (int s = slk[x]; st[x] == x &&
@@ -148,5 +152,6 @@ struct WeightGraph { // 1-based
       tot_weight += g[u][match[u]].w;
     return {tot_weight, n_matches};
   }
-  void add_edge(int u, int v, int w) { g[u][v].w = g[v][u].w = w; }
+  void add_edge(int u, int v, int w) {
+    g[u][v].w = g[v][u].w = w; }
 };

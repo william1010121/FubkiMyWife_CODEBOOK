@@ -10,7 +10,8 @@ int sz(node *a) { return a ? a->sz : 0; }
 node *merge(node *a, node *b) {
   if (!a || !b) return a ? a : b;
   if (rand() % (sz(a) + sz(b)) < sz(a))
-    return a->down(), a->r = merge(a->r, b), a->up(), a;
+    return a->down(),
+      a->r = merge(a->r, b), a->up(), a;
   return b->down(), b->l = merge(a, b->l), b->up(), b;
 }
 void split(node *o, node *&a, node *&b, int k) {
@@ -52,7 +53,8 @@ bool erase(node *&o, int k) {
 }
 void insert(node *&o, int k) {
   node *a, *b;
-  split(o, a, b, k), o = merge(a, merge(new node(k), b));
+  split(o, a, b, k), o = merge(a,
+    merge(new node(k), b));
 }
 void interval(node *&o, int l, int r) {
   node *a, *b, *c;

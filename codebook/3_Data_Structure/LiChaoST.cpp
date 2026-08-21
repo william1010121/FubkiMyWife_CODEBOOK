@@ -20,7 +20,8 @@ class LiChao { // maintain max
     int m = (l + r) >> 1; ll ret = -INF;
     if (nodes[rt].id != -1) ret = nodes[rt].at(x);
     if (r - l == 1) return ret;
-    if (x < m) return max(ret, query(l, m, rt << 1, x));
+    if (x < m) return max(ret,
+      query(l, m, rt << 1, x));
     return max(ret, query(m, r, rt << 1 | 1, x));
   } public:
   LiChao(int n_) : n(n_), nodes(n * 4) {}

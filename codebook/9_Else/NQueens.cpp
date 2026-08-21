@@ -1,4 +1,5 @@
-void solve(vector<int> &ret, int n) { // no sol when n=2,3
+void solve(vector<int> &ret, int n) {
+// no sol when n=2,3
   if (n == 2 || n == 3) return;
   if (n % 6 == 2) {
     for (int i = 2; i <= n; i += 2) ret.pb(i);

@@ -14,12 +14,16 @@ int build(int l, int r, int dep = 0) {
   yl[m] = yr[m] = p[m].y;
   lc[m] = build(l, m, dep + 1);
   if (~lc[m])
-    xl[m] = min(xl[m], xl[lc[m]]), xr[m] = max(xr[m], xr[lc[m]]),
-    yl[m] = min(yl[m], yl[lc[m]]), yr[m] = max(yr[m], yr[lc[m]]);
+    xl[m] = min(xl[m], xl[lc[m]]),
+      xr[m] = max(xr[m], xr[lc[m]]),
+    yl[m] = min(yl[m], yl[lc[m]]),
+      yr[m] = max(yr[m], yr[lc[m]]);
   rc[m] = build(m + 1, r, dep + 1);
   if (~rc[m])
-    xl[m] = min(xl[m], xl[rc[m]]), xr[m] = max(xr[m], xr[rc[m]]),
-    yl[m] = min(yl[m], yl[rc[m]]), yr[m] = max(yr[m], yr[rc[m]]);
+    xl[m] = min(xl[m], xl[rc[m]]),
+      xr[m] = max(xr[m], xr[rc[m]]),
+    yl[m] = min(yl[m], yl[rc[m]]),
+      yr[m] = max(yr[m], yr[rc[m]]);
   return m;
 }
 bool bound(const point &q, int o, long long d) {
@@ -37,14 +41,17 @@ void dfs(
   long long cd = dist(p[o], q);
   if (cd) d = min(d, cd);
   int a = lc[o], b = rc[o];
-  if (!(dep & 1 ? q.x < p[o].x : q.y < p[o].y)) swap(a, b);
+  if (!(dep & 1 ? q.x < p[o].x : q.y < p[o].y)) swap(a,
+    b);
   if (~a) dfs(q, d, a, dep + 1);
   if (~b) dfs(q, d, b, dep + 1);
 }
 void init(const vector<point> &v) {
-  copy(v.begin(), v.end(), p); root = build(0, v.size());
+  copy(v.begin(), v.end(), p);
+  root = build(0, v.size());
 }
 long long nearest(const point &q) {
-  long long res = 1e18; if (~root) dfs(q, res, root); return res;
+  long long res = 1e18;
+  if (~root) dfs(q, res, root); return res;
 }
 } // namespace kdt

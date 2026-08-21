@@ -11,8 +11,10 @@ struct Cent_Dec { // 1-base
     fill_n(upinfo, n + 1, pll());
     for (int i = 1; i <= n; ++i) G[i].clear();
   }
-  void add_edge(int a, int b, int w) { G[a].pb(pll(b, w)), G[b].pb(pll(a, w)); }
-  void get_cent(int u, int f, int &mx, int &c, int num) {
+  void add_edge(int a, int b, int w) {
+    G[a].pb(pll(b, w)), G[b].pb(pll(a, w)); }
+  void get_cent(int u, int f,
+    int &mx, int &c, int num) {
     int mxsz = 0; sz[u] = 1;
     for (pll e : G[u])
       if (!done[e.X] && e.X != f) {
@@ -35,13 +37,15 @@ struct Cent_Dec { // 1-base
     dis[layer[c]][c] = 0;
     for (pll e : G[c])
       if (!done[e.X]) {
-        lc = sz[e.X] > sz[c] ? cut(e.X, c, num - sz[c]) : cut(e.X, c, sz[e.X]);
+        lc = sz[e.X] > sz[c] ? cut(e.X, c,
+          num - sz[c]) : cut(e.X, c, sz[e.X]);
         upinfo[lc] = pll(), dfs(e.X, c, e.Y, c);
       } return done[c] = 0, c;
   }
   void build() { cut(1, 0, n); }
   void modify(int u) {
-    for (int a = u, ly = layer[a]; a; a = pa[a], --ly) {
+    for (int a = u,
+      ly = layer[a]; a; a = pa[a], --ly) {
       info[a].X += dis[ly][u], ++info[a].Y;
       if (pa[a])
         upinfo[a].X += dis[ly - 1][u], ++upinfo[a].Y;
@@ -49,10 +53,12 @@ struct Cent_Dec { // 1-base
   }
   ll query(int u) {
     ll rt = 0;
-    for (int a = u, ly = layer[a]; a; a = pa[a], --ly) {
+    for (int a = u,
+      ly = layer[a]; a; a = pa[a], --ly) {
       rt += info[a].X + info[a].Y * dis[ly][u];
       if (pa[a])
-        rt -= upinfo[a].X + upinfo[a].Y * dis[ly - 1][u];
+        rt -= upinfo[a].X +
+          upinfo[a].Y * dis[ly - 1][u];
     } return rt;
   }
 };

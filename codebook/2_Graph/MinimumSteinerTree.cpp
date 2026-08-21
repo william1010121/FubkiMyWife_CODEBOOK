@@ -7,13 +7,17 @@ struct SteinerTree { // 0-base
       fill_n(dst[i], n, INF), dst[i][i] = vcst[i] = 0;
   }
   void chmin(int &x, int val) { x = min(x, val); }
-  void add_edge(int ui, int vi, int wi) { chmin(dst[ui][vi], wi); }
+  void add_edge(int ui, int vi, int wi) {
+    chmin(dst[ui][vi], wi); }
   void shortest_path() {
-    // Convert edge-only distances into path costs that include every
-    // entered vertex.  The source vertex is charged by the singleton state.
+    // Convert edge-only distances into path costs that
+    // include every
+    // entered vertex. The source vertex is charged by
+    // the singleton state.
     for (int i = 0; i < n; ++i)
       for (int j = 0; j < n; ++j)
-        if (i != j && dst[i][j] < INF) dst[i][j] += vcst[j];
+        if (i != j &&
+          dst[i][j] < INF) dst[i][j] += vcst[j];
     for (int k = 0; k < n; ++k)
       for (int i = 0; i < n; ++i)
         for (int j = 0; j < n; ++j)
@@ -22,19 +26,23 @@ struct SteinerTree { // 0-base
   int solve(const vector<int>& ter) {
     vector<int> terminals = ter;
     sort(terminals.begin(), terminals.end());
-    terminals.erase(unique(terminals.begin(), terminals.end()), terminals.end());
+    terminals.erase(unique(terminals.begin(),
+      terminals.end()), terminals.end());
     if (terminals.empty()) return 0;
     shortest_path();
     int t = SZ(terminals), full = (1 << t) - 1;
-    for (int i = 0; i <= full; ++i) fill_n(dp[i], n, INF);
+    for (int i = 0; i <= full; ++i) fill_n(dp[i],
+      n, INF);
     copy_n(vcst, n, dp[0]);
     for (int msk = 1; msk <= full; ++msk) {
       if (!(msk & (msk - 1))) {
         int who = __lg(msk);
         for (int i = 0; i < n; ++i)
-          dp[msk][i] = vcst[terminals[who]] + dst[terminals[who]][i];
+          dp[msk][i] = vcst[terminals[who]] +
+            dst[terminals[who]][i];
       } for (int i = 0; i < n; ++i)
-        for (int sub = (msk - 1) & msk; sub; sub = (sub - 1) & msk)
+        for (int sub = (msk - 1) & msk;
+          sub; sub = (sub - 1) & msk)
           chmin(dp[msk][i],
             dp[sub][i] + dp[msk ^ sub][i] - vcst[i]);
       for (int i = 0; i < n; ++i) {

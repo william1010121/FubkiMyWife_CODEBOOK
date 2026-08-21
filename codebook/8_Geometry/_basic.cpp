@@ -1,14 +1,21 @@
-bool same(double a, double b) { return abs(a - b) < eps; }
+bool same(double a, double b) {
+  return abs(a - b) < eps; }
 struct P {
   double x, y;
   P() : x(0), y(0) {}
   P(double x, double y) : x(x), y(y) {}
-  P operator + (P b) const { return {x + b.x, y + b.y}; }
-  P operator - (P b) const { return {x - b.x, y - b.y}; }
-  P operator * (double b) const { return {x * b, y * b}; }
-  P operator / (double b) const { return {x / b, y / b}; }
-  double operator * (P b) const { return x * b.x + y * b.y; }
-  double operator ^ (P b) const { return x * b.y - y * b.x; }
+  P operator + (P b) const { return {x + b.x, y + b.y};
+    }
+  P operator - (P b) const { return {x - b.x, y - b.y};
+    }
+  P operator * (double b) const {
+    return {x * b, y * b}; }
+  P operator / (double b) const {
+    return {x / b, y / b}; }
+  double operator * (P b) const {
+    return x * b.x + y * b.y; }
+  double operator ^ (P b) const {
+    return x * b.y - y * b.x; }
   double abs() const { return hypot(x, y); }
   P unit() const { return *this / abs(); }
   P rot(double o) const {
@@ -20,11 +27,14 @@ struct P {
 struct L { // ax + by + c = 0
   double a, b, c, o; P pa, pb;
   L() : a(0), b(0), c(0), o(0), pa(), pb() {}
-  L(P pa, P pb) : a(pa.y - pb.y), b(pb.x - pa.x), c(pa ^ pb),
+  L(P pa, P pb) : a(pa.y - pb.y),
+    b(pb.x - pa.x), c(pa ^ pb),
     o(atan2(-a, b)), pa(pa), pb(pb) {}
-  P project(P p) { P d = pb - pa; return pa + d * (d * (p - pa) / (d * d)); }
+  P project(P p) { P d = pb - pa;
+    return pa + d * (d * (p - pa) / (d * d)); }
   P reflect(P p) { return p + (project(p) - p) * 2; }
-  double get_ratio(P p) { P d = pb - pa; return (p - pa) * d / (d * d); }
+  double get_ratio(P p) { P d = pb - pa;
+    return (p - pa) * d / (d * d); }
   bool inside(P p) { return
     min(pa.x, pb.x) <= p.x && p.x <= max(pa.x, pb.x) &&
     min(pa.y, pb.y) <= p.y && p.y <= max(pa.y, pb.y) &&
@@ -40,7 +50,9 @@ bool SegmentIntersect(P p1, P p2, P p3, P p4) {
     sign((p1 - p3) ^ (p2 - p3)) *
       sign((p1 - p4) ^ (p2 - p4)) <= 0;
 }
-bool parallel(L x, L y) { return same(x.a * y.b, x.b * y.a); }
+bool parallel(L x, L y) {
+  return same(x.a * y.b, x.b * y.a); }
 P Intersect(L x, L y) {
-  return P(-x.b * y.c + x.c * y.b, x.a * y.c - x.c * y.a)
+  return P(-x.b * y.c + x.c * y.b,
+    x.a * y.c - x.c * y.a)
     / (-x.a * y.b + x.b * y.a); }

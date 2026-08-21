@@ -11,11 +11,14 @@ struct SCC { // 0-base
         low[u] = min(low[u], dfn[v]);
     if (low[u] == dfn[u]) {
       for (; stk.back() != u; stk.pop_back())
-        bln[stk.back()] = nscc, instack[stk.back()] = 0;
+        bln[stk.back()] = nscc,
+          instack[stk.back()] = 0;
       instack[u] = 0, bln[u] = nscc++, stk.pop_back();
     }
   }
-  SCC(int _n): n(_n), dft(), nscc(), low(n), dfn(n), bln(n), instack(n), G(n) {}
+  SCC(int _n): n(_n), dft(), nscc(), low(n),
+    dfn(n), bln(n), instack(n), G(n) {}
   void add_edge(int u, int v) { G[u].pb(v); }
-  void solve() { for (int i = 0; i < n; ++i) if (!dfn[i]) dfs(i); }
+  void solve() {
+    for (int i = 0; i < n; ++i) if (!dfn[i]) dfs(i); }
 }; // scc_id(i): bln[i]

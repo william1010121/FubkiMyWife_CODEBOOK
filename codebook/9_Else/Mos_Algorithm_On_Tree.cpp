@@ -1,12 +1,14 @@
 /*
 Mo's algorithm on tree paths.  `in`/`out` are the entry/exit positions in a
-2n Euler tour and `ord` maps Euler positions back to vertices.
+2n Euler tour and `ord` maps Euler
+  positions back to vertices.
 */
 struct Query {
   int L, R, LBid, lca, id;
   template<class LCA>
   Query(int u, int v, int block, const vector<int> &in,
-        const vector<int> &out, LCA get_lca, int query_id = -1) : id(query_id) {
+        const vector<int> &out, LCA get_lca,
+          int query_id = -1) : id(query_id) {
     if (in[u] > in[v]) swap(u, v);
     int c = get_lca(u, v);
     if (c == u) L = in[u], R = in[v], lca = -1;
@@ -19,7 +21,8 @@ struct Query {
 };
 
 template<class Flip, class Answer>
-void solve(vector<Query> query, const vector<int> &ord, Flip flip,
+void solve(vector<Query> query,
+  const vector<int> &ord, Flip flip,
            Answer answer) {
   sort(query.begin(), query.end());
   int L = 0, R = -1;

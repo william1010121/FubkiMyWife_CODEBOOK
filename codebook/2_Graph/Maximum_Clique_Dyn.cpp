@@ -4,11 +4,13 @@ struct MaxClique { // fast when N <= 100
   void init(int _n) {
     n = _n; for (int i = 0; i < n; ++i) G[i].reset();
   }
-  void add_edge(int u, int v) { G[u][v] = G[v][u] = 1; }
+  void add_edge(int u, int v) { G[u][v] = G[v][u] = 1;
+    }
   void pre_dfs(vector<int> &r, int l, bitset<N> mask) {
     if (l < 4) {
       for (int i : r) d[i] = (G[i] & mask).count();
-      sort(ALL(r), [&](int x, int y) { return d[x] > d[y]; });
+      sort(ALL(r), [&](int x, int y) {
+        return d[x] > d[y]; });
     } vector<int> c(SZ(r));
     int lft = max(ans - q + 1, 1), rgt = 1, tp = 0;
     cs[1].reset(), cs[2].reset();
@@ -24,7 +26,8 @@ struct MaxClique { // fast when N <= 100
         r[tp] = p, c[tp] = k, ++tp; 
     dfs(r, c, l + 1, mask);
   }
-  void dfs(vector<int> &r, vector<int> &c, int l, bitset<N> mask) {
+  void dfs(vector<int> &r, vector<int> &c,
+    int l, bitset<N> mask) {
     while (!r.empty()) {
       int p = r.back();
       r.pop_back(), mask[p] = 0;

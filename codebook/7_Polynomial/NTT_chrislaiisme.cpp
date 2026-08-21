@@ -13,10 +13,12 @@ void ntt(vector<int> &vec, bool inv=false) {
     for(int bit=n>>1; (j^=bit)<bit; bit>>=1);
   }
   for(int len=2; len<=n; len<<=1) { // 循環長度 = mod-1
-    int wlen = pwr(g,(mod-1)/len); if(inv) wlen = pwr(wlen,mod-2);
+    int wlen = pwr(g,(mod-1)/len);
+    if(inv) wlen = pwr(wlen,mod-2);
     for(int i=0; i<n; i+=len) {
       int w=1;
-      for(int j=0; j<len/2; ++j) { // i = 定範圍, j = 去跑 merge
+      for(int j=0; j<len/2; ++j) {
+      // i = 定範圍, j = 去跑 merge
         int a = vec[i+j], b = w*vec[i+len/2+j]%mod;
         vec[i+j]       = a+b<mod ? a+b : a+b-mod;
         vec[i+len/2+j] = a-b>=0  ? a-b : a-b+mod;

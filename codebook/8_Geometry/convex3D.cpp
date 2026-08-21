@@ -4,13 +4,15 @@ struct convex3D {
   static const int maxn=1010;
   struct T{
     int a,b,c; bool res; T(){}
-    T(int a,int b,int c,bool res=1):a(a),b(b),c(c),res(res){}
+    T(int a,int b,int c,bool res=1):a(a),
+      b(b),c(c),res(res){}
   };
   int n,m;
   P p[maxn];
   T f[maxn*8];
   int id[maxn][maxn];
-  bool on(T &t,P &q) { return ((p[t.c]-p[t.b])^(p[t.a]-p[t.b]))*(q-p[t.a])>eps; }
+  bool on(T &t,P &q) { return ((p[t.c]-
+    p[t.b])^(p[t.a]-p[t.b]))*(q-p[t.a])>eps; }
   void meow(int q,int a,int b){
     int g=id[a][b];
     if(f[g].res){
@@ -21,7 +23,8 @@ struct convex3D {
       }
     }
   }
-  void dfs(int p,int i){ f[i].res=0; meow(p,f[i].b,f[i].a);
+  void dfs(int p,int i){ f[i].res=0;
+    meow(p,f[i].b,f[i].a);
     meow(p,f[i].c,f[i].b); meow(p,f[i].a,f[i].c); }
   void operator()(){
     if(n<4)return;
@@ -36,7 +39,8 @@ struct convex3D {
         return 1;
         }() || [&](){
         for(int i=3;i<n;++i)
-          if(abs(((p[1]-p[0])^(p[2]-p[0]))*(p[i]-p[0]))>eps)
+          if(abs(((p[1]-p[0])^(p[2]-
+            p[0]))*(p[i]-p[0]))>eps)
             return swap(p[3],p[i]),0;
         return 1;
         }())return;
@@ -51,9 +55,12 @@ struct convex3D {
     for(int i=0;i<mm;++i)if(f[i].res)f[m++]=f[i];
   }
   bool same(int i,int j){
-    return !(absvol(p[f[i].a],p[f[i].b],p[f[i].c],p[f[j].a])>eps
-      || absvol(p[f[i].a],p[f[i].b],p[f[i].c],p[f[j].b])>eps
-      || absvol(p[f[i].a],p[f[i].b],p[f[i].c],p[f[j].c])>eps);
+    return !(absvol(p[f[i].a],
+      p[f[i].b],p[f[i].c],p[f[j].a])>eps
+      || absvol(p[f[i].a],p[f[i].b],
+        p[f[i].c],p[f[j].b])>eps
+      || absvol(p[f[i].a],p[f[i].b],
+        p[f[i].c],p[f[j].c])>eps);
   }
   int faces(){
     int r=0;

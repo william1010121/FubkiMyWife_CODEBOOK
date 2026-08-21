@@ -16,7 +16,8 @@ struct MinCostMaxFlow { // 0-base
     while (!q.empty()) {
       int u = q.front(); q.pop(), inq[u] = 0;
       for (auto &e : G[u])
-        relax(e.to, dis[u] + e.cost + pot[u] - pot[e.to],
+        relax(e.to,
+          dis[u] + e.cost + pot[u] - pot[e.to],
           min(up[u], e.cap - e.flow), &e);
     } return dis[t] != INF;
   }
@@ -29,7 +30,8 @@ struct MinCostMaxFlow { // 0-base
         dis[i] += pot[i] - pot[s];
       flow += up[t], cost += up[t] * dis[t];
       for (int i = t; past[i]; i = past[i]->from) {
-        auto &e = *past[i]; e.flow += up[t], G[e.to][e.rev].flow -= up[t];
+        auto &e = *past[i];
+        e.flow += up[t], G[e.to][e.rev].flow -= up[t];
       }
     }
   }
@@ -38,6 +40,7 @@ struct MinCostMaxFlow { // 0-base
     for (int i = 0; i < n; ++i) G[i].clear();
   }
   void add_edge(ll a, ll b, ll cap, ll cost) {
-    G[a].pb({a, b, cap, 0, cost, SZ(G[b])}), G[b].pb({b, a, 0, 0, -cost, SZ(G[a]) - 1});
+    G[a].pb({a, b, cap, 0, cost, SZ(G[b])}
+      ), G[b].pb({b, a, 0, 0, -cost, SZ(G[a]) - 1});
   }
 };

@@ -1,7 +1,8 @@
 struct node {
   ll v, data, sz, sum;
   node *l, *r;
-  node(ll k) : v(0), data(k), sz(1), l(0), r(0), sum(k) {}
+  node(ll k) : v(0), data(k),
+    sz(1), l(0), r(0), sum(k) {}
 };
 ll sz(node *p) { return p ? p->sz : 0; }
 ll V(node *p) { return p ? p->v : -1; }

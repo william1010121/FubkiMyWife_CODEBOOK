@@ -4,14 +4,17 @@ struct BoundedFlow { // 0-base
   int n, s, t, dis[N], cur[N], cnt[N];
   void init(int _n) {
     n = _n;
-    for (int i = 0; i < n + 2; ++i) G[i].clear(), cnt[i] = 0;
+    for (int i = 0; i < n + 2; ++i) G[i].clear(),
+      cnt[i] = 0;
   }
   void add_edge(int u, int v, int lcap, int rcap) {
     cnt[u] -= lcap, cnt[v] += lcap;
-    G[u].pb({v, rcap, lcap, SZ(G[v])}), G[v].pb({u, 0, 0, SZ(G[u]) - 1});
+    G[u].pb({v, rcap, lcap, SZ(G[v])}
+      ), G[v].pb({u, 0, 0, SZ(G[u]) - 1});
   }
   void add_edge(int u, int v, int cap) {
-    G[u].pb({v, cap, 0, SZ(G[v])}), G[v].pb({u, 0, 0, SZ(G[u]) - 1});
+    G[u].pb({v, cap, 0, SZ(G[v])}
+      ), G[v].pb({u, 0, 0, SZ(G[u]) - 1});
   }
   int dfs(int u, int cap) {
     if (u == t || !cap) return cap;

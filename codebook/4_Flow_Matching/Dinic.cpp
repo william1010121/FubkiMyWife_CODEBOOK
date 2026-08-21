@@ -46,6 +46,7 @@ struct MaxFlow { // 0-base
       for (auto &j : G[i]) j.flow = 0;
   }
   void add_edge(int u, int v, int cap) {
-    G[u].pb({v, cap, 0, (int)G[v].size()}), G[v].pb({u, 0, 0, (int)G[u].size() - 1});
+    G[u].pb({v, cap, 0, (int)G[v].size()}
+      ), G[v].pb({u, 0, 0, (int)G[u].size() - 1});
   }
 };

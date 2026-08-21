@@ -27,7 +27,8 @@ vector<L> tangent(C c, P p) {
     z.emplace_back(p, p + i);
   } else if (d > c.r) {
     double o = acos(c.r / d);
-    P i = (p - c.c).unit(), j = i.rot(o) * c.r, k = i.rot(-o) * c.r;
+    P i = (p - c.c).unit(),
+      j = i.rot(o) * c.r, k = i.rot(-o) * c.r;
     z.emplace_back(c.c + j, p);
     z.emplace_back(c.c + k, p);
   } return z;
