@@ -41,7 +41,6 @@ vector<point> hpi(vector<plane> l) {
         if (tl.size() && fabs(l[i].ang - tl.back().ang) < eps) continue;
         tl.push_back(l[i]);
     }
-    for (int i = 0; i < tl.size(); ++i) debug(tl[i]);
     deque<plane> dq;
     for (int i = 0; i < tl.size(); ++i) {
         while (dq.size() >= 2 && !check(inter(dq[dq.size() - 1], dq[dq.size() - 2]), tl[i])) dq.pop_back();
@@ -50,7 +49,6 @@ vector<point> hpi(vector<plane> l) {
     }
     while (dq.size() >= 2 && !check(inter(dq[dq.size() - 1], dq[dq.size() - 2]), dq[0])) dq.pop_back();
     while (dq.size() >= 2 && !check(inter(dq[0], dq[1]), dq[dq.size() - 1])) dq.pop_front();
-    for (int i = 0; i < dq.size(); ++i) debug(dq[i]);
     vector<point> res;
     for (int i = 0; i < dq.size(); ++i) res.push_back(inter(dq[i], dq[(i + 1) % dq.size()]));
     return res;

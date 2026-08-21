@@ -1,0 +1,8 @@
+{
+  "template": "codebook/5_String/De_Bruijn_sequence.cpp",
+  "harness": "brute/17_string_automata/de_bruijn_edge_harness.cpp",
+  "compile": "c++ -std=c++17 -O2 -Wall -Wextra -pedantic de_bruijn_edge_harness.cpp -o de_bruijn_edge_harness",
+  "run": "./de_bruijn_edge_harness",
+  "oracle": "Check output length, alphabet bounds, and uniqueness of every requested order-N window; for full sequences require every possible word.",
+  "cases": "all prefixes K=1..C^N for C=1..4,N=0..5 and C=10,N=0..3, including order-zero and order-one boundaries"
+}

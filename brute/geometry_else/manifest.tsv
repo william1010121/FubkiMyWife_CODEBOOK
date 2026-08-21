@@ -3,40 +3,40 @@ codebook/8_Geometry/_basic.cpp	active	geometry_harness.cpp	exact integer segment
 codebook/8_Geometry/area.cpp	support	geometry_harness.cpp	exact polygon area	https://open.kattis.com/problems/polygonarea	compiled as shared primitive
 codebook/8_Geometry/sectorArea.cpp	active	geometry_harness.cpp	long-double sector formula	https://open.kattis.com/problems/circularsegment	compiled and exercised
 codebook/8_Geometry/halfPlaneIntersect.cpp	active	geometry_harness.cpp	exact square half-planes with tolerance	https://open.kattis.com/problems/whitewaterrafting	compiled and exercised
-codebook/8_Geometry/halfPlaneIntersect2.cpp	support	not-runnable	external point/debug declarations	https://open.kattis.com/problems/whitewaterrafting	requires the separate point/debug context
+codebook/8_Geometry/halfPlaneIntersect2.cpp	support	../22_inactive_extra/geometry_support_brute.cpp	bounded square/clipping area oracle	https://open.kattis.com/problems/whitewaterrafting	external point context supplied by harness
 codebook/8_Geometry/rotatingSweepLine.cpp	active	advanced_harness.cpp	permutation contract for all pair-direction events	https://open.kattis.com/problems/convexhull	helper now exposes the final sweep order
 codebook/8_Geometry/triangleCenter.cpp	active	geometry_harness.cpp	long-double center identities	https://open.kattis.com/problems/brocardpoint	compiled and exercised
 codebook/8_Geometry/center.cpp	active	geometry_harness.cpp	signed-area centroid	https://open.kattis.com/problems/polygonarea	shared Point context not standalone
-codebook/8_Geometry/massCenter.cpp	support	not-runnable	external Point/Cross context	https://open.kattis.com/problems/polygonarea	one-line helper
-codebook/8_Geometry/circumCenter.cpp	support	not-runnable	external Point context	https://open.kattis.com/problems/brocardpoint	one-line helper
-codebook/8_Geometry/innerCenter.cpp	support	not-runnable	external Point/len context	https://open.kattis.com/problems/brocardpoint	one-line helper
-codebook/8_Geometry/orthoCenter.cpp	support	not-runnable	external Point context	https://open.kattis.com/problems/brocardpoint	one-line helper
+codebook/8_Geometry/massCenter.cpp	support	../22_inactive_extra/geometry_support_brute.cpp	centroid coordinate identities	https://open.kattis.com/problems/polygonarea	Point context supplied by harness
+codebook/8_Geometry/circumCenter.cpp	support	../22_inactive_extra/geometry_support_brute.cpp	equal vertex-distance identities	https://open.kattis.com/problems/brocardpoint	Point context supplied by harness
+codebook/8_Geometry/innerCenter.cpp	support	../22_inactive_extra/geometry_support_brute.cpp	equal side-distance identities	https://open.kattis.com/problems/brocardpoint	Point context supplied by harness
+codebook/8_Geometry/orthoCenter.cpp	support	../22_inactive_extra/geometry_support_brute.cpp	altitude perpendicularity identities	https://open.kattis.com/problems/brocardpoint	Point context supplied by harness
 codebook/8_Geometry/maxTriangleOfConvex.cpp	active	advanced_harness.cpp	exhaustive all-triples area oracle	https://open.kattis.com/problems/roberthood	Point/Cross supplied by harness
 codebook/8_Geometry/pointInPolygon.cpp	active	geometry_harness.cpp	exact integer grid classifications	https://open.kattis.com/problems/pointinpolygon	compiled and exercised
-codebook/8_Geometry/pointInConvex.cpp	support	not-runnable	external point type and len()	https://open.kattis.com/problems/pointinpolygon	shared context required
+codebook/8_Geometry/pointInConvex.cpp	support	../22_inactive_extra/geometry_support_brute.cpp	random convex polygons versus ray casting	https://open.kattis.com/problems/pointinpolygon	linear and logarithmic APIs exercised
 codebook/8_Geometry/circle.cpp	active	geometry_harness.cpp	long-double tolerance and known exact cases	https://open.kattis.com/problems/circle	compiled and exercised
 codebook/8_Geometry/CircleTangent.cpp	active	geometry_harness.cpp	tangent-count and orthogonality checks	https://open.kattis.com/problems/circle	compiled and exercised
-codebook/8_Geometry/tangentToCircleFromPoint.cpp	support	not-runnable	external Point operators	https://open.kattis.com/problems/circle	shared context required
+codebook/8_Geometry/tangentToCircleFromPoint.cpp	support	../22_inactive_extra/geometry_support_brute.cpp	circle membership and perpendicularity	https://open.kattis.com/problems/circle	Point context supplied by harness
 codebook/8_Geometry/circleOrArea.cpp	active	geometry_harness.cpp	disjoint/contained circle union oracle	https://judge.yosupo.jp/problem/union_of_circles	compiled and exercised
 codebook/8_Geometry/minDistOfTwoConvex.cpp	active	advanced_harness.cpp	exact separated/nested/touching polygon cases	https://open.kattis.com/problems/whitewaterrafting	self-contained edge/containment implementation
 codebook/8_Geometry/convexHull.cpp	active	geometry_harness.cpp	monotone-chain exact hull oracle	https://open.kattis.com/problems/convexhull	compiled and exercised
 codebook/8_Geometry/convex3D.cpp	active	advanced_harness.cpp	known tetrahedron/cube face oracle	https://judge.yosupo.jp/problem/convex_hull_3d	3D Point contract supplied by harness
 codebook/8_Geometry/MinimumEnclosingCircle.cpp	active	geometry_harness.cpp	exhaustive containment oracle on integer points	https://open.kattis.com/problems/smallestcircle	compiled and exercised
 codebook/8_Geometry/ClosestPair.cpp	active	geometry_harness.cpp	exhaustive pair-distance oracle	https://open.kattis.com/problems/closestpair2	compiled and exercised
-codebook/8_Geometry/KDtree.cpp	inactive-explicit	not-runnable	external point/maxn context	https://open.kattis.com/problems/nearestneighbour	duplicated in Data Structure section
-codebook/8_Geometry/Triangulation.cpp	inactive-explicit	not-runnable	external Point/inf/Sign context	https://judge.yosupo.jp/problem/delaunay_triangulation	commented out in content.tex
-codebook/8_Geometry/Triangulation_Vonoroi.cpp	inactive-explicit	not-runnable	standalone main with debug output and large external contract	https://judge.yosupo.jp/problem/area_of_voronoi_cells	not included in content.tex
-codebook/8_Geometry/Triangulation_Vonoroi_short.cpp	inactive-explicit	not-runnable	depends on the long Voronoi file's globals	https://judge.yosupo.jp/problem/area_of_voronoi_cells	commented out in content.tex
+codebook/8_Geometry/KDtree.cpp	inactive-tested	../22_inactive_extra/geometry_support_brute.cpp	random nearest nonzero squared distance	https://open.kattis.com/problems/nearestneighbour	duplicated in Data Structure section
+codebook/8_Geometry/Triangulation.cpp	inactive-tested	../22_inactive_extra/delaunay_brute.cpp	count/area/empty-circumcircle invariants	https://judge.yosupo.jp/problem/delaunay_triangulation	Point/inf/Sign context supplied by harness
+codebook/8_Geometry/Triangulation_Vonoroi.cpp	inactive-tested	../22_inactive_extra/voronoi_legacy_brute.cpp	finite areas versus independent half-plane clipping	https://judge.yosupo.jp/problem/area_of_voronoi_cells	replaced corrupt debug implementation with verified reference
+codebook/8_Geometry/Triangulation_Vonoroi_short.cpp	inactive-tested	../22_inactive_extra/voronoi_legacy_brute.cpp	wrapper equality with verified core	https://judge.yosupo.jp/problem/area_of_voronoi_cells	thin reusable wrapper
 codebook/9_Else/cyc_tsearch.cpp	active	else_harness.cpp	exhaustive cyclic minima	https://cp-algorithms.com/num_methods/ternary_search.html	compiled and exercised
 codebook/9_Else/Mos_Algorithm_With_modification.cpp	active	missing_harness.cpp	direct range-sum oracle under apply/rollback updates	https://codeforces.com/problemset/problem/940/F	callback API is executable
 codebook/9_Else/Mos_Algorithm_On_Tree.cpp	active	missing_harness.cpp	direct weighted-path-sum oracle on a fixed tree	https://www.spoj.com/problems/COT2	callback API is executable
 codebook/9_Else/Mos_Algorithm.tex	documentation-only	none	algorithm explanation	https://codeforces.com/problemset/problem/86/D	no source API to execute
 codebook/9_Else/HilbertCurve.cpp	active	else_harness.cpp	exhaustive bijection/range oracle	https://codeforces.com/problemset/problem/617/E	compiled and exercised
 codebook/9_Else/DynamicConvexTrick.cpp	active	else_harness.cpp	exhaustive max over inserted integer lines	https://codeforces.com/problemset/problem/319/C	compiled and exercised
-codebook/9_Else/DynamicConvexTrick_bb.cpp	inactive-explicit	not-runnable	invalid .X member and external aliases	https://codeforces.com/problemset/problem/319/C	not included in content.tex
+codebook/9_Else/DynamicConvexTrick_bb.cpp	inactive-tested	../22_inactive_extra/inactive_else_brute.cpp	random lines versus direct maximum	https://codeforces.com/problemset/problem/319/C	replaced comparator-switching set with dynamic Li Chao
 codebook/9_Else/All_LCS.cpp	active	missing_harness.cpp	exhaustive subsequence-set oracle	https://cses.fi/problemset/task/3403	returns all distinct longest subsequences
-codebook/9_Else/cyclicLCS.cpp	inactive-explicit	not-runnable	external MAXL arrays and caller initialization	https://cses.fi/problemset/task/3403/	commented out in content.tex
-codebook/9_Else/DLX.cpp	inactive-explicit	not-runnable	template requires NN/RR and caller search semantics	https://tioj.ck.tp.edu.tw/problems/1333	commented out in content.tex
+codebook/9_Else/cyclicLCS.cpp	inactive-tested	../22_inactive_extra/inactive_else_brute.cpp	exhaustive binary rotations versus LCS DP	https://cses.fi/problemset/task/3403/	MAXL context supplied by harness
+codebook/9_Else/DLX.cpp	inactive-tested	../22_inactive_extra/inactive_else_brute.cpp	exhaustive exact/set-cover subset oracle	https://tioj.ck.tp.edu.tw/problems/1333	NN/RR context supplied by harness
 codebook/9_Else/AdaptiveSimpson.cpp	active	missing_harness.cpp	exact integrals x^2 and sin	https://www.spoj.com/problems/INTEGRAL	uses standard pair.first/second
 codebook/9_Else/simulated_annealing.cpp	active	missing_harness.cpp	seeded convex objective contract	https://cp-algorithms.com/others/simulated_annealing.html	generic score/neighbour API
 codebook/9_Else/tree_hash.cpp	active	missing_harness.cpp	adjacency-order and shape checks	https://cses.fi/problemset/task/1700	rooted_tree_hash owns its graph contract
@@ -45,9 +45,9 @@ codebook/9_Else/min_plus_convolution.cpp	active	else_harness.cpp	exhaustive i+j=
 codebook/9_Else/BitsetLCS.cpp	active	missing_harness.cpp	random DP oracle through 70-word boundaries	https://cses.fi/problemset/task/3403	self-contained 64-bit implementation
 codebook/9_Else/NQueens.cpp	active	else_harness.cpp	exhaustive conflict check for n<=30	https://cses.fi/problemset/task/1624/	compiled and exercised
 codebook/9_Else/digit_dp.cpp	active	missing_harness.cpp	direct enumeration of binary no-adjacent-one values	https://codeforces.com/gym/101161/attachments/download/4842/2016-acmicpc-asiabangkok-regional-contest-en.pdf	standalone calc(x) contract
-codebook/9_Else/DynamicMST.cpp	inactive-explicit	not-runnable	external rollback DSU and problem state	https://judge.yosupo.jp/problem/dynamic_tree_vertex_add_path_sum	not included in content.tex
-codebook/9_Else/ManhattanMST.cpp	inactive-explicit	not-runnable	external Point/Edge/dist/es context	https://judge.yosupo.jp/problem/manhattanmst	not included in content.tex
-codebook/9_Else/SubsetSum.cpp	inactive-explicit	not-runnable	standalone template needs caller's S contract	https://cses.fi/problemset/task/1745/	not included in content.tex
+codebook/9_Else/DynamicMST.cpp	inactive-tested	../22_inactive_extra/dynamic_mst_brute.cpp	random offline updates versus sequential Kruskal	https://judge.yosupo.jp/	rollback DSU context supplied by harness
+codebook/9_Else/ManhattanMST.cpp	inactive-tested	../22_inactive_extra/inactive_else_brute.cpp	candidate Kruskal versus complete Manhattan graph	https://judge.yosupo.jp/problem/manhattanmst	Point/Edge context supplied by harness
+codebook/9_Else/SubsetSum.cpp	inactive-tested	../22_inactive_extra/inactive_else_brute.cpp	random grouped multiplicities versus ordinary bitset DP	https://cses.fi/problemset/task/1745/	S contract instantiated by harness
 codebook/9_Else/Matroid.tex	inactive-explicit	not-runnable	explanatory material only	https://en.wikipedia.org/wiki/Matroid_intersection	commented out in content.tex
-codebook/9_Else/Stress_Test.sh	inactive-explicit	not-runnable	references missing gen.py/sol/brute.py	https://codeforces.com/problemset/problem/86/D	not included in content.tex
-codebook/9_Else/hash.sh	inactive-explicit	not-runnable	shell utility, not an algorithm template	https://codeforces.com/problemset/problem/86/D	not included in content.tex
+codebook/9_Else/Stress_Test.sh	tool-tested	../22_inactive_extra/language_tools_brute.py	bounded success and mismatch-preservation runs	https://codeforces.com/problemset/problem/86/D	generator/brute/solution are explicit arguments
+codebook/9_Else/hash.sh	tool-tested	../22_inactive_extra/language_tools_brute.py	whitespace/comment invariance and token sensitivity	https://codeforces.com/problemset/problem/86/D	portable md5sum/md5 fallback

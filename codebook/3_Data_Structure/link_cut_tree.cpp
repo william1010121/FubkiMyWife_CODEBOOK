@@ -72,8 +72,7 @@ Splay* get_root(Splay *x) {
 bool conn(Splay *x, Splay *y)
 { return get_root(x) == get_root(y); }
 Splay* lca(Splay *x, Splay *y) {
-  access(x), root_path(y);
-  return y->f == nil ? y : y->f;
+  access(x); return access(y);
 }
 void change(Splay *x, int val)
 { splay(x), x->val = val, x->pull(); }

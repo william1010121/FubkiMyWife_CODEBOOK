@@ -18,6 +18,7 @@ int build(vector<int> &v) {
   if (v.empty()) return -1;
   top = -1;
   sort(ALL(v), [&](int a, int b) { return dfn[a] < dfn[b]; });
+  v.erase(unique(ALL(v)), v.end());
   for (int i : v) insert(i);
   while (top > 0) vG[st[top - 1]].pb(st[top]), --top;
   return st[0];

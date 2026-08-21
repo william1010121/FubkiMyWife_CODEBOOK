@@ -1,23 +1,23 @@
 # Template brute-force validation
 
-Each template has its own test file somewhere under `brute/`.  A test is a
-small executable: it includes or wraps one codebook template, generates bounded
-random/exhaustive cases, and compares the template against a deliberately
-simple oracle.  Problem references and the exact covered contract are recorded
-in `brute/manifest.tsv`.
+Every source artifact under `codebook/` (excluding examples and documentation)
+is referenced by an executable test under `brute/`; this includes all 106 active
+callable templates in `codebook/content.tex`.  Tests include or wrap the source,
+generate bounded random/exhaustive cases, and compare it with a deliberately
+simple oracle.  The Java harness performs a source contract when `javac` is not
+installed and automatically upgrades to a compiled differential test when it is.
 
 Run the complete local suite with:
 
 ```sh
-./brute/run_all.sh
+rbox bash -lc 'JOBS=4 ./brute/run_all.sh'
 ```
 
 The runner defaults to two processes and is hard-capped at four.  `JOBS` may
 lower the limit, but values above four are clamped to four; every child also
-gets one thread.  A non-zero exit status means the corresponding template is
-not verified.
+gets one thread. `TIMEOUT_SECONDS` defaults to 60 per harness. A non-zero exit
+status means the corresponding template is not verified.
 
 Documentation-only material is listed explicitly in the relevant manifest.
-Every active callable code entry in `content.tex` has a passing executable
-harness; the suite also keeps extra inactive helpers under test when they are
-useful regression coverage.
+`audit_coverage.py`, which runs before the suite, makes both active and all-source
+coverage hard failures so a new template cannot silently omit its brute.

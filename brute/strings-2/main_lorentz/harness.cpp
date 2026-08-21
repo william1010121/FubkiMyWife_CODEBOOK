@@ -47,6 +47,8 @@ int main() {
     check("aaaaaa");
     check("abababa");
     check("abacaba");
+    check("##");
+    check(string("\0#\0#", 4));
     for (int n = 1; n <= 14; ++n)
       for (int mask = 0; mask < (1 << n); ++mask) {
         string s(n, 'a');

@@ -69,7 +69,7 @@
 \inputcodeex{LiChaoST*}{3_Data_Structure/LiChaoST.cpp}%
 {Line container over an integer $x$ domain, $O(\log n)$. Keeps the \textbf{maximum}; negate for minimum.}{examples/LiChaoST.cpp}
 \inputcodeex{Link cut tree*}{3_Data_Structure/link_cut_tree.cpp}%
-{Dynamic trees, amortised $O(\log n)$; path aggregate is XOR. \textbf{\texttt{cut} tests \texttt{size != 5}, which looks like a leftover.}}{examples/link_cut_tree.cpp}
+{Dynamic trees, amortised $O(\log n)$; path aggregate is XOR. Supports reroot, link, cut, connectivity, LCA, point updates and path queries.}{examples/link_cut_tree.cpp}
 \inputcodedesc{KDTree}{3_Data_Structure/KDTree.cpp}%
 {Nearest neighbour, build $O(n\log n)$, query $O(\log n)$ average. Returns \textbf{squared} distance and skips distance-0 points.}
 \inputcodedesc{Treap}{3_Data_Structure/Treap.cpp}%
@@ -107,7 +107,7 @@
 
 \section{String}
 \inputcodedesc{KMP}{5_String/KMP.cpp}%
-{Pattern search, $O(|A|+|B|)$. Returns every 0-based occurrence. \texttt{F} is the optimised fail table, not a plain border array.}
+{Pattern search, $O(|A|+|B|)$. Prints every 1-based occurrence; an empty pattern matches all $|A|+1$ boundaries. \texttt{nxt} is the prefix-function table.}
 \inputcodedesc{Z-value*}{5_String/Z-value.cpp}%
 {$z[i]=\mathrm{lcp}(s,s[i..])$ in $O(n)$. \textbf{$z[0]$ is left unset.}}
 \inputcodedesc{Manacher*}{5_String/Manacher.cpp}%
@@ -126,7 +126,7 @@
 \inputcodedesc{PalTree*}{5_String/PalTree.cpp}%
 {Eertree: counts distinct palindromic substrings and their occurrences in $O(n\sigma)$.}
 \inputcodedesc{Main Lorentz}{5_String/MainLorentz.cpp}%
-{All tandem repeats in $O(n\log n)$, stored as start-ranges per length. Requires an external \texttt{Zalgo()}.}
+{All tandem repeats in $O(n\log n)$, stored as start-ranges per length. Handles every byte value by encoding an out-of-alphabet separator internally.}
 
 
 \section{Math}
@@ -279,7 +279,7 @@
 {Binary digit DP with \texttt{tight} and previous-digit state; \texttt{calc(x)} counts values in $[0,x]$ with no adjacent one bits.}
 \section{Python}
 \subsection{Misc}
-{\scriptsize Python fallbacks: \texttt{decimal}/\texttt{Fraction} for exact big values, \texttt{pow(a,b,M)}, fast stdin. \texttt{set\_int\_max\_str\_digits} is required on 3.11+ for huge integers.\par}\vspace{-0.6em}%
+{\scriptsize Importable Python fallbacks for exact decimals/fractions, matrix and fast-array parsing, modular powers, seeded random helpers, and formatting. Huge integer input raises Python 3.11+'s digit limit.\par}\vspace{-0.6em}%
 \lstinputlisting[language=Python,basicstyle=\scriptsize\ttfamily]{11_Python/misc.py}
 % \subsection{Stress testing}
 % \lstinputlisting[language=bash]{9_Else/Stress_Test.sh}

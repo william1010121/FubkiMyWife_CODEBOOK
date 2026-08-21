@@ -20,15 +20,19 @@ struct SteinerTree { // 0-base
           chmin(dst[i][j], dst[i][k] + dst[k][j]);
   }
   int solve(const vector<int>& ter) {
+    vector<int> terminals = ter;
+    sort(terminals.begin(), terminals.end());
+    terminals.erase(unique(terminals.begin(), terminals.end()), terminals.end());
+    if (terminals.empty()) return 0;
     shortest_path();
-    int t = SZ(ter), full = (1 << t) - 1;
+    int t = SZ(terminals), full = (1 << t) - 1;
     for (int i = 0; i <= full; ++i) fill_n(dp[i], n, INF);
     copy_n(vcst, n, dp[0]);
     for (int msk = 1; msk <= full; ++msk) {
       if (!(msk & (msk - 1))) {
         int who = __lg(msk);
         for (int i = 0; i < n; ++i)
-          dp[msk][i] = vcst[ter[who]] + dst[ter[who]][i];
+          dp[msk][i] = vcst[terminals[who]] + dst[terminals[who]][i];
       } for (int i = 0; i < n; ++i)
         for (int sub = (msk - 1) & msk; sub; sub = (sub - 1) & msk)
           chmin(dp[msk][i],

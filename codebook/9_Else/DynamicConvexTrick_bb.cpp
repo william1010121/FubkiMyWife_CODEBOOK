@@ -1,64 +1,53 @@
-// only works for integer coordinates!!
+// Integer-domain dynamic Li Chao tree. less<T> keeps maximum, greater<T> minimum.
+template<class val = ll, class compare = less<val>>
+struct DynamicConvexTrick {
+  static constexpr val minx = 0, maxx = val(1e9) + 5;
+  inline static compare comp{};
+  struct Line {
+    val a = 0, b = 0;
+    val operator()(val x) const { return a * x + b; }
+  };
+  struct Node {
+    Line line;
+    int ch[2] = {-1, -1};
+    bool has_line = false;
+  };
+  vector<Node> tree = vector<Node>(1);
 
-bool Flag; // 0: insert Line, 1: lower_bound x
-template<class val = ll, class compare = less<val>> // sort lines with comp
-struct DynamicConvexTrick{
-  static const ll minx = 0, maxx = ll(1e9) + 5;
-  static compare comp;
-  struct Line{
-    val a, b, l, r; // line ax + b in [l, r]
-    Line(val _a, val _b, val _l = minx, val _r = maxx):a(_a), b(_b), l(_l), r(_r){}
-    val operator () (val x) const {
-      return a * x + b;
-    }
-  };
-  struct cmp{
-    bool operator () (const Line a, const Line b){
-      if(Flag == 0)return comp(a.a, b.a);
-      return a.r < b.l;
-    }
-  };
-  inline val idiv(val a, val b){
-    return a / b - (a % b && a < 0 ^ b < 0);
+  int new_node() {
+    tree.emplace_back();
+    return (int)tree.size() - 1;
   }
-  set<Line, cmp> st;
-  void ins(val a, val b){
-    Flag = 0;
-    Line L(a, b);
-    auto it = st.lower_bound(L);
-    if(it != st.begin() && it != st.end())
-      if(!comp((*prev(it))(it->l - 1), L(it->l - 1)) && !comp((*it)(it->l), L(it->l)))
-        return;
-    while(it != st.end()){
-      if(it->a == L.a && !comp(it->b, L.b))return;
-      if(comp((*it)(it->r), L(it->r)))it = st.erase(it);
-      else{
-        Line M = *it;
-        st.erase(it);
-        L.r = max(idiv(L.b - M.b, M.a - L.a), minx);
-        M.l = L.r + 1;
-        it = st.insert(M).X;
-        break;
-      }
+  void insert(int node, val l, val r, Line line) {
+    if (!tree[node].has_line) {
+      tree[node].line = line, tree[node].has_line = true;
+      return;
     }
-    while(it != st.begin()){
-      auto pit = prev(it);
-      if(comp((*pit)(pit->l), L(pit->l)))st.erase(pit);
-      else{
-        Line M = *pit;
-        st.erase(pit);
-        M.r = min(idiv(L.b - M.b, M.a - L.a), maxx - 1);
-        L.l = M.r + 1;
-        st.insert(M);
-        break;
-      }
-    }
-    st.insert(L);
+    val mid = l + (r - l) / 2;
+    bool left = comp(tree[node].line(l), line(l));
+    bool middle = comp(tree[node].line(mid), line(mid));
+    if (middle) swap(tree[node].line, line);
+    if (l == r) return;
+    int side = left == middle;
+    val nl = side ? mid + 1 : l, nr = side ? r : mid;
+    if (tree[node].ch[side] == -1) tree[node].ch[side] = new_node();
+    insert(tree[node].ch[side], nl, nr, line);
   }
-  val operator () (val x){
-    Flag = 1;
-    auto it = st.lower_bound({0, 0, x, x});
-    return (*it)(x);
+  void ins(val a, val b) { insert(0, minx, maxx, {a, b}); }
+  val operator()(val x) const {
+    assert(minx <= x && x <= maxx && tree[0].has_line);
+    int node = 0; val l = minx, r = maxx, answer = tree[0].line(x);
+    while (true) {
+      if (tree[node].has_line && comp(answer, tree[node].line(x)))
+        answer = tree[node].line(x);
+      if (l == r) break;
+      val mid = l + (r - l) / 2;
+      int side = x > mid;
+      if (tree[node].ch[side] == -1) break;
+      node = tree[node].ch[side];
+      if (side) l = mid + 1; else r = mid;
+    }
+    return answer;
   }
 };
 

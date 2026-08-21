@@ -32,13 +32,18 @@ void contract(int l, int r, vector<int> v, vector<int> &x, vector<int> &y) {
 void solve(int l, int r, vector<int> v, long long c) {
   if (l == r) {
     cost[qr[l].first] = qr[l].second;
-    if (st[qr[l].first] == ed[qr[l].first]) {
-      printf("%lld\n", c);
-      return;
-    }
-    int minv = qr[l].second;
-    for (int i = 0; i < (int)v.size(); ++i) minv = min(minv, cost[v[i]]);
-    printf("%lld\n", c + minv);
+    v.push_back(qr[l].first);
+    sort(v.begin(), v.end(), [&](int i, int j) {
+      if (cost[i] != cost[j]) return cost[i] < cost[j];
+      return i < j;
+    });
+    v.erase(unique(v.begin(), v.end()), v.end());
+    djs.save();
+    long long ans = c;
+    for (int i : v) if (djs.find(st[i]) != djs.find(ed[i]))
+      ans += cost[i], djs.merge(st[i], ed[i]);
+    djs.undo();
+    printf("%lld\n", ans);
     return;
   }
   int m = (l + r) >> 1;

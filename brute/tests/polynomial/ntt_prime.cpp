@@ -13,13 +13,20 @@ static bool prime(u64 n) {
   return true;
 }
 int main() {
-  const pair<u64, u64> table[] = {
-    {7681,17},{12289,11},{40961,3},{65537,3},{786433,10},
-    {5767169,3},{7340033,3},{23068673,3},{469762049,3},
-    {167772161,3},{104857601,3},{985661441,3},{998244353,3},
-    {1107296257,10},{2013265921,31},{2810183681ULL,11},
-    {2885681153ULL,3},{605028353,3}
-  };
+  const char *template_path = "codebook/7_Polynomial/Number_Theory_Transform_Prime";
+  ifstream input(template_path);
+  if (!input) { cerr << "cannot open " << template_path << '\n'; return 1; }
+  string source((istreambuf_iterator<char>(input)), istreambuf_iterator<char>());
+  regex pair_pattern(R"((\d+)\s*&\s*(\d+))");
+  vector<pair<u64, u64>> table;
+  for (sregex_iterator it(source.begin(), source.end(), pair_pattern), end;
+       it != end; ++it) {
+    table.emplace_back(stoull((*it)[1].str()), stoull((*it)[2].str()));
+  }
+  if (table.size() != 18) {
+    cerr << "expected 18 NTT prime/root pairs, got " << table.size() << '\n';
+    return 1;
+  }
   for (auto [p, g] : table) {
     if (!prime(p) || power(g, p - 1, p) != 1) {
       cerr << "invalid NTT prime/root pair: " << p << '\n'; return 1;

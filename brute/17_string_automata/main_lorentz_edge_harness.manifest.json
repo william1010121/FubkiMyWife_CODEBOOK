@@ -1,0 +1,8 @@
+{
+  "template": "codebook/5_String/MainLorentz.cpp",
+  "harness": "brute/17_string_automata/main_lorentz_edge_harness.cpp",
+  "compile": "c++ -std=c++17 -O2 -Wall -Wextra -pedantic main_lorentz_edge_harness.cpp -o main_lorentz_edge_harness",
+  "run": "./main_lorentz_edge_harness",
+  "oracle": "Enumerate every period and start, compare all tandem repeats, reject false/duplicate/out-of-range reports, and verify nonzero offsets.",
+  "cases": "empty and length-1 boundaries, repeated periodic strings, every ternary string of lengths 0..8, and 650 seeded random strings"
+}

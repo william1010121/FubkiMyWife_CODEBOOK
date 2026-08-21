@@ -1,0 +1,8 @@
+{
+  "template": "codebook/5_String/PalTree.cpp",
+  "harness": "brute/17_string_automata/paltree_edge_harness.cpp",
+  "compile": "c++ -std=c++17 -O2 -Wall -Wextra -pedantic paltree_edge_harness.cpp -o paltree_edge_harness",
+  "run": "./paltree_edge_harness",
+  "oracle": "Enumerate every palindromic substring and compare per-position suffix counts, longest suffix, exact node strings, distinct count, and total frequencies.",
+  "cases": "all binary strings of lengths 0..11, all ternary strings of lengths 0..7, repeated/palindromic adversaries, and 600 seeded random strings"
+}

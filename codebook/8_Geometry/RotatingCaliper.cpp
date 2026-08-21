@@ -18,6 +18,12 @@ int cross(int t1, int t2, int n1){
 bool cmpx(const pnt &a, const pnt &b) { return a.x == b.x ? a.y < b.y : a.x < b.x; }
 
 void RotatingCaliper() {
+    tbz = 0;
+    if (n <= 1) {
+        tbz = n;
+        rsd = 0;
+        return;
+    }
     sort(p, p + n, cmpx);
     for (int i = 0; i < n; ++i) {
         while (tbz > 1 && cross(tb[tbz - 2], tb[tbz - 1], i) <= 0) --tbz;

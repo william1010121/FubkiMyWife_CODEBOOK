@@ -1,29 +1,52 @@
-# decimal
-from decimal import *
-setcontext(Context(prec=MAX_PREC, Emax=MAX_EMAX, rounding=ROUND_FLOOR))
-print(Decimal(input()) * Decimal(input()))
-from fractions import Fraction; Fraction("3.14159").limit_denominator(10).numerator #22
-# N*M
-map(int, input().split())
-arr2d = [[list(map(int, input().split()))] for i in range(N)]
-# a^b%M
-pow(a, b, M)
-# random
-from random import *
-randrange(L, R, step)  # [L,R) L+k*step
-randint(L, R)  # int from [L,R]
-choice(list)  # pick 1 item;  choices(list, k) # pick k
-shuffle(list)
-Uniform(L, R)  # float from [L,R]
-# print
-print(f"num: {num}, pi: {pi:.2f}, str: {text}")
-print(1, 2, 3, 4, sep=" | ", end=" <-- END\n")
-# file IO
-r = open("filename.in"); a = r.read()  # all as one str
-w = open("filename.out", "w"); w.write("123\n")
-# IO redirection
-import sys; sys.set_int_max_str_digits(5000000)
-sys.stdin = open("filename.in")
-sys.stdout = open("filename.out", "w")
-print("123", file=sys.stderr)
-d=sys.stdin.buffer.read().split();n=int(d[0]);a=list(map(int,d[1:n+1]))
+from decimal import Context, Decimal, MAX_EMAX, MAX_PREC, ROUND_FLOOR, setcontext
+from fractions import Fraction
+from random import Random
+import sys
+
+
+# Python 3.11+ limits decimal-digit conversion of huge integers by default.
+if hasattr(sys, "set_int_max_str_digits"):
+    sys.set_int_max_str_digits(5_000_000)
+
+
+def decimal_multiply(a: str, b: str) -> Decimal:
+    setcontext(Context(prec=MAX_PREC, Emax=MAX_EMAX, rounding=ROUND_FLOOR))
+    return Decimal(a) * Decimal(b)
+
+
+def limit_fraction(value: str, max_denominator: int) -> Fraction:
+    return Fraction(value).limit_denominator(max_denominator)
+
+
+def read_matrix(lines: list[str], n: int, m: int) -> list[list[int]]:
+    matrix = [list(map(int, line.split())) for line in lines[:n]]
+    if len(matrix) != n or any(len(row) != m for row in matrix):
+        raise ValueError("matrix dimensions do not match n x m")
+    return matrix
+
+
+def modular_power(a: int, b: int, modulus: int) -> int:
+    return pow(a, b, modulus)
+
+
+def random_examples(rng: Random, values: list[int]) -> tuple[int, int, list[int]]:
+    """Examples of randint, choice, and shuffle without hidden global state."""
+    if not values:
+        raise ValueError("values must be non-empty")
+    shuffled = values.copy()
+    rng.shuffle(shuffled)
+    return rng.randint(1, 10), rng.choice(values), shuffled
+
+
+def format_example(num: int, pi: float, text: str) -> str:
+    return f"num: {num}, pi: {pi:.2f}, str: {text}"
+
+
+def parse_int_array(data: bytes) -> tuple[int, list[int]]:
+    tokens = data.split()
+    if not tokens:
+        raise ValueError("missing array length")
+    n = int(tokens[0])
+    if len(tokens) != n + 1:
+        raise ValueError("array length does not match input")
+    return n, list(map(int, tokens[1:]))

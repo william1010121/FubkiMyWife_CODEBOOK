@@ -40,6 +40,7 @@ struct suffix_array {
     int n = SZ(s);
     fill_n(sa, n, 0), fill_n(ra, n, 0), fill_n(he, n, 0);
     fill_n(box, n, 0), fill_n(tp, n, 0), m = 256;
+    if (!n) return;
     make_sa(s, n), make_he(s, n);
   }
 };

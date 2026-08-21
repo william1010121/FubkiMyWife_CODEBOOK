@@ -1,0 +1,8 @@
+{
+  "template": "codebook/5_String/exSAM.cpp",
+  "harness": "brute/17_string_automata/exsam_edge_harness.cpp",
+  "compile": "c++ -std=c++17 -O2 -Wall -Wextra -pedantic exsam_edge_harness.cpp -o exsam_edge_harness",
+  "run": "./exsam_edge_harness",
+  "oracle": "Enumerate all substrings across a string multiset, compare occurrences and distinct count, and compare the number of distinct end-position sets plus the root state.",
+  "cases": "empty/duplicate/prefix-heavy lists, every ternary singleton of length 0..5, every ordered pair of length 0..3, and 1200 seeded random lists"
+}

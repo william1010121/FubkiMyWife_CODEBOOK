@@ -14,6 +14,10 @@ vector<int> template_matches(const string &text, const string &pattern) {
 
 vector<int> oracle_matches(const string &s, const string &t) {
   vector<int> ans;
+  if (t.empty()) {
+    for (int i = 0; i <= (int)s.size(); ++i) ans.push_back(i + 1);
+    return ans;
+  }
   for (int i = 0; i + (int)t.size() <= (int)s.size(); ++i)
     if (s.compare(i, t.size(), t) == 0) ans.push_back(i + 1);
   return ans;
@@ -34,5 +38,6 @@ int main(int argc, char **argv) {
     expect(template_matches(s, t) == oracle_matches(s, t), "KMP");
   }
   expect(template_matches("aaaaa", "aaa") == vector<int>({1, 2, 3}), "KMP overlap");
+  expect(template_matches("abc", "") == vector<int>({1, 2, 3, 4}), "KMP empty");
   cout << "PASS KMP 501 cases\n";
 }

@@ -1,0 +1,8 @@
+{
+  "template": "codebook/5_String/SAM.cpp",
+  "harness": "brute/17_string_automata/sam_edge_harness.cpp",
+  "compile": "c++ -std=c++17 -O2 -Wall -Wextra -pedantic sam_edge_harness.cpp -o sam_edge_harness",
+  "run": "./sam_edge_harness",
+  "oracle": "Enumerate every non-empty substring, compare overlapping occurrence counts, distinct-substring total, and suffix-link invariants.",
+  "cases": "all binary strings of lengths 0..11, all ternary strings of lengths 0..7, repeated-symbol adversaries, and 700 seeded random strings"
+}

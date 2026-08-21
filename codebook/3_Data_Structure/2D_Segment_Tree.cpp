@@ -23,7 +23,7 @@ struct seg_2D {
   }
   int query(int L, int R, int l, int r, node *p) {
     if (L <= l && R >= r) return p->data;
-    int m = l + r >> 1, re = 0;
+    int m = l + r >> 1, re = INT_MIN;
     if (L <= m) re = query(L, R, l, m, p->lc);
     if (R > m)
       re = max(re, query(L, R, m + 1, r, p->rc));
@@ -49,7 +49,7 @@ struct seg_1D {
     int yl, int yr) {
     if (L <= l && R >= r)
       return p->data.query(yl, yr, 1, M, p->data.root);
-    int m = l + r >> 1, re = 0;
+    int m = l + r >> 1, re = INT_MIN;
     if (L <= m)
       re = s_query(L, R, l, m, p->lc, yl, yr);
     if (R > m)
