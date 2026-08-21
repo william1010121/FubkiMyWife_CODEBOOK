@@ -5,7 +5,7 @@ double d[MAXN][MAXM], x[MAXM];
 int ix[MAXN + MAXM]; // !!! array all indexed from 0
 // max{cx} s.t. {Ax<=b,x>=0}; n: constraints, m: vars !!!
 // x[] is the optimal solution vector
-// usage: value = simplex(a, b, c, N, M);
+// usage: value = simplex(n, m);
 double simplex(int n, int m){
 	++m; fill_n(d[n], m + 1, 0); fill_n(d[n + 1], m + 1, 0); iota(ix, ix + n + m, 0); int r = n, s = m - 1;
 	for (int i = 0; i < n; ++i) { for (int j = 0; j < m - 1; ++j) d[i][j] = -a[i][j]; d[i][m - 1] = 1; d[i][m] = b[i]; if (d[r][m] > d[i][m]) r = i; } copy_n(c, m - 1, d[n]);

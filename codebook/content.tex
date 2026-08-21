@@ -148,19 +148,19 @@
 %\inputcode{Big number}{6_Math/Big_number.cpp} % 超級大數（沒用）
 \inputcodedesc{Fraction}{6_Math/Fraction.cpp}%
 {Exact rational with auto-reduction. \textbf{\texttt{ll} numerator/denominator overflow easily} after a few operations; no divide-by-zero check.}
-\inputcodedesc{Simultaneous Equations}{6_Math/Simultaneous_Equations.cpp}%
-{Exact Gauss-Jordan over \texttt{fraction}; returns $-1$ if inconsistent, else the rank. Requires Fraction.cpp.}
+\inputcodeex{Simultaneous Equations}{6_Math/Simultaneous_Equations.cpp}%
+{Exact Gauss-Jordan over \texttt{fraction}; returns $-1$ if inconsistent, else the rank. Requires Fraction.cpp.}{examples/Simultaneous_Equations.cpp}
 \inputcodeex{Pollard Rho*}{6_Math/Pollard_Rho.cpp}%
 {Factorises in about $O(n^{1/4})$; results accumulate in \texttt{cnt}. Needs \texttt{prime()} and a 128-bit \texttt{mul()}.}{examples/Pollard_Rho.cpp}
-\inputcodedesc{Simplex Algorithm}{6_Math/Simplex_Algorithm.cpp}%
-{$\max cx$ s.t. $Ax\le b,x\ge0$; $-1$ means unbounded or infeasible. \textbf{$n$ is the constraint count, $m$ the variable count, and all arrays are 0-indexed.}}
+\inputcodeex{Simplex Algorithm}{6_Math/Simplex_Algorithm.cpp}%
+{$\max cx$ s.t. $Ax\le b,x\ge0$; $-1$ means unbounded or infeasible. \textbf{$n$ is the constraint count, $m$ the variable count, and all arrays are 0-indexed.}}{examples/Simplex_Algorithm.cpp}
 \subsubsection{Construction}
 \input{6_Math/SimplexConstruction.tex}
 %\inputcode{Schreier-Sims Algorithm*}{6_Math/SchreierSims.cpp} % test by XVI Opencup GP of Ekaterinburg H
 \inputcodeex{chineseRemainder}{6_Math/chineseRemainder.cpp}%
 {CRT for \textbf{non-coprime} moduli; $-1$ if no solution. \textbf{Overflows \texttt{ll} easily} --- use \texttt{\_\_int128} for large moduli. Iterate for more than two congruences.}{examples/chineseRemainder.cpp}
-\inputcodedesc{Factorial without prime factor*}{6_Math/fac_no_p.cpp}%
-{$n!$ with all factors $p$ removed, mod $p^k$, in $O(p^k+\log^2 n)$. Core of Lucas for prime-power moduli.}
+\inputcodeex{Factorial without prime factor*}{6_Math/fac_no_p.cpp}%
+{$n!$ with all factors $p$ removed, mod $p^k$, in $O(p^k+\log^2 n)$. Core of Lucas for prime-power moduli.}{examples/fac_no_p.cpp}
 %\inputcode{QuadraticResidue*}{6_Math/QuadraticResidue.cpp} % test by Lib-Checker Sqrt Mod
 \inputcodedesc{PiCount*}{6_Math/PiCount.cpp}%
 {$\pi(n)$ in about $O(n^{2/3})$; handles $n\sim10^{13}$ in under 2s.}
@@ -210,8 +210,8 @@
 {Area of the sector between two vectors, $O(1)$. \textbf{Returns the minor arc} --- subtract from the full disc for the major one.}
 \inputcodeex{Half Plane Intersection}{8_Geometry/halfPlaneIntersect.cpp}%
 {Intersection polygon of half planes in $O(n\log n)$; the feasible side is to the \emph{left} of each line. Empty result means degenerate or infeasible.}{examples/halfPlaneIntersect.cpp}
-\inputcodedesc{Rotating Sweep Line}{8_Geometry/rotatingSweepLine.cpp}%
-{Sweeps all $\binom n2$ directions in $O(n^2\log n)$; \texttt{rotatingSweepLineOrder} returns the final order, while the legacy void wrapper preserves the old call shape.}
+\inputcodeex{Rotating Sweep Line}{8_Geometry/rotatingSweepLine.cpp}%
+{Sweeps all $\binom n2$ directions in $O(n^2\log n)$; \texttt{rotatingSweepLineOrder} returns the final order, while the legacy void wrapper preserves the old call shape.}{examples/rotatingSweepLine.cpp}
 \inputcodedesc{Triangle Center}{8_Geometry/triangleCenter.cpp}%
 {Circumcentre, centroid, orthocentre (via the Euler line) and incentre, each $O(1)$. \textbf{Degenerate (collinear) input divides by zero.}}
 \inputcodedesc{Polygon Center}{8_Geometry/center.cpp}%
@@ -238,8 +238,8 @@
 {Divide and conquer in $O(n\log^2 n)$ (re-sorts the strip by $y$). \textbf{\texttt{p[]} must already be sorted by $x$.}}{examples/ClosestPair.cpp}
 
 \section{Else}
-\inputcodedesc{Cyclic Ternary Search*}{9_Else/cyc_tsearch.cpp}%
-{Minimum of a \textbf{cyclically shifted} unimodal array in $O(\log n)$; \texttt{pred(a,b)} compares two positions.}
+\inputcodeex{Cyclic Ternary Search*}{9_Else/cyc_tsearch.cpp}%
+{Minimum of a \textbf{cyclically shifted} unimodal array in $O(\log n)$; \texttt{pred(a,b)} compares two positions.}{examples/cyc_tsearch.cpp}
 \inputcodeex{Mo's Algorithm(With modification)}{9_Else/Mos_Algorithm_With_modification.cpp}%
 {Mo's with point updates, block $N^{2/3}$, $O(N^{5/3})$. The callback-based \texttt{solve} applies/rolls back updates and reports each query.}{examples/Mos_Algorithm_With_modification.cpp}
 \inputcodeex{Mo's Algorithm On Tree}{9_Else/Mos_Algorithm_On_Tree.cpp}%
@@ -256,22 +256,22 @@
 %\inputcode{DLX*}{9_Else/DLX.cpp} % test by TIOJ 1333, 1381
 %\subsection{Matroid Intersection}
 %\input{9_Else/Matroid.tex}
-\inputcodedesc{AdaptiveSimpson*}{9_Else/AdaptiveSimpson.cpp}%
-{Adaptive Simpson integration with Richardson extrapolation. Use \texttt{eval2} to pre-split multi-peak integrands.}
-\inputcodedesc{Simulated Annealing}{9_Else/simulated_annealing.cpp}%
-{Generic minimising annealing routine: caller supplies a score and neighbour proposal, and receives the best state found.}
+\inputcodeex{AdaptiveSimpson*}{9_Else/AdaptiveSimpson.cpp}%
+{Adaptive Simpson integration with Richardson extrapolation. Use \texttt{eval2} to pre-split multi-peak integrands.}{examples/AdaptiveSimpson.cpp}
+\inputcodeex{Simulated Annealing}{9_Else/simulated_annealing.cpp}%
+{Generic minimising annealing routine: caller supplies a score and neighbour proposal, and receives the best state found.}{examples/simulated_annealing.cpp}
 \inputcodedesc{Tree Hash*}{9_Else/tree_hash.cpp}%
 {Order-independent rooted tree hash in $O(n)$ through \texttt{rooted\_tree\_hash}; for unrooted trees hash at each centroid and take the minimum.}
-\inputcodedesc{Binary Search On Fraction}{9_Else/BinarySearchOnFraction.cpp}%
-{Smallest fraction satisfying a caller-supplied monotone predicate, via Stern-Brocot descent with doubling; call \texttt{frac\_bs(N, pred)}.}
-\inputcodedesc{Min Plus Convolution*}{9_Else/min_plus_convolution.cpp}%
-{$c_k=\min_{i+j=k}(a_i+b_j)$ by divide and conquer on monotone decisions. \textbf{Requires $a$ convex}, $b$ arbitrary.}
+\inputcodeex{Binary Search On Fraction}{9_Else/BinarySearchOnFraction.cpp}%
+{Smallest fraction satisfying a caller-supplied monotone predicate, via Stern-Brocot descent with doubling; call \texttt{frac\_bs(N, pred)}.}{examples/BinarySearchOnFraction.cpp}
+\inputcodeex{Min Plus Convolution*}{9_Else/min_plus_convolution.cpp}%
+{$c_k=\min_{i+j=k}(a_i+b_j)$ by divide and conquer on monotone decisions. \textbf{Requires $a$ convex}, $b$ arbitrary.}{examples/min_plus_convolution.cpp}
 \inputcodedesc{Bitset LCS}{9_Else/BitsetLCS.cpp}%
 {LCS in $O(nm/w)$ using subtract-and-borrow on 64-bit words; call \texttt{bitset\_lcs(a,b)}.}
-\inputcodedesc{N Queens Problem}{9_Else/NQueens.cpp}%
-{Constructs one solution in $O(n)$ by cases on $n\bmod 6$ --- no search. \textbf{No solution exists for $n=2,3$.}}
-\inputcodedesc{Digit DP}{9_Else/digit_dp.cpp}%
-{Binary digit DP compressed to Fibonacci counts; \texttt{calc(x)} counts values in $[0,x]$ with no adjacent one bits.}
+\inputcodeex{N Queens Problem}{9_Else/NQueens.cpp}%
+{Constructs one solution in $O(n)$ by cases on $n\bmod 6$ --- no search. \textbf{No solution exists for $n=2,3$.}}{examples/NQueens.cpp}
+\inputcodeex{Digit DP}{9_Else/digit_dp.cpp}%
+{Binary digit DP compressed to Fibonacci counts; \texttt{calc(x)} counts values in $[0,x]$ with no adjacent one bits.}{examples/digit_dp.cpp}
 \section{Python}
 \subsection{Misc}
 {\scriptsize Importable Python fallbacks for exact decimals/fractions, matrix and fast-array parsing, modular powers, seeded random helpers, and formatting. Huge integer input raises Python 3.11+'s digit limit.\par}\vspace{-0.6em}%
