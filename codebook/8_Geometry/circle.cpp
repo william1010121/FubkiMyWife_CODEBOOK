@@ -30,8 +30,7 @@ double IntersectArea(C a, C b) {
     sq(a.r)) / (2 * b.r * d));
   return p * sq(a.r) + q * sq(b.r) - a.r * d * sin(p);
 }
-// drop 2nd level to get points for a line (default:
-// segment)
+// drop 2nd level to get points for a line (default: segment)
 vector<P> CircleCrossLine(P a, P b, P o, double r) {
   double x = b.x - a.x,
     y = b.y - a.y, A = sq(x) + sq(y);

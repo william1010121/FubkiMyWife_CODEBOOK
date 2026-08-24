@@ -1,8 +1,7 @@
 struct palindromic_tree {
   struct node {
     int next[26], fail, len;
-    int cnt, num; // cnt: appear times, num: number of
-                  // pal. suf.
+    int cnt, num; // cnt: appear times, num: number of pal. suf.
 	node(int l = 0) : fail(0), len(l), cnt(0), num(0) {
 	  fill(next, next + 26, 0); }
   };

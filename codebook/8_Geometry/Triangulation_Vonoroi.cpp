@@ -36,8 +36,7 @@ vector<char> voronoi_unbounded(const vector<VoronoiPoint> &points) {
   return result;
 }
 
-// Area of every Voronoi cell. Hull sites have unbounded cells and return -1.
-// Unique sites are required. O(n^4), intended as a compact verified reference.
+// Area of every Voronoi cell. Hull sites have unbounded cells and return -1. Unique sites are required. O(n^4), intended as a compact verified reference.
 vector<long double> voronoi_cell_areas(const vector<VoronoiPoint> &points) {
   int n = points.size();
   if (!n) return {};

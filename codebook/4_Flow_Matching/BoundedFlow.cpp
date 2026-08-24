@@ -41,9 +41,7 @@ struct BoundedFlow { // 0-base
     } return dis[t] != -1;
   }
   int maxflow(int _s, int _t) {
-    // Self s-t queries have zero value.  This guard also avoids constructing
-    // the t -> s balancing edge as a self-loop, whose reverse index is not
-    // meaningful in this compact representation.
+    // Self s-t queries have zero value.  This guard also avoids constructing the t -> s balancing edge as a self-loop, whose reverse index is not meaningful in this compact representation.
     if (_s == _t) return 0;
     s = _s, t = _t;
     int flow = 0, df;

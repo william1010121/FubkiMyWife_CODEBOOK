@@ -1,6 +1,5 @@
 double closest_pair(int l, int r) {
-  // p should be sorted increasingly according to the
-  // x-coordinates.
+  // p should be sorted increasingly according to the x-coordinates.
   if (l == r) return 1e9;
   if (r - l == 1) return dist(p[l], p[r]);
   int m = (l + r) >> 1;

@@ -1,5 +1,4 @@
-// Return every distinct longest common subsequence, in
-// lexicographic order.
+// Return every distinct longest common subsequence, in lexicographic order.
 vector<string> all_lcs(const string &s,
   const string &t) {
   int n = (int)s.size(), m = (int)t.size();

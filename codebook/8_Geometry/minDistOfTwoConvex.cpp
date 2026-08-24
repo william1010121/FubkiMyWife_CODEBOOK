@@ -1,5 +1,4 @@
-// Convex polygons in cyclic order; self-contained
-// O(nm) implementation.
+// Convex polygons in cyclic order; self-contained O(nm) implementation.
 double _point_seg_dist(Point p, Point a, Point b) {
   double dx = b.x - a.x, dy = b.y - a.y,
     z = dx * dx + dy * dy;

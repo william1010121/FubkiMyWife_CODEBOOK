@@ -1,7 +1,5 @@
 // Generic minimising simulated annealing.
-// `next_state(state, rng)` proposes
-// a neighbour and `score(state)` is smaller for better
-// states.
+// `next_state(state, rng)` proposes a neighbour and `score(state)` is smaller for better states.
 template<class State, class Score, class NextState>
 State simulated_annealing(
   State current, Score score, NextState next_state,

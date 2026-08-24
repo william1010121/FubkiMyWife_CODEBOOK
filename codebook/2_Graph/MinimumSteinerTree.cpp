@@ -10,10 +10,7 @@ struct SteinerTree { // 0-base
   void add_edge(int ui, int vi, int wi) {
     chmin(dst[ui][vi], wi); }
   void shortest_path() {
-    // Convert edge-only distances into path costs that
-    // include every
-    // entered vertex. The source vertex is charged by
-    // the singleton state.
+    // Convert edge-only distances into path costs that include every entered vertex. The source vertex is charged by the singleton state.
     for (int i = 0; i < n; ++i)
       for (int j = 0; j < n; ++j)
         if (i != j &&

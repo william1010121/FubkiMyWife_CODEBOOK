@@ -24,9 +24,7 @@ struct MinCostMaxFlow { // 0-base
   void solve(int _s, int _t, ll &flow, ll &cost,
       bool neg = true) {
     s = _s, t = _t, flow = 0, cost = 0;
-    // A zero-length s-t flow has zero cost.  Besides defining the API for
-    // this degenerate query, this avoids Bellman-Ford on a self-terminal
-    // residual graph (which can contain a source-reachable negative cycle).
+    // A zero-length s-t flow has zero cost.  Besides defining the API for this degenerate query, this avoids Bellman-Ford on a self-terminal residual graph (which can contain a source-reachable negative cycle).
     if (_s == _t) return;
     if (neg) BellmanFord(), copy_n(dis, n, pot);
     for (; BellmanFord(); copy_n(dis, n, pot)) {

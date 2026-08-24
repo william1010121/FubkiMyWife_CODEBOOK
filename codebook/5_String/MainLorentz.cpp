@@ -48,8 +48,7 @@ void main_lorentz_impl(const string &s, int sft) {
   }
 }
 
-// Each public call starts a fresh report; recursive work uses the helper so
-// that ranges found in earlier subproblems are retained.
+// Each public call starts a fresh report; recursive work uses the helper so that ranges found in earlier subproblems are retained.
 void main_lorentz(const string &s, int sft = 0) {
   for (auto &v : rep) v.clear();
   main_lorentz_impl(s, sft);

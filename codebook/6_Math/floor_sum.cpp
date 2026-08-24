@@ -8,5 +8,4 @@ ll floor_sum(ll n, ll m, ll a, ll b) {
 	return ans + floor_sum(y_max,
 	  a, m, (a - x_max % a) % a);
 }
-// sum^{n-1}_0 floor((a * i + b) / m) in log(n + m + a
-// + b)
+// sum^{n-1}_0 floor((a * i + b) / m) in log(n + m + a + b)

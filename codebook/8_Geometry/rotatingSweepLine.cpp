@@ -14,9 +14,7 @@ vector<int> rotatingSweepLineOrder(const
     long long bx=1LL*ps[b.first].first-ps[b.second].first;
     long long by=1LL*ps[b.first].second-
       ps[b.second].second;
-    // Pair directions are unoriented: canonicalize them before comparing
-    // slopes.  Without this, a negative ax reverses the cross-multiplication
-    // order and the comparator is not a strict weak ordering.
+    // Pair directions are unoriented: canonicalize them before comparing slopes.  Without this, a negative ax reverses the cross-multiplication order and the comparator is not a strict weak ordering.
     if (ax < 0 || (ax == 0 && ay < 0)) ax = -ax, ay = -ay;
     if (bx < 0 || (bx == 0 && by < 0)) bx = -bx, by = -by;
     if (ax == 0 || bx == 0) return ax == 0 && bx != 0;

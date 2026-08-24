@@ -1,5 +1,4 @@
-# Hashes a file, ignoring all whitespace and comments. Use for
-# verifying that code was correctly typed.
+# Hashes a file, ignoring all whitespace and comments. Use for verifying that code was correctly typed.
 set -euo pipefail
 file=${1:?usage: hash.sh file}
 normalized=$(cpp "$file" -dD -P -fpreprocessed | tr -d '[:space:]')

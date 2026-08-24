@@ -32,8 +32,7 @@ struct MaxFlow { // 0-base
     return dis[t] != -1;
   }
   int maxflow(int _s, int _t) {
-    // Avoid DFS when s == t: its base case would
-    // otherwise return INF forever.
+    // Avoid DFS when s == t: its base case would otherwise return INF forever.
     if (_s == _t) return 0;
     s = _s; t = _t;
     int flow = 0, df;

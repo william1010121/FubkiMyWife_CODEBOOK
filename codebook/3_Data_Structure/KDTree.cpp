@@ -27,8 +27,7 @@ int build(int l, int r, int dep = 0) {
   return m;
 }
 bool bound(const point &q, int o, long long d) {
-  // Keep the pruning test exact.  In particular, converting d to a
-  // floating-point radius can round down near a perfect square.
+  // Keep the pruning test exact.  In particular, converting d to a floating-point radius can round down near a perfect square.
   __int128 dx = 0, dy = 0;
   if (q.x < xl[o]) dx = (__int128)xl[o] - q.x;
   else if (q.x > xr[o]) dx = (__int128)q.x - xr[o];
