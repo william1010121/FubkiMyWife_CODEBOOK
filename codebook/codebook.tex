@@ -161,21 +161,20 @@ stringstyle=\itshape\color{Green4},
 % NOTE: \subsection[#1] keeps the ToC entry free of the description.
 \newcommand{\inputcodedesc}[3]{
     \subsection[#1]{#1 \footnotesize{[\texttt{\captureshell{g++ -E #2 | sed '/^\#.*$/d' | tr -d '[:space:]' | md5sum | cut -c-6}}]}}%
-    {\scriptsize #3\par}\vspace{-0.8em}%
+    {\footnotesize #3\par}\vspace{-0.8em}%
     \lstinputlisting{#2}
 }
 % #1 title, #2 code path, #3 description, #4 example snippet path
-% basicstyle must be overridden here: \lstset sets \footnotesize globally,
-% which would otherwise ignore an enclosing \scriptsize.
+% Keep the usage label and example at the same size as every other listing.
 \newcommand{\inputcodeex}[4]{
     \inputcodedesc{#1}{#2}{#3}%
     \vspace{-1.0em}%
-    {\scriptsize\itshape Usage:}\par\vspace{-0.9em}%
-    \lstinputlisting[basicstyle=\scriptsize\ttfamily]{#4}%
+    {\footnotesize\itshape Usage:}\par\vspace{-0.9em}%
+    \lstinputlisting[basicstyle=\footnotesize\ttfamily,aboveskip=0pt,belowskip=0pt]{#4}%
 }
 
 \textbf{
-\scriptsize
+\footnotesize
 \setcounter{tocdepth}{1}
 \begin{multicols}{3}
   \tableofcontents
