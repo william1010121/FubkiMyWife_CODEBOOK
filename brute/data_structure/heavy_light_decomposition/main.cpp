@@ -3,6 +3,7 @@ using namespace std;
 #define N 128
 #define pb push_back
 #define ALL(x) (x).begin(), (x).end()
+#include "../../../codebook/3_Data_Structure/Dynamic_2D_Segment_Tree.cpp"
 #include "../../../codebook/3_Data_Structure/Heavy_light_Decomposition.cpp"
 
 int main() {

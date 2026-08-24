@@ -56,15 +56,17 @@
 {Maintains disjoint half-open $[L,R)$ intervals with auto-merge; amortised $O(\log n)$.}{examples/IntervalContainer.cpp}
 \inputcodeex{Leftist Tree}{3_Data_Structure/Leftist_Tree.cpp}%
 {Mergeable \emph{max}-heap, \texttt{merge}/\texttt{pop} $O(\log n)$, keeps subtree size and sum. No lazy tags.}{examples/Leftist_Tree.cpp}
+\inputcodeex{Dynamic 2D Segment Tree}{3_Data_Structure/Dynamic_2D_Segment_Tree.cpp}%
+{Rectangle add and rectangle-sum query on half-open coordinates, $O(\log n\log m)$ per operation. Both dimensions allocate nodes dynamically; queries may push lazy tags. \textbf{Uses \texttt{int}, so large sums overflow.}}{examples/Dynamic_2D_Segment_Tree.cpp}
 \inputcodeex{Heavy light Decomposition*}{3_Data_Structure/Heavy_light_Decomposition.cpp}%
-{Path queries in $O(\log^2 n)$ with the included segment tree. 1-base, root 1.}{examples/Heavy_light_Decomposition.cpp}
+{Vertex path sums in $O(\log^2 n)$ using \texttt{Seg} from the preceding template. Tree vertices are 1-base, root 1; flattened positions are half-open and 0-base.}{examples/Heavy_light_Decomposition.cpp}
 \inputcodeex{Centroid Decomposition*}{3_Data_Structure/Centroid_Decomposition.cpp}%
-{Build $O(n\log n)$, modify/query $O(\log n)$. \texttt{upinfo} subtracts the same-subtree overcount. 1-base.}{examples/Centroid_Decomposition.cpp}
+{Builds a centroid tree in $O(n\log n)$; modify/query are $O(\log n)$. \texttt{upinfo} removes same-branch overcount. 1-base.}{examples/Centroid_Decomposition.cpp}
 % \inputcode{Smart Pointer}{3_Data_Structure/Smart_Pointer.cpp}
 \inputcodeex{LiChaoST*}{3_Data_Structure/LiChaoST.cpp}%
 {Line container over an integer $x$ domain, $O(\log n)$. Keeps the \textbf{maximum}; negate for minimum.}{examples/LiChaoST.cpp}
-\inputcodeex{Link cut tree*}{3_Data_Structure/link_cut_tree.cpp}%
-{Dynamic trees, amortised $O(\log n)$; path aggregate is XOR. Supports reroot, link, cut, connectivity, LCA, point updates and path queries.}{examples/link_cut_tree.cpp}
+\inputcodeex{XOR Basis}{3_Data_Structure/XOR_Basis.cpp}%
+{Inserts a 64-bit unsigned integer into a linear basis in $O(64)$. \texttt{basis[i]} has highest set bit $i$; a dependent value is discarded.}{examples/XOR_Basis.cpp}
 \inputcodeex{KDTree}{3_Data_Structure/KDTree.cpp}%
 {Nearest neighbour, build $O(n\log n)$, query $O(\log n)$ average. Returns \textbf{squared} distance and skips distance-0 points.}{examples/KDTree.cpp}
 \inputcodeex{Treap}{3_Data_Structure/Treap.cpp}%
@@ -154,8 +156,6 @@
 {Factorises in about $O(n^{1/4})$; results accumulate in \texttt{cnt}. Needs \texttt{prime()} and a 128-bit \texttt{mul()}.}{examples/Pollard_Rho.cpp}
 \inputcodeex{Simplex Algorithm}{6_Math/Simplex_Algorithm.cpp}%
 {$\max cx$ s.t. $Ax\le b,x\ge0$; $-1$ means unbounded or infeasible. \textbf{$n$ is the constraint count, $m$ the variable count, and all arrays are 0-indexed.}}{examples/Simplex_Algorithm.cpp}
-\subsubsection{Construction}
-\input{6_Math/SimplexConstruction.tex}
 %\inputcode{Schreier-Sims Algorithm*}{6_Math/SchreierSims.cpp} % test by XVI Opencup GP of Ekaterinburg H
 \inputcodeex{chineseRemainder}{6_Math/chineseRemainder.cpp}%
 {CRT for \textbf{non-coprime} moduli; $-1$ if no solution. \textbf{Overflows \texttt{ll} easily} --- use \texttt{\_\_int128} for large moduli. Iterate for more than two congruences.}{examples/chineseRemainder.cpp}
@@ -275,6 +275,6 @@
 \section{Python}
 \subsection{Misc}
 {\scriptsize Importable Python fallbacks for exact decimals/fractions, matrix and fast-array parsing, modular powers, seeded random helpers, and formatting. Huge integer input raises Python 3.11+'s digit limit.\par}\vspace{-0.6em}%
-\lstinputlisting[language=Python,basicstyle=\fontsize{6.8pt}{6.8pt}\selectfont\ttfamily]{11_Python/misc.py}
+\lstinputlisting[language=Python,emptylines=0,basicstyle=\fontsize{6pt}{6pt}\selectfont\ttfamily]{11_Python/misc.py}
 % \subsection{Stress testing}
 % \lstinputlisting[language=bash]{9_Else/Stress_Test.sh}

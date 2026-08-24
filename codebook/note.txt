@@ -21,7 +21,6 @@ Simplex Algorithm (我甚至不會用，目前只是放爽的)
 Dominator Tree
 
 3:
-Link-Cut Tree
 KD Tree
 LiChaoST
 

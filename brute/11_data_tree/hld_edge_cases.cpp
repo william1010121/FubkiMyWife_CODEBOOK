@@ -2,6 +2,7 @@
 using namespace std;
 #define N 256
 #define pb push_back
+#include "../../codebook/3_Data_Structure/Dynamic_2D_Segment_Tree.cpp"
 #include "../../codebook/3_Data_Structure/Heavy_light_Decomposition.cpp"
 
 namespace {
