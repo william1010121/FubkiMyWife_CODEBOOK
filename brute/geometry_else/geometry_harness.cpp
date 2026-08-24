@@ -65,6 +65,57 @@ int main(){
   }
   req(close(IntersectArea(C({0,0},1),C({0,0},2)),pi),"circle contained area");
   req(close(CircleUnionArea({C({0,0},1),C({4,0},1)}),2*pi),"circle union disjoint");
+  auto internal_tangent = Intersect(C({0,0},1), C({1,0},2));
+  req(internal_tangent.size()==1 && close(internal_tangent[0].x,-1) &&
+      close(internal_tangent[0].y,0), "circle internal tangent dedup");
+  auto line_tangent = CircleCrossLine({-2,1},{2,1},{0,0},1);
+  req(line_tangent.size()==1 && close(line_tangent[0].x,0) &&
+      close(line_tangent[0].y,1), "circle-line tangent dedup");
+  req(Intersect(C({0,0},2),C({0,0},2)).empty(),
+      "coincident circles use empty finite-list convention");
+  req(CircleCrossLine({0,1},{0,1},{0,0},1).size()==1 &&
+      CircleCrossLine({0,0},{0,0},{0,0},1).empty(),
+      "degenerate circle-segment point convention");
+  mt19937 circle_rng(423771);
+  for (int tc=0; tc<5000; ++tc) {
+    int ax=int(circle_rng()%13)-6, ay=int(circle_rng()%13)-6;
+    int bx=int(circle_rng()%13)-6, by=int(circle_rng()%13)-6;
+    int ra=1+circle_rng()%6, rb=1+circle_rng()%6;
+    long double d=hypotl((long double)ax-bx,(long double)ay-by);
+    if (d==0 && ra==rb) continue; // coincident circles have infinitely many intersections.
+    int want = (d == ra+rb || d == abs(ra-rb)) ? 1 :
+               (abs(ra-rb) < d && d < ra+rb) ? 2 : 0;
+    auto got=Intersect(C({(double)ax,(double)ay},ra),
+                       C({(double)bx,(double)by},rb));
+    req((int)got.size()==want, "circle intersection count oracle");
+    for (auto z: got) {
+      req(close(hypot(z.x-ax,z.y-ay),ra,1e-6) &&
+          close(hypot(z.x-bx,z.y-by),rb,1e-6),
+          "circle intersection point oracle");
+    }
+  }
+  for (int tc=0; tc<5000; ++tc) {
+    P a{double(int(circle_rng()%17)-8),double(int(circle_rng()%17)-8)};
+    P b{double(int(circle_rng()%17)-8),double(int(circle_rng()%17)-8)};
+    P o{double(int(circle_rng()%9)-4),double(int(circle_rng()%9)-4)};
+    double r=1+circle_rng()%5;
+    double dx=b.x-a.x,dy=b.y-a.y,A=dx*dx+dy*dy;
+    if (A==0) continue; // a line segment requires distinct endpoints.
+    double B=2*(dx*(a.x-o.x)+dy*(a.y-o.y));
+    double D=B*B-4*A*(sq(a.x-o.x)+sq(a.y-o.y)-sq(r));
+    vector<double> roots;
+    if (D>=-1e-9) {
+      D=max(0.0,D);
+      double u=(-B-sqrt(D))/(2*A),v=(-B+sqrt(D))/(2*A);
+      if (u>=-1e-9&&u<=1+1e-9) roots.push_back(u);
+      if (fabs(v-u)>1e-8&&v>=-1e-9&&v<=1+1e-9) roots.push_back(v);
+    }
+    auto got=CircleCrossLine(a,b,o,r);
+    req(got.size()==roots.size(), "circle-line intersection count oracle");
+    for (auto z: got)
+      req(close(hypot(z.x-o.x,z.y-o.y),r,1e-6),
+          "circle-line intersection point oracle");
+  }
   req(tangent(C({0,0},1),P(2,0)).size()==2,"circle tangent from point");
   vector<L> hs={L({0,0},{1,0}),L({1,0},{1,1}),L({1,1},{0,1}),L({0,1},{0,0})};
   auto hp=HPI(hs);req(hp.size()==4,"halfPlaneIntersection square");

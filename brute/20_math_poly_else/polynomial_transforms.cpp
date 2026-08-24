@@ -5,6 +5,13 @@ namespace fft_test {
 #include "../../codebook/7_Polynomial/Fast_Fourier_Transform.cpp"
 }
 
+// These are the listings actually included in codebook.pdf (the similarly
+// named Fast_Fourier_Transform.cpp/NTT.2.cpp files are not included by
+// content.tex).  Keep separate namespaces because both define mult/fft.
+namespace fft_pdf_test {
+#include "../../codebook/7_Polynomial/FFT_chrislaiisme.cpp"
+}
+
 namespace fwt_test {
 #include "../../codebook/7_Polynomial/Fast_Walsh_Transform.cpp"
 }
@@ -33,6 +40,11 @@ namespace ntt2_test {
 #define main ntt2_demo_main
 #include "../../codebook/7_Polynomial/NTT.2.cpp"
 #undef main
+}
+
+namespace ntt_pdf_test {
+#include "../../codebook/7_Polynomial/NTT_chrislaiisme.cpp"
+#undef int
 }
 
 static vector<long long> naive_conv(const vector<int> &a, const vector<int> &b,
@@ -81,6 +93,44 @@ static void test_fft() {
     if (!equal(want.begin(), want.end(), got.begin())) {
       cerr << "FFT seeded random mismatch case=" << tc << '\n';
       exit(1);
+    }
+  }
+}
+
+static void test_pdf_fft_ntt() {
+  if (!fft_pdf_test::mult({}, {1, 2}).empty() ||
+      !fft_pdf_test::mult({1, 2}, {}).empty()) {
+    cerr << "PDF FFT empty-input mismatch\n"; exit(1);
+  }
+  mt19937 rng(0x7f7f);
+  for (int tc = 0; tc < 500; ++tc) {
+    int n = 1 + rng() % 90, m = 1 + rng() % 90;
+    vector<int> a(n), b(m);
+    for (int &x : a) x = (int)(rng() % 2001) - 1000;
+    for (int &x : b) x = (int)(rng() % 2001) - 1000;
+    auto got = fft_pdf_test::mult(a, b);
+    auto want = naive_conv(a, b);
+    if ((int)got.size() != (int)want.size() ||
+        !equal(got.begin(), got.end(), want.begin())) {
+      cerr << "PDF FFT mismatch case=" << tc << '\n'; exit(1);
+    }
+  }
+  constexpr int MOD = ntt_pdf_test::mod;
+  if (!ntt_pdf_test::mult({}, {1, 2}).empty() ||
+      !ntt_pdf_test::mult({1, 2}, {}).empty()) {
+    cerr << "PDF NTT empty-input mismatch\n"; exit(1);
+  }
+  for (int tc = 0; tc < 500; ++tc) {
+    int n = 1 + rng() % 90, m = 1 + rng() % 90;
+    vector<long long> a(n), b(m);
+    for (long long &x : a) x = rng() % MOD;
+    for (long long &x : b) x = rng() % MOD;
+    auto got = ntt_pdf_test::mult(a, b);
+    vector<int> ai(a.begin(), a.end()), bi(b.begin(), b.end());
+    auto want = naive_conv(ai, bi, MOD);
+    if ((int)got.size() != (int)want.size() ||
+        !equal(got.begin(), got.end(), want.begin())) {
+      cerr << "PDF NTT mismatch case=" << tc << '\n'; exit(1);
     }
   }
 }
@@ -168,6 +218,7 @@ static void test_ntt2() {
 
 int main() {
   test_fft();
+  test_pdf_fft_ntt();
   test_fwt();
   test_number_transform();
   test_ntt2();

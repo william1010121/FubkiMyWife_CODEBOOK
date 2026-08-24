@@ -39,6 +39,8 @@ static void run_case(int n, const vector<L> &to_insert,
 }
 
 int main() {
+  run_case(0, {L(7, 11, 0), L(-3, 4, 1)}, "zero-x");
+
   run_case(1, {
       L(0, 0, 0), L(0, -7, 1), L(0, 7, 2),
       L(-1000000, 1000000, 3), L(1000000, -1000000, 4)},

@@ -2,6 +2,7 @@ using cd = complex<double>;
 const double pi = acos(-1);
 
 void fft(vector<cd> &vec, bool inv=false) {
+  // The input length must be a positive power of two.
   int n = vec.size();
   for(int i=0, j=0; i<n; ++i) { // j = 反過來模擬加法
     if(i<j) swap(vec[i],vec[j]);
@@ -27,6 +28,7 @@ void fft(vector<cd> &vec, bool inv=false) {
 
 vector<int> mult(const vector<int>& a,
   const vector<int>& b) {
+  if (a.empty() || b.empty()) return {};
   int sz = a.size()+b.size()-1, n=1; while(n<sz) n<<=1;
   vector<cd> ca(a.begin(),
     a.end()), cb(b.begin(),b.end());

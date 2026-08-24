@@ -8,14 +8,19 @@ vector<int> rotatingSweepLineOrder(const
     i,j};
   sort(line.begin(),line.end(),[&](const pair<int,
     int> &a,const pair<int,int> &b){
-    long long ax=ps[a.first].first-ps[a.second].first;
-    long long ay=ps[a.first].second-
+    long long ax=1LL*ps[a.first].first-ps[a.second].first;
+    long long ay=1LL*ps[a.first].second-
       ps[a.second].second;
-    long long bx=ps[b.first].first-ps[b.second].first;
-    long long by=ps[b.first].second-
+    long long bx=1LL*ps[b.first].first-ps[b.second].first;
+    long long by=1LL*ps[b.first].second-
       ps[b.second].second;
+    // Pair directions are unoriented: canonicalize them before comparing
+    // slopes.  Without this, a negative ax reverses the cross-multiplication
+    // order and the comparator is not a strict weak ordering.
+    if (ax < 0 || (ax == 0 && ay < 0)) ax = -ax, ay = -ay;
+    if (bx < 0 || (bx == 0 && by < 0)) bx = -bx, by = -by;
     if (ax == 0 || bx == 0) return ax == 0 && bx != 0;
-    return ay * bx < by * ax;
+    return (__int128)ay * bx < (__int128)by * ax;
   });
   iota(id.begin(), id.end(), 0);
   sort(id.begin(),id.end(),[&](const int &a,

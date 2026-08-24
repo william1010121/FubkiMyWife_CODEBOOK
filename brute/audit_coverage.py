@@ -59,25 +59,94 @@ def active_callable_artifacts() -> list[Path]:
     return sorted(paths)
 
 
+def _active_tex(content: str) -> str:
+    """Remove TeX comments while retaining active lines and macro arguments."""
+    active_lines = []
+    for line in content.splitlines():
+        chars = []
+        backslashes = 0
+        for char in line:
+            if char == "%" and backslashes % 2 == 0:
+                break
+            chars.append(char)
+            if char == "\\":
+                backslashes += 1
+            else:
+                backslashes = 0
+        active_lines.append("".join(chars))
+    return "\n".join(active_lines)
+
+
+def _braced_argument(text: str, start: int) -> tuple[str, int] | None:
+    """Read one balanced TeX braced argument starting at *start*."""
+    while start < len(text) and text[start].isspace():
+        start += 1
+    if start == len(text) or text[start] != "{":
+        return None
+    depth = 1
+    index = start + 1
+    while index < len(text) and depth:
+        if text[index] == "\\":
+            index += 2
+            continue
+        if text[index] == "{":
+            depth += 1
+        elif text[index] == "}":
+            depth -= 1
+        index += 1
+    if depth:
+        return None
+    return text[start + 1 : index - 1], index
+
+
+def _active_inputcodeex(text: str) -> list[tuple[str | None, str | None]]:
+    """Return (source, example) arguments for active inputcodeex calls."""
+    calls: list[tuple[str | None, str | None]] = []
+    for match in re.finditer(r"\\inputcodeex\b", text):
+        cursor = match.end()
+        arguments: list[str] = []
+        for _ in range(4):
+            argument = _braced_argument(text, cursor)
+            if argument is None:
+                break
+            value, cursor = argument
+            arguments.append(value.strip())
+        if len(arguments) == 4:
+            calls.append((arguments[1], arguments[3]))
+        else:
+            source = arguments[1] if len(arguments) > 1 else None
+            calls.append((source, None))
+    return calls
+
+
 def example_coverage() -> tuple[list[str], list[str], list[str], int]:
-    """Return missing, extra, and duplicate active example snippet paths."""
-    content = (CODEBOOK / "content.tex").read_text()
-    active_text = "\n".join(
-        line for line in content.splitlines() if not line.lstrip().startswith("%")
-    )
-    found = re.findall(r"examples/[^}%\s]+\.cpp", active_text)
+    """Validate examples attached to active inputcodeex calls only.
+
+    Files left in ``codebook/examples`` for an unlisted or retired template are
+    intentionally ignored.  Active calls still must have one existing example,
+    and an example cannot be attached to multiple active calls.
+    """
+    content = _active_tex((CODEBOOK / "content.tex").read_text())
+    calls = _active_inputcodeex(content)
+    missing: list[str] = []
+    found: list[str] = []
+    for source, example in calls:
+        if example is None:
+            missing.append(source or "<inputcodeex>")
+            continue
+        if not re.fullmatch(r"examples/[^{}%\s]+\.cpp", example):
+            missing.append(source or example)
+            continue
+        found.append(example)
+
     counts = Counter(found)
-    expected = {
+    available = {
         path.relative_to(CODEBOOK).as_posix()
         for path in (CODEBOOK / "examples").glob("*.cpp")
     }
-    got = set(found)
-    return (
-        sorted(expected - got),
-        sorted(got - expected),
-        sorted(path for path, count in counts.items() if count != 1),
-        len(expected),
-    )
+    invalid = sorted(set(found) - available)
+    duplicate = sorted(path for path, count in counts.items() if count != 1)
+    return sorted(missing), invalid, duplicate, len(calls)
 
 
 def searchable_brute_files() -> list[tuple[Path, str]]:

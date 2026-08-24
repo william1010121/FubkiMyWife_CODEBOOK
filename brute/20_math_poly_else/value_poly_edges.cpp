@@ -56,7 +56,7 @@ int main() {
   ifac = invfac; inegfac.resize(K + 1);
   for (int i = 0; i <= K; ++i) inegfac[i] = (i & 1) ? -invfac[i] : invfac[i];
 
-  for (int base : {0, 3, 100}) for (int n = 1; n <= 18; ++n) {
+  for (int base : {0, 3, 100, mint::MOD - 2}) for (int n = 1; n <= 18; ++n) {
     vector<mint> coeff(n);
     for (int i = 0; i < n; ++i) coeff[i] = (i * i * 17 + 5 * i + 3) % 1000;
     Poly p(base, eval(coeff, base));

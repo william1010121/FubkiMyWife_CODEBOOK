@@ -7,6 +7,7 @@ int pwr(int a, int b, int ret=1) {
 }
 
 void ntt(vector<int> &vec, bool inv=false) {
+  // The input length must be a positive power of two (at most 2^23).
   int n = vec.size();
   for(int i=0, j=0; i<n; ++i) { // j = 反過來模擬加法
     if(i<j) swap(vec[i],vec[j]);
@@ -34,6 +35,7 @@ void ntt(vector<int> &vec, bool inv=false) {
 #define intt(vec) ntt(vec,true)
 
 vector<int> mult(vector<int> a, vector<int> b) {
+  if (a.empty() || b.empty()) return {};
   int sz = a.size()+b.size()-1, n=1; while(n<sz) n<<=1;
   a.resize(n), b.resize(n), ntt(a), ntt(b);
   for(int i=0; i<n; ++i) a[i] = a[i]*b[i] % mod;

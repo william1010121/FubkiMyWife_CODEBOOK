@@ -6,8 +6,11 @@ vector<P> Intersect(C a, C b) {
   if (a.r > b.r) swap(a, b);
   double d = (a.c - b.c).abs();
   vector<P> p;
+  if (same(d, 0)) return p; // coincident circles: no finite point list
   if (same(a.r + b.r, d))
     p.push_back(a.c + (b.c - a.c).unit() * a.r);
+  else if (same(d + a.r, b.r))
+    p.push_back(a.c - (b.c - a.c).unit() * a.r);
   else if (a.r + b.r > d && d + a.r >= b.r) {
     double o = acos((sq(a.r) + sq(d) -
       sq(b.r)) / (2 * a.r * d));
@@ -32,6 +35,8 @@ double IntersectArea(C a, C b) {
 vector<P> CircleCrossLine(P a, P b, P o, double r) {
   double x = b.x - a.x,
     y = b.y - a.y, A = sq(x) + sq(y);
+  if (same(A, 0))
+    return same((a - o).abs(), r) ? vector<P>{a} : vector<P>{};
   double B = 2 * x * (a.x - o.x) + 2 * y * (a.y - o.y);
   double C = sq(a.x - o.x) + sq(a.y - o.y) - sq(r);
   double d = B * B - 4 * A * C;
@@ -42,7 +47,7 @@ vector<P> CircleCrossLine(P a, P b, P o, double r) {
     double j = (-B + sqrt(d)) / (2 * A);
     if (i - 1.0 <= eps && i >= -eps)
       t.emplace_back(a.x + i * x, a.y + i * y);
-    if (j - 1.0 <= eps && j >= -eps)
+    if (fabs(j - i) > eps && j - 1.0 <= eps && j >= -eps)
       t.emplace_back(a.x + j * x, a.y + j * y);
   } return t;
 }

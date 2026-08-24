@@ -40,6 +40,13 @@ int main() {
   check("abcababcab");
   check("abacaba");
   check(string(4096, 'a'));  // The array has valid indices [0, MAXn).
+  // Z-values are byte-wise; these cases include embedded NUL and 0xff.
+  const vector<string> byte_words = {
+      string({char(0), 'A', char(0), 'B'}),
+      string({'A', char(255), 'A'}),
+      string({char(128), char(255), char(128), char(0)}),
+  };
+  for (const string &input : byte_words) check(input), ++cases;
   cases += 7;
 
   mt19937 rng(0x5A56414Cu);

@@ -42,9 +42,9 @@ static void check_case(int n, int s, int t, const vector<Arc> &arcs,
 
 enum class SameSourceResult { kReturnedZero, kReturnedOther, kTimedOut, kForkError };
 
-// The usual max-flow contract requires distinct terminals.  Run the probe in
-// a child because this particular implementation repeatedly returns INF when
-// s == t rather than returning the conventional zero flow.
+// A same-terminal query is a valid degenerate case and must return zero.  Keep
+// this in a child so a regression to the old non-terminating implementation
+// cannot hang the complete edge-case suite.
 static SameSourceResult probe_same_source() {
   const pid_t pid = fork();
   if (pid < 0) return SameSourceResult::kForkError;
@@ -123,11 +123,13 @@ int main() {
     return 1;
   }
   if (probe == SameSourceResult::kTimedOut) {
-    cout << "CONTRACT: Dinic s==t did not terminate; callers must require s != t\n";
+    cerr << "FAIL: Dinic s==t did not terminate\n";
+    return 1;
   } else if (probe == SameSourceResult::kReturnedOther) {
-    cout << "CONTRACT: Dinic s==t returned a nonzero/nonconventional result; callers must require s != t\n";
+    cerr << "FAIL: Dinic s==t did not return zero\n";
+    return 1;
   } else {
-    cout << "CONTRACT: Dinic s==t returned conventional zero\n";
+    cout << "Dinic s==t: PASS (returns zero)\n";
   }
   cout << "PASS Dinic edge-case oracle suite\n";
 }

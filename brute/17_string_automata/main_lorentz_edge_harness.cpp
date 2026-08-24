@@ -52,6 +52,15 @@ static void check(const string &s, int offset = 0) {
   if (got != brute(s, offset)) fail("missing tandem repeat");
 }
 
+static void check_consecutive_calls() {
+  // The second input has no tandem repeats.  It must not inherit the first
+  // call's ranges, even when both calls use nonzero coordinate offsets.
+  main_lorentz("aaaa", 7);
+  main_lorentz("ab", 19);
+  for (const auto &ranges : rep)
+    if (!ranges.empty()) fail("stale tandem repeat after consecutive call");
+}
+
 static void enumerate_words(int alphabet, int length,
                             const function<void(const string &)> &visit) {
   long long total = 1;
@@ -81,6 +90,7 @@ int main() {
   check("#a#a#a", 21), ++cases;
   check(string("\0\0", 2), 23), ++cases;
   check(string("\0#\0#\0", 5), 25), ++cases;
+  check_consecutive_calls(), ++cases;
 
   for (int n = 0; n <= 8; ++n)
     enumerate_words(3, n, [&](const string &s) { check(s), ++cases; });

@@ -51,7 +51,7 @@ struct point {
   long long operator*(point b) const { return x * b.x + y * b.y; }
   double len() const { return hypot((double)x, (double)y); }
 };
-#include "../../codebook/8_Geometry/pointInConvex.cpp"
+#include "../../codebook/8_Geometry/PointInConvex.cpp"
 }  // namespace convex_contains
 
 namespace old_kdtree {

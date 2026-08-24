@@ -106,6 +106,8 @@ struct Poly : vector<ll> { // coefficients in [0, P)
   static Poly Interpolate(const vector<ll> &x,
       const vector<ll> &y) { // 1e5, 1.4s
     const int m = (int)x.size();
+    if (!m) return {};
+    assert((int)y.size() == m);
     vector<Poly> up = _tree1(x), down(m * 2);
     vector<ll> z = up[1].Dx()._eval(x, up);
     fi(0, m) z[i] = y[i] * ntt.minv(z[i]) % P;

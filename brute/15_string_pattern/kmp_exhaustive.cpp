@@ -60,6 +60,15 @@ int main() {
   check("abc", "abcd");
   check("ababa", "aba");
   check(string(512, 'a'), string(257, 'a'));
+  // KMP compares bytes, not locale characters.  Keep embedded NUL and high
+  // bytes in both text and pattern so a C-string assumption cannot pass.
+  const vector<string> byte_words = {
+      string({char(0), 'A', char(0), 'B'}),
+      string({'A', char(255), 'A'}),
+      string({char(128), char(255), char(128), char(0)}),
+  };
+  for (const string &text : byte_words)
+    for (const string &pattern : byte_words) check(text, pattern), ++cases;
   cases += 9;
 
   mt19937 rng(0x4B4D5032u);

@@ -19,6 +19,8 @@ struct SW{ // global min cut, O(V^3)
     } return mx;
   }
   int solve(int n) {
+    // The only partition of a graph with at most one vertex is empty.
+    if (n <= 1) return 0;
     int res = INF;
     for (int x, y; n > 1; n--){
       res = min(res, search(x, y, n));

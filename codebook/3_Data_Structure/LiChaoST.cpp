@@ -24,7 +24,9 @@ class LiChao { // maintain max
       query(l, m, rt << 1, x));
     return max(ret, query(m, r, rt << 1 | 1, x));
   } public:
-  LiChao(int n_) : n(n_), nodes(n * 4) {}
-  void insert(L ln) { insert(0, n, 1, ln); }
-  ll query(ll x) { return query(0, n, 1, x); }
+  LiChao(int n_) : n(n_ > 0 ? n_ : 0), nodes(n * 4) {}
+  // An empty x-domain is a valid empty container: inserts are ignored and
+  // queries return the same sentinel as an otherwise empty tree.
+  void insert(L ln) { if (n > 0) insert(0, n, 1, ln); }
+  ll query(ll x) { return n > 0 ? query(0, n, 1, x) : -INF; }
 };

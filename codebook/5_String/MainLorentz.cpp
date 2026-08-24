@@ -1,10 +1,10 @@
 vector<pair<int, int>> rep[kN]; // 0-base [l, r]
-void main_lorentz(const string &s, int sft = 0) {
+void main_lorentz_impl(const string &s, int sft) {
 	const int n = s.size(); if (n <= 1) return;
   const int nu = n / 2, nv = n - nu;
 	const string u = s.substr(0, nu), v = s.substr(nu),
 	  ru(u.rbegin(), u.rend()), rv(v.rbegin(), v.rend());
-  main_lorentz(u, sft), main_lorentz(v, sft + nu);
+	main_lorentz_impl(u, sft), main_lorentz_impl(v, sft + nu);
   auto join = [](const string &a, const string &b) {
     vector<int> x; x.reserve(a.size() + b.size() + 1);
     for (unsigned char c : a) x.push_back(c);
@@ -46,4 +46,12 @@ void main_lorentz(const string &s, int sft = 0) {
     } if (k1 + k2 >= l) add_rep(cntr < nu,
       cntr, l, k1, k2);
   }
-} // p \in [l, r] => s[p, p + i) = s[p + i, p + 2i)
+}
+
+// Each public call starts a fresh report; recursive work uses the helper so
+// that ranges found in earlier subproblems are retained.
+void main_lorentz(const string &s, int sft = 0) {
+  for (auto &v : rep) v.clear();
+  main_lorentz_impl(s, sft);
+}
+// p \in [l, r] => s[p, p + i) = s[p + i, p + 2i)

@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -u
+set -o pipefail
 
 root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 test_dir="$root/brute"
@@ -46,7 +47,10 @@ run_one() {
   mkdir -p "$(dirname -- "$exe")" "$(dirname -- "$log")"
   case "$src" in
     *.cpp)
-      if ! g++ -std=c++20 -O2 -pipe -I"$root" "$src" -o "$exe" >"$log" 2>&1; then
+      # Keep template-instantiation failures bounded as well as test runtime.
+      # A pathological include/compile must not occupy a worker forever while
+      # the runtime timeout remains unused.
+      if ! timeout "${timeout_seconds}s" g++ -std=c++20 -O2 -pipe -I"$root" "$src" -o "$exe" >"$log" 2>&1; then
         echo "FAIL compile $rel"
         return 1
       fi

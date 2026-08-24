@@ -42,6 +42,15 @@ int main() {
     check(s, cases++);
   }
 
+  // Rotation ordering is over raw string bytes; embedded NUL/high bytes must
+  // not be treated as a terminator or signed characters.
+  const vector<string> byte_words = {
+      string({char(0), 'A', char(0), 'B'}),
+      string({'A', char(255), 'A'}),
+      string({char(128), char(255), char(128), char(0)}),
+  };
+  for (const string &s : byte_words) check(s, cases++);
+
   cout << "PASS Smallest_Rotation non-empty exhaustive/periodic/random cases="
        << cases << '\n';
   check({}, cases++);

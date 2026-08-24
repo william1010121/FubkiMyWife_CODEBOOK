@@ -85,16 +85,14 @@ int main() {
   exhaustive_binary_graphs();
   parallel_and_random_graphs();
 
-  // A one-vertex global cut has conventional value zero, but the template's
-  // documented loop is for n >= 2.  Probe and report that precondition rather
-  // than pretending INT_MAX is a useful global-cut value.
+  // Graphs with at most one vertex have the conventional global-cut value 0.
   vector<vector<int>> singleton(1, vector<int>(1));
   sw.init(1);
   const int singleton_value = sw.solve(1);
-  if (singleton_value == 0)
-    cout << "CONTRACT: Stoer-Wagner n=1 returns conventional zero\n";
-  else
-    cout << "CONTRACT: Stoer-Wagner n=1 returns " << singleton_value
-         << "; callers must require n >= 2 for a finite global cut\n";
+  if (singleton_value != 0 || sw.solve(0) != 0) {
+    cerr << "FAIL: Stoer-Wagner n<=1 must return zero\n";
+    return 1;
+  }
+  cout << "Stoer-Wagner n<=1: PASS (returns zero)\n";
   cout << "PASS Stoer-Wagner edge-case oracle suite\n";
 }

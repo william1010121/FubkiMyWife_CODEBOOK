@@ -5,16 +5,11 @@
     %\vspace{-1em}
     \begin{enumerate}
         \itemsep-0.3em
-        \item Construct super source $S$, sink $T$.
-        \item Edge $(x, y, l, u)$: connect $x \rightarrow y$ with cap $u - l$.
-        \item $in(v)$ := sum of incoming lower bounds minus sum of outgoing ones.
-        \item $in(v) > 0$: connect $S \rightarrow v$ with cap $in(v)$; else $v \rightarrow T$ with cap $-in(v)$.
-        \begin{itemize}
-            \itemsep-0.2em
-            \item Max: connect $t \rightarrow s$ with cap $\infty$ (skip for circulation), $f$ := maxflow $S \to T$. No solution if $f \neq \sum_{in(v) > 0}{in(v)}$; else maxflow $s \to t$ is the answer.
-            \item Min: $f$ := maxflow $S \to T$; connect $t \rightarrow s$ with cap $\infty$, $f^\prime$ := flow $S \to T$. No solution if $f + f^\prime \neq \sum_{in(v) > 0}{in(v)}$; else $f^\prime$.
-        \end{itemize}
-        \item Each edge $e$ has solution $l_e + f_e$, $f_e$ its flow.
+        \item For $e=(x,y)$ with $l_e\le f_e\le u_e$, keep baseline $l_e$ and give the residual edge $x\to y$ capacity $u_e-l_e$.
+        \item Let $b(v)$ be the incoming lower bounds minus the outgoing ones. Add $S\to v$ with capacity $b(v)$ if $b(v)>0$, and $v\to T$ with capacity $-b(v)$ if $b(v)<0$.
+        \item For an $s$-$t$ flow, first add $t\to s$ with capacity $\infty$; omit it for a circulation. A feasible solution exists iff maxflow $S\to T$ saturates every edge out of $S$ (value $\sum_{b(v)>0}b(v)$).
+        \item Record $F$, the flow on $t\to s$, then remove $S,T$ and that auxiliary edge. From separate copies of this residual state, maxflow $s\to t$ by $\Delta_+$ gives maximum value $F+\Delta_+$. For the minimum \emph{nonnegative} value, augment $t\to s$ by at most $F$; if that amount is $\Delta_-$, the answer is $F-\Delta_-$. (Without this cap, the usual signed flow value may become negative.)
+        \item The final flow on each original edge is the lower-bound baseline plus its net residual flow: $f_e=l_e+x_e$.
     \end{enumerate}
     \item Construct minimum vertex cover from maximum matching $M$ on bipartite graph $(X, Y)$
     %\vspace{-1em}
@@ -48,17 +43,18 @@
     %\vspace{-1em}
     \begin{enumerate}
         \itemsep-0.3em
-      \item Copy each $v \in V$ as $v^\prime$; connect $u^\prime \to v^\prime$ with weight $w(u, v)$.
-      \item Connect $v \to v^\prime$ with weight $2\mu(v)$, $\mu(v)$ := cheapest edge at $v$.
-      \item Min weight perfect matching on $G^\prime$.
+      \item For a graph without isolated vertices and nonnegative edge weights, let $\mu(v)=\min_{e\ni v}w(e)$. Then
+      \[\operatorname{mwec}(G)=\min_{M\text{ matching}}\left(w(M)+\sum_{v\text{ unmatched by }M}\mu(v)\right).\]
+      \item For the perfect-matching reduction, add a dummy copy $v^\prime$ for each $v$. Keep each original edge $\{u,v\}$ with weight $w(u,v)$, add $v\text{--}v^\prime$ with weight $\mu(v)$, and add zero-weight edges $u^\prime\text{--}v^\prime$ for $u\ne v$.
+      \item A minimum-weight perfect matching in this graph has weight $\operatorname{mwec}(G)$: original--original edges form $M$, original--dummy edges pay $\mu(v)$ for unmatched vertices, and the remaining dummies pair at zero cost.
     \end{enumerate}
     \item Project selection problem
     %\vspace{-1em}
     \begin{enumerate}
       \itemsep-0.3em
-      \item $p_v > 0$: edge $(s, v)$ cap $p_v$; else $(v, t)$ cap $-p_v$.
-      \item Edge $(u, v)$ cap $w$ := cost of choosing $u$ without $v$.
-      \item The mincut equals the max profit over subsets of projects.
+      \item $p_v > 0$: edge $(s, v)$ cap $p_v$; else $(v, t)$ cap $-p_v$. Let $P_+=\sum_{p_v>0}p_v$.
+      \item Add $(u,v)$ with capacity $w$ for the penalty/cost of choosing $u$ without $v$ (use $\infty$ for a hard prerequisite).
+      \item The maximum profit is $P_+-\operatorname{mincut}$ (equivalently, the mincut is the lost profit).
     \end{enumerate}
     \item Dual of minimum cost maximum flow
     %\vspace{-1em}
@@ -67,11 +63,21 @@
       \item Cap $c_{uv}$, flow $f_{uv}$, cost $w_{uv}$, required flow difference $b_u$.
       \item If all $w_{uv}$ are integers, an optimum with all $p_u$ integral exists.
     \end{enumerate}
-    $$
-    \begin{aligned}\min\sum_{uv} w_{uv}f_{uv} \\ -f_{uv} \geq -c_{uv} \\ \sum_{v} f_{vu} - \sum_{v} f_{uv} = -b_u\end{aligned}
-    \Leftrightarrow
-    \begin{aligned}\min\sum_{u} b_up_u + \sum_{uv}c_{uv}\max(0, p_v - p_u - w_{uv}) \\ p_u \geq 0 \end{aligned}
-    $$
+    \[
+    \begin{gathered}
+      \begin{aligned}
+        &\min\sum_{uv} w_{uv}f_{uv} \\
+        &0\leq f_{uv}\leq c_{uv},\qquad
+        \sum_{v} f_{vu}-\sum_{v} f_{uv}=-b_u
+      \end{aligned} \\[0.1em]
+      \Updownarrow \\[-0.1em]
+      \begin{aligned}
+        \max_{p\in\mathbb{R}^{V}}\quad
+        &\sum_{u}b_up_u \\
+        &-\sum_{uv}c_{uv}\max(0,p_u-p_v-w_{uv})
+      \end{aligned}
+    \end{gathered}
+    \]
     %\item 0/1 quadratic programming
     %%\vspace{-1em}
     %\[ \sum_x{c_xx} + \sum_y{c_y\bar{y}} + \sum_{xy}c_{xy}x\bar{y} + \sum_{xyx^\prime y^\prime}c_{xyx^\prime y^\prime}(x\bar{y} + x^\prime\bar{y^\prime}) \]

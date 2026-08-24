@@ -27,13 +27,21 @@ int build(int l, int r, int dep = 0) {
   return m;
 }
 bool bound(const point &q, int o, long long d) {
-  double ds = sqrt(d + 1.0);
-  return !(q.x < xl[o] - ds || q.x > xr[o] + ds ||
-    q.y < yl[o] - ds || q.y > yr[o] + ds);
+  // Keep the pruning test exact.  In particular, converting d to a
+  // floating-point radius can round down near a perfect square.
+  __int128 dx = 0, dy = 0;
+  if (q.x < xl[o]) dx = (__int128)xl[o] - q.x;
+  else if (q.x > xr[o]) dx = (__int128)q.x - xr[o];
+  if (q.y < yl[o]) dy = (__int128)yl[o] - q.y;
+  else if (q.y > yr[o]) dy = (__int128)q.y - yr[o];
+  return dx * dx + dy * dy <= (__int128)d;
 }
 long long dist(const point &a, const point &b) {
-  return (a.x - b.x) * 1ll * (a.x - b.x) +
-    (a.y - b.y) * 1ll * (a.y - b.y);
+  __int128 dx = (__int128)a.x - b.x;
+  __int128 dy = (__int128)a.y - b.y;
+  __int128 d = dx * dx + dy * dy;
+  // The public return type is long long; saturate distances that do not fit.
+  return d > LLONG_MAX ? LLONG_MAX : (long long)d;
 }
 void dfs(
   const point &q, long long &d, int o, int dep = 0) {
@@ -51,7 +59,8 @@ void init(const vector<point> &v) {
   root = build(0, v.size());
 }
 long long nearest(const point &q) {
-  long long res = 1e18;
-  if (~root) dfs(q, res, root); return res;
+  long long res = LLONG_MAX;
+  if (~root) dfs(q, res, root);
+  return res;
 }
 } // namespace kdt

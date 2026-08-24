@@ -10,11 +10,12 @@ struct point {
 
 static long long expected_distance(
     const vector<point> &points, point q) {
-  long long ans = 1000000000000000000LL;
+  long long ans = LLONG_MAX;
   for (point p : points) {
-    long long dx = (long long)p.x - q.x;
-    long long dy = (long long)p.y - q.y;
-    long long d = dx * dx + dy * dy;
+    __int128 dx = (__int128)p.x - q.x;
+    __int128 dy = (__int128)p.y - q.y;
+    __int128 wide = dx * dx + dy * dy;
+    long long d = wide > LLONG_MAX ? LLONG_MAX : (long long)wide;
     // KDTree.cpp intentionally excludes the query point itself.
     if (d) ans = min(ans, d);
   }
@@ -42,6 +43,12 @@ static void check_case(
 }
 
 int main() {
+  kdt::init({});
+  if (kdt::nearest({0, 0}) != LLONG_MAX) {
+    cerr << "KDTree empty tree did not return sentinel\n";
+    return 1;
+  }
+
   vector<point> queries;
   for (int x = -4; x <= 4; ++x)
     for (int y = -4; y <= 4; ++y)
@@ -55,6 +62,7 @@ int main() {
 
   vector<point> duplicate(64, {-17, 23});
   check_case(duplicate, queries, "all-duplicates");
+  check_case(duplicate, {{-17, 23}}, "all-duplicates-sentinel");
 
   vector<point> grid;
   for (int x = -3; x <= 3; ++x)
@@ -69,6 +77,11 @@ int main() {
       {1000000, -1000000}, {1000000, 1000000},
       {0, 0}, {0, 0}, {-1, 1}, {1, -1}},
       queries, "coordinate-boundaries");
+
+  check_case({{-1000000000, -1000000000}, {1000000000, 1000000000}},
+             {{-1000000000, -1000000000}}, "8e18-distance");
+  check_case({{-2000000000, -2000000000}, {2000000000, 2000000000}},
+             {{-2000000000, -2000000000}}, "saturated-distance");
 
   mt19937 rng(0x51a7c0de);
   const int values[] = {

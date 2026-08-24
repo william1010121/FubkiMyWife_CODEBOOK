@@ -47,6 +47,25 @@ static int max_value_dfs(const vector<Arc> &a, int at, int s, int t,
 }
 
 int main() {
+  // Same-terminal max-flow/solve calls are zero-valued and must not create a
+  // malformed self-loop in the balancing construction.
+  {
+    BoundedFlow bf;
+    bf.init(2);
+    bf.add_edge(0, 1, 0, 3);
+    if (bf.maxflow(0, 0) != 0 || bf.solve(0, 0) != 0) {
+      cerr << "bounded same-terminal query did not return zero\n";
+      return 1;
+    }
+    BoundedFlow impossible;
+    impossible.init(2);
+    impossible.add_edge(0, 1, 1, 1);
+    if (impossible.solve(0, 0) != -1) {
+      cerr << "infeasible same-terminal circulation was accepted\n";
+      return 1;
+    }
+  }
+
   mt19937 rng(0x8badf00d);
   for (int tc = 0; tc < 1200; ++tc) {
     int n = 2 + rng() % 3, m = 1 + rng() % 7;

@@ -73,6 +73,50 @@ int main() {
   sort(sorted.begin(),sorted.end());
   vector<int> want_ids(order.size()); iota(want_ids.begin(),want_ids.end(),0);
   req(sorted==want_ids, "rotating sweep permutation");
+  vector<pair<int,int>> extreme{{INT_MIN,0},{0,INT_MAX},{INT_MAX,-1}};
+  auto extreme_order=rotatingSweepLineOrder(extreme);
+  vector<int> extreme_want{2,1,0};
+  req(extreme_order==extreme_want, "rotating sweep integer extremes");
+  auto expected_sweep_order = [](const vector<pair<int,int>> &points) {
+    vector<int> ids(points.size());
+    iota(ids.begin(), ids.end(), 0);
+    sort(ids.begin(), ids.end(), [&](int a, int b) {
+      return points[a] < points[b];
+    });
+    reverse(ids.begin(), ids.end());
+    return ids;
+  };
+  // In general position every pair crosses at a distinct direction, so a
+  // half-turn reverses the lexicographic order.  This catches signed-x slope
+  // comparator errors while avoiding simultaneous-event tie ambiguity.
+  auto direction_key = [](pair<int,int> a, pair<int,int> b) {
+    long long x = a.first - b.first, y = a.second - b.second;
+    if (x < 0 || (x == 0 && y < 0)) x = -x, y = -y;
+    long long g = std::gcd(std::llabs(x), std::llabs(y));
+    x /= g; y /= g;
+    return pair<long long,long long>{x, y};
+  };
+  mt19937 sweep_rng(819273);
+  for (int tc=0; tc<3000; ++tc) {
+    int n = 2 + sweep_rng() % 8;
+    vector<pair<int,int>> q;
+    set<pair<int,int>> used;
+    set<int> used_x;
+    while ((int)q.size() < n) {
+      pair<int,int> z{int(sweep_rng()%101)-50, int(sweep_rng()%101)-50};
+      if (!used_x.count(z.first) && used.insert(z).second) {
+        used_x.insert(z.first);
+        q.push_back(z);
+      }
+    }
+    set<pair<long long,long long>> dirs;
+    bool general = true;
+    for (int i=0;i<n;++i) for (int j=i+1;j<n;++j)
+      general &= dirs.insert(direction_key(q[i],q[j])).second;
+    if (!general) { --tc; continue; }
+    req(rotatingSweepLineOrder(q)==expected_sweep_order(q),
+        "rotating sweep general-position reverse order");
+  }
   rotatingSweepLine(ps);
 
   static convex3D tetra;

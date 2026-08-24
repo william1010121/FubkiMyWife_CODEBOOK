@@ -13,7 +13,7 @@ codebook/8_Geometry/innerCenter.cpp	support	../22_inactive_extra/geometry_suppor
 codebook/8_Geometry/orthoCenter.cpp	support	../22_inactive_extra/geometry_support_brute.cpp	altitude perpendicularity identities	https://open.kattis.com/problems/brocardpoint	Point context supplied by harness
 codebook/8_Geometry/maxTriangleOfConvex.cpp	active	advanced_harness.cpp	exhaustive all-triples area oracle	https://open.kattis.com/problems/roberthood	Point/Cross supplied by harness
 codebook/8_Geometry/pointInPolygon.cpp	active	geometry_harness.cpp	exact integer grid classifications	https://open.kattis.com/problems/pointinpolygon	compiled and exercised
-codebook/8_Geometry/pointInConvex.cpp	support	../22_inactive_extra/geometry_support_brute.cpp	random convex polygons versus ray casting	https://open.kattis.com/problems/pointinpolygon	linear and logarithmic APIs exercised
+codebook/8_Geometry/PointInConvex.cpp	support	../22_inactive_extra/geometry_support_brute.cpp	random convex polygons versus ray casting	https://open.kattis.com/problems/pointinpolygon	linear and logarithmic APIs exercised
 codebook/8_Geometry/circle.cpp	active	geometry_harness.cpp	long-double tolerance and known exact cases	https://open.kattis.com/problems/circle	compiled and exercised
 codebook/8_Geometry/CircleTangent.cpp	active	geometry_harness.cpp	tangent-count and orthogonality checks	https://open.kattis.com/problems/circle	compiled and exercised
 codebook/8_Geometry/tangentToCircleFromPoint.cpp	support	../22_inactive_extra/geometry_support_brute.cpp	circle membership and perpendicularity	https://open.kattis.com/problems/circle	Point context supplied by harness

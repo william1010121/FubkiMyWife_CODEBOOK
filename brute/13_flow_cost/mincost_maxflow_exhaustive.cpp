@@ -66,6 +66,21 @@ static void check(const vector<Arc> &a, int n, bool neg, int tc) {
 }
 
 int main() {
+  // This also guards against Bellman-Ford looping on a source-reachable
+  // negative cycle when the two terminals coincide.
+  {
+    MinCostMaxFlow mf;
+    mf.init(2);
+    mf.add_edge(0, 1, 1, -3);
+    mf.add_edge(1, 0, 1, 0);
+    ll flow = -1, cost = -1;
+    mf.solve(0, 0, flow, cost, true);
+    if (flow != 0 || cost != 0) {
+      cerr << "mincost maxflow same-terminal query did not return zero\n";
+      return 1;
+    }
+  }
+
   int cases = 0;
   const vector<pair<int, vector<Arc>>> edge_cases = {
       {2, {}},

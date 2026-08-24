@@ -64,11 +64,11 @@
 {Builds a centroid tree in $O(n\log n)$; modify/query are $O(\log n)$. \texttt{upinfo} removes same-branch overcount. 1-base.}{examples/Centroid_Decomposition.cpp}
 % \inputcode{Smart Pointer}{3_Data_Structure/Smart_Pointer.cpp}
 \inputcodeex{LiChaoST*}{3_Data_Structure/LiChaoST.cpp}%
-{Line container over an integer $x$ domain, $O(\log n)$. Keeps the \textbf{maximum}; negate for minimum.}{examples/LiChaoST.cpp}
+{Line container over an integer $x$ domain, $O(\log n)$. Keeps the \textbf{maximum}; negate for minimum. For $n=0$, insertion is a no-op and query returns \texttt{-INF}.}{examples/LiChaoST.cpp}
 \inputcodeex{XOR Basis}{3_Data_Structure/XOR_Basis.cpp}%
 {Inserts a 64-bit unsigned integer into a linear basis in $O(64)$. \texttt{basis[i]} has highest set bit $i$; a dependent value is discarded.}{examples/XOR_Basis.cpp}
 \inputcodeex{KDTree}{3_Data_Structure/KDTree.cpp}%
-{Nearest neighbour, build $O(n\log n)$, query $O(\log n)$ average. Returns \textbf{squared} distance and skips distance-0 points.}{examples/KDTree.cpp}
+{Nearest neighbour, build $O(n\log n)$, query $O(\log n)$ average. Returns \textbf{squared} distance (saturating at \texttt{LLONG\_MAX}) and skips distance-0 points; empty data, or a query equal to every stored point, returns that sentinel.}{examples/KDTree.cpp}
 \inputcodeex{Treap}{3_Data_Structure/Treap.cpp}%
 {Rotation-free treap, expected $O(\log n)$; \texttt{split} by key, \texttt{split2} by size. \texttt{down()} is empty --- add lazy tags there.}{examples/Treap.cpp}
 % \inputcode{Range Chmin Chmax Add Range Sum*}{3_Data_Structure/Range_Chmin_Chmax_Add_Range_Sum.cpp} % test by Lib-Checker Range Chmin Chmax Add Range Sum
@@ -81,7 +81,7 @@
 \inputcodeex{Kuhn Munkres*}{4_Flow_Matching/Kuhn_Munkres.cpp}%
 {Max weight \emph{perfect} matching on a square bipartite graph. $O(V^3)$. 0-base.}{examples/Kuhn_Munkres.cpp}
 \inputcodeex{MincostMaxflow*}{4_Flow_Matching/MincostMaxflow.cpp}%
-{Min cost max flow, SPFA + Johnson potentials (handles negative cost). 0-base.}{examples/MincostMaxflow.cpp}
+{Min cost max flow, SPFA + Johnson potentials (handles negative-cost edges). The residual graph must have no negative-cost cycle reachable from \texttt{s}; call \texttt{solve} with \texttt{s != t} for ordinary flow (the degenerate \texttt{s == t} query returns \texttt{flow = cost = 0}). 0-base.}{examples/MincostMaxflow.cpp}
 \inputcodeex{Maximum Simple Graph Matching*}{4_Flow_Matching/Maximum_Simple_Graph_Matching.cpp}%
 {Max matching on a general graph (blossom). $O(V^3)$. 0-base.}{examples/Maximum_Simple_Graph_Matching.cpp}
 \inputcodeex{Maximum Weight Matching*}{4_Flow_Matching/Maximum_Weight_Matching.cpp}%
@@ -186,16 +186,16 @@
 
 \section{Polynomial}
 \inputcodeex{Fast Fourier Transform}{7_Polynomial/FFT_chrislaiisme.cpp}%
-{Iterative complex FFT and integer convolution via \texttt{mult}, $O(n\log n)$. Returns exactly $|a|+|b|-1$ rounded coefficients; double precision limits coefficient size.}{examples/Fast_Fourier_Transform.cpp}
+{Iterative complex FFT and integer convolution via \texttt{mult}, $O(n\log n)$. \texttt{fft} requires a positive power-of-two length; \texttt{mult} returns empty if either coefficient vector is empty, otherwise exactly $|a|+|b|-1$ rounded coefficients. Double precision limits coefficient size.}{examples/Fast_Fourier_Transform.cpp}
 \input{7_Polynomial/Number_Theory_Transform_Prime}
 \inputcodeex{Number Theory Transform*}{7_Polynomial/NTT_chrislaiisme.cpp}%
-{Iterative NTT and convolution via \texttt{mult}, $O(n\log n)$ modulo 998244353. The listing defines \texttt{int} as \texttt{long long}; contain or undefine the macro after use.}{examples/Number_Theory_Transform.cpp}
+{Iterative NTT and convolution via \texttt{mult}, $O(n\log n)$ modulo 998244353. Direct \texttt{ntt} input lengths must be positive powers of two up to $2^{23}$; coefficients are residues modulo 998244353. \texttt{mult} returns empty if either vector is empty. The listing defines \texttt{int} as \texttt{long long}; contain or undefine the macro after use.}{examples/Number_Theory_Transform.cpp}
 \inputcodeex{Fast Walsh Transform*}{7_Polynomial/Fast_Walsh_Transform.cpp}%
 {or/and/xor convolution, $O(n\log n)$; file implements or. Also subset convolution in $O(2^LL^2)$.}{examples/Fast_Walsh_Transform.cpp}
 \inputcodeex{Polynomial Operation}{7_Polynomial/Polynomial_Operation.cpp}%
-{Mul/Inv/Sqrt/DivMod/Ln/Exp/Pow/Eval/Interpolate over $\bmod\,998244353$. Mostly $O(n\log n)$, Eval $O(n\log^2 n)$.}{examples/Polynomial_Operation.cpp}
+{Mul/Inv/Sqrt/DivMod/Ln/Exp/Pow/Eval/Interpolate over $\bmod\,998244353$. Requires compatible \texttt{NTT<MAXN,P,RT>} and \texttt{QuadraticResidue}; mostly $O(n\log n)$, Eval $O(n\log^2 n)$. \texttt{Interpolate(x,y)} returns empty for empty \texttt{x}; otherwise lengths match and \texttt{x} values are distinct modulo $P$.}{examples/Polynomial_Operation.cpp}
 \inputcodeex{Value Polynomial}{7_Polynomial/Value_Poly.cpp}%
-{Polynomial held as consecutive point values; Lagrange eval and prefix-sum lift in $O(n)$.}{examples/Value_Poly.cpp}
+{Polynomial held as consecutive point values; Lagrange eval and prefix-sum lift in $O(n)$. Requires caller-provided \texttt{mint}, \texttt{ifac}, and \texttt{inegfac} precomputed through size$-1<P$.}{examples/Value_Poly.cpp}
 \subsection{Newton's Method}
 \input{7_Polynomial/Newton.tex}
 
@@ -211,7 +211,7 @@
 \inputcodeex{Half Plane Intersection}{8_Geometry/halfPlaneIntersect.cpp}%
 {Intersection polygon of half planes in $O(n\log n)$; the feasible side is to the \emph{left} of each line. Empty result means degenerate or infeasible.}{examples/halfPlaneIntersect.cpp}
 \inputcodeex{Rotating Sweep Line}{8_Geometry/rotatingSweepLine.cpp}%
-{Sweeps all $\binom n2$ directions in $O(n^2\log n)$; \texttt{rotatingSweepLineOrder} returns the final order, while the legacy void wrapper preserves the old call shape.}{examples/rotatingSweepLine.cpp}
+{Sweeps all $\binom n2$ directions in $O(n^2\log n)$; points must be distinct with no three collinear. \texttt{rotatingSweepLineOrder} returns the final order, while the legacy void wrapper preserves the old call shape.}{examples/rotatingSweepLine.cpp}
 \inputcodedesc{Triangle Center}{8_Geometry/triangleCenter.cpp}%
 {Circumcentre, centroid, orthocentre (via the Euler line) and incentre, each $O(1)$. \textbf{Degenerate (collinear) input divides by zero.}}
 \inputcodedesc{Polygon Center}{8_Geometry/center.cpp}%
@@ -221,7 +221,7 @@
 \inputcodeex{Point in Polygon}{8_Geometry/pointInPolygon.cpp}%
 {Ray casting for any simple polygon, $O(n)$. \textbf{Returns 1 on the boundary, 2 strictly inside}, 0 outside.}{examples/pointInPolygon.cpp}
 \inputcodedesc{Circle}{8_Geometry/circle.cpp}%
-{Circle intersection points and area, circle-segment crossing, and circle $\cap$ triangle area. All $O(1)$.}
+{Circle intersection points and area, circle-segment crossing, and circle $\cap$ triangle area. All $O(1)$. Coincident circles return an empty finite-point list; a zero-length segment is treated as one point.}
 \inputcodedesc{Tangent of Circles and Points to Circle}{8_Geometry/CircleTangent.cpp}%
 {Common tangents of two circles (0/1/2/3/4 by configuration) and tangents from a point, $O(1)$.}
 \inputcodedesc{Area of Union of Circles}{8_Geometry/circleOrArea.cpp}%
@@ -239,7 +239,7 @@
 
 \section{Else}
 \inputcodeex{Cyclic Ternary Search*}{9_Else/cyc_tsearch.cpp}%
-{Minimum of a \textbf{cyclically shifted} unimodal array in $O(\log n)$; \texttt{pred(a,b)} compares two positions.}{examples/cyc_tsearch.cpp}
+{Minimum of a \textbf{cyclically shifted} unimodal array in $O(\log n)$; \texttt{pred(a,b)} compares two positions. The cyclic U-shape must have pairwise-distinct values (equivalently, strict comparisons); $n\ge1$.}{examples/cyc_tsearch.cpp}
 \inputcodeex{Mo's Algorithm(With modification)}{9_Else/Mos_Algorithm_With_modification.cpp}%
 {Mo's with point updates, block $N^{2/3}$, $O(N^{5/3})$. The callback-based \texttt{solve} applies/rolls back updates and reports each query.}{examples/Mos_Algorithm_With_modification.cpp}
 \inputcodeex{Mo's Algorithm On Tree}{9_Else/Mos_Algorithm_On_Tree.cpp}%
@@ -265,7 +265,7 @@
 \inputcodeex{Binary Search On Fraction}{9_Else/BinarySearchOnFraction.cpp}%
 {Smallest fraction satisfying a caller-supplied monotone predicate, via Stern-Brocot descent with doubling; call \texttt{frac\_bs(N, pred)}.}{examples/BinarySearchOnFraction.cpp}
 \inputcodeex{Min Plus Convolution*}{9_Else/min_plus_convolution.cpp}%
-{$c_k=\min_{i+j=k}(a_i+b_j)$ by divide and conquer on monotone decisions. \textbf{Requires $a$ convex}, $b$ arbitrary.}{examples/min_plus_convolution.cpp}
+{$c_k=\min_{i+j=k}(a_i+b_j)$ by divide and conquer on monotone decisions. \textbf{Requires $a$ convex}, $b$ arbitrary; supports empty inputs and any additive numeric type whose sums are representable.}{examples/min_plus_convolution.cpp}
 \inputcodedesc{Bitset LCS}{9_Else/BitsetLCS.cpp}%
 {LCS in $O(nm/w)$ using subtract-and-borrow on 64-bit words; call \texttt{bitset\_lcs(a,b)}.}
 \inputcodeex{N Queens Problem}{9_Else/NQueens.cpp}%
@@ -275,6 +275,6 @@
 \section{Python}
 \subsection{Misc}
 {\scriptsize Importable Python fallbacks for exact decimals/fractions, matrix and fast-array parsing, modular powers, seeded random helpers, and formatting. Huge integer input raises Python 3.11+'s digit limit.\par}\vspace{-0.6em}%
-\lstinputlisting[language=Python,emptylines=0,basicstyle=\fontsize{6pt}{6pt}\selectfont\ttfamily]{11_Python/misc.py}
+\lstinputlisting[language=Python,emptylines=0,basicstyle=\fontsize{6.8pt}{6.8pt}\selectfont\ttfamily]{11_Python/misc.py}
 % \subsection{Stress testing}
 % \lstinputlisting[language=bash]{9_Else/Stress_Test.sh}

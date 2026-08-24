@@ -37,11 +37,7 @@ struct NTT {
   }
 };
 
-ll QuadraticResidue(ll a, ll p) {
-  a = (a % p + p) % p;
-  for (ll x = 0; x <= 100; ++x) if (x * x % p == a) return x;
-  return -1;
-}
+#include "../../codebook/6_Math/QuadraticResidue.cpp"
 
 #include "../../codebook/7_Polynomial/Polynomial_Operation.cpp"
 
@@ -186,6 +182,9 @@ int main() {
     if (P::LinearRecursion(init, coef, n) != want) {
       cerr << "LinearRecursion mismatch n=" << n << '\n'; return 1;
     }
+  }
+  if (!P::Interpolate({}, {}).empty()) {
+    cerr << "Interpolate empty mismatch\n"; return 1;
   }
   if (!P().Eval({}).empty()) { cerr << "Eval empty mismatch\n"; return 1; }
   cout << "polynomial_operation_edges: PASS operations, singular/truncation boundaries\n";

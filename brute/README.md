@@ -1,8 +1,9 @@
 # Template brute-force validation
 
 Every source artifact under `codebook/` (excluding examples and documentation)
-is referenced by an executable test under `brute/`; this includes all 106 active
-callable templates in `codebook/content.tex`.  Tests include or wrap the source,
+is referenced by an executable test under `brute/`; this includes all 104 active
+main code listings plus the NTT prime/root table in `codebook/content.tex`.
+Tests include or wrap the source,
 generate bounded random/exhaustive cases, and compare it with a deliberately
 simple oracle.  The Java harness performs a source contract when `javac` is not
 installed and automatically upgrades to a compiled differential test when it is.
@@ -20,4 +21,6 @@ status means the corresponding template is not verified.
 
 Documentation-only material is listed explicitly in the relevant manifest.
 `audit_coverage.py`, which runs before the suite, makes both active and all-source
-coverage hard failures so a new template cannot silently omit its brute.
+coverage hard failures so a new template cannot silently omit its brute. It also
+requires every active `\inputcodeex` to name one existing, unique example;
+unlisted files left in `codebook/examples/` are ignored.

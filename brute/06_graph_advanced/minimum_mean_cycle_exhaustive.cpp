@@ -64,6 +64,14 @@ static void check(int tc, const vector<vector<ll>> &w) {
 
 int main() {
   int tc = 0;
+  // The documented vertex domain includes the degenerate one-vertex case:
+  // an absent self-loop is acyclic, while a self-loop is a one-edge cycle.
+  check(++tc, {});
+  check(++tc, {{INF}});
+  check(++tc, {{0}});
+  check(++tc, {{-17}});
+  check(++tc, {{23}});
+
   // Exhaust all directed topologies through three vertices, with loops.
   for (int n = 2; n <= 3; ++n) {
     int possible = n * n;

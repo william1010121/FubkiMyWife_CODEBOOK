@@ -17,10 +17,12 @@ static vector<int> template_radii(const string &input) {
 }
 
 static vector<int> direct_radii(const string &input) {
-  string transformed = "%";
-  for (char c : input) {
+  // Use an integer separator outside the byte alphabet.  This keeps the
+  // oracle valid even when the input itself contains '%', NUL, or 0xff.
+  vector<int> transformed = {256};
+  for (unsigned char c : input) {
     transformed.push_back(c);
-    transformed.push_back('%');
+    transformed.push_back(256);
   }
   vector<int> answer(transformed.size(), 1);
   for (int center = 0; center < (int)transformed.size(); ++center)
@@ -51,6 +53,12 @@ int main() {
   check("ababababab");
   check("abcddcba");
   check(string(2047, 'a'));  // 2*n+1 == MAXN-1, the largest valid input.
+  const vector<string> byte_words = {
+      string({char(0), 'A', char(0), 'B'}),
+      string({'A', char(255), 'A'}),
+      string({char(128), char(255), char(128), char(0)}),
+  };
+  for (const string &input : byte_words) check(input), ++cases;
   cases += 8;
 
   mt19937 rng(0x4D414E32u);
