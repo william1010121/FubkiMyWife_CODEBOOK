@@ -16,8 +16,7 @@ vector<T> min_plus_convolution(const vector<T> &a,
         if (from == -1 || value < best)
           best = value, from = j;
       }
-    // Every output index has at least one valid (i,j) pair.  Keep this guard
-    // so a malformed recursive range cannot pass -1 onward.
+    // Every output index has at least one valid (i,j) pair.  Keep this guard so a malformed recursive range cannot pass -1 onward.
     if (from == -1) return;
     c[mid] = best;
     Y(Y, l, mid - 1, jl, from),
