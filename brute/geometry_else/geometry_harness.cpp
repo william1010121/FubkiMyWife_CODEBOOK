@@ -12,7 +12,7 @@ double sq(double x) { return x * x; }
 #include "../../codebook/8_Geometry/CircleTangent.cpp"
 #include "../../codebook/8_Geometry/circleOrArea.cpp"
 #include "../../codebook/8_Geometry/convexHull.cpp"
-#include "../../codebook/8_Geometry/pointInPolygon.cpp"
+#include "../../codebook/8_Geometry/PointInConvex.cpp"
 #include "../../codebook/8_Geometry/halfPlaneIntersect.cpp"
 
 struct pt {
@@ -53,8 +53,8 @@ int main(){
   mt19937 rng(1234567);
   req(close(SectorArea(P(1,0),P(0,1),2),pi),"sectorArea");
   req(SegmentIntersect(P(0,0),P(2,2),P(0,2),P(2,0)),"basic.segment_intersect");
-  vector<P> sqp={{0,0},{4,0},{4,4},{0,4}};
-  req(pip(sqp,{2,2})==2&&pip(sqp,{0,2})==1&&pip(sqp,{5,2})==0,"pointInPolygon");
+  vector<IPoint> sqp={{0,0},{4,0},{4,4},{0,4}};
+  req(pointInConvex(sqp,{2,2})==2&&pointInConvex(sqp,{0,2})==1&&pointInConvex(sqp,{5,2})==0,"PointInConvex");
   for(int tc=0;tc<200;tc++){
     vector<P>a;for(int i=0;i<12;i++)a.push_back({(int)(rng()%17)-8,(int)(rng()%17)-8});
     auto x=convex(a),y=brute_hull(a); req(x.size()==y.size(),"convexHull size");

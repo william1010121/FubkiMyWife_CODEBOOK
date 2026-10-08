@@ -99,7 +99,6 @@ PREREQUISITES = {
     "8_Geometry/ClosestPair.cpp": ["8_Geometry/_basic.cpp"],
     "8_Geometry/convexHull.cpp": ["8_Geometry/_basic.cpp"],
     "8_Geometry/halfPlaneIntersect.cpp": ["8_Geometry/_basic.cpp"],
-    "8_Geometry/pointInPolygon.cpp": ["8_Geometry/_basic.cpp"],
 }
 
 

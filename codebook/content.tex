@@ -218,8 +218,8 @@
 {Area centroid of a simple polygon in $O(n)$ by signed-area weighting, so concave shapes are fine.}
 \inputcodedesc{Maximum Triangle}{8_Geometry/maxTriangleOfConvex.cpp}%
 {Largest triangle inscribed in a convex polygon by exhaustive triples in $O(n^3)$.}
-\inputcodeex{Point in Polygon}{8_Geometry/pointInPolygon.cpp}%
-{Ray casting for any simple polygon, $O(n)$. \textbf{Returns 1 on the boundary, 2 strictly inside}, 0 outside.}{examples/pointInPolygon.cpp}
+\inputcodeex{Point in Convex Polygon}{8_Geometry/PointInConvex.cpp}%
+{Fan binary search, $O(\log K)$ per query; integer \texttt{IPoint} with \texttt{\_\_int128} cross products. Returns 0 outside, 1 on the boundary, 2 strictly inside. Input is CCW, without repeated or collinear intermediate vertices (do not repeat the first vertex). Empty/point/segment inputs supported; all coordinates, including queries, have absolute value $\le 10^{18}$.}{examples/PointInConvex.cpp}
 \inputcodedesc{Circle}{8_Geometry/circle.cpp}%
 {Circle intersection points and area, circle-segment crossing, and circle $\cap$ triangle area. All $O(1)$. Coincident circles return an empty finite-point list; a zero-length segment is treated as one point.}
 \inputcodedesc{Tangent of Circles and Points to Circle}{8_Geometry/CircleTangent.cpp}%

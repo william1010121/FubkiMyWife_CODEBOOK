@@ -42,6 +42,7 @@ def main():
     with tempfile.TemporaryDirectory(prefix="geometry-else-") as td:
         td = Path(td)
         ok = run_one("geometry_harness", HERE / "geometry_harness.cpp", td / "geometry_harness")
+        ok &= run_one("convex_boundary_harness", HERE / "convex_boundary_harness.cpp", td / "convex_boundary_harness")
         ok &= run_one("else_harness", HERE / "else_harness.cpp", td / "else_harness")
     runnable = [r["path"] for r in rows if r["harness"] != "not-runnable"]
     blocked = [r["path"] for r in rows if r["harness"] == "not-runnable"]

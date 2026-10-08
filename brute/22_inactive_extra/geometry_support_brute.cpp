@@ -42,15 +42,6 @@ struct Point {
 }  // namespace circle_tangent
 
 namespace convex_contains {
-struct point {
-  long long x = 0, y = 0;
-  point() = default;
-  point(long long x_, long long y_) : x(x_), y(y_) {}
-  point operator-(point b) const { return {x - b.x, y - b.y}; }
-  long long operator^(point b) const { return x * b.y - y * b.x; }
-  long long operator*(point b) const { return x * b.x + y * b.y; }
-  double len() const { return hypot((double)x, (double)y); }
-};
 #include "../../codebook/8_Geometry/PointInConvex.cpp"
 }  // namespace convex_contains
 
@@ -124,14 +115,14 @@ static void test_tangents() {
   }
 }
 
-using IPoint = convex_contains::point;
+using IPoint = convex_contains::IPoint;
 static long long icross(IPoint a, IPoint b, IPoint c) {
-  return (b - a) ^ (c - a);
+  return convex_contains::cross(a, b, c);
 }
 
 static bool brute_inside(const vector<IPoint> &polygon, IPoint p) {
   for (int i = 0; i < (int)polygon.size(); ++i)
-    if (convex_contains::on(polygon[i], polygon[(i + 1) % polygon.size()], p)) return true;
+    if (convex_contains::onSegment(polygon[i], polygon[(i + 1) % polygon.size()], p)) return true;
   bool inside = false;
   for (int i = 0, j = polygon.size() - 1; i < (int)polygon.size(); j = i++) {
     const auto &a = polygon[i], &b = polygon[j];
@@ -167,14 +158,13 @@ static void test_convex_contains() {
   mt19937 rng(88776);
   for (int test = 0; test < 400; ++test) {
     vector<IPoint> points;
-    for (int i = 0; i < 30; ++i) points.emplace_back((int)(rng() % 31) - 15, (int)(rng() % 31) - 15);
+    for (int i = 0; i < 30; ++i) points.push_back({(int)(rng() % 31) - 15, (int)(rng() % 31) - 15});
     vector<IPoint> hull = integer_hull(points);
     if (hull.size() < 3) continue;
     for (int x = -18; x <= 18; ++x) for (int y = -18; y <= 18; ++y) {
       IPoint p{x, y};
       bool want = brute_inside(hull, p);
-      require(convex_contains::in(hull, p) == want, "linear convex containment");
-      require(convex_contains::inside(hull, p) == want, "log convex containment");
+      require((convex_contains::pointInConvex(hull, p) != 0) == want, "log convex containment");
     }
   }
 }
