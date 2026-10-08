@@ -11,9 +11,11 @@ Run from the repository root:
 python3 brute/geometry_else/run.py
 ```
 
-The runner compiles and executes the two independent single-process harnesses
+The runner compiles and executes the three independent single-process harnesses
 with `-O0 -std=c++20`.  It deliberately does not start a thread pool or a
-parallel stress job.  Geometry tests use integer cases, exact predicates, and
+parallel stress job.  Convex containment tests check 0/1/2 classifications, lattice points on every
+edge, supporting-line extensions, internal fan diagonals, every cyclic vertex
+rotation, and coordinates up to 10^18. Geometry tests use integer cases, exact predicates, and
 `long double` tolerances; Else tests compare against exhaustive small-input
 oracles where the template has a complete callable interface.
 
