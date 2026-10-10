@@ -17,6 +17,11 @@ int main() {
     int want = min(i + 1, 2 * n - 1 - i);
     if (f[i] != -want || g[i] != want) return 1;
   }
+  vector<int> a(n, 1), b = a;
+  auto square = fft_test::mult(a, a), equal = fft_test::mult(a, b);
+  if (square != equal || square.size() != 2 * n - 1) return 1;
+  for (int i = 0; i < 2 * n - 1; ++i)
+    if (square[i] != min(i + 1, 2 * n - 1 - i)) return 1;
   for (int sz : {1, 2, 1 << 18}) {
     vector<fft_test::cd> a(sz);
     vector<ll> b(sz);

@@ -1,13 +1,12 @@
 struct BCC { // 0-base; O(V+E); handles multi-edges, ignores loops
   int n, dft, ecnt, nbcc;
   vector<int> low, dfn, bln, stk, is_ap, cir;
-  vector<vector<pii>> G;
-  vector<vector<int>> bcc, nG;
-  void make_bcc(int u) { bcc.emplace_back(1, u);
+  vector<vector<pii>> G; vector<vector<int>> bcc, nG;
+  void make_bcc(int u) { bcc.emplace_back();
+    auto &b = bcc.back(); b.reserve(2), b.pb(u);
     for (; stk.back() != u; stk.pop_back())
-      bln[stk.back()] = nbcc, bcc[nbcc].pb(stk.back());
-    stk.pop_back(), bln[u] = nbcc++;
-  }
+      bln[stk.back()] = nbcc, b.pb(stk.back());
+    stk.pop_back(), bln[u] = nbcc++; }
   void dfs(int u, int pe) {
     int child = 0; low[u] = dfn[u] = ++dft, stk.pb(u);
     for (auto [v, e] : G[u])

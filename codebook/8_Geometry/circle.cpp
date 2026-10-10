@@ -58,7 +58,7 @@ double AreaOfCircleTriangle(P a, P b, double r) {
   return SectorArea(a, b, r);
 }
 // r >= 0; any triangle, three vertices; circle centered at origin.
-double AreaOfCircleTriangle(vector<P> ps, double r) {
+double AreaOfCircleTriangle(const vector<P> &ps, double r) {
   double ans = 0;
   for (int i = 0; i < 3; ++i) {
     int j = (i + 1) % 3; double z = ps[i] ^ ps[j];

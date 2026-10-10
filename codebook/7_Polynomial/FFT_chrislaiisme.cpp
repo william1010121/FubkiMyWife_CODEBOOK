@@ -25,10 +25,9 @@ vector<int> mult(const vector<int> &a, const vector<int> &b) {
   if (a.empty() || b.empty()) return {};
   int sz = a.size() + b.size() - 1, n = 1;
   while (n < sz) n <<= 1;
-  vector<cd> ca(n), cb(n);
-  copy(a.begin(), a.end(), ca.begin());
+  vector<cd> ca(n), cb(n); copy(a.begin(), a.end(), ca.begin());
   copy(b.begin(), b.end(), cb.begin());
-  fft(ca), fft(cb);
+  fft(ca); if (&a == &b) cb = ca; else fft(cb);
   for (int i = 0; i < n; ++i) ca[i] *= cb[i];
   ifft(ca); vector<int> res(sz);
   for (int i = 0; i < sz; ++i) res[i] = round(ca[i].real());

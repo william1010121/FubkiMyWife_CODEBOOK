@@ -17,15 +17,15 @@ class LiChao {
       if (ln.at(l) > o.at(l)) insert(l, m, rt << 1, ln);
     } else if (ln.at(r - 1) > o.at(r - 1))
       insert(m, r, rt << 1 | 1, ln);
-  }
-  ll query(int l, int r, int rt, ll x) {
-    if (nodes[rt].id == -1) return -INF;
-    int m = (l + r) >> 1; ll ret = nodes[rt].at(x);
-    if (r - l == 1) return ret;
-    return max(ret, x < m ? query(l, m, rt << 1, x)
-                         : query(m, r, rt << 1 | 1, x));
   } public:
   LiChao(int n_) : n(max(n_, 0)), nodes(n * 4) {}
   void insert(L ln) { if (n) insert(0, n, 1, ln); }
-  ll query(ll x) { return n ? query(0, n, 1, x) : -INF; }
+  ll query(ll x) {
+    ll ret = -INF; int l = 0, r = n, rt = 1;
+    while (l < r && nodes[rt].id != -1) {
+      ret = max(ret, nodes[rt].at(x)); if (r - l == 1) break;
+      int m = (l + r) >> 1; rt = rt << 1 | (x >= m);
+      if (x < m) r = m; else l = m;
+    } return ret;
+  }
 };

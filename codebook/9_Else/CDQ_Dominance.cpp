@@ -8,8 +8,7 @@ vector<ll> dominance(vector<vector<int>> a) {
     sort(ALL(v));
     for (auto &p : a) p.back() = lower_bound(ALL(v), p.back())-v.begin()+1;
   }
-  vector<int> ord(n), grp(n), rep, w;
-  iota(ALL(ord), 0);
+  vector<int> ord(n), grp(n), rep, w; iota(ALL(ord), 0);
   sort(ALL(ord), [&](int i, int j) { return a[i] < a[j]; });
   for (int i = 0; i < n; ++i) { // Merge equal points, weight = count.
     if (!i || a[ord[i]] != a[ord[i - 1]]) rep.pb(ord[i]), w.pb(0);
@@ -39,12 +38,12 @@ vector<ll> dominance(vector<vector<int>> a) {
     vector<It> c; c.reserve(v.size());
     for (auto x : v.first(mid)) if (x.up) c.pb({x.g, 1, 0});
     for (auto x : v.subspan(mid)) if (x.qu) c.pb({x.g, 0, 1});
-    stable_sort(ALL(c), [&](It x, It y) { return val(x, d) < val(y, d); });
-    self(self, d + 1, c); // Stable ties keep left updates first.
+    sort(ALL(c), [&](It x, It y) {
+      return pair(val(x, d), !x.up) < pair(val(y, d), !y.up); });
+    self(self, d + 1, c); // Equal coords: updates before queries.
   };
   vector<It> v(SZ(rep));
   for (int i = 0; i < SZ(v); ++i) v[i] = {i, 1, 1};
   if (k > 1) rec(rec, 1, v);
   for (int i = 0; i < n; ++i) res[i] = ans[grp[i]] + w[grp[i]] - 1;
-  return res;
-}
+  return res; }

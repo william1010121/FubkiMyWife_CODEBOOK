@@ -4,5 +4,5 @@ ll solve(ll x1, ll m1, ll x2, ll m2) {
   m2 /= g; pll p = exgcd(m1 / g, m2);
   __int128 t = (__int128)p.first * (d / g) % m2;
   ll lcm = m1 * m2; __int128 res = x1 + (__int128)m1 * t;
-  return (ll)((res % lcm + lcm) % lcm);
+  res %= lcm; return (ll)(res < 0 ? res + lcm : res);
 }

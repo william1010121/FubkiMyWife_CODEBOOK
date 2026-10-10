@@ -25,7 +25,7 @@ def format_example(num, pi, text):
 def parse_int_array(data):  # data = sys.stdin.buffer.read()
     a = list(map(int, data.split()))
     if not a or a[0] < 0 or len(a) != a[0]+1: raise ValueError("length")
-    return a[0], a[1:]
+    return a.pop(0), a
 # with open("filename.in") as f: data = f.read()
 # with open("filename.out", "w") as f: print(1, 2, sep=" | ", file=f)
 # print("debug", file=sys.stderr); sys.stdin = open("filename.in")

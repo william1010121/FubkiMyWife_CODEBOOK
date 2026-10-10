@@ -1,7 +1,7 @@
 void AppendCoverSegment(C &a, C &b, vector<pair<double, double>> &res) {
-  if (abs(a.c.x - b.c.x) > a.r + b.r + eps) return;
-  double d = (a.c - b.c).abs();
-  if (same(a.r + b.r, d)) return;
+  if (max(abs(a.c.x - b.c.x), abs(a.c.y - b.c.y)) >
+      a.r + b.r + eps) return;
+  double d = (a.c - b.c).abs(); if (same(a.r + b.r, d)) return;
   if (d <= abs(a.r - b.r) + eps) {
     if (a.r < b.r) res.emplace_back(0, 2 * pi);
   } else if (d < abs(a.r + b.r) - eps) {

@@ -13,6 +13,7 @@ struct DBSeq { // FKM; C>=1, N>=0, 1<=K<=C^N, N<MAXC*MAXN
   }
   void solve(int _c, int _n, int _k, int *out) { // L=N+K-1 fits int
     int p = 0; C = _c, N = _n, K = _k, L = N + (K-1), buf[0] = 0;
+    if (N == 1) { iota(out, out + L, 0); return; }
     if (K == 1) { fill_n(out, L, 0); return; }
     dfs(out, 1, 1, p); if (p < L) fill(out + p, out + L, 0);
   }

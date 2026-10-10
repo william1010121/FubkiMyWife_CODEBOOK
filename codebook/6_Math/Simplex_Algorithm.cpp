@@ -21,9 +21,8 @@ double simplex(int n, int m) {
       for (int j = 0; j <= m; ++j)
         if (j != s) d[r][j] *= -d[r][s];
       for (int i = 0; i <= n + 1; ++i) if (i != r && d[i][s]) {
-        for (int j = 0; j <= m; ++j)
-          if (j != s) d[i][j] += d[r][j] * d[i][s];
-        d[i][s] *= d[r][s];
+        double v = d[i][s]; d[i][s] = 0; // Uniform row update.
+        for (int j = 0; j <= m; ++j) d[i][j] += d[r][j] * v;
       }
     }
     r = s = -1; // Bland's rule: smallest variable index.

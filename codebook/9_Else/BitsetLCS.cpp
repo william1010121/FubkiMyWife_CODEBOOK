@@ -5,8 +5,8 @@ int bitset_lcs(const vector<int> &a, const vector<int> &b) {
   int m = (int)b.size(), W = (m + 63LL) >> 6;
   unordered_map<int, vector<unsigned long long>> mask;
   for (int j = 0; j < m; ++j) {
-    auto &v = mask[b[j]];
-    v.resize(W), v[j >> 6] |= 1ULL << (j & 63);
+    auto &v = mask.try_emplace(b[j], W).first->second;
+    v[j >> 6] |= 1ULL << (j & 63);
   }
   vector<unsigned long long> f(W);
   for (int value : a) {

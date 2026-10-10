@@ -6,13 +6,12 @@ struct Clique_Cover { // 0-base, O(n2^n); may overestimate (mod 2^32)
   void add_edge(int u, int v) { E[u] |= 1 << v, E[v] |= 1 << u; }
   int solve() {
     int m = 1 << n;
-    for (int i = 0; i < n; ++i) co[1 << i] = E[i] | (1 << i);
-    co[0] = m - 1, dp[0] = (n & 1) ? 1 : -1u;
+    co[0] = 1, dp[0] = (n & 1) ? 1 : -1u;
     for (int i = 1; i < m; ++i) {
-      int t = i & -i;
-      dp[i] = -dp[i ^ t], co[i] = co[i ^ t] & co[t];
+      int t = i & -i, s = i ^ t;
+      dp[i] = -dp[s];
+      co[i] = co[s] && (E[__builtin_ctz(t)] & s) == s;
     }
-    for (int i = 0; i < m; ++i) co[i] = (co[i] & i) == i;
     fwt(co, m, 1); // OR subset-sum (zeta) transform
     for (int ans = 1; ans < n; ++ans) {
       unsigned sum = 0;

@@ -7,7 +7,7 @@ vector<P> convex(vector<P> ps) {
   if (SZ(ps) < 2) return ps;
   sort(ALL(ps));
   if (!(ps.front() < ps.back())) return {ps[0]};
-  vector<P> p; p.reserve(2 * SZ(ps));
+  vector<P> p; p.reserve(ps.size() + 1);
   auto add = [&](P q, int t) {
     while (SZ(p) > t && crx(p[SZ(p) - 2], q, p.back()) >= 0)
       p.pop_back();
@@ -16,8 +16,7 @@ vector<P> convex(vector<P> ps) {
   for (P q : ps) add(q, 1);
   int t = SZ(p);
   for (int i = SZ(ps) - 2; i >= 0; --i) add(ps[i], t);
-  p.pop_back();
-  return p;
+  p.pop_back(); return p;
 }
 int sgn(double x) {
   return same(x, 0) ? 0 : x > 0 ? 1 : -1; }
