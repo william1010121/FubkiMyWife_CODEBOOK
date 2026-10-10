@@ -9,89 +9,89 @@
 {\footnotesize Editor config. The \texttt{:Hash} commands md5 a visual selection so you can check a typed template against the printed hash.\par}\vspace{-0.6em}%
 \lstinputlisting{1_Basic/vimrc.cpp}
 \inputcodeex{readchar}{1_Basic/readchar.cpp}%
-{Buffered getchar via \texttt{fread\_unlocked}, amortised $O(1)$. Returns stale data at EOF, so guard the loop.}{examples/readchar.cpp}
+{Buffered getchar via \texttt{fread\_unlocked}, amortised $O(1)$. Returns a byte or \texttt{EOF}; store in \texttt{int}. Do not mix input readers.}{examples/readchar.cpp}
 \inputcodeex{BigIntIO}{1_Basic/bigIntIO.cpp}%
-{Read/print \texttt{\_\_int128} (no \texttt{cin}/\texttt{cout} support). Handles sign.}{examples/BigIntIO.cpp}
+{Read/print signed \texttt{\_\_int128}. \texttt{read(x)} fails on EOF/overflow, leaving $x$ unchanged; \texttt{read()} returns 0 on failure. Handles sign.}{examples/BigIntIO.cpp}
 \inputcodedesc{Black Magic}{1_Basic/black_magic.cpp}%
-{GNU extensions: \texttt{mt19937}; pb\_ds red-black tree with \texttt{find\_by\_order}/\texttt{order\_of\_key} $O(\log n)$; mergeable heap \texttt{join}; persistent \texttt{rope}. Snippet, not compilable as-is.}
+{GNU extensions: \texttt{mt19937}; pb\_ds red-black tree with \texttt{find\_by\_order}/\texttt{order\_of\_key} $O(\log n)$; mergeable heap \texttt{join}; persistent \texttt{rope}. Uses the default preamble; \texttt{join} empties its distinct source heap.}
 \inputcodedesc{Pragma Optimization}{1_Basic/Pragma.cpp}%
-{Aggressive optimisation and SIMD targets; last line flushes denormals to zero. SIGILL on judges lacking these instruction sets.}
+{Aggressive GCC optimisation and SIMD targets; \texttt{Ofast} relaxes FP semantics. Call \texttt{apply\_pragmas()} for x86 DAZ/FTZ. SIGILL on unsupported CPUs.}
 \inputcodedesc{Bitset}{1_Basic/bitset.cpp}%
-{\texttt{std::bitset} API reference. Note: \texttt{reset()} clears to 0 and \texttt{set()} fills with 1 --- the comments in the listing are swapped.}
+{\texttt{std::bitset} API reference. \texttt{reset()} clears to 0 and \texttt{set()} fills with 1.}
 % \subsection{Texas hold'em}
 % \lstinputlisting{1_Basic/Texas_holdem.cpp}
 
 
 \section{Graph}
 \inputcodeex{BCC Vertex*}{2_Graph/BCC_Vertex.cpp}%
-{Vertex biconnected components and articulation points, $O(V+E)$. Block-cut tree has \textbf{up to $2n-2$ nodes} --- size arrays accordingly. 0-base.}{examples/BCC_Vertex.cpp}
+{Vertex biconnected components and articulation points, $O(V+E)$. Block-cut forest has \textbf{up to $\max(n,2n-2)$ nodes}. Call \texttt{block\_cut\_tree()} once after \texttt{solve()}. 0-base.}{examples/BCC_Vertex.cpp}
 \inputcodeex{Bridge*}{2_Graph/Bridge.cpp}%
 {Bridges and 2-edge-connected components, $O(V+E)$. Uses edge ids rather than the parent vertex, so \textbf{multi-edges are handled correctly}. 0-base.}{examples/Bridge.cpp}
 \inputcodeex{SCC*}{2_Graph/SCC.cpp}%
 {Tarjan SCC, $O(V+E)$. \texttt{bln} ids come out in \textbf{reverse topological order} --- 2SAT relies on this. 0-base.}{examples/SCC.cpp}
 \inputcodeex{2SAT*}{2_Graph/2SAT.cpp}%
-{$O(V+E)$ via implication graph + SCC. Variable $i$ is node $i$ (true) / $i+n$ (false). Requires SCC.cpp. 0-base.}{examples/2SAT.cpp}
+{$O(V+E)$ via implication graph + SCC. Variable $i$ is node $i$ (true) / $i+n$ (false). Requires SCC.cpp. Use \texttt{istrue} only if \texttt{solve()} succeeds; add all clauses first. 0-base.}{examples/2SAT.cpp}
 \inputcodeex{MinimumMeanCycle*}{2_Graph/MinimumMeanCycle.cpp}%
-{Karp's minimum mean cycle, $O(VE+V^2)$: extracts finite edges from the input matrix once. Returns the mean as a reduced fraction, $(-1,-1)$ if acyclic.}{examples/MinimumMeanCycle.cpp}
+{Karp, $O(VE+V^2)$: extracts finite matrix edges once. Absent entries: \texttt{INF}; absolute walk sums ($\le n$ edges) $<\texttt{INF}$, DP differences fit \texttt{ll}. Returns a reduced mean fraction, $(-1,-1)$ if acyclic.}{examples/MinimumMeanCycle.cpp}
 \inputcodeex{Virtual Tree*}{2_Graph/Virtual_Tree.cpp}%
-{Compresses $k$ key vertices into an $O(k)$ auxiliary tree in $O(k\log k)$. Needs external \texttt{LCA()}, \texttt{dfn}, \texttt{dep}.}{examples/Virtual_Tree.cpp}
+{Compresses $k$ keys into an $O(k)$ tree in $O(k\log k+kT_{\rm LCA})$. Needs \texttt{LCA()}, preorder \texttt{dfn}, \texttt{dep}. Reset before rebuilding; \texttt{build} sorts keys and returns $-1$ if empty.}{examples/Virtual_Tree.cpp}
 \inputcodeex{Maximum Clique Dyn*}{2_Graph/Maximum_Clique_Dyn.cpp}%
-{Max clique by branch and bound with dynamic colouring. Exponential, but fast for $n\le100$.}{examples/Maximum_Clique_Dyn.cpp}
+{Max clique by branch and bound with dynamic colouring. Exponential, but fast for $n\le100$. Simple undirected graph, $0\le n\le N$; GCC/libstdc++. 0-base.}{examples/Maximum_Clique_Dyn.cpp}
 \inputcodeex{Minimum Steiner Tree*}{2_Graph/MinimumSteinerTree.cpp}%
-{$O(V3^T+V^22^T)$ for $T$ terminals. Supports \textbf{vertex costs} via \texttt{vcst}; \texttt{add\_edge} is directed. 0-base.}{examples/MinimumSteinerTree.cpp}
+{$O(V^3+V3^T+V^22^T)$, $T$ distinct terminals. Nonnegative costs, \texttt{vcst} for vertices; directed common sink. Cost capped at \texttt{INF}. Solve once/init; no pre-call \texttt{shortest\_path}. 0-base.}{examples/MinimumSteinerTree.cpp}
 \inputcodeex{Dominator Tree*}{2_Graph/Dominator_Tree.cpp}%
-{Lengauer-Tarjan, $O((V+E)\log V)$. Only vertices reachable from \texttt{root} are meaningful. \textbf{1-base.}}{examples/Dominator_Tree.cpp}
+{Lengauer-Tarjan, $O((V+E)\log V)$. Only vertices reachable from \texttt{root} matter. \texttt{tree}: vertex ids; \texttt{idom}: DFS ids. \texttt{init} before edges. \textbf{1-base.}}{examples/Dominator_Tree.cpp}
 %\inputcode{Minimum Arborescence*}{2_Graph/Minimum_Arborescence_fast.cpp} % test by luogu P4716 
 %\inputcode{Vizing's theorem*}{2_Graph/Vizing.cpp} % test by CF 101933 G
 \inputcodeex{Minimum Clique Cover*}{2_Graph/Minimum_Clique_Cover.cpp}%
-{$O(n2^n)$ \textbf{probabilistic} cover count via subset-sum transform. Needs \texttt{fwt()}; $n$ limited by the $2^n$ arrays.}{examples/Minimum_Clique_Cover.cpp}
+{$O(n2^n)$ cover count modulo $2^{32}$; cancellation may overestimate. Needs OR-zeta \texttt{fwt()} and 32-bit \texttt{unsigned}; simple undirected graph, $0\le n\le N<31$, with feasible $2^N$ arrays.}{examples/Minimum_Clique_Cover.cpp}
 \inputcodeex{NumberofMaximalClique*}{2_Graph/NumberofMaximalClique.cpp}%
-{Bron-Kerbosch with pivot, $O(3^{n/3})$. Returns the full count. 1-base.}{examples/NumberofMaximalClique.cpp}
+{Bron-Kerbosch with pivot, $O(n\lceil N/w\rceil3^{n/3})$ ($w$: word bits). Count fits \texttt{int}. Simple undirected; GCC/libstdc++, $n<N$. 1-base.}{examples/NumberofMaximalClique.cpp}
 
 
 \section{Data Structure}
 \inputcodeex{BIT kth*}{3_Data_Structure/BIT_kth.cpp}%
-{$k$-th smallest from a value-domain BIT in $O(\log N)$ by descending the tree. \textbf{$N$ must be a power of two.}}{examples/BIT_kth.cpp}
+{$k$-th smallest from a 1-based value-domain BIT in $O(\log N)$. Any $N>0$; frequencies nonnegative, $1\le k\le\mathrm{total}$; sums fit \texttt{int}.}{examples/BIT_kth.cpp}
 \inputcodeex{Interval Container*}{3_Data_Structure/IntervalContainer.cpp}%
-{Maintains disjoint half-open $[L,R)$ intervals with auto-merge; amortised $O(\log n)$.}{examples/IntervalContainer.cpp}
+{Maintains nonempty disjoint, nonadjacent half-open $[L,R)$ intervals with auto-merge; amortised $O(\log n)$. Updates require $L\le R$.}{examples/IntervalContainer.cpp}
 \inputcodeex{Leftist Tree}{3_Data_Structure/Leftist_Tree.cpp}%
-{Mergeable \emph{max}-heap, \texttt{merge}/\texttt{pop} $O(\log n)$, keeps subtree size and sum. No lazy tags.}{examples/Leftist_Tree.cpp}
+{Mergeable \emph{max}-heap, \texttt{merge}/\texttt{pop} $O(\log n)$, keeps size/sum. Merge disjoint, uniquely owned \texttt{new} nodes; \texttt{pop} deletes the nonempty root. No lazy tags.}{examples/Leftist_Tree.cpp}
 \inputcodeex{Dynamic 2D Segment Tree}{3_Data_Structure/Dynamic_2D_Segment_Tree.cpp}%
 {Rectangle add / rectangle sum, initially zero. 0-base, half-open coordinates; $O(\log n\log m)$ per operation. Both dimensions allocate nodes dynamically. \texttt{sum} includes updates intersecting the node; \texttt{lazy} records updates covering its full $x$ interval. \textbf{Uses \texttt{int}; large sums may overflow.}}{examples/Dynamic_2D_Segment_Tree.cpp}
 \inputcodeex{Heavy light Decomposition*}{3_Data_Structure/Heavy_light_Decomposition.cpp}%
-{Vertex path sums in $O(\log^2 n)$ using \texttt{Seg} from the preceding template. Tree vertices are 1-base, root 1; flattened positions are half-open and 0-base.}{examples/Heavy_light_Decomposition.cpp}
+{Vertex path sums in $O(\log^2 n)$ using \texttt{Seg} from the preceding template. Connected tree; set all \texttt{val[u]} before \texttt{build()}. Vertices 1-base, root 1; flattened positions half-open, 0-base.}{examples/Heavy_light_Decomposition.cpp}
 \inputcodeex{Centroid Decomposition*}{3_Data_Structure/Centroid_Decomposition.cpp}%
-{Builds a centroid tree in $O(n\log n)$; modify/query are $O(\log n)$. \texttt{upinfo} removes same-branch overcount. 1-base.}{examples/Centroid_Decomposition.cpp}
+{Builds a centroid tree in $O(n\log n)$; modify/query are $O(\log n)$. \texttt{upinfo} removes same-branch overcount. Connected tree; modify marks a copy, query sums path weights to marked copies. 1-base.}{examples/Centroid_Decomposition.cpp}
 % \inputcode{Smart Pointer}{3_Data_Structure/Smart_Pointer.cpp}
 \inputcodeex{LiChaoST*}{3_Data_Structure/LiChaoST.cpp}%
-{Line container over an integer $x$ domain, $O(\log n)$. Keeps the \textbf{maximum}; negate for minimum. For $n=0$, insertion is a no-op and query returns \texttt{-INF}.}{examples/LiChaoST.cpp}
+{Line container for integer $x\in[0,n)$, $O(\log n)$. Keeps the \textbf{maximum}; negate for minimum. IDs $\ne-1$; line values within $\pm\texttt{INF}$, arithmetic fits \texttt{ll}. For $n\le0$, insert is ignored, query returns \texttt{-INF}.}{examples/LiChaoST.cpp}
 \inputcodeex{XOR Basis}{3_Data_Structure/XOR_Basis.cpp}%
-{Inserts a 64-bit unsigned integer into a linear basis in $O(64)$. \texttt{basis[i]} has highest set bit $i$; a dependent value is discarded.}{examples/XOR_Basis.cpp}
+{Inserts a 64-bit unsigned integer into a linear basis in $O(64)$. \texttt{basis[i]} has highest set bit $i$; a dependent value is discarded. Zero \texttt{basis} before each instance.}{examples/XOR_Basis.cpp}
 \inputcodeex{Treap}{3_Data_Structure/Treap.cpp}%
-{Rotation-free treap, expected $O(\log n)$; \texttt{split} by key, \texttt{split2} by size. \texttt{down()} is empty --- add lazy tags there.}{examples/Treap.cpp}
+{Rotation-free treap, expected $O(\log n)$. Split key $\le k$; \texttt{split2}: first $k$. \texttt{interval(l,r)}: 1-base start, length. Merge disjoint ordered trees. No lazy; propagate in \texttt{kth/Rank/erase} too.}{examples/Treap.cpp}
 % \inputcode{Range Chmin Chmax Add Range Sum*}{3_Data_Structure/Range_Chmin_Chmax_Add_Range_Sum.cpp} % test by Lib-Checker Range Chmin Chmax Add Range Sum
 
 
 \section{Flow/Matching}
 % \inputcode{Dinic}{4_Flow_Matching/Dinic.cpp}
 \inputcodeex{Bipartite Matching*}{4_Flow_Matching/Bipartite_Matching.cpp}%
-{Max bipartite matching, Hopcroft-Karp. $O(E\sqrt{V})$. 0-base.}{examples/Bipartite_Matching.cpp}
+{Max bipartite matching, Hopcroft-Karp. $O((E+V)\sqrt V)$. 0-base; unmatched: \texttt{mp=-1}, \texttt{mq=l}.}{examples/Bipartite_Matching.cpp}
 \inputcodeex{Kuhn Munkres*}{4_Flow_Matching/Kuhn_Munkres.cpp}%
-{Max weight \emph{perfect} matching on a square bipartite graph. $O(V^3)$. 0-base.}{examples/Kuhn_Munkres.cpp}
+{Max weight \emph{perfect} matching on a square bipartite graph, $O(V^3)$. Must exist; missing edges $=-\texttt{INF}$, $\texttt{INF}>2n\max|w|$. 0-base.}{examples/Kuhn_Munkres.cpp}
 \inputcodeex{MincostMaxflow*}{4_Flow_Matching/MincostMaxflow.cpp}%
-{Min cost max flow, initial SPFA + Johnson potentials + Dijkstra (handles negative-cost edges). For $A$ augmentations, $O(VE+A(E+V)\log(E+V))$. The residual graph must have no negative-cost cycle reachable from \texttt{s}; call \texttt{solve} with \texttt{s != t} for ordinary flow (the degenerate \texttt{s == t} query returns \texttt{flow = cost = 0}). 0-base.}{examples/MincostMaxflow.cpp}
+{Min cost max flow, initial SPFA + Johnson potentials + Dijkstra (handles negative-cost edges). For $A$ augmentations, $O(VE+A(E+V)\log(E+V))$. For \texttt{s != t}, the entire residual graph must have no negative-cost cycle; each \texttt{solve} returns additional flow/cost (the degenerate \texttt{s == t} query returns \texttt{flow = cost = 0}). Nonnegative capacities; distances $<\texttt{INF}$, arithmetic fits \texttt{ll}. 0-base.}{examples/MincostMaxflow.cpp}
 \inputcodeex{Maximum Simple Graph Matching*}{4_Flow_Matching/Maximum_Simple_Graph_Matching.cpp}%
-{Max matching on a general graph (blossom). $O(V^3)$. 0-base.}{examples/Maximum_Simple_Graph_Matching.cpp}
+{Max matching on a loopless undirected graph (blossom). $O(V^3)$. \texttt{solve()} returns added pairs; unmatched is $n$. 0-base.}{examples/Maximum_Simple_Graph_Matching.cpp}
 \inputcodeex{Maximum Weight Matching*}{4_Flow_Matching/Maximum_Weight_Matching.cpp}%
-{Max weight matching on a general graph (weighted blossom). $O(V^3)$. 1-base.}{examples/Maximum_Weight_Matching.cpp}
+{Weighted blossom, $O(V^3)$, 1-base; loopless, uses $w>0$ only. \texttt{int} arithmetic must fit. Returns (weight,pairs); ties need not maximise pairs.}{examples/Maximum_Weight_Matching.cpp}
 \inputcodeex{SW-mincut}{4_Flow_Matching/SW-mincut.cpp}%
-{Global min cut, Stoer-Wagner. $O(V^3)$, adjacency matrix, undirected. 0-base.}{examples/SW-mincut.cpp}
+{Global min cut, Stoer-Wagner. $O(V^3)$, adjacency matrix, undirected nonnegative weights. Sums fit \texttt{int}; \texttt{solve} mutates the matrix. 0-base.}{examples/SW-mincut.cpp}
 \inputcodeex{BoundedFlow*(Dinic*)}{4_Flow_Matching/BoundedFlow.cpp}%
-{Flow with lower bounds; feasible circulation or bounded max flow. Reuses \texttt{MaxFlow} from Dinic; set \texttt{MAXN}$\ge n+3$. 0-base; \texttt{solve} mutates the residual graph.}{examples/BoundedFlow.cpp}
+{Flow with $0\le lo\le hi$; circulation or max nonnegative flow ($-1$ if infeasible). Reuses Dinic's \texttt{MaxFlow}; \texttt{MAXN}$\ge n+3$. \texttt{INF} bounds capacities/positive demand sum; \texttt{int} arithmetic fits. Solve once; mutates graph. 0-base.}{examples/BoundedFlow.cpp}
 \inputcodeex{Gomory Hu tree*}{4_Flow_Matching/Gomory_Hu_tree.cpp}%
-{All-pairs min cut as a tree ($n-1$ max-flow runs, Gusfield). Needs a MaxFlow named Dinic. 0-base.}{examples/Gomory_Hu_tree.cpp}
+{All-pairs min cut as a tree ($n-1$ max-flow runs, Gusfield). Needs a MaxFlow named Dinic, built with symmetric nonnegative capacities. 0-base.}{examples/Gomory_Hu_tree.cpp}
 \inputcodeex{Minimum Cost Circulation*}{4_Flow_Matching/MinCostCirculation.cpp}%
-{Min cost circulation via capacity scaling; cancels negative cycles. $O(VE\cdot E\log C)$. 0-base.}{examples/MinCostCirculation.cpp}
+{Min cost circulation via capacity scaling; cancels negative cycles. $O(V(E+1)^2\log(C+2))$. Call \texttt{solve(mxlg)} once: highest bit of max capacity (0 if all zero). 0-base.}{examples/MinCostCirculation.cpp}
 \subsection{matching}
 \input{4_Flow_Matching/matching.tex}
 
@@ -102,31 +102,31 @@
 \inputcodeex{Z-value*}{5_String/Z-value.cpp}%
 {$z[i]=\mathrm{lcp}(s,s[i..])$ in $O(n)$. \textbf{$z[0]$ is left unset.}}{examples/Z-value.cpp}
 \inputcodeex{Manacher*}{5_String/Manacher.cpp}%
-{All palindromic radii in $O(n)$ by interleaving \texttt{\%}. 0-base.}{examples/Manacher.cpp}
+{All palindromic radii in $O(n)$ by interleaving \texttt{\%}. Need \texttt{MAXN}$\ge2n+1$. 0-base centre $i$: $z[2i+1]/2$; gap $i,i+1$: $z[2i+2]/2$.}{examples/Manacher.cpp}
 %\inputcode{Suffix Array}{5_String/Suffix_Array.cpp}
 \inputcodeex{SAIS*}{5_String/SAIS-C++20.cpp}%
-{Suffix array in $O(n)$ plus Kasai height. \textbf{Needs C++20}; input must not contain a 0 byte.}{examples/SAIS-C++20.cpp}
+{Suffix array plus Kasai height, $O(n+A)$, $A=1+\max s$. \textbf{Needs C++20}; positive ints (unsigned bytes for strings). Direct \texttt{sais}: final 0 sentinel.}{examples/SAIS-C++20.cpp}
 \inputcodeex{Aho-Corasick Automatan*}{5_String/Aho-Corasick_Automatan.cpp}%
-{Multi-pattern matching. Build $O(\sum|s_i|\sigma)$, scan $O(|T|)$. Use \texttt{rnx} for $O(1)$ transitions; root is node 1, chars are \texttt{c-\textquotesingle A\textquotesingle}.}{examples/Aho-Corasick_Automatan.cpp}
+{Multi-pattern matching. Build $O(\sum|s_i|\sigma)$, scan $O(|T|)$. Use \texttt{rnx} for $O(1)$ transitions; root is node 1, chars are \texttt{c-\textquotesingle A\textquotesingle}. Solve once after scan; empty patterns: seed \texttt{cnt[1]=1} before scan.}{examples/Aho-Corasick_Automatan.cpp}
 \inputcodeex{Smallest Rotation}{5_String/Smallest_Rotation.cpp}%
 {Lexicographically smallest rotation (Booth/min-notation) in $O(n)$.}{examples/Smallest_Rotation.cpp}
 \inputcodeex{De Bruijn sequence*}{5_String/De_Bruijn_sequence.cpp}%
-{Sequence of length $N+K-1$ whose length-$N$ windows are all distinct ($K\le C^N$).}{examples/De_Bruijn_sequence.cpp}
+{Sequence of length $N+K-1$ with distinct length-$N$ windows ($1\le K\le C^N$). $C\ge1$, $0\le N<\texttt{MAXC}\cdot\texttt{MAXN}$; allocate $N+K-1$ outputs.}{examples/De_Bruijn_sequence.cpp}
 \inputcodeex{Extended SAM*}{5_String/exSAM.cpp}%
-{Generalised suffix automaton over many strings; \texttt{cnt} gives occurrences per state. Chars are \texttt{c-\textquotesingle a\textquotesingle}.}{examples/exSAM.cpp}
+{Generalised suffix automaton over many strings; \texttt{cnt} gives occurrences per state. Chars are \texttt{c-\textquotesingle a\textquotesingle}. Insert all, build once, solve once; clones must fit $2N$ states.}{examples/exSAM.cpp}
 \inputcodeex{PalTree*}{5_String/PalTree.cpp}%
-{Eertree: counts distinct palindromic substrings and their occurrences in $O(n\sigma)$.}{examples/PalTree.cpp}
+{Eertree for lowercase letters: distinct palindromic substrings and occurrences in $O(n\sigma)$. \texttt{add} takes char codes; \texttt{count()} once after all add.}{examples/PalTree.cpp}
 \inputcodeex{Main Lorentz}{5_String/MainLorentz.cpp}%
-{All tandem repeats in $O(n\log n)$, stored as start-ranges per length. Handles every byte value by encoding an out-of-alphabet separator internally.}{examples/MainLorentz.cpp}
+{All tandem repeats in $O(n\log n+\texttt{kN})$, stored as inclusive 0-base start-ranges per period. Supports every byte value; \texttt{main\_lorentz} clears \texttt{rep}. Require $\lfloor n/2\rfloor<\texttt{kN}$.}{examples/MainLorentz.cpp}
 
 
 \section{Math}
 \inputcodedesc{ax+by=gcd(only exgcd *)}{6_Math/ax+by=gcd.cpp}%
-{Extended Euclid, $O(\log\min(a,b))$. The trailing comment shows how to shift to the smallest non-negative solution.}
+{Extended Euclid for nonnegative operands; returns Bezout coefficients, $O(\log\min(a,b))$. The trailing shift recipe needs $b>0$, $\gcd(a,b)\mid\mathrm{res}$ and fitting \texttt{ll} arithmetic.}
 \inputcodedesc{Floor and Ceil}{6_Math/floor_ceil.cpp}%
-{Floor/ceil division that is correct for \textbf{negative} operands ($C++$ truncates toward zero).}
+{Floor/ceil division that is correct for \textbf{negative} operands ($C++$ truncates toward zero). Requires $b\ne0$; exclude \texttt{INT\_MIN}/$-1$.}
 \inputcodedesc{Floor Enumeration}{6_Math/floor_enumeration.cpp}%
-{Enumerates the $O(\sqrt n)$ distinct values of $\lfloor n/i\rfloor$ with their index ranges.}
+{Enumerates the $O(\sqrt n)$ distinct values of $\lfloor n/i\rfloor$ with their index ranges. Requires $0\le n<\texttt{INT\_MAX}$.}
 \inputcodeex{Modular Binomial / Lucas}{6_Math/Mod_Binomial.cpp}%
 {Requires \texttt{ModArithmetic}, prime $p$, and $0\le N<p$. Precompute factorials / inverse factorials in $O(N+\log p)$, query $\binom nk$ in $O(1)$ for $n\le N$. Invalid $k$ returns 0. Lucas handles large $n$ in $O(\log_p n)$, but needs the full $N=p-1$ table: use only small primes.}{examples/Mod_Binomial.cpp}
 \inputcodeex{Linear Congruence}{6_Math/Linear_Congruence.cpp}%
@@ -134,41 +134,41 @@
 \inputcodeex{Mod Min}{6_Math/ModMin.cpp}%
 {Smallest $k\ge0$ with $l\le ak\bmod m\le r$, $O(\log m)$; $-1$ if none. Requires $m>0$, $0\le a<m$, $0\le l\le r<m$, and all intermediate products/sums fitting \texttt{ll}.}{examples/ModMin.cpp}
 \inputcodeex{Linear Mod Inverse}{6_Math/Mod_Inverse.cpp}%
-{All inverses $1..N$ in $O(N)$. Function-body snippet: supply \texttt{N}, \texttt{mod}, and \texttt{inv} first. \textbf{Requires prime \texttt{mod} and $1\le N<\mathrm{mod}$.} For an arbitrary modulus or one inverse, use \texttt{ModArithmetic::inv}.}{examples/Mod_Inverse.cpp}
+{All inverses $1..N$ in $O(N)$. Function-body snippet: supply \texttt{N}, \texttt{mod}, and \texttt{inv} first. \textbf{Requires prime \texttt{int mod} and $1\le N<\mathrm{mod}$.} For an arbitrary modulus or one inverse, use \texttt{ModArithmetic::inv}.}{examples/Mod_Inverse.cpp}
 \inputcodedesc{Linear Filter Mu}{6_Math/getMu.cpp}%
-{Mobius function by linear sieve, $O(n)$; also leaves the prime list in \texttt{p}.}
+{Mobius function by linear sieve, $O(n)$; also leaves the prime list in \texttt{p}. Require $n\ge1$; zero \texttt{flg,tot} first; \texttt{p} is 1-base.}
 \inputcodedesc{Gaussian integer gcd}{6_Math/Gaussian_gcd.cpp}%
-{GCD over $\mathbb{Z}[i]$; the \texttt{rnd} macro rounds the quotient to the nearest Gaussian integer.}
+{GCD over $\mathbb{Z}[i]$; local \texttt{rnd} rounds the quotient to the nearest Gaussian integer. Requires $b\ne0$ and fitting \texttt{ll} arithmetic.}
 \inputcodedesc{GaussElimination}{6_Math/Gaussian_Eliminatin.cpp}%
-{Gauss-Jordan on doubles, $O(n^3)$. Uses a small pivot epsilon and leaves free variables at zero; use the fraction version when exactness matters.}
+{Gauss-Jordan on $n\times w$ doubles, $n\le w$, $O(n^2w)$. Max-abs pivots in first $n$ columns, cutoff $10^{-12}$. Reduces matrix only; no solution/status. Absolute epsilon is scale-sensitive; use fractions for exactness.}
 \inputcodeex{floor sum*}{6_Math/floor_sum.cpp}%
-{$\sum_{i=0}^{n-1}\lfloor(ai+b)/m\rfloor$ in logarithmic time. Requires $n\ge0,m>0,a,b\ge0$ and all intermediate products fitting \texttt{ll}; this version does not handle negative $a,b$. Returns the integer sum, not a residue.}{examples/floor_sum.cpp}
+{$\sum_{i=0}^{n-1}\lfloor(ai+b)/m\rfloor$ in logarithmic time. Requires $n\ge0,m>0,a,b\ge0$ and all intermediate arithmetic fitting \texttt{ll}; this version does not handle negative $a,b$. Returns the integer sum, not a residue.}{examples/floor_sum.cpp}
 \inputcodeex{Miller Rabin*}{6_Math/Miller_Rabin.cpp}%
 {Deterministic primality via 7 witnesses; the supplied wrapper handles $n<2$. This \texttt{ll} interface covers $n\le\mathrm{LLONG\_MAX}$. $O(\log n)$ per witness. Use the example's 128-bit \texttt{mul} and \texttt{prime} wrapper.}{examples/Miller_Rabin.cpp}
 %\inputcode{Big number}{6_Math/Big_number.cpp} % 超級大數（沒用）
 \inputcodedesc{Fraction}{6_Math/Fraction.cpp}%
-{Exact rational with auto-reduction. \textbf{\texttt{ll} numerator/denominator overflow easily} after a few operations; no divide-by-zero check.}
+{Exact rational with auto-reduction. \textbf{\texttt{ll} numerator/denominator overflow easily} after a few operations; no divide-by-zero check. Exclude \texttt{LLONG\_MIN} and zero denominators/divisors.}
 \inputcodeex{Simultaneous Equations}{6_Math/Simultaneous_Equations.cpp}%
-{Exact Gauss-Jordan over \texttt{fraction}; returns $-1$ if inconsistent, else the rank. Requires Fraction.cpp.}{examples/Simultaneous_Equations.cpp}
+{Exact Gauss-Jordan over \texttt{fraction}; returns $-1$ if inconsistent, else the rank. Requires Fraction.cpp. Solution in \texttt{sol}, free variables zero; overwrites \texttt{M}.}{examples/Simultaneous_Equations.cpp}
 \inputcodeex{Pollard Rho*}{6_Math/Pollard_Rho.cpp}%
 {Factorises positive \texttt{ll} integers, heuristic $O(n^{1/4})$. Requires \texttt{prime} and 128-bit \texttt{mul} from the Miller--Rabin example. Factors accumulate in \texttt{cnt}; clear it before each new number.}{examples/Pollard_Rho.cpp}
 \inputcodeex{Simplex Algorithm}{6_Math/Simplex_Algorithm.cpp}%
-{$\max cx$ s.t. $Ax\le b,x\ge0$; $-1$ means unbounded or infeasible. \textbf{$n$ is the constraint count, $m$ the variable count, and all arrays are 0-indexed.}}{examples/Simplex_Algorithm.cpp}
+{$\max cx$ s.t. $Ax\le b,x\ge0$; $-1$ means unbounded/infeasible or a valid optimum. $n$ constraints, $m$ variables, 0-indexed; $n+2\le\texttt{MAXN}$, $m+2\le\texttt{MAXM}$. \texttt{x} holds the solution on success.}{examples/Simplex_Algorithm.cpp}
 %\inputcode{Schreier-Sims Algorithm*}{6_Math/SchreierSims.cpp} % test by XVI Opencup GP of Ekaterinburg H
 \inputcodeex{chineseRemainder}{6_Math/chineseRemainder.cpp}%
 {Merge $x\equiv x_1\pmod{m_1}$ and $x\equiv x_2\pmod{m_2}$, including non-coprime moduli. Requires \texttt{exgcd}, $m_1,m_2>0$, and $\operatorname{lcm}(m_1,m_2)\le\mathrm{LLONG\_MAX}$. Returns the least nonnegative solution, or $-1$ if inconsistent. Uses 128-bit intermediates. $O(\log\min(m_1,m_2))$; iterate to merge more equations.}{examples/chineseRemainder.cpp}
 \inputcodeex{Factorial without prime factor*}{6_Math/fac_no_p.cpp}%
-{$n!$ with all factors $p$ removed, modulo $p^k$. Requires $n\ge0$, prime $p$, $k\ge1$, \texttt{MAXP}$>p^k$, and products fitting \texttt{ll}. $O(p^k+\log_p n)$ time, $O(\texttt{MAXP})$ space. This returns only the unit part; account for the exponent of $p$ separately when computing a factorial or binomial modulo $p^k$.}{examples/fac_no_p.cpp}
+{$n!$ with all factors $p$ removed, modulo $p^k$. Requires $n\ge0$, prime $p$, $k\ge1$, $p^k<\min(\texttt{MAXP},\texttt{INT\_MAX})$, and products fitting \texttt{ll}. $O(p^k+\log_p n)$ time, $O(\texttt{MAXP})$ space. This returns only the unit part; account for the exponent of $p$ separately when computing a factorial or binomial modulo $p^k$.}{examples/fac_no_p.cpp}
 \inputcodeex{Jacobi / Modular Square Root}{6_Math/QuadraticResidue.cpp}%
 {\texttt{Jacobi(a,m)} needs positive odd $m$; returns $-1,0,1$ in $O(\log m)$. For composite $m$, $+1$ does not guarantee a square. \texttt{QuadraticResidue(a,p)} uses Cipolla: prime $2\le p\le\mathrm{INT\_MAX}$, expected $O(\log p)$; returns one root in $[0,p)$ or $-1$. Signed input is normalized.}{examples/QuadraticResidue.cpp}
 \inputcodeex{Modular Determinant}{6_Math/Determinant.cpp}%
-{Euclidean elimination without modular inverses, $O(n^3\log P)$; composite moduli work too. Supply \texttt{MAXN}, positive \texttt{ll} modulus \texttt{P}, and a square matrix with entries in $[0,P)$. Returns the determinant modulo $P$ and overwrites the matrix. 128-bit products.}{examples/Determinant.cpp}
+{Euclidean elimination without modular inverses, $O(n^3\max(1,\log P))$; composite moduli work too. Supply \texttt{MAXN}, positive \texttt{ll} modulus \texttt{P}, and a square matrix with entries in $[0,P)$. Returns the determinant modulo $P$ and overwrites the matrix. 128-bit products.}{examples/Determinant.cpp}
 \inputcodedesc{PiCount*}{6_Math/PiCount.cpp}%
-{$\pi(n)$ in about $O(n^{2/3})$; handles $n\sim10^{13}$ in under 2s.}
+{$\pi(n)$ for $n\le10^{13}$; $n\le1$ returns 0. Conservative $O(n^{3/4})$ time bound, $O(\sqrt n)$ space.}
 \inputcodeex{Discrete Log*}{6_Math/DiscreteLog.cpp}%
 {Call the 3-argument version: smallest $k\ge0$ with $x^k\equiv y\pmod m$, or $-1$. Expected $O(\sqrt m)$ time/space. Requires positive \texttt{int} $m$ and $x,y\in[0,m)$; non-coprime bases work. Supply \texttt{fpow(x,k,m)} for verification. The 4-argument version is internal.}{examples/DiscreteLog.cpp}
 \inputcodeex{Berlekamp Massey}{6_Math/Berlekamp-Massey.cpp}%
-{Finds recurrence coefficients in $O(n^2)$: $a_i=\sum_j c_j a_{i-j-1}$. Requires a caller-provided field type \texttt{T} supporting arithmetic, division, and comparison with zero. For modular arithmetic use a prime-modulus \texttt{mint}; composite-modulus division is invalid. Returns coefficients only.}{examples/Berlekamp-Massey.cpp}
+{Finds recurrence coefficients in $O(n^2)$: $a_i=\sum_j c_j a_{i-j-1}$. Requires a caller-provided field type \texttt{T} with zero value-initialization, arithmetic, division, and comparison with zero. For modular arithmetic use a prime-modulus \texttt{mint}; composite-modulus division is invalid. Returns coefficients only.}{examples/Berlekamp-Massey.cpp}
 \subsection{Primes}
 {\footnotesize Handy primes for hashing and NTT moduli, from small values up to $2^{61}-1$ and near $2^{64}$.\par}\vspace{-0.6em}%
 \lstinputlisting{6_Math/Primes.cpp}
@@ -185,93 +185,93 @@
 
 \section{Polynomial}
 \inputcodeex{Fast Fourier Transform}{7_Polynomial/FFT_chrislaiisme.cpp}%
-{Iterative complex FFT and integer convolution via \texttt{mult}, $O(n\log n)$. \texttt{fft} requires a positive power-of-two length; \texttt{mult} returns empty if either coefficient vector is empty, otherwise exactly $|a|+|b|-1$ rounded coefficients. Double precision limits coefficient size.}{examples/Fast_Fourier_Transform.cpp}
+{Iterative complex FFT and integer convolution via \texttt{mult}, $O(n\log n)$. Direct/padded lengths must be positive powers of two $\le2^{29}$; \texttt{mult} returns empty if either coefficient vector is empty, otherwise exactly $|a|+|b|-1$ rounded coefficients. Results must fit \texttt{int}; FP error before rounding $<1/2$.}{examples/Fast_Fourier_Transform.cpp}
 \input{7_Polynomial/Number_Theory_Transform_Prime}
 \inputcodeex{Number Theory Transform*}{7_Polynomial/NTT_chrislaiisme.cpp}%
-{Iterative NTT and convolution via \texttt{mult}, $O(n\log n)$ modulo 998244353. Direct \texttt{ntt} input lengths must be positive powers of two up to $2^{23}$; coefficients are residues modulo 998244353. \texttt{mult} returns empty if either vector is empty. The listing defines \texttt{int} as \texttt{long long}; contain or undefine the macro after use.}{examples/Number_Theory_Transform.cpp}
+{Iterative NTT and convolution via \texttt{mult}, $O(n\log n)$ modulo 998244353. Direct/padded lengths must be positive powers of two up to $2^{23}$; coefficients are canonical residues in \texttt{vector<ll>}. \texttt{mult} returns empty if either vector is empty.}{examples/Number_Theory_Transform.cpp}
 \inputcodeex{Fast Walsh Transform*}{7_Polynomial/Fast_Walsh_Transform.cpp}%
-{or/and/xor convolution, $O(n\log n)$; file implements or. Also subset convolution in $O(2^LL^2)$.}{examples/Fast_Walsh_Transform.cpp}
+{or/and/xor convolution, $O(n\log n)$; file implements or. Subset convolution: $O(2^LL^2)$, $L\le21$. $n=2^k$, $k\le29$; C++20; 528 MiB scratch. \texttt{int} arithmetic must fit.}{examples/Fast_Walsh_Transform.cpp}
 \inputcodeex{Value Polynomial}{7_Polynomial/Value_Poly.cpp}%
-{Polynomial held as consecutive point values; Lagrange eval and prefix-sum lift in $O(n)$. Requires caller-provided \texttt{mint}, \texttt{ifac}, and \texttt{inegfac} precomputed through size$-1<P$.}{examples/Value_Poly.cpp}
+{Polynomial held as consecutive point values; Lagrange eval and prefix-sum lift in $O(n)$. Requires prime-field \texttt{mint} with canonical \texttt{.v}, \texttt{ifac}, and \texttt{inegfac} precomputed through size$-1<P$. Before \texttt{raise}, size$<P$.}{examples/Value_Poly.cpp}
 \subsection{Newton's Method}
 \input{7_Polynomial/Newton.tex}
 
 
 \section{Geometry}
 \inputcodedesc{Basic}{8_Geometry/_basic.cpp}%
-{Point/line primitives the rest of this section depends on: \texttt{*} is dot, \texttt{\^} is cross; \texttt{project}, \texttt{reflect}, segment \texttt{inside}, \texttt{SegmentIntersect} (endpoints included). \textbf{\texttt{Intersect} divides by zero on parallel lines.}}
+{Point/line primitives the rest of this section depends on: \texttt{*} is dot, \texttt{\^} is cross; \texttt{project}, \texttt{reflect}, segment \texttt{inside}, \texttt{SegmentIntersect} (endpoints included). \textbf{\texttt{Intersect} divides by zero on parallel lines.} Unit vectors and projection/reflection require nonzero directions.}
 % KD Tree: see Data Structure section (identical file, was duplicated here)
 \inputcodeex{Delaunay Triangulation}{8_Geometry/Triangulation.cpp}%
 {Divide-and-conquer quad-edge Delaunay, $O(n\log n)$. \textbf{Points must be distinct}, integer, $|x|,|y|\le5\cdot10^8$ (\texttt{\_\_int128} in-circle test). Returns CCW triangles with no input point strictly inside any circumcircle; empty if fewer than 3 points or all collinear. Cocircular points give one valid triangulation.}{examples/Delaunay.cpp}
 %\inputcodewithtext{Voronoi Diagram}{8_Geometry/Triangulation_Vonoroi_short.cpp}{Vertices in Voronoi Diagram are circumcenters of triangles in the Delaunay Triangulation.}
 \inputcodedesc{Sector Area}{8_Geometry/sectorArea.cpp}%
-{Area of the sector between two vectors, $O(1)$. \textbf{Returns the minor arc} --- subtract from the full disc for the major one.}
+{Area of the sector between two nonzero vectors, $O(1)$; $r\ge0$. \textbf{Returns the minor arc} --- subtract from the full disc for the major one.}
 \inputcodeex{Half Plane Intersection}{8_Geometry/halfPlaneIntersect.cpp}%
-{Intersection polygon of half planes in $O(n\log n)$; the feasible side is to the \emph{left} of each line. Empty result means degenerate or infeasible.}{examples/halfPlaneIntersect.cpp}
+{Intersection polygon of half planes in $O(n\log n)$; feasible side is \emph{left} of each nonzero line. Requires a bounded positive-area region (add a box); equal directions need exactly equal \texttt{o}. Sorts input in place.}{examples/halfPlaneIntersect.cpp}
 \inputcodeex{Rotating Sweep Line}{8_Geometry/rotatingSweepLine.cpp}%
 {Sweeps all $\binom n2$ directions in $O(n^2\log n)$; points must be distinct with no three collinear. \texttt{rotatingSweepLineOrder} returns the final order, while the legacy void wrapper preserves the old call shape.}{examples/rotatingSweepLine.cpp}
 \inputcodedesc{Triangle Center}{8_Geometry/triangleCenter.cpp}%
 {Circumcentre, centroid, orthocentre (via the Euler line) and incentre, each $O(1)$. \textbf{Degenerate (collinear) input divides by zero.}}
 \inputcodedesc{Polygon Center}{8_Geometry/center.cpp}%
-{Area centroid of a simple polygon in $O(n)$ by signed-area weighting, so concave shapes are fine.}
+{Area centroid of a nonzero-area simple polygon in $O(|p|)$ by signed-area weighting, so concave shapes are fine. Processes the whole vector; parameter \texttt{n} is unused.}
 \inputcodedesc{Maximum Triangle}{8_Geometry/maxTriangleOfConvex.cpp}%
 {Largest triangle inscribed in a convex polygon in $O(n^2)$: fix one vertex and advance the other two monotonically. Hull indices must be in cyclic order (CW or CCW).}
 \inputcodeex{Point in Convex Polygon}{8_Geometry/PointInConvex.cpp}%
 {Fan binary search, $O(\log K)$ per query; integer \texttt{IPoint} with \texttt{\_\_int128} cross products. Returns 0 outside, 1 on the boundary, 2 strictly inside. Input is CCW, without repeated or collinear intermediate vertices (do not repeat the first vertex). Empty/point/segment inputs supported; all coordinates, including queries, have absolute value $\le 10^{18}$.}{examples/PointInConvex.cpp}
 \inputcodedesc{Circle}{8_Geometry/circle.cpp}%
-{Circle intersection points and area, circle-segment crossing, and circle $\cap$ triangle area. All $O(1)$. Coincident circles return an empty finite-point list; a zero-length segment is treated as one point.}
+{Nonnegative-radius circle intersection points and area, circle-segment crossing, and circle $\cap$ triangle area. All $O(1)$. Coincident circles return an empty finite-point list; a zero-length segment is treated as one point. Triangle circle is at the origin; vector takes 3 vertices.}
 \inputcodedesc{Tangent of Circles and Points to Circle}{8_Geometry/CircleTangent.cpp}%
-{Common tangents of two circles (0/1/2/3/4 by configuration) and tangents from a point, $O(1)$.}
+{Common tangents of two circles (0/1/2/3/4 by configuration) and tangents from a point, $O(1)$. Positive radii; eps-close centres return an empty finite-line list.}
 \inputcodedesc{Area of Union of Circles}{8_Geometry/circleOrArea.cpp}%
-{Union area by integrating uncovered arcs with Green's theorem, $O(n^2\log n)$. \textbf{Duplicate circles must be removed first} or the area is double counted.}
+{Union area by integrating uncovered arcs with Green's theorem, $O(n^2\log n)$. Nonnegative radii; \textbf{eps-coincident circles must be removed first}: no pair with both centre distance and radius difference $\le\texttt{eps}$.}
 \inputcodedesc{Minimun Distance of 2 Polygons}{8_Geometry/minDistOfTwoConvex.cpp}%
-{Minimum distance of two convex polygons. The self-contained implementation checks edge pairs and containment in $O(nm)$, avoiding hidden distance-helper contracts.}
+{Minimum distance of nonempty convex polygons in cyclic CW/CCW order, $O(n+m)$ time/space via Minkowski difference. Returns 0 for overlap or touching; point/segment and repeated/collinear boundary vertices supported.}
 \inputcodeex{2D Convex Hull}{8_Geometry/convexHull.cpp}%
-{Monotone chain in $O(n\log n)$ (collinear points dropped), plus \texttt{CH} for $O(\log n)$ extreme-point, line-intersection, containment and tangent queries.}{examples/convexHull.cpp}
+{Monotone chain in $O(n\log n)$ (collinear points dropped), plus \texttt{CH} for $O(\log n)$ extreme-point, line-intersection, containment and tangent queries. \texttt{CH} needs a strictly convex CCW hull, at least 3 vertices.}{examples/convexHull.cpp}
 \inputcodedesc{3D Convex Hull}{8_Geometry/convex3D.cpp}%
-{Incremental 3D hull in $O(n^2)$; \texttt{faces()} merges coplanar triangles. \textbf{Input must not contain duplicate points.}}
+{Incremental 3D hull in $O(n^2)$; \texttt{faces()} counts coplanar face groups in $O(m)$. \textbf{Input must not contain duplicate points.} Set $0\le n\le1010$, $m=0$; input is permuted.}
 \inputcodeex{Minimum Enclosing Circle}{8_Geometry/MinimumEnclosingCircle.cpp}%
-{Welzl randomised incremental with \texttt{shuffle}, expected $O(n)$.}{examples/MinimumEnclosingCircle.cpp}
+{Welzl randomised incremental with \texttt{shuffle}, expected $O(n)$. \texttt{pt()} must be origin; empty: radius 0. Recenter ill-scaled data.}{examples/MinimumEnclosingCircle.cpp}
 \inputcodeex{Closest Pair}{8_Geometry/ClosestPair.cpp}%
-{Divide and conquer in $O(n\log n)$ using merges by $y$, with $O(n)$ auxiliary space. \textbf{\texttt{p[]} must already be sorted by $x$}; the input array is preserved.}{examples/ClosestPair.cpp}
+{Sweep line in $O(n\log n)$, with $O(n)$ auxiliary space. \textbf{\texttt{p[]} must already be sorted by $x$}; the array is preserved. Inclusive 0-base $[l,r]$; $l\ge r$ returns \texttt{1e9}.}{examples/ClosestPair.cpp}
 
 \section{Else}
 \inputcodeex{Cyclic Ternary Search*}{9_Else/cyc_tsearch.cpp}%
-{Minimum of a \textbf{cyclically shifted} unimodal array in $O(\log n)$; \texttt{pred(a,b)} compares two positions. The cyclic U-shape must have pairwise-distinct values (equivalently, strict comparisons); $n\ge1$.}{examples/cyc_tsearch.cpp}
+{Minimum of a \textbf{cyclically shifted} unimodal array in $O(\log n)$; \texttt{pred(a,b)} means $f(a)<f(b)$; returns an index. The cyclic U-shape must have pairwise-distinct values (equivalently, strict comparisons); $n\ge1$.}{examples/cyc_tsearch.cpp}
 \inputcodeex{CDQ: k-D Dominance Count}{9_Else/CDQ_Dominance.cpp}%
-{For each point, counts other points $\le$ it in every coordinate (ties and duplicates counted). Any $k\ge1$ dims. Lexicographic sort removes dim 0, each CDQ layer removes one more, the last uses a BIT: $O(n\log^{k-1}n)$ for $k\ge2$; $n=10^5$: 0.4s at $k=3$, 1.5s at $k=4$. For strict $<$ in a dim, map that coordinate to break ties first.}{examples/CDQ_Dominance.cpp}
+{For each point, counts other points $\le$ it in every coordinate (ties and duplicates counted). Equal-length rows, $k\ge0$ dims. Lexicographic sort removes dim 0, each CDQ layer removes one more, the last uses a BIT: $O(n\log^{\max(1,k-1)}n)$ for fixed $k\ge1$. $k=0$ gives $n-1$. Requires C++20 (\texttt{std::span}).}{examples/CDQ_Dominance.cpp}
 \inputcodeex{Mo's Algorithm(With modification)}{9_Else/Mos_Algorithm_With_modification.cpp}%
-{Mo's with point updates, block $N^{2/3}$, $O(N^{5/3})$. The callback-based \texttt{solve} applies/rolls back updates and reports each query.}{examples/Mos_Algorithm_With_modification.cpp}
+{Mo's with point updates, common block $N^{2/3}$, $O(N^{5/3})$ for $O(N)$ queries/updates. 0-base inclusive ranges; start empty at $T=0$. Callbacks apply/undo 1-based updates and report queries. C++20.}{examples/Mos_Algorithm_With_modification.cpp}
 \inputcodeex{Mo's Algorithm On Tree}{9_Else/Mos_Algorithm_On_Tree.cpp}%
-{Path queries via the Euler bracket sequence, $O(N\sqrt N)$; the callback-based constructor takes the caller's LCA and \texttt{solve} handles the extra LCA vertex.}{examples/Mos_Algorithm_On_Tree.cpp}
+{Path queries via a 0-base $2n$ Euler bracket sequence; sorting/flips $O(q\log q+n^2/B+qB)$ with common block $B>0$. Constructor takes caller's LCA; \texttt{solve} handles the extra LCA. Start empty; \texttt{flip} toggles vertices.}{examples/Mos_Algorithm_On_Tree.cpp}
 \subsection{Additional Mo's Algorithm Trick}
 \input{9_Else/Mos_Algorithm.tex}
 \inputcodedesc{Hilbert Curve}{9_Else/HilbertCurve.cpp}%
-{Hilbert index of $(x,y)$ in $O(\log n)$, $n=2^k$. Use it to order Mo's queries instead of block sorting.}
+{Hilbert index of $(x,y)$ in $O(\log n)$, positive \texttt{int} $n=2^k$, $0\le x,y<n$. Use it to order Mo's queries instead of block sorting.}
 \inputcodeex{DynamicConvexTrick*}{9_Else/DynamicConvexTrick.cpp}%
-{Line container (CHT) with arbitrary insert order, amortised $O(\log n)$, keeps the \textbf{maximum}. \textbf{Integer coordinates only.}}{examples/DynamicConvexTrick.cpp}
+{Line container (CHT) with arbitrary insert order, amortised $O(\log n)$, keeps the \textbf{maximum}. \textbf{Integer coordinates only.} Nonempty hull; $-10^{18}<x\le10^{18}$; \texttt{ll} arithmetic must fit.}{examples/DynamicConvexTrick.cpp}
 %\inputcode{cyclicLCS}{9_Else/cyclicLCS.cpp}
 \inputcodedesc{All LCS*}{9_Else/All_LCS.cpp}%
-{Returns every distinct longest common subsequence in lexicographic order. The result is directly testable and uses the standard $O(|s||t|)$ DP plus memoised reconstruction.}
+{Returns every distinct longest common subsequence in lexicographic order. A zero-length LCS gives one empty string; output may be exponential. Uses the standard $O(|s||t|)$ DP plus memoised reconstruction.}
 %\inputcode{DLX*}{9_Else/DLX.cpp} % test by TIOJ 1333, 1381
 %\subsection{Matroid Intersection}
 %\input{9_Else/Matroid.tex}
 \inputcodeex{AdaptiveSimpson*}{9_Else/AdaptiveSimpson.cpp}%
-{Adaptive Simpson integration with Richardson extrapolation. Use \texttt{eval2} to pre-split multi-peak integrands.}{examples/AdaptiveSimpson.cpp}
+{Adaptive Simpson integration with Richardson extrapolation. Use \texttt{eval2} to pre-split multi-peak integrands. Needs smooth deterministic $f$, attainable $\varepsilon>0$, and $k>0$.}{examples/AdaptiveSimpson.cpp}
 \inputcodeex{Simulated Annealing}{9_Else/simulated_annealing.cpp}%
-{Generic minimising annealing routine: caller supplies a score and neighbour proposal, and receives the best state found.}{examples/simulated_annealing.cpp}
+{Generic minimising annealing routine: caller supplies a score and neighbour proposal, and receives the best state found. Score must be pure; proposal preserves its input; state supports copying.}{examples/simulated_annealing.cpp}
 \inputcodedesc{Tree Hash*}{9_Else/tree_hash.cpp}%
 {Order-independent rooted tree hash in $O(n)$ through \texttt{rooted\_tree\_hash}; for unrooted trees hash at each centroid and take the minimum.}
 \inputcodeex{Binary Search On Fraction}{9_Else/BinarySearchOnFraction.cpp}%
-{Smallest fraction satisfying a caller-supplied monotone predicate, via Stern-Brocot descent with doubling; call \texttt{frac\_bs(N, pred)}.}{examples/BinarySearchOnFraction.cpp}
+{Smallest fraction $p/q$, $0\le p,q\le N$, via Stern-Brocot descent with doubling; \texttt{frac\_bs(N, pred)}. Require $N\ge1$, increasing \texttt{pred}, true at $1/0$ (infinity); arithmetic fits \texttt{ll}.}{examples/BinarySearchOnFraction.cpp}
 \inputcodeex{Min Plus Convolution*}{9_Else/min_plus_convolution.cpp}%
-{$c_k=\min_{i+j=k}(a_i+b_j)$ by divide and conquer on monotone decisions. \textbf{Requires $a$ convex}, $b$ arbitrary; supports empty inputs and any additive numeric type whose sums are representable.}{examples/min_plus_convolution.cpp}
+{$c_k=\min_{i+j=k}(a_i+b_j)$ in $O((n+m)\log(n+m))$ by divide and conquer on monotone decisions. \textbf{Requires $a$ convex}, $b$ arbitrary; supports empty inputs and exact additive arithmetic whose sums are representable.}{examples/min_plus_convolution.cpp}
 \inputcodedesc{Bitset LCS}{9_Else/BitsetLCS.cpp}%
-{LCS in $O(nm/w)$ using subtract-and-borrow on 64-bit words; call \texttt{bitset\_lcs(a,b)}.}
+{LCS via 64-bit subtract-and-borrow; \texttt{bitset\_lcs(a,b)}. Expected $O(m+(n+D)\lceil m/64\rceil)$, $D$: distinct values in $b$. C++20; $m$ fits \texttt{int}.}
 \inputcodeex{N Queens Problem}{9_Else/NQueens.cpp}%
-{Constructs one solution in $O(n)$ by cases on $n\bmod 6$ --- no search. \textbf{No solution exists for $n=2,3$.}}{examples/NQueens.cpp}
+{Appends one solution's 1-based columns in $O(n)$ by cases on $n\bmod 6$ --- no search; $n\ge0$. \textbf{No solution for $n=2,3$}; appends nothing.}{examples/NQueens.cpp}
 \inputcodeex{Digit DP}{9_Else/digit_dp.cpp}%
-{Binary digit DP compressed to Fibonacci counts; \texttt{calc(x)} counts values in $[0,x]$ with no adjacent one bits.}{examples/digit_dp.cpp}
+{Binary digit DP compressed to Fibonacci counts; \texttt{calc(x)} counts values in $[0,x]$ with no adjacent one bits. Negative $x$ returns 0; 32-bit \texttt{int}, C++20.}{examples/digit_dp.cpp}
 \section{Python}
 \subsection{Misc}
 {\footnotesize Importable Python fallbacks for exact decimals/fractions, matrix and fast-array parsing, modular powers, seeded random helpers, and formatting. Huge integer input raises Python 3.11+'s digit limit.\par}\vspace{-0.6em}%
