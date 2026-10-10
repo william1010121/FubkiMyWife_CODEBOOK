@@ -35,6 +35,26 @@ int main() {
   }
   require(pairs == simple.n / 2, "simple count");
 
+  Matching path(20000);
+  for (int u = 0; u + 1 < path.n; ++u) path.add_edge(u, u + 1);
+  require(path.solve() == path.n / 2, "long simple path");
+  for (int u = 0; u < path.n; ++u)
+    require(path.match[u] == (u ^ 1), "path matching validity");
+  require(path.solve() == 0, "path repeated solve");
+
+  Matching reroute(4);
+  reroute.add_edge(0, 1); // The first greedy edge must be undone.
+  reroute.add_edge(0, 2); reroute.add_edge(1, 3);
+  require(reroute.solve() == 2, "simple greedy rerouting");
+  require(reroute.match == vector<int>({2, 3, 0, 1, 4}),
+          "simple rerouting validity");
+
+  WeightGraph weighted_reroute(4);
+  weighted_reroute.add_edge(1, 2, 10); // A tight greedy edge.
+  weighted_reroute.add_edge(1, 3, 9);
+  weighted_reroute.add_edge(2, 4, 9);
+  check_weighted(weighted_reroute, 18, 2);
+
   WeightGraph cycle(601);
   for (int u = 1; u <= cycle.n; ++u)
     cycle.add_edge(u, u % cycle.n + 1, 7);

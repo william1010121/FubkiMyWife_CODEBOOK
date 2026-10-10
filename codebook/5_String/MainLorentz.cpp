@@ -3,6 +3,7 @@
 vector<pair<int, int>> rep[kN];
 void main_lorentz_impl(const string &s, int sft) {
   int n = s.size(); if (n <= 1) return;
+  if (n == 2) { if (s[0] == s[1]) rep[1].emplace_back(sft, sft); return; }
   int nu = n/2, nv = n-nu;
   string u = s.substr(0, nu), v = s.substr(nu),
          ru(u.rbegin(), u.rend()), rv(v.rbegin(), v.rend());
@@ -28,6 +29,5 @@ void main_lorentz_impl(const string &s, int sft) {
 }
 void main_lorentz(const string &s, int sft = 0) { // fresh report
   for (auto &v : rep) v.clear();
-  main_lorentz_impl(s, sft);
-}
+  main_lorentz_impl(s, sft); }
 // O(n log n + kN); p in rep[l] => s[p,p+l)==s[p+l,p+2l)

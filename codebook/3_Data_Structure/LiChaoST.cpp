@@ -13,8 +13,10 @@ class LiChao {
     if (o.id == -1) return o = ln, void();
     if (o.at(m) < ln.at(m)) swap(o, ln);
     if (r - l == 1 || o.m == ln.m) return;
-    if (ln.m < o.m) insert(l, m, rt << 1, ln); // can win only left
-    else insert(m, r, rt << 1 | 1, ln);
+    if (ln.m < o.m) { // can win only left
+      if (ln.at(l) > o.at(l)) insert(l, m, rt << 1, ln);
+    } else if (ln.at(r - 1) > o.at(r - 1))
+      insert(m, r, rt << 1 | 1, ln);
   }
   ll query(int l, int r, int rt, ll x) {
     if (nodes[rt].id == -1) return -INF;

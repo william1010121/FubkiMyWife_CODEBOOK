@@ -24,8 +24,8 @@ struct Seg { // 1D range add/sum; query allocates no nodes
     if (!idx) idx = new Node();
     idx->sum += v * (min(r, qr) - max(l, ql));
     int m = l + (r - l) / 2;
-    update(idx->l, l, m, ql, qr, v);
-    update(idx->r, m, r, ql, qr, v);
+    if (ql < m) update(idx->l, l, m, ql, qr, v);
+    if (qr > m) update(idx->r, m, r, ql, qr, v);
   }
   int query(Node *idx, int l, int r, int ql, int qr) {
     if (!idx || ql >= qr || qr <= l || r <= ql) return 0;
@@ -33,8 +33,8 @@ struct Seg { // 1D range add/sum; query allocates no nodes
     int m = l + (r - l) / 2;
     // Children exclude this lazy; count only the queried overlap.
     return idx->lazy * (min(r, qr) - max(l, ql))
-         + query(idx->l, l, m, ql, qr)
-         + query(idx->r, m, r, ql, qr);
+         + (ql < m ? query(idx->l, l, m, ql, qr) : 0)
+         + (qr > m ? query(idx->r, m, r, ql, qr) : 0);
   }
   void update(int l, int r, int v) { update(root, 0, n, l, r, v); }
   int query(int l, int r) { return query(root, 0, n, l, r); }
@@ -55,8 +55,8 @@ struct Seg2D {
     idx->sum.update(yl, yr, v * (min(r, xr) - max(l, xl)));
     if (xl <= l && r <= xr) return idx->lazy.update(yl, yr, v);
     int md = l + (r - l) / 2;
-    update(idx->l, l, md, xl, xr, yl, yr, v);
-    update(idx->r, md, r, xl, xr, yl, yr, v);
+    if (xl < md) update(idx->l, l, md, xl, xr, yl, yr, v);
+    if (xr > md) update(idx->r, md, r, xl, xr, yl, yr, v);
   }
   int query(Node *idx, int l, int r,
             int xl, int xr, int yl, int yr) {
@@ -65,8 +65,8 @@ struct Seg2D {
     int md = l + (r - l) / 2;
     // lazy covers this full x interval; children exclude it.
     return idx->lazy.query(yl, yr) * (min(r, xr) - max(l, xl))
-         + query(idx->l, l, md, xl, xr, yl, yr)
-         + query(idx->r, md, r, xl, xr, yl, yr);
+         + (xl < md ? query(idx->l, l, md, xl, xr, yl, yr) : 0)
+         + (xr > md ? query(idx->r, md, r, xl, xr, yl, yr) : 0);
   }
   void update(int xl, int xr, int yl, int yr, int v) {
     update(root, 0, n, xl, xr, yl, yr, v);

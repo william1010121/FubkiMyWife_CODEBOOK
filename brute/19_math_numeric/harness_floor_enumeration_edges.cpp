@@ -11,20 +11,20 @@ struct observed_n {
   int value, left = 0, quotient = 0;
   bool pending = false;
   vector<tuple<int,int,int>> blocks;
-  friend bool operator<=(int l, const observed_n &n) {
+  friend bool operator<=(int l, observed_n &n) {
+    if (n.pending) n.blocks.emplace_back(n.left,l-1,n.quotient);
+    n.left = l; n.pending = false;
     return l <= n.value;
   }
   friend int operator/(observed_n &n, int divisor) {
     int result = n.value / divisor;
-    if (!n.pending) n.left = divisor, n.quotient = result;
-    else n.blocks.emplace_back(n.left, result, n.quotient);
-    n.pending = !n.pending;
+    if (!n.pending) n.quotient = result, n.pending = true;
     return result;
   }
 };
 vector<tuple<int,int,int>> enumerate_oracle_input(int value) {
-  // Observe the actual snippet's n/l and n/x divisions, using exactly
-  // int arithmetic. No copied algorithm supplies the recorded blocks.
+  // Observe n/l once per iteration; the next loop bound reveals r+1.
+  // This records actual l,r,x even when the n/x division is skipped.
   observed_n n{value};
 #include "../../codebook/6_Math/floor_enumeration.cpp"
   assert(!n.pending);

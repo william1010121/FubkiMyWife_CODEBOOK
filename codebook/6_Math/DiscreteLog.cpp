@@ -14,9 +14,10 @@ int DiscreteLog(int s, int x, int y, int m) {
   } return -1;
 }
 int DiscreteLog(int x, int y, int m) {
-  if (m == 1) return 0; int s = 1; // skip non-coprime transient
+  if (m == 1 || y == 1) return 0;
+  if (x <= 1) return y == x ? 1 : -1; int s = 1;
   for (int i = 0; i < 100; ++i, s = 1LL * s * x % m)
-    if (s == y) return i;
+    if (s == y) return i; // skip non-coprime transient
   if (s == y) return 100; int tail = DiscreteLog(s, x, y, m);
   long long ans = 100LL + tail;
   return tail < 0 || ans > INT_MAX || fpow(x, (int)ans, m) != y

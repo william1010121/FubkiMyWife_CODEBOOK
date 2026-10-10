@@ -1,29 +1,30 @@
 struct BronKerbosch { // 1-base, 0 <= n < N; count fits int
-  // Simple undirected graph; n=0 counts the empty clique.
-  int n, S, g[N][N];
+  // Simple undirected; n=0 counts empty clique; GCC/libstdc++ bitset.
+  int n, S; bitset<N> g[N];
   void init(int _n) {
-    n = _n; for (int i = 1; i <= n; ++i) fill_n(g[i], n + 1, 0);
+    n = _n; for (int i = 1; i <= n; ++i) g[i].reset();
   }
   void add_edge(int u, int v) { g[u][v] = g[v][u] = 1; }
-  void dfs_vec(vector<int> P, vector<int> X) {
-    if (P.empty()) { if (X.empty()) ++S; return; }
-    int pivot = P[0], best = -1;
-    for (auto set : {&P, &X}) for (int u : *set) {
-      int score = 0;
-      for (int v : P) score += g[u][v];
+  void dfs(bitset<N> P, bitset<N> X) {
+    if (P.none()) { if (X.none()) ++S; return; }
+    int pivot = 0, best = -1; auto U = P | X;
+    for (int u = U._Find_first(); u < N; u = U._Find_next(u)) {
+      int score = (P & g[u]).count();
       if (score > best) best = score, pivot = u;
     }
-    for (int i = SZ(P) - 1; i >= 0; --i) {
-      int v = P[i]; if (g[pivot][v]) continue;
-      vector<int> nP, nX;
-      for (int u : P) if (g[v][u]) nP.push_back(u);
-      for (int u : X) if (g[v][u]) nX.push_back(u);
-      dfs_vec(move(nP), move(nX));
-      P[i] = P.back(), P.pop_back(), X.push_back(v); // unordered erase
+    auto cand = P & ~g[pivot];
+    for (int v = cand._Find_first(); v < N; v = cand._Find_next(v)) {
+      dfs(P & g[v], X & g[v]);
+      P[v] = 0, X[v] = 1;
     }
   }
-  int solve() {
-    vector<int> P(n); iota(P.begin(), P.end(), 1);
-    S = 0, dfs_vec(move(P), {}); return S;
+  void dfs_vec(vector<int> P, vector<int> X) {
+    bitset<N> p, x; for (int v : P) p[v] = 1;
+    for (int v : X) x[v] = 1;
+    dfs(p, x);
   }
-}; // Bron-Kerbosch with pivot; O(n^2 3^(n/3)) including overhead
+  int solve() {
+    bitset<N> P; for (int i = 1; i <= n; ++i) P[i] = 1;
+    S = 0, dfs(P, {}); return S;
+  }
+}; // Pivot/intersections: O(n ceil(N/word_bits) 3^(n/3)).

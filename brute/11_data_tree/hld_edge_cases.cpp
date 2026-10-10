@@ -126,6 +126,17 @@ vector<int> values(int n, int mode) {
 
 int main() {
   {
+    // Direct calls to the original public helpers still populate Seg.
+    Heavy_light_Decomposition h;
+    h.init(7);
+    auto e = star(7);
+    auto v = values(7, 1);
+    for (auto edge : e) h.add_edge(edge.u, edge.v);
+    for (int u = 1; u <= 7; ++u) h.val[u] = v[u];
+    h.t = 0, h.seg = Seg(7), h.dfs(1, 1, 1), h.cut(1, 1);
+    check("direct-cut", h, e, v);
+  }
+  {
     Heavy_light_Decomposition h;
     h.init(1), h.val[1] = INT_MIN, h.build();
     assert(h.query(1, 1) == INT_MIN);

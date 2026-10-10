@@ -19,6 +19,8 @@ struct Matching { // 0-base; loopless; O(n^3); unmatched = n
     }
   }
   bool Bfs(int r) {
+    for (int u : G[r]) if (match[u] == n)
+      return match[r] = u, match[u] = r, true;
     iota(ALL(fa), 0); fill(ALL(s), -1);
     q = {}; q.push(r); s[r] = 0;
     for (; !q.empty(); q.pop()) {

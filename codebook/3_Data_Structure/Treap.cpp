@@ -4,15 +4,15 @@
 // 1 <= l <= size+1, 0 <= r <= size-l+1 (1-base start l, length r).
 // split: <= key | > key; split2: first k nodes, 0 <= k <= size.
 struct node {
-  int data, sz; node *l, *r;
-  node(int k) : data(k), sz(1), l(0), r(0) {}
+  int data, sz, priority; node *l, *r;
+  node(int k) : data(k), sz(1), priority(rand()), l(0), r(0) {}
   void up() { sz = 1 + (l ? l->sz : 0) + (r ? r->sz : 0); }
   void down() {} // lazy also needs down() before kth/Rank/erase reads
 };
 int sz(node *a) { return a ? a->sz : 0; }
 node *merge(node *a, node *b) {
   if (!a || !b) return a ? a : b;
-  if (rand() % (sz(a) + sz(b)) < sz(a))
+  if (a->priority < b->priority)
     return a->down(), a->r = merge(a->r, b), a->up(), a;
   return b->down(), b->l = merge(a, b->l), b->up(), b;
 }

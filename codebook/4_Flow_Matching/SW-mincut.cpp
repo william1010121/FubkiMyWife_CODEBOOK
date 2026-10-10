@@ -20,7 +20,7 @@ struct SW { // 0-base, undirected, nonnegative weights. O(V^3)
   int solve(int n) {
     int res = n <= 1 ? 0 : INF; // empty cut for n <= 1
     for (int x, y; n > 1; --n) {
-      res = min(res, search(x, y, n));
+      res = min(res, search(x, y, n)); if (!res) break;
       for (int i = 0; i < n; ++i)
         if (i != x && i != y) edge[i][x] = (edge[x][i] += edge[y][i]);
       for (int i = 0; i < n; ++i)

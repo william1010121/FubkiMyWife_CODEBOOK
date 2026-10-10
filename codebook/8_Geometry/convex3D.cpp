@@ -52,12 +52,14 @@ struct convex3D { // Distinct p; n <= 1010, m=0; O(n^2).
         return false;
     return true;
   }
-  int faces(){
-    int r=0;
-    for(int i=0;i<m;++i){
-      int iden=1;
-      for(int j=0;j<i;++j)if(same(i,j)){iden=0; break;}
-      r+=iden;
+  int faces(){ // O(m); coplanarity at eps must be reliable.
+    int r=0; vector<int> seen(m), q;
+    for(int i=0;i<m;++i)if(!seen[i]){
+      ++r; seen[i]=1; q={i};
+      for(int j=0;j<(int)q.size();++j){ T t=f[q[j]];
+        for(int k : {id[t.b][t.a],id[t.c][t.b],id[t.a][t.c]})
+          if(!seen[k] && same(i,k))seen[k]=1,q.push_back(k);
+      }
     } return r;
   }
 } tb;

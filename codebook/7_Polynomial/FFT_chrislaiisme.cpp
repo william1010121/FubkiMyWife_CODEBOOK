@@ -2,22 +2,20 @@ using cd = complex<double>;
 const double pi = acos(-1);
 // n=2^k, 0<=k<=29; O(n log n); finite complex arithmetic.
 void fft(vector<cd> &vec, bool inv = false) {
-  int n = vec.size();
+  int n = vec.size(); vector<cd> roots(n / 2);
   for (int i = 0, j = 0; i < n; ++i) { // bit-reversed counter
     if (i < j) swap(vec[i], vec[j]);
     for (int bit = n >> 1; (j ^= bit) < bit; bit >>= 1);
   }
   for (int len = 2; len <= n; len <<= 1) {
     double ang = 2 * pi / len * (inv ? -1 : 1);
-    cd wlen(cos(ang), sin(ang));
-    for (int i = 0; i < n; i += len) {
-      cd w = 1;
+    cd wlen(cos(ang), sin(ang)), w = 1;
+    for (int j = 0; j < len / 2; ++j) roots[j] = w, w *= wlen;
+    for (int i = 0; i < n; i += len)
       for (int j = 0; j < len / 2; ++j) {
-        cd a = vec[i + j], b = w * vec[i + len / 2 + j];
+        cd a = vec[i + j], b = roots[j] * vec[i + len / 2 + j];
         vec[i + j] = a + b, vec[i + len / 2 + j] = a - b;
-        w *= wlen;
       }
-    }
   }
   if (inv) for (auto &x : vec) x /= n;
 }

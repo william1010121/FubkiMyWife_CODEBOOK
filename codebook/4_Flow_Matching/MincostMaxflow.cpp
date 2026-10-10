@@ -2,9 +2,9 @@
 // Arithmetic fits ll; finite BF/reduced distances < INF.
 // A augmentations: O(VE + A(E+V)log(E+V)).
 struct MinCostMaxFlow {
-  struct Edge { ll from, to, cap, flow, cost, rev; } *past[N];
+  struct Edge { int from, to; ll cap, flow, cost; int rev; } *past[N];
   vector<Edge> G[N];
-  int inq[N], n, s, t;
+  bool inq[N]; int n, s, t;
   ll dis[N], up[N], pot[N];
   bool BellmanFord() {
     fill_n(dis, n, INF), fill_n(inq, n, 0); queue<int> q;
@@ -57,7 +57,7 @@ struct MinCostMaxFlow {
     for (int i = 0; i < n; ++i) G[i].clear();
   }
   void add_edge(ll a, ll b, ll cap, ll cost) {
-    G[a].pb({a, b, cap, 0, cost, SZ(G[b]) + (a == b)});
-    G[b].pb({b, a, 0, 0, -cost, SZ(G[a]) - 1});
+    G[a].pb({int(a), int(b), cap, 0, cost, SZ(G[b]) + (a == b)});
+    G[b].pb({int(b), int(a), 0, 0, -cost, SZ(G[a]) - 1});
   }
 };

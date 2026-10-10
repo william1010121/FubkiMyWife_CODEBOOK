@@ -1,6 +1,6 @@
-vector<pair<double, double>> CoverSegment(C &a, C &b) {
-  double d = (a.c - b.c).abs(); vector<pair<double, double>> res;
-  if (same(a.r + b.r, d)) return res;
+void AppendCoverSegment(C &a, C &b, vector<pair<double, double>> &res) {
+  double d = (a.c - b.c).abs();
+  if (same(a.r + b.r, d)) return;
   if (d <= abs(a.r - b.r) + eps) {
     if (a.r < b.r) res.emplace_back(0, 2 * pi);
   } else if (d < abs(a.r + b.r) - eps) {
@@ -12,16 +12,21 @@ vector<pair<double, double>> CoverSegment(C &a, C &b) {
     if (r > 2 * pi) r -= 2 * pi;
     if (l > r) res.emplace_back(l, 2 * pi), res.emplace_back(0, r);
     else res.emplace_back(l, r);
-  } return res;
+  }
+}
+vector<pair<double, double>> CoverSegment(C &a, C &b) {
+  vector<pair<double, double>> v; AppendCoverSegment(a, b, v); return v;
 }
 // Nonnegative radii; remove duplicate circles first; O(n^2 log n).
 double CircleUnionArea(vector<C> c) {
   if (!c.empty()) { P o = c[0].c; for (auto &v : c) v.c = v.c - o; }
-  double a = 0;
+  double a = 0; vector<pair<double, double>> s;
   for (int i = 0; i < (int)c.size(); ++i) {
-    double w = 0; vector<pair<double, double>> s = {{2 * pi, 2 * pi}};
-    for (int j = 0; j < (int)c.size(); ++j) if (i != j)
-      for (auto e : CoverSegment(c[i], c[j])) s.push_back(e);
+    double w = 0; s = {{2 * pi, 2 * pi}};
+    for (int j = 0; j < (int)c.size(); ++j) if (i != j) {
+      AppendCoverSegment(c[i], c[j], s);
+      if (s.back() == pair<double, double>{0, 2 * pi}) break;
+    }
     sort(s.begin(), s.end());
     auto F = [&](double t) { return c[i].r * (c[i].r * t +
       c[i].c.x * sin(t) - c[i].c.y * cos(t)); };

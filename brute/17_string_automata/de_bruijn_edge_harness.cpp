@@ -76,6 +76,10 @@ int main() {
   check(46341, 2, 33), ++cases;
   check(257, 2, 257 * 257), ++cases;
   check(2, 16, 1 << 16), ++cases;
+  // Contest-scale outputs with short and long FKM copy blocks.
+  check(200000, 1, 200000), ++cases;
+  check(447, 2, 447 * 447), ++cases;
+  check(2, 18, 1 << 18), ++cases;
   // Maximum buffer order still takes the single-window fast path.
   single.assign(MAXC * MAXN - 1, -9);
   dbs.solve(INT_MAX, single.size(), 1, single.data());

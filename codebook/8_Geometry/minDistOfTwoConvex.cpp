@@ -26,7 +26,7 @@ bool _inside_convex(Point p, Point poly[], int n) {
 // Nonempty convex polygons in cyclic CW/CCW order; O(n+m) time/space.
 double TwoConvexHullMinDist(Point P[], Point Q[], int n, int m) {
   auto prepare = [&](Point p[], int n, int s) {
-    vector<Point> a(p, p + n);
+    vector<Point> a; a.reserve(n + 1); a.assign(p, p + n);
     for (auto &v : a) v.x *= s, v.y *= s;
     double area = 0; for (int i = 1; i + 1 < (int)a.size(); ++i)
       area += _cross(a[0], a[i], a[i + 1]);
@@ -36,19 +36,19 @@ double TwoConvexHullMinDist(Point P[], Point Q[], int n, int m) {
     if (!area) { auto [l, r] = minmax_element(a.begin(), a.end(), less);
       a = {*l, *r}; } // Collinear polygon becomes a segment.
     rotate(a.begin(), min_element(a.begin(), a.end(), less), a.end());
-    return a; };
+    a.push_back(a[0]); return a; }; // Close for direct indexing.
   auto a = prepare(P, n, 1), b = prepare(Q, m, -1);
-  n = a.size(), m = b.size();
+  n = a.size() - 1, m = b.size() - 1;
   auto sum = [&](int i, int j) { return Point{
-    a[i % n].x + b[j % m].x, a[i % n].y + b[j % m].y}; };
+    a[i].x + b[j].x, a[i].y + b[j].y}; };
   double ans = numeric_limits<double>::infinity(), area = 0;
   bool inside = true;
   for (int i = 0, j = 0; i < n || j < m;) {
-    Point p = sum(i, j), u = a[(i + 1) % n], v = b[(j + 1) % m];
-    double z = _cross({0, 0}, {u.x - a[i % n].x, u.y - a[i % n].y},
-      {v.x - b[j % m].x, v.y - b[j % m].y});
-    bool az = u.x == a[i % n].x && u.y == a[i % n].y,
-      bz = v.x == b[j % m].x && v.y == b[j % m].y;
+    Point p = sum(i, j), u = a[min(i + 1, n)], v = b[min(j + 1, m)];
+    double z = _cross({0, 0}, {u.x - a[i].x, u.y - a[i].y},
+      {v.x - b[j].x, v.y - b[j].y});
+    bool az = u.x == a[i].x && u.y == a[i].y,
+      bz = v.x == b[j].x && v.y == b[j].y;
     bool x = i < n && (j == m || az || (!bz && z >= 0)),
       y = j < m && (i == n || bz || (!az && z <= 0));
     i += x, j += y; Point q = sum(i, j);

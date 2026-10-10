@@ -3,7 +3,7 @@ vector<L> tangent(C a, C b) {
   if (a.r < b.r) swap(a, b);
   vector<L> z; double d = (a.c - b.c).abs();
   if (same(d, 0) || d + b.r < a.r) return z;
-  P u = (b.c - a.c) / d;
+  P u = (b.c - a.c) / d; z.reserve(4);
   for (double side : {1., -1.}) { // External, then internal.
     bool touch = side == 1 ? same(d + b.r, a.r) :
       same(d, a.r + b.r);
@@ -22,7 +22,8 @@ vector<L> tangent(C c, P p) {
   vector<L> z; double d = (p - c.c).abs();
   if (d > 0 && same(d, c.r)) z.emplace_back(p, p + (p - c.c).rot(pi / 2));
   else if (d > c.r) {
-    double o = acos(c.r / d); P u = (p - c.c) / d;
-    for (double t : {o, -o}) z.emplace_back(c.c + u.rot(t) * c.r, p);
+    double h = c.r / d, t = sqrt(max(0., (1 - h) * (1 + h)));
+    P u = (p - c.c) / d; z.reserve(2); for (double k : {t, -t})
+      z.emplace_back(c.c + (u * h + P(-u.y, u.x) * k) * c.r, p);
   } return z;
 }

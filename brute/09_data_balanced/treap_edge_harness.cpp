@@ -13,6 +13,8 @@ using namespace std;
 static void collect(node *o, vector<int> &out) {
   if (!o) return;
   CHECK(o->sz == 1 + sz(o->l) + sz(o->r));
+  CHECK(!o->l || o->priority <= o->l->priority);
+  CHECK(!o->r || o->priority <= o->r->priority);
   collect(o->l, out);
   out.push_back(o->data);
   collect(o->r, out);

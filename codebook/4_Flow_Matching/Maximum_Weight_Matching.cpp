@@ -136,7 +136,11 @@ struct WeightGraph { // 1-base; loopless; O(n^3); positive edges only
     int w_max = 0, n_matches = 0; ll tot_weight = 0;
     for (int u = 1; u <= n; ++u) for (int v = 1; v <= u; ++v)
       w_max = max(w_max, g[u][v].w);
-    fill(ALL(lab), w_max);
+    fill(ALL(lab), w_max); // Max-weight edges are tight.
+    for (int u = 1; u <= n; ++u) if (w_max && !match[u])
+      for (int v = u + 1; v <= n; ++v)
+        if (!match[v] && g[u][v].w == w_max) {
+          match[u] = v, match[v] = u, ++n_matches; break; }
     while (matching()) ++n_matches;
     for (int u = 1; u <= n; ++u) if (match[u] && match[u] < u)
       tot_weight += g[u][match[u]].w;

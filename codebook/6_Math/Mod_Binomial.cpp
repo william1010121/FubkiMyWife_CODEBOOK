@@ -5,20 +5,20 @@ struct ModBinomial {
   ModBinomial(int N, ll p) : mod(p) {
     assert(p >= 2 && N >= 0 && N < p);
     fac.resize(N + 1); ifac.resize(N + 1); fac[0] = 1;
-    for (int i = 1; i <= N; ++i) fac[i] = mod.mul(fac[i - 1], i);
+    for (int i = 1; i <= N; ++i) fac[i] = (__int128)fac[i - 1]*i%p;
     ifac[N] = mod.pow(fac[N], p - 2);
-    for (int i = N; i; --i) ifac[i - 1] = mod.mul(ifac[i], i);
+    for (int i = N; i; --i) ifac[i - 1] = (__int128)ifac[i]*i%p;
   }
   ll C(int n, int k) const {
     if (n < 0 || k < 0 || k > n) return 0;
     assert(n < (int)fac.size());
-    return mod.mul(fac[n], mod.mul(ifac[k], ifac[n - k]));
+    return (__int128)fac[n]*ifac[k]%mod.m*ifac[n - k]%mod.m;
   }
   ll lucas(ll n, ll k) const { // N=p-1, small p; O(log_p n).
     if (n < 0 || k < 0 || k > n) return 0;
     assert((ll)fac.size() == mod.m); ll r = 1;
     for (; n || k; n /= mod.m, k /= mod.m)
-      r = mod.mul(r, C(n % mod.m, k % mod.m));
+      r = (__int128)r*C(n % mod.m, k % mod.m)%mod.m;
     return r;
   }
 };

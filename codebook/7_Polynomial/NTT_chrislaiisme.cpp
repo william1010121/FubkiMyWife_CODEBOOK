@@ -6,22 +6,21 @@ ll pwr(ll a, ll b, ll ret = 1) {
 }
 // Residues in [0,mod); n=2^k, 0<=k<=23 (also mult); O(n log n).
 void ntt(vector<ll> &vec, bool inv = false) {
-  int n = vec.size();
+  int n = vec.size(); vector<int> roots(n / 2, 1);
   for (int i = 0, j = 0; i < n; ++i) { // bit-reversed counter
     if (i < j) swap(vec[i], vec[j]);
     for (int bit = n >> 1; (j ^= bit) < bit; bit >>= 1);
   }
   for (int len = 2; len <= n; len <<= 1) {
     ll wlen = pwr(g, (mod - 1) / len * (inv ? len - 1 : 1));
-    for (int i = 0; i < n; i += len) {
-      ll w = 1;
+    for (int j = 1; j < len / 2; ++j)
+      roots[j] = roots[j - 1] * wlen % mod;
+    for (int i = 0; i < n; i += len)
       for (int j = 0; j < len / 2; ++j) {
-        ll a = vec[i + j], b = w * vec[i + len / 2 + j] % mod;
+        ll a = vec[i + j], b = roots[j] * vec[i + len / 2 + j] % mod;
         vec[i + j] = a + b < mod ? a + b : a + b - mod;
         vec[i + len / 2 + j] = a - b >= 0 ? a - b : a - b + mod;
-        w = w * wlen % mod;
       }
-    }
   }
   if (inv) { ll invn = mod - (mod - 1) / n; // n divides mod-1.
     for (auto &x : vec) x = x * invn % mod;

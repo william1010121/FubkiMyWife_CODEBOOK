@@ -20,7 +20,7 @@ double simplex(int n, int m) {
       swap(ix[s], ix[r + m]); d[r][s] = 1 / d[r][s];
       for (int j = 0; j <= m; ++j)
         if (j != s) d[r][j] *= -d[r][s];
-      for (int i = 0; i <= n + 1; ++i) if (i != r) {
+      for (int i = 0; i <= n + 1; ++i) if (i != r && d[i][s]) {
         for (int j = 0; j <= m; ++j)
           if (j != s) d[i][j] += d[r][j] * d[i][s];
         d[i][s] *= d[r][s];

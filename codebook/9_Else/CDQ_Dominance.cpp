@@ -16,10 +16,12 @@ vector<ll> dominance(vector<vector<int>> a) {
     ++w.back(), grp[ord[i]] = SZ(rep) - 1;
   }
   vector<ll> ans(SZ(rep)), bit(size_t(n) + 1), res(n);
+  vector<int> coord; coord.reserve(rep.size() * size_t(k));
+  for (int i : rep) coord.insert(coord.end(), ALL(a[i]));
   struct It { int g; bool up, qu; };
-  auto val = [&](It x, int d) { return a[rep[x.g]][d]; };
+  auto val = [&](It x, int d) { return coord[size_t(x.g) * k + d]; };
   // Count earlier updates satisfying dims d..k-1 for each query.
-  auto rec = [&](auto &&self, int d, vector<It> &v) -> void {
+  auto rec = [&](auto &&self, int d, span<It> v) -> void {
     if (SZ(v) < 2) return;
     if (d >= k) {
       ll s = 0;
@@ -37,10 +39,10 @@ vector<ll> dominance(vector<vector<int>> a) {
         for (ll i = val(x, d); i <= n; i += i & -i) bit[i] = 0;
       return;
     } int mid = SZ(v) / 2;
-    vector<It> L(v.begin(), v.begin() + mid), R(v.begin()+mid, v.end()), c;
-    self(self, d, L), self(self, d, R);
-    for (auto x : L) if (x.up) c.pb({x.g, 1, 0});
-    for (auto x : R) if (x.qu) c.pb({x.g, 0, 1});
+    self(self, d, v.first(mid)), self(self, d, v.subspan(mid));
+    vector<It> c; c.reserve(v.size());
+    for (auto x : v.first(mid)) if (x.up) c.pb({x.g, 1, 0});
+    for (auto x : v.subspan(mid)) if (x.qu) c.pb({x.g, 0, 1});
     stable_sort(ALL(c), [&](It x, It y) { return val(x, d) < val(y, d); });
     self(self, d + 1, c); // Stable ties keep left updates first.
   };

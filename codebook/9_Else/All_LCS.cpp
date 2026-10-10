@@ -8,6 +8,7 @@ vector<string> all_lcs(const string &s, const string &t) {
     for (int j = m - 1; j >= 0; --j)
       dp[i][j] = s[i] == t[j] ? 1 + dp[i + 1][j + 1]
         : max(dp[i + 1][j], dp[i][j + 1]);
+  if (!dp[0][0]) return {""};
   vector<vector<vector<string>>> memo(n + 1,
     vector<vector<string>>(m + 1));
   auto go = [&](auto &&self, int i, int j) -> vector<string> & {

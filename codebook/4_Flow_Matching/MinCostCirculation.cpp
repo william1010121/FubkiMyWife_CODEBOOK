@@ -1,8 +1,8 @@
 struct MinCostCirculation { // 0-base; solve once, O(V(E+1)^2log(C+2))
   // n <= N, cap >= 0; finite distances < INF; arithmetic fits ll.
-  struct Edge { ll from, to, cap, fcap, flow, cost, rev; } *past[N];
-  vector<Edge> G[N];
-  ll dis[N], inq[N], n;
+  struct Edge { int from, to; ll cap, fcap, flow, cost; int rev; };
+  Edge *past[N]; vector<Edge> G[N];
+  ll dis[N]; bool inq[N]; int n;
   void BellmanFord(int s) {
     fill_n(dis, n, INF), fill_n(inq, n, 0); queue<int> q;
     dis[s] = 0, past[s] = nullptr, q.push(s), inq[s] = 1;
@@ -37,7 +37,7 @@ struct MinCostCirculation { // 0-base; solve once, O(V(E+1)^2log(C+2))
     n = _n; for (int i = 0; i < n; ++i) G[i].clear();
   }
   void add_edge(ll a, ll b, ll cap, ll cost) {
-    G[a].pb({a, b, 0, cap, 0, cost, SZ(G[b]) + (a == b)});
-    G[b].pb({b, a, 0, 0, 0, -cost, SZ(G[a]) - 1});
+    G[a].pb({int(a), int(b), 0, cap, 0, cost, SZ(G[b]) + (a == b)});
+    G[b].pb({int(b), int(a), 0, 0, 0, -cost, SZ(G[a]) - 1});
   }
 } mcmf;

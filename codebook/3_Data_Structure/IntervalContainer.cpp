@@ -2,7 +2,8 @@
 // O(log s + erased intervals) per update, amortized O(log s).
 set<pii>::iterator addInterval(set<pii>& is, int L, int R) {
   if (L == R) return is.end();
-  auto it = is.lower_bound({L, R}), before = it;
+  auto it = is.upper_bound({L, INT_MAX}), before = it;
+  if (it != is.begin() && prev(it)->Y >= R) return prev(it);
   while (it != is.end() && it->X <= R) {
     R = max(R, it->Y), before = it = is.erase(it);
   }

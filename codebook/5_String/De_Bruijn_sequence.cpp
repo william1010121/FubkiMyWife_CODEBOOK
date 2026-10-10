@@ -5,7 +5,7 @@ struct DBSeq { // FKM; C>=1, N>=0, 1<=K<=C^N, N<MAXC*MAXN
   void dfs(int *out, int t, int p, int &ptr) {
     if (ptr >= L) return; if (t > N) {
       if (N % p) return;
-      for (int i = 1; i <= p && ptr < L; ++i) out[ptr++] = buf[i];
+      int k = min(p, L-ptr); copy_n(buf+1, k, out+ptr), ptr += k;
     } else { buf[t] = buf[t - p], dfs(out, t + 1, p, ptr);
       for (int j = buf[t - p] + 1; j < C && ptr < L; ++j)
         buf[t] = j, dfs(out, t + 1, t, ptr);

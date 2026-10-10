@@ -78,6 +78,7 @@ void check_3d(convex3D &h) {
     }
   }
   req(want==got, "3D exhaustive supporting-plane oracle");
+  req(h.faces()==int(want.size()), "3D geometric facet count oracle");
   for (auto [e,count]:edges)
     req(count==1 && edges[{e.second,e.first}]==1,
         "3D manifold directed edges");
@@ -242,6 +243,18 @@ int main() {
   dot_calls=0; curve();
   req(curve.m==396, "3D 1010-point stress hull");
   req(dot_calls<2LL*curve.n*curve.n, "3D stress evaluation bound");
+  // Full-capacity strictly convex hull: facet grouping must be linear.
+  curve.n=convex3D::maxn; curve.m=0;
+  for (int i=0;i<curve.n;++i) {
+    double z=1-2.0*(i+0.5)/curve.n, a=i*2.399963229728653;
+    curve.p[i]={sqrt(1-z*z)*cos(a)*10000,
+                sqrt(1-z*z)*sin(a)*10000,z*10000};
+  }
+  curve();
+  req(curve.m==2*curve.n-4, "3D sphere Euler triangle count");
+  dot_calls=0;
+  req(curve.faces()==curve.m, "3D sphere distinct geometric facets");
+  req(dot_calls<12LL*curve.m, "3D facet grouping evaluation bound");
   for (int tc=0;tc<1000;++tc) {
     set<array<int,3>> points;
     int n=4+rng()%13;

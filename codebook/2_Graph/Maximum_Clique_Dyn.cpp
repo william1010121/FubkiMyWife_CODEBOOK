@@ -31,7 +31,7 @@ struct MaxClique { // 0-base, 0 <= n <= N; N > 0, simple undirected
       int p = r.back(); r.pop_back(), mask[p] = 0;
       if (q + c.back() <= ans) return;
       cur[q++] = p;
-      vector<int> nr;
+      vector<int> nr; nr.reserve(r.size());
       for (int i : r) if (G[p][i]) nr.pb(i);
       if (!nr.empty()) pre_dfs(nr, l, mask & G[p]);
       else if (q > ans) ans = q, copy_n(cur, q, sol);

@@ -167,6 +167,40 @@ int main() {
   for (auto t : tri) if (cr(t[0], t[1], t[2]) != 1) {
     puts("FAIL grid triangle orientation/area"); return 1;
   }
+  // Retain edges across full and partial arena blocks and repeated calls.
+  vector<delaunay::Quad*> retained{saved};
+  for (int n : {1024,1035,2048,2055}) {
+    while (int(retained.size())<n) {
+      ll i=retained.size();
+      retained.push_back(delaunay::MakeEdge({-10-i,-1},{-10-i,-3}));
+    }
+    size_t storage=delaunay::edges.size();
+    auto again=delaunay::Triangulate(grid);
+    if (again.size()!=2*249*199 || delaunay::edges.size()!=storage) {
+      puts("FAIL retained arena extent"); return 1;
+    }
+    for (int i=1;i<n;++i) {
+      auto q=retained[i];
+      if (q->p.x!=-10-i || q->p.y!=-1 || q->F().x!=-10-i ||
+          q->F().y!=-3 || q->r()->r()!=q || q->o!=q ||
+          q->rot->rot->rot->rot!=q) {
+        puts("FAIL retained block pointers/topology"); return 1;
+      }
+    }
+    if (saved->p.x!=-1 || saved->F().x!=-3 || saved->r()->r()!=saved) {
+      puts("FAIL original retained pointer"); return 1;
+    }
+  }
+  vector<Point> stress_line;
+  for (int i=0;i<200000;++i) stress_line.emplace_back(i,3LL*i);
+  mt19937 line_rng(917);
+  shuffle(stress_line.begin(),stress_line.end(),line_rng);
+  size_t storage=delaunay::edges.size();
+  if (!delaunay::Triangulate(stress_line).empty() ||
+      delaunay::edges.size()!=storage) {
+    puts("FAIL 200000-point collinear stress"); return 1;
+  }
   delaunay::edges.clear();
-  puts("OK: 20000 brute cases, repeated calls, 50000-point grid");
+  puts("OK: 20000 brute cases, retained blocks, 50000-point grid, "
+       "200000-point collinear stress");
 }

@@ -26,10 +26,12 @@ struct Quad {
   Quad* prev() { return rot->o->rot; }
   Quad* next() { return r()->prev(); }
 };
-deque<array<Quad, 4>> edges; // End insertions preserve pointers.
+deque<vector<array<Quad, 4>>> edges; // Stable reserved blocks.
 Quad* MakeEdge(Point s, Point t) {
-  edges.push_back({Quad(s), Quad(kA), Quad(t), Quad(kA)});
-  auto &q = edges.back();
+  if (edges.empty() || edges.back().size() == 1024)
+    edges.emplace_back().reserve(1024);
+  edges.back().push_back({Quad(s), Quad(kA), Quad(t), Quad(kA)});
+  auto &q = edges.back().back();
   for (int i = 0; i < 4; ++i)
     q[i].o = &q[-i & 3], q[i].rot = &q[(i + 1) & 3];
   return &q[0];
@@ -77,10 +79,14 @@ pair<Quad*, Quad*> Dfs(const vector<Point>& s, int l, int r) {
   }
   return {ra, rb}; }
 vector<array<Point, 3>> Triangulate(vector<Point> pts) {
-  sort(ALL(pts));
   if (SZ(pts) < 3) return {};
-  size_t start = edges.size(); Quad* e = Dfs(pts, 0, SZ(pts)).first;
-  vector<Quad*> q = {e};
+  if (all_of(pts.begin() + 2, pts.end(), [&](Point p) {
+    return ((pts[1] - pts[0]) ^ (p - pts[0])) == 0; })) return {};
+  sort(ALL(pts));
+  size_t start = edges.size(), used = start ? edges.back().size() : 0;
+  Quad* e = Dfs(pts, 0, SZ(pts)).first;
+  vector<Quad*> q = {e}; q.reserve(6 * pts.size());
+  pts.reserve(6 * pts.size());
   while (((e->F() - e->o->F()) ^ (e->p - e->o->F())) < 0) e = e->o;
   auto Add = [&]() { Quad* c = e;
     do c->mark = 1, pts.pb(c->p), q.pb(c->r()), c = c->next();
@@ -90,5 +96,6 @@ vector<array<Point, 3>> Triangulate(vector<Point> pts) {
   vector<array<Point, 3>> res(SZ(pts) / 3);
   for (int i = 0; i < SZ(pts); ++i) res[i / 3][i % 3] = pts[i];
   while (edges.size() > start) edges.pop_back();
+  while (start && edges.back().size() > used) edges.back().pop_back();
   return res; }
 }  // namespace delaunay
