@@ -14,7 +14,33 @@ void check(bool condition, const string &message) {
   if (!condition) fail(message);
 }
 
+template<size_t Width> void word_edges() {
+  mt19937 rng(1704 + Width);
+  bitset<Width> bits; vector<bool> want(Width);
+  for (int step = 0; step < 500; ++step) {
+    if constexpr (Width) {
+      size_t at = rng() % Width;
+      bits.flip(at); want[at] = !want[at];
+    }
+    size_t shift = step % 17 ? rng() % (Width + 2) : SIZE_MAX;
+    bool left = rng() & 1; vector<bool> next(Width);
+    for (size_t i = 0; i < Width; ++i)
+      if (left ? shift <= i : shift < Width - i)
+        next[i] = want[left ? i - shift : i + shift];
+    bits = left ? bits << shift : bits >> shift;
+    want = next;
+    for (size_t i = 0; i < Width; ++i)
+      check(bits[i] == want[i], "random word-boundary shift/flip");
+    check(bits.count() == count(want.begin(), want.end(), true),
+          "word-boundary popcount");
+    check(bits == bitset<Width>(bits.to_string()), "string round trip");
+  }
+}
+
 int main() {
+  word_edges<0>(); word_edges<1>(); word_edges<63>(); word_edges<64>();
+  word_edges<65>(); word_edges<127>(); word_edges<128>();
+  word_edges<129>();
   for (unsigned mask = 0; mask < 256; ++mask) {
     bitset<8> b(mask);
     check(b.to_ulong() == mask, "constructor/to_ulong");
@@ -69,7 +95,8 @@ int main() {
   bitset<0> empty;
   check(empty.none() && !empty.any() && empty.all(), "zero-width bitset");
   empty.set().flip().reset();
-  check(empty.count() == 0 && empty.to_string().empty(), "empty mutations");
+  check(empty.count() == 0 && empty.to_string().empty(),
+        "empty mutations");
   bitset<65> wide;
   wide.set(0).set(64);
   check(wide.count() == 2 && wide[0] && wide[64], "wide endpoints");
@@ -85,5 +112,6 @@ int main() {
   check(hash<bitset<65>>{}(copy) == hash<bitset<65>>{}(wide),
         "equal bitsets hash equally");
 
-  cerr << "PASS bitset: 256 masks, bitwise/shift/reset/set/flip, widths 0/8/65\n";
+  cerr << "PASS bitset: masks, bitwise/shift/mutations; "
+          "widths 0/1/8/63/64/65/127/128/129\n";
 }

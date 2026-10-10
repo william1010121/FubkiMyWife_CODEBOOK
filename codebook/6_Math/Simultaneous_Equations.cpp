@@ -1,4 +1,4 @@
-struct matrix { // Fraction.cpp preconditions; 0<=n,m<=MAXN.
+struct matrix { // All Fraction.cpp intermediates valid; 0<=n,m<=MAXN.
   int n, m;
   fraction M[MAXN][MAXN + 1], sol[MAXN];
   int solve() { // -1: inconsistent; else rank, free variables=0.

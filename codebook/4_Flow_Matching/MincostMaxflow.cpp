@@ -8,7 +8,7 @@ struct MinCostMaxFlow {
   ll dis[N], up[N], pot[N];
   bool BellmanFord() {
     fill_n(dis, n, INF), fill_n(inq, n, 0); queue<int> q;
-    dis[s] = 0, up[s] = INF, past[s] = nullptr, q.push(s), inq[s] = 1;
+    dis[s] = 0, up[s]=LLONG_MAX, past[s] = nullptr, q.push(s), inq[s] = 1;
     while (!q.empty()) {
       int u = q.front(); q.pop(), inq[u] = 0;
       for (auto &e : G[u])
@@ -22,7 +22,7 @@ struct MinCostMaxFlow {
   bool Dijkstra() {
     fill_n(dis, n, INF); using State = pair<ll, int>;
     priority_queue<State, vector<State>, greater<State>> q;
-    dis[s] = 0, up[s] = INF, past[s] = nullptr, q.push({0, s});
+    dis[s] = 0, up[s] = LLONG_MAX, past[s] = nullptr, q.push({0, s});
     while (!q.empty()) {
       auto [d, u] = q.top(); q.pop();
       if (d != dis[u]) continue;

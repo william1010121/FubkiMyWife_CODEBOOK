@@ -40,7 +40,7 @@ struct Matching { // Undirected, loopless; 0-base; unmatched = n
   Matching(int _n) : n(_n), fa(n + 1), s(n + 1),
     vis(n + 1), pre(n + 1, n), match(n + 1, n), G(n) {}
   void add_edge(int u, int v) { G[u].pb(v), G[v].pb(u); }
-  int solve() { // Preserve matching; return number of added pairs.
+  int solve() { // Start with a valid matching; return added pairs.
     int ans = 0;
     for (int x = 0; x < n; ++x) if (match[x] == n) ans += Bfs(x);
     return ans;

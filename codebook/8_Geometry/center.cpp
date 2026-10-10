@@ -1,5 +1,5 @@
-// Nonzero-area simple polygon, CW/CCW; O(p.size()). n is unused.
-Point BaryCenter(vector<Point> &p, int n) {
+// Simple nonzero-area polygon; |p| fits int; reliable doubles; O(|p|).
+Point BaryCenter(vector<Point> &p, int n) { // n is unused; CW/CCW.
   Point res(0, 0), u = p[1] - p[0]; double s = 0;
   for (int i = 2; i < (int)p.size(); ++i) {
     Point v = p[i] - p[0]; double t = Cross(u, v);

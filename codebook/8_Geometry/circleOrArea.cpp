@@ -14,9 +14,9 @@ void AppendCoverSegment(C &a, C &b, vector<pair<double, double>> &res) {
   }
 }
 vector<pair<double, double>> CoverSegment(C &a, C &b) {
-  vector<pair<double, double>> v; AppendCoverSegment(a, b, v); return v;
-}
-// r >= 0; no eps-coincident circles (d, |dr| <= eps); O(n^2 log n).
+  vector<pair<double, double>> v; AppendCoverSegment(a, b, v); return v; }
+// r>=0; no eps-coincident pairs (d, |dr| <= eps); O(n^2 log n).
+// Floating intermediates finite; geometry resolved to required tolerance.
 double CircleUnionArea(vector<C> c) {
   if (!c.empty()) { P o = c[0].c; for (auto &v : c) v.c = v.c - o; }
   sort(c.begin(), c.end(), [](C a, C b) { return a.r > b.r; });

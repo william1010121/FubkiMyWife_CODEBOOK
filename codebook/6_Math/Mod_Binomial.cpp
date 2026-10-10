@@ -7,7 +7,7 @@ struct ModBinomial { ModArithmetic mod; vector<ll> fac, ifac;
     ifac[N] = mod.pow(fac[N], p - 2);
     for (int i = N; i; --i) ifac[i - 1] = (__int128)ifac[i]*i%p;
   }
-  ll C(int n, int k) const {
+  ll C(int n, int k) const { // n<0 or k outside [0,n]: 0; else n<=N.
     if (n < 0 || k < 0 || k > n) return 0;
     assert(n < (int)fac.size());
     if (mod.m < (1LL << 31)) return fac[n]*ifac[k]%mod.m*ifac[n-k]%mod.m;

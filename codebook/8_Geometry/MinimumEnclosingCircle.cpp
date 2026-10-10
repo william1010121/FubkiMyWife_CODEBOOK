@@ -7,7 +7,7 @@ pt center(const pt &a, const pt &b, const pt &c) { // cross != 0.
 }
 // pt()=origin; no overflow/underflow. Recenter ill-scaled data.
 // Squared-distance roundoff must be below relative slack 1e-12.
-// Shuffles p; expected O(n), worst O(n^3).
+// |p| fits int; shuffles p; expected O(n), worst O(n^3).
 circle min_enclosing(vector<pt> &p) {
   static mt19937 rng(712367821);
   shuffle(ALL(p), rng);

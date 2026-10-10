@@ -1,5 +1,5 @@
-// Common block>0; 0<=L<=R<n; T=#applied updates<=total #updates.
-// add_time/sub_time apply/undo update t (1-based) in current [L,R].
+// Common block>0; 0<=L<=R<n; 0<=T<=U (#updates); C++20.
+// add_time/sub_time: apply/undo t (1-based); [L,R] may be empty.
 // Start empty at T=0; add/sub positions; answer(q) reads the state.
 // Block ~ N^(2/3), O(N^(5/3)) for O(N) queries/updates.
 struct Query {

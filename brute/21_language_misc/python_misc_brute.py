@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-from decimal import Decimal, ROUND_CEILING, getcontext, localcontext
+from decimal import Decimal, FloatOperation, ROUND_CEILING
+from decimal import getcontext, localcontext
 from fractions import Fraction
 import importlib.util
 import subprocess
@@ -188,6 +189,27 @@ def main() -> None:
     _, _, shuffled = misc.random_examples(Random(140006), source)
     shuffled.clear()
     expect(source == [1, 1, 2], "shuffle result has no source alias")
+    # Extremal finite floats: integer-ratio oracle, no rounded float product.
+    # The helper's local context also isolates a caller's float trap.
+    for a, b in ((sys.float_info.max, sys.float_info.min),
+                 (float.fromhex("0x0.0000000000001p-1022"), -0.5),
+                 (sys.float_info.max, sys.float_info.max)):
+        x, dx = a.as_integer_ratio()
+        y, dy = b.as_integer_ratio()
+        bits = (dx * dy).bit_length() - 1
+        want = Decimal(f"{x*y*5**bits}e{-bits}")
+        with localcontext() as ctx:
+            ctx.traps[FloatOperation] = True
+            before = ctx.copy()
+            expect(misc.decimal_multiply(a, b) == want,
+                   "extremal finite float exact product")
+            expect(ctx.flags == before.flags and ctx.traps == before.traps,
+                   "caller float trap and flags preserved")
+    # Numeric Fraction/Decimal callers retain exact rational semantics.
+    expect(misc.limit_fraction(Decimal("-0.125"), 8) == Fraction(-1, 8),
+           "exact decimal fraction input")
+    expect(misc.random_examples(Random(17), range(-1, 0))
+           == (-1, [-1, -1], [-1]), "indexable range choices")
     print("python misc PASS")
 
 

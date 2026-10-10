@@ -8,7 +8,8 @@ import tempfile
 ROOT = Path(__file__).resolve().parents[2]
 text = (ROOT / "codebook/1_Basic/vimrc.cpp").read_text()
 lines = text.splitlines()
-first = next(i for i, line in enumerate(lines) if line.startswith("ca Hash"))
+first = next(i for i, line in enumerate(lines)
+             if line.startswith("ca Hash"))
 
 with tempfile.TemporaryDirectory() as directory:
     temp = Path(directory)
@@ -19,14 +20,15 @@ with tempfile.TemporaryDirectory() as directory:
                                     lines[first + 2*i:first + 2*i + 2]))
         result = subprocess.run(
             ["vim", "-Nu", str(config), "-n", "-i", "NONE", "-es",
-             "-c", f"call writefile([execute('cabbrev Hash')], '{output}')",
+             "-c", f"call writefile([execute('cabbrev Hash')], "
+                   f"'{output}')",
              "-c", "qa!"], capture_output=True, text=True, timeout=10)
         assert result.returncode == 0, result.stdout + result.stderr
         mapping = output.read_text()
         assert "tr -d '[:space:]' | md5sum | cut -c-6" in mapping
         assert ["cpp -dD -P -fpreprocessed", "cpp -dD -P | sed",
                 "g++ -E - | sed"][i] in mapping
-        # Execute the actual abbreviation in Vim, including explicit ranges.
+        # Execute the actual abbreviation, including explicit ranges.
         # Errors outside the selection must not reach the preprocessor.
         samples = [
             ("", "1,$", ""),
@@ -41,6 +43,10 @@ with tempfile.TemporaryDirectory() as directory:
              "1,$", "intx=0;inty=1;"),
             ('const char *s="a\\\"|b\\\\c";\n', "1,$",
              'constchar*s="a\\\"|b\\\\c";'),
+            ('const char *s=R"tag(/* //| */)tag";\n', "1,$",
+             'constchar*s=R"tag(/*//|*/)tag";'),
+            ("#error outside\n/* split\ncomment */ int x=0;\n"
+             "int y=1;\n#error outside\n", "2,4", "intx=0;inty=1;"),
             ("#error outside\nint f(){return 1;}\n#error outside\n",
              "2,2", "intf(){return1;}"),
         ]
@@ -56,4 +62,4 @@ with tempfile.TemporaryDirectory() as directory:
             assert result.returncode == 0, result.stdout + result.stderr
             assert result.stdout.strip() == digest, (i, source, result)
             assert not result.stderr, result.stderr
-print("PASS vimrc: load and execute 3 Hash pipelines on 8 edge selections")
+print("PASS vimrc: execute 3 Hash pipelines on 10 edge selections")

@@ -1,5 +1,5 @@
-// block>0; valid 0-based 2n entry/exit tour and LCA; 2n fits int.
-// flip toggles vertices; start empty; block~sqrt(n): O(n sqrt(n)), q~n.
+// Common block>0; valid 0-based 2n entry/exit tour/LCA; 2n fits int.
+// flip toggles; start empty; block~sqrt(n), q=O(n): O(n sqrt(n)).
 struct Query {
   int L, R, LBid, lca, id;
   Query(int u, int v, int block, const vector<int> &in,

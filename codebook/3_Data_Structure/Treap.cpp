@@ -1,5 +1,5 @@
 // Expected O(log n); int sizes fit, total <= RAND_MAX; stack for height.
-// Merge disjoint trees with all keys in a <= all keys in b.
+// Unique new'ed nodes; merge disjoint trees with a keys <= b keys.
 // Split outputs distinct, may alias root; interval needs
 // 1 <= l <= size+1, 0 <= r <= size-l+1 (1-base start l, length r).
 // split: <= key | > key; split2: first k nodes, 0 <= k <= size.

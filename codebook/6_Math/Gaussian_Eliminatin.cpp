@@ -1,5 +1,5 @@
 // Rectangular, 0<=n<=w<=INT_MAX; first n pivot columns. O(n^2*w).
-// Max-abs pivot, epsilon 1e-12; finite input/intermediates required.
+// Max-abs pivot; eps=1e-12, scale-sensitive; finite arithmetic.
 void GAS(vector<vector<double>> &vc) {
   int len = vc.size(), row = 0;
   for (int col = 0; col < len && row < len; ++col) {

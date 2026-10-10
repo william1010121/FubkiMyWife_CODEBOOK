@@ -1,5 +1,5 @@
 struct dominator_tree { // 1-base, O((V+E) log V); reachable only
-  // 1<=n<N; root/edges in [1,n]; enough DFS/eval stack.
+  // init before edges; 1<=n<N; root/edges in [1,n]; enough DFS/eval stack.
   vector<int> G[N], rG[N], tree[N]; // tree: vertices; idom: DFS IDs
   int n, pa[N], dfn[N], id[N], Time, semi[N], idom[N], best[N];
   void init(int _n) {
