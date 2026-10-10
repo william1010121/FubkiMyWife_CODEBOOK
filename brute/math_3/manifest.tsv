@@ -17,7 +17,7 @@ SchreierSims.cpp	harness_schreier_sims.cpp	finite permutation-group closure orac
 Simplex_Algorithm.cpp	harness_simplex.cpp	known LP optimum and status oracle	small double LPs; return -1 means infeasible or unbounded	https://open.kattis.com/problems/linearprogramming
 Simultaneous_Equations.cpp	harness_simultaneous.cpp	long-double rank/status cross-check plus exact pivot case	fraction storage must not overflow ll	https://judge.yosupo.jp/problem/system_of_linear_equations
 ax+by=gcd.cpp	harness_floor_mod.cpp	Bezout identity oracle	nonnegative small a,b; zero edge included	https://cp-algorithms.com/algebra/extended-euclid-algorithm.html
-ax=b%n.cpp	harness_floor_mod.cpp	exhaustive residues oracle	0<=a<m and 0<=b<m in local range	https://cp-algorithms.com/algebra/linear-diophantine-equation.html
+Linear_Congruence.cpp	harness_floor_mod.cpp	exhaustive residues oracle	0<=a<m and 0<=b<m in local range	https://cp-algorithms.com/algebra/linear-diophantine-equation.html
 cantor_expansion.cpp	harness_combinatorics.cpp	all-permutation encode/decode oracle	n<=7; factorial table fixed to MAXN bounds	https://cp-algorithms.com/combinatorics/factorial-modulo.html
 chineseRemainder.cpp	harness_floor_mod.cpp	exhaustive least nonnegative CRT oracle	small moduli; lcm avoids ll overflow	https://cp-algorithms.com/algebra/chinese-remainder-theorem.html
 fac_no_p.cpp	harness_combinatorics.cpp	direct n! with p factors removed	p prime; pk=p^3 and n<=100	https://cp-algorithms.com/algebra/factorial-modulo.html

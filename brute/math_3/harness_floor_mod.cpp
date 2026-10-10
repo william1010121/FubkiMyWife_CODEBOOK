@@ -1,7 +1,7 @@
 #include "common.hpp"
 namespace tested {
 #include "../../codebook/6_Math/ax+by=gcd.cpp"
-#include "../../codebook/6_Math/ax=b%n.cpp"
+#include "../../codebook/6_Math/Linear_Congruence.cpp"
 #include "../../codebook/6_Math/chineseRemainder.cpp"
 #include "../../codebook/6_Math/floor_ceil.cpp"
 #include "../../codebook/6_Math/floor_sum.cpp"

@@ -1,4 +1,7 @@
-// ---------- 1D ----------
+// A: Seg2D -- rectangle ADD + rectangle SUM, initially all zero.
+// 0-based, half-open rectangles [xl,xr) x [yl,yr).
+// O(log n log m) per operation. int sums/products may overflow.
+// ---------- 1D sum tree ----------
 struct Seg {
     struct Node {
         int sum = 0, lazy = 0;
@@ -49,7 +52,7 @@ struct Seg {
         return query(root, 0, n, l, r);
     }
 };
-// ---------- 2D ----------
+// ---------- 2D sum tree ----------
 struct Seg2D {
     struct Node {
         Seg sum, lazy;
@@ -64,8 +67,10 @@ struct Seg2D {
         if (xr <= l || r <= xl) return;
         if (!idx) idx = new Node(m);
         int rows = min(r, xr) - max(l, xl);
+        // sum includes all updates intersecting this x interval.
         idx->sum.update(yl, yr, v * rows);
         if (xl <= l && r <= xr) {
+            // lazy records updates covering this entire x interval.
             idx->lazy.update(yl, yr, v);
             return;
         }
@@ -80,6 +85,7 @@ struct Seg2D {
             return idx->sum.query(yl, yr);
         int rows = min(r, xr) - max(l, xl);
         int md = (l + r) / 2;
+        // Children do not include this node's lazy; add it separately.
         return idx->lazy.query(yl, yr) * rows
              + query(idx->l, l, md, xl, xr, yl, yr)
              + query(idx->r, md, r, xl, xr, yl, yr);

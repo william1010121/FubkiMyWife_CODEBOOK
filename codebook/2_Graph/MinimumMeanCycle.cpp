@@ -6,15 +6,18 @@ struct MinimumMeanCycle {
       b.second < (__int128)b.first * a.second;
   }
   pll solve() {
+    vector<tuple<int, int, ll>> edges;
+    for (int u = 0; u < n; ++u)
+      for (int v = 0; v < n; ++v)
+        if (road[u][v] < INF) edges.emplace_back(u, v, road[u][v]);
     fill_n(dp[0], n, 0);
     // every vertex may be the start
     for (int k = 1; k <= n; ++k) {
       fill_n(dp[k], n, INF);
-      for (int v = 0; v < n;
-        ++v) for (int u = 0; u < n; ++u)
-        if (dp[k - 1][u] < INF && road[u][v] < INF)
+      for (auto [u, v, w] : edges)
+        if (dp[k - 1][u] < INF)
           dp[k][v] = min(dp[k][v],
-            dp[k - 1][u] + road[u][v]);
+            dp[k - 1][u] + w);
     }
     bool found = false; pll ans;
     for (int v = 0; v < n; ++v) if (dp[n][v] < INF) {
