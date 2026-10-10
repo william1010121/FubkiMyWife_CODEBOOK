@@ -1,11 +1,12 @@
-struct Bipartite_Matching { // 0-base, 0 <= l,r <= N; O((E+V)sqrt(V))
-  // Valid endpoints; DFS stack must fit an alternating path.
+struct Bipartite_Matching { // 0-base; 0<=l,r<=N
+  // O((E+V)sqrt(V)); valid endpoints; DFS stack for path.
   int mp[N], mq[N], dis[N + 1], cur[N], l, r;
   vector<int> G[N + 1];
   bool dfs(int u) {
     for (int &i = cur[u]; i < SZ(G[u]); ++i) {
       int e = G[u][i];
-      if (dis[mq[e]] == dis[u] + 1 && (mq[e] == l || dfs(mq[e])))
+      if (dis[mq[e]] == dis[u] + 1 &&
+          (mq[e] == l || dfs(mq[e])))
         return mp[mq[e] = u] = e, 1;
     } return dis[u] = -1, 0;
   }
@@ -28,7 +29,6 @@ struct Bipartite_Matching { // 0-base, 0 <= l,r <= N; O((E+V)sqrt(V))
     } return res;
   }
   void add_edge(int s, int t) { G[s].pb(t); }
-  void init(int _l, int _r) {
-    l = _l, r = _r; for (int i = 0; i <= l; ++i) G[i].clear();
-  }
+  void init(int _l, int _r) { l = _l, r = _r;
+    for (int i = 0; i <= l; ++i) G[i].clear(); }
 };

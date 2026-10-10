@@ -1,3 +1,3 @@
-static Heavy_light_Decomposition hld; hld.init(n); hld.add_edge(a, b);
-hld.val[u] = w; hld.build(); // 1-base
+static Heavy_light_Decomposition hld; hld.init(n);
+hld.add_edge(a, b); hld.val[u] = w; hld.build(); // 1-base
 hld.query(a, b); // O(log^2 n)

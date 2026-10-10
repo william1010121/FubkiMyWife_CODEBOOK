@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#define ALL(v) v.begin(), v.end()
 using namespace std;
 struct Point { double x, y; };
 #include "../../codebook/8_Geometry/minDistOfTwoConvex.cpp"

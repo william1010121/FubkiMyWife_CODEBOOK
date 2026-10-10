@@ -1,4 +1,4 @@
-struct SCC { // 0-base; O(V+E), ids in reverse topological order
+struct SCC { // 0-base; O(V+E); reverse topological IDs
   int n, dft, nscc;
   vector<int> low, dfn, bln, instack, stk;
   vector<vector<int>> G;
@@ -16,6 +16,7 @@ struct SCC { // 0-base; O(V+E), ids in reverse topological order
   SCC(int _n): n(_n), dft(), nscc(), low(n), // n>=0
     dfn(n), bln(n), instack(n), G(n) {}
   void add_edge(int u, int v) { G[u].pb(v); }
-  void solve() { // add all edges first; IDs [0,n); enough DFS stack
+  // Add edges first; IDs [0,n); enough DFS stack.
+  void solve() {
     for (int i = 0; i < n; ++i) if (!dfn[i]) dfs(i); }
 }; // scc_id(i): bln[i]

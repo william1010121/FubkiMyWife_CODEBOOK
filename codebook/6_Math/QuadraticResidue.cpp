@@ -22,7 +22,7 @@ int QuadraticResidue(int a, int p) {
   while (Jacobi(d, p) != -1);
   auto mul = [&](pair<ll, ll> x, pair<ll, ll> y) {
     auto [u, v] = x; auto [s, t] = y;
-    return pair<ll, ll>{(u*s + d*(v*t%p))%p, (u*t + v*s)%p}; };
+    return pair{(u*s + d*(v*t%p))%p, (u*t + v*s)%p}; };
   pair<ll, ll> f{b, 1}, g{1, 0}; // x + y*sqrt(d).
   for (int e = (1LL + p) >> 1; e; e >>= 1, f = mul(f, f))
     if (e & 1) g = mul(g, f);

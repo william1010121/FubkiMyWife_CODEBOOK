@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#define ALL(v) v.begin(), v.end()
 using namespace std;
 const double eps=1e-9, pi=acos(-1.);
 int sign(double x) { return fabs(x)<eps?0:(x>0?1:-1); }

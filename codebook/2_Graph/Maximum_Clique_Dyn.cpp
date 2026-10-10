@@ -1,6 +1,7 @@
-struct MaxClique { // 0-base, 0 <= n <= N; N > 0, simple undirected
-  // GCC/libstdc++ bitset search; exponential, fast for n <= 100.
-  bitset<N> G[N], cs[N + 2]; vector<int> next[N + 1], color[N + 1];
+struct MaxClique { // 0-base; 0<=n<=N, N>0; simple graph
+  // Undirected; libstdc++ bitset search; exponential.
+  bitset<N> G[N], cs[N + 2];
+  vector<int> next[N + 1], color[N + 1];
   int ans, sol[N], q, cur[N], d[N], n;
   void init(int _n) { n = _n;
     for (int i = 0; i < n; ++i) G[i].reset(); }
@@ -8,9 +9,10 @@ struct MaxClique { // 0-base, 0 <= n <= N; N > 0, simple undirected
   void pre_dfs(vector<int> &r, int l, bitset<N> mask) {
     if (l < 4) {
       for (int i : r) d[i] = (G[i] & mask).count();
-      sort(ALL(r), [&](int x, int y) { return d[x] > d[y]; });
+      sort(ALL(r), [&](int x, int y) {
+        return d[x] > d[y]; });
     }
-    auto &c = color[q]; c.assign(SZ(r), 0); // scratch by depth
+    auto &c = color[q]; c.assign(SZ(r), 0); // by depth
     int lft = max(ans - q + 1, 1), rgt = 1, tp = 0;
     cs[1].reset(), cs[2].reset();
     for (int p : r) {
@@ -21,11 +23,13 @@ struct MaxClique { // 0-base, 0 <= n <= N; N > 0, simple undirected
       if (k < lft) r[tp++] = p;
     }
     for (int k = lft; k <= rgt; ++k)
-      for (int p = cs[k]._Find_first(); p < N; p = cs[k]._Find_next(p))
+      for (int p = cs[k]._Find_first(); p < N;
+           p = cs[k]._Find_next(p))
         r[tp] = p, c[tp++] = k;
     dfs(r, c, l + 1, mask);
   }
-  void dfs(vector<int> &r, vector<int> &c, int l, bitset<N> mask) {
+  void dfs(vector<int> &r, vector<int> &c, int l,
+           bitset<N> mask) {
     while (!r.empty()) {
       int p = r.back(); r.pop_back(), mask[p] = 0;
       if (q + c.back() <= ans) return;

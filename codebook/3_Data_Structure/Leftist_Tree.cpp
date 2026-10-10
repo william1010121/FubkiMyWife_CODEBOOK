@@ -1,7 +1,6 @@
-struct node { // max-heap; merge/pop O(log n), pop needs nonempty heap
-  // Disjoint, uniquely owned new'ed nodes; sum intermediates fit ll.
-  ll v, data, sz, sum;
-  node *l, *r;
+struct node { // max-heap; merge/pop O(log n); pop nonempty
+  // Disjoint new nodes, unique ownership; sum ops fit ll.
+  ll v, data, sz, sum; node *l, *r;
   node(ll k) : v(0), data(k), sz(1), sum(k), l(0), r(0) {}
 };
 ll sz(node *p) { return p ? p->sz : 0; }
@@ -15,4 +14,4 @@ node *merge(node *a, node *b) {
   a->v = V(a->r) + 1, a->sz = sz(a->l) + sz(a->r) + 1;
   a->sum = sum(a->l) + sum(a->r) + a->data; return a;
 }
-void pop(node *&o) { delete exchange(o, merge(o->l, o->r)); }
+void pop(node *&o) { delete exchange(o,merge(o->l,o->r)); }

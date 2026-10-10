@@ -1,5 +1,5 @@
-struct WeightGraph { // Undirected, loopless; 1-base; O(n^3)
-  // n >= 0; w>0 edges only; all int arithmetic (incl. 2*w) must fit.
+struct WeightGraph { // Loopless undirected; 1-base; O(n^3)
+  // n>=0; w>0 only; all int arithmetic (incl. 2*w) fits.
   struct edge { int u, v, w; }; int n, nx;
   vector<int> lab, slk, match, st, pa, S, vis;
   vector<vector<edge>> g;
@@ -8,10 +8,12 @@ struct WeightGraph { // Undirected, loopless; 1-base; O(n^3)
     slk(nx + 1), g(nx + 1, vector<edge>(nx + 1)),
     flo(nx + 1), flo_from(nx + 1, vector(n + 1, 0)) {
     match = st = pa = S = vis = slk;
-    for (int u = 1; u <= n; ++u) for (int v = 1; v <= n; ++v)
-      g[u][v] = {u, v, 0};
+    for (int u = 1; u <= n; ++u)
+      for (int v = 1; v <= n; ++v)
+        g[u][v] = {u, v, 0};
   }
-  int E(edge e) { return lab[e.u] + lab[e.v] - g[e.u][e.v].w * 2; }
+  int E(edge e) {
+    return lab[e.u] + lab[e.v] - g[e.u][e.v].w * 2; }
   void update_slk(int u, int x, int &s) {
     if (!s || E(g[u][x]) < E(g[s][x])) s = u; }
   void set_slk(int x) {
@@ -38,7 +40,8 @@ struct WeightGraph { // Undirected, loopless; 1-base; O(n^3)
     if (u <= n) return;
     int xr = flo_from[u][g[u][v].u];
     auto &f = flo[u], z = split_flo(f, xr);
-    for (int i = 0; i < SZ(z); ++i) set_match(z[i], z[i ^ 1]);
+    for (int i = 0; i < SZ(z); ++i)
+      set_match(z[i], z[i ^ 1]);
     set_match(xr, v); f.insert(f.end(), ALL(z));
   }
   void augment(int u, int v) {
@@ -64,7 +67,8 @@ struct WeightGraph { // Undirected, loopless; 1-base; O(n^3)
       for (int x = t, y; x != o; x = st[pa[y]])
         f.pb(x), f.pb(y = st[match[x]]), q_push(y);
     } set_st(b, b);
-    for (int x = 1; x <= nx; ++x) g[b][x].w = g[x][b].w = 0;
+    for (int x = 1; x <= nx; ++x)
+      g[b][x].w = g[x][b].w = 0;
     fill(ALL(flo_from[b]), 0);
     for (int xs : flo[b]) {
       for (int x = 1; x <= nx; ++x)
@@ -97,8 +101,9 @@ struct WeightGraph { // Undirected, loopless; 1-base; O(n^3)
   }
   bool matching() {
     fill(ALL(S), -1), fill(ALL(slk), 0); q = {};
-    for (int x = 1; x <= nx; ++x) if (st[x] == x && !match[x])
-      pa[x] = S[x] = 0, q_push(x);
+    for (int x = 1; x <= nx; ++x)
+      if (st[x] == x && !match[x])
+        pa[x] = S[x] = 0, q_push(x);
     if (q.empty()) return false;
     for (;;) {
       while (!q.empty()) {
@@ -106,12 +111,14 @@ struct WeightGraph { // Undirected, loopless; 1-base; O(n^3)
         if (S[st[u]] == 1) continue;
         for (int v = 1; v <= n; ++v)
           if (g[u][v].w > 0 && st[u] != st[v]) {
-            if (E(g[u][v])) update_slk(u, st[v], slk[st[v]]);
+            if (E(g[u][v]))
+              update_slk(u, st[v], slk[st[v]]);
             else if (on_found_edge(g[u][v])) return true;
           }
       } int d = 0x3f3f3f3f;
-      for (int b = n + 1; b <= nx; ++b) if (st[b] == b && S[b] == 1)
-        d = min(d, lab[b] / 2);
+      for (int b = n + 1; b <= nx; ++b)
+        if (st[b] == b && S[b] == 1)
+          d = min(d, lab[b] / 2);
       for (int x = 1; x <= nx; ++x)
         if (int s = slk[x]; st[x] == x && s && S[x] <= 0)
           d = min(d, E(g[s][x]) / (S[x] + 2));
@@ -121,30 +128,37 @@ struct WeightGraph { // Undirected, loopless; 1-base; O(n^3)
           if (lab[u] <= d) return false;
           lab[u] -= d;
         }
-      for (int b = n + 1; b <= nx; ++b) if (st[b] == b && S[b] >= 0)
-        lab[b] += d * (2 - 4 * S[b]);
-      for (int x = 1; x <= nx; ++x)
-        if (int s = slk[x]; st[x] == x && s && st[s] != x &&
-          E(g[s][x]) == 0 && on_found_edge(g[s][x])) return true;
       for (int b = n + 1; b <= nx; ++b)
-        if (st[b] == b && S[b] == 1 && lab[b] == 0) expand_blossom(b);
+        if (st[b] == b && S[b] >= 0)
+          lab[b] += d * (2 - 4 * S[b]);
+      for (int x = 1; x <= nx; ++x)
+        if (int s = slk[x]; st[x] == x && s && st[s] != x
+            && E(g[s][x]) == 0 && on_found_edge(g[s][x]))
+          return true;
+      for (int b = n + 1; b <= nx; ++b)
+        if (st[b] == b && S[b] == 1 && lab[b] == 0)
+          expand_blossom(b);
     }
   }
-  pair<ll, int> solve() { // Rebuild; ties needn't maximize pair count.
-    fill(ALL(match), 0), fill(ALL(st), 0); // reset blossoms
-    for (int u = 0; u <= n; ++u) st[u] = flo_from[u][u] = u;
+  pair<ll, int> solve() { // Rebuild; ties: any pair count.
+    fill(ALL(match), 0), fill(ALL(st), 0); // Reset.
+    for (int u = 0; u <= n; ++u)
+      st[u] = flo_from[u][u] = u;
     int w_max = 0, n_matches = 0; ll tot_weight = 0;
-    for (int u = 1; u <= n; ++u) for (int v = 1; v <= u; ++v)
-      w_max = max(w_max, g[u][v].w);
+    for (int u = 1; u <= n; ++u)
+      for (int v = 1; v <= u; ++v)
+        w_max = max(w_max, g[u][v].w);
     fill(ALL(lab), w_max); // Tight seeds; n/2 are optimal.
     for (int u = 1; u <= n; ++u) if (w_max && !match[u])
       for (int v = u + 1; v <= n; ++v)
         if (!match[v] && g[u][v].w == w_max) {
           match[u] = v, match[v] = u, ++n_matches; break; }
     if (n_matches < n / 2) while (matching()) ++n_matches;
-    for (int u = 1; u <= n; ++u) if (match[u] && match[u] < u)
-      tot_weight += g[u][match[u]].w;
+    for (int u = 1; u <= n; ++u)
+      if (match[u] && match[u] < u)
+        tot_weight += g[u][match[u]].w;
     return {tot_weight, n_matches};
   }
-  void add_edge(int u, int v, int w) { g[u][v].w = g[v][u].w = w; }
+  void add_edge(int u, int v, int w) {
+    g[u][v].w = g[v][u].w = w; }
 };

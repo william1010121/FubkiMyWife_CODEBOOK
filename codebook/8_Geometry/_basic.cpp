@@ -1,7 +1,8 @@
-// unit(): nonzero vector; project/reflect/get_ratio: nonzero line.
-// Intersect(L,L): nonparallel lines; segment tests include endpoints.
+// unit: nonzero; project/reflect/get_ratio: nonzero line.
+// Intersect: nonparallel; segment tests include endpoints.
 bool same(double a, double b) { return abs(a - b) < eps; }
-struct P { // eps>0, compatible sign; finite arithmetic, reliable tests.
+// eps>0, compatible sign; finite, reliable arithmetic.
+struct P {
   double x, y;
   P() : x(0), y(0) {}
   P(double x, double y) : x(x), y(y) {}
@@ -9,12 +10,11 @@ struct P { // eps>0, compatible sign; finite arithmetic, reliable tests.
   P operator - (P b) const { return {x - b.x, y - b.y}; }
   P operator * (double b) const { return {x * b, y * b}; }
   P operator / (double b) const { return {x / b, y / b}; }
-  double operator * (P b) const { return x * b.x + y * b.y; }
-  double operator ^ (P b) const { return x * b.y - y * b.x; }
+  double operator*(P b) const { return x * b.x + y * b.y; }
+  double operator^(P b) const { return x * b.y - y * b.x; }
   double abs() const { return hypot(x, y); }
   P unit() const { return *this / abs(); }
-  P rot(double o) const {
-    double c = cos(o), s = sin(o);
+  P rot(double o) const { double c = cos(o), s = sin(o);
     return {c * x - s * y, s * x + c * y};
   }
   double angle() const { return atan2(y, x); }
@@ -44,7 +44,8 @@ bool SegmentIntersect(P p1, P p2, P p3, P p4) {
     sign((p1 - p3) ^ (p2 - p3)) *
       sign((p1 - p4) ^ (p2 - p4)) <= 0;
 }
-bool parallel(L x, L y) { return same(x.a * y.b, x.b * y.a); }
+bool parallel(L x, L y) {
+  return same(x.a * y.b, x.b * y.a); }
 P Intersect(L x, L y) {
   return P(-x.b * y.c + x.c * y.b, x.a * y.c - x.c * y.a)
     / (-x.a * y.b + x.b * y.a);

@@ -1,4 +1,4 @@
-// Sum floor((a*i+b)/m), 0<=i<n; n,a,b>=0,m>0; no ll overflow.
+// Sum floor((a*i+b)/m), 0<=i<n; n,a,b>=0,m>0; fit ll.
 ll floor_sum(ll n, ll m, ll a, ll b) {
   ll ans = 0;
   if (a >= m) ans += (n - 1) * n * (a / m) / 2, a %= m;

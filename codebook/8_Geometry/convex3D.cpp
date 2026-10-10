@@ -1,21 +1,22 @@
 double absvol(P a, P b, P c, P d) {
   return abs(((b-a)^(c-a))*(d-a))/6; }
-struct convex3D { // 0<=n<=1010, m=0; distinct p; finite arithmetic.
-  // O(n^2); permutes p; outward f[0..m); reliable eps; degenerate m=0.
+// 0<=n<=1010, m=0; distinct p; finite arithmetic.
+// O(n^2); permutes p; outward f[0..m); reliable eps.
+struct convex3D { // Degenerate input: m=0.
   static const int maxn=1010;
-  struct T{
-    int a,b,c; bool res; T(){}
-    T(int a,int b,int c,bool res=1):a(a),b(b),c(c),res(res){}
+  struct T{ int a,b,c; bool res; T(){}
+    T(int a,int b,int c,bool res=1):
+      a(a),b(b),c(c),res(res){}
   };
   int n,m; P p[maxn];
   T f[maxn*8]; int id[maxn][maxn];
-  bool on(T &t,P &q) { return ((p[t.c]-
-    p[t.b])^(p[t.a]-p[t.b]))*(q-p[t.a])>eps; }
+  bool on(T &t,P &q) {
+    return ((p[t.c]-p[t.b])^(p[t.a]-p[t.b]))
+      *(q-p[t.a])>eps; }
   void add(T t){
     id[t.a][t.b]=id[t.b][t.c]=id[t.c][t.a]=m; f[m++]=t; }
   void meow(int q,int a,int b){
-    int g=id[a][b];
-    if(f[g].res){
+    int g=id[a][b]; if(f[g].res){
       if(on(f[g],p[q]))dfs(q,g);
       else add(T(b,a,q));
     }
@@ -31,9 +32,11 @@ struct convex3D { // 0<=n<=1010, m=0; distinct p; finite arithmetic.
       } return false;
     };
     if(!choose(1,[&](P q){return abs(p[0]-q)>eps;}) ||
-       !choose(2,[&](P q){return abs((p[0]-q)^(p[1]-q))>eps;}) ||
+       !choose(2,[&](P q){
+         return abs((p[0]-q)^(p[1]-q))>eps;}) ||
        !choose(3,[&](P q){
-         return abs(((p[1]-p[0])^(p[2]-p[0]))*(q-p[0]))>eps;
+         return abs(((p[1]-p[0])^(p[2]-p[0]))
+           *(q-p[0]))>eps;
        }))return;
     for(int i=0;i<4;++i){
       T t((i+1)%4,(i+2)%4,(i+3)%4,1);
@@ -52,13 +55,14 @@ struct convex3D { // 0<=n<=1010, m=0; distinct p; finite arithmetic.
         return false;
     return true;
   }
-  int faces(){ // O(m); coplanarity at eps must be reliable.
+  int faces(){ // O(m); reliable coplanarity at eps.
     int r=0; vector<int> seen(m), q;
     for(int i=0;i<m;++i)if(!seen[i]){
       ++r; seen[i]=1; q={i};
       for(int j=0;j<(int)q.size();++j){ T t=f[q[j]];
-        for(int k : {id[t.b][t.a],id[t.c][t.b],id[t.a][t.c]})
-          if(!seen[k] && same(i,k))seen[k]=1,q.push_back(k);
+        for(int k:{id[t.b][t.a],id[t.c][t.b],id[t.a][t.c]})
+          if(!seen[k] && same(i,k))
+            seen[k]=1,q.push_back(k);
       }
     } return r;
   }

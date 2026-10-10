@@ -1,4 +1,4 @@
-struct ECC { // 0-base; O(V+E), edge ids support parallel edges
+struct ECC { // 0-base; O(V+E); edge ids handle multiedges
   int n, dft, ecnt, necc;
   vector<int> low, dfn, bln, is_bridge, stk;
   vector<vector<pii>> G;
@@ -9,14 +9,16 @@ struct ECC { // 0-base; O(V+E), edge ids support parallel edges
       else if (e != f) low[u] = min(low[u], dfn[v]);
     if (low[u] == dfn[u]) {
       if (f != -1) is_bridge[f] = 1;
-      for (; stk.back() != u; stk.pop_back()) bln[stk.back()] = necc;
+      for (; stk.back() != u; stk.pop_back())
+        bln[stk.back()] = necc;
       bln[u] = necc++, stk.pop_back();
     }
   }
-  ECC(int _n): n(_n), dft(), ecnt(), necc(), // n>=0; counts fit int
-    low(n), dfn(n), bln(n), G(n) {}
+  ECC(int _n): n(_n), dft(), ecnt(), necc(), // n>=0
+    low(n), dfn(n), bln(n), G(n) {} // Counts fit int.
   void add_edge(int u, int v) {
     G[u].pb({v, ecnt}), G[v].pb({u, ecnt++}); }
   void solve() { is_bridge.resize(ecnt);
     for (int i = 0; i < n; ++i) if (!dfn[i]) dfs(i, -1); }
-}; // bln[i]: ECC id; edges before solve; IDs [0,n); enough DFS stack
+}; // bln: ECC ids; vertices [0,n); DFS stack must fit
+// Add all edges before solve.

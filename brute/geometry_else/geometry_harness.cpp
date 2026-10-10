@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#define ALL(v) v.begin(), v.end()
 using namespace std;
 using ld = long double;
 const double eps = 1e-9, pi = acos(-1.0);
@@ -12,7 +13,6 @@ double sq(double x) { return x * x; }
 #include "../../codebook/8_Geometry/CircleTangent.cpp"
 #include "../../codebook/8_Geometry/circleOrArea.cpp"
 #define SZ(a) ((int)a.size())
-#define ALL(v) v.begin(), v.end()
 #define pb push_back
 #include "../../codebook/8_Geometry/convexHull.cpp"
 #undef pb

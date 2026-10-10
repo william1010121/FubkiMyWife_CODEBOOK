@@ -1,6 +1,7 @@
 " Shell: setxkbmap -option ctrl:nocaps
 " ~/.vimrc; :Hash or :2,5 Hash (choose one version below).
-se nu ai hls et ru ic is sc cul re=1 ts=4 sts=4 sw=4 ls=2 mouse=a
+se nu ai hls et ru ic is sc cul re=1
+se ts=4 sts=4 sw=4 ls=2 mouse=a
 syntax on|hi cursorline cterm=none ctermbg=89|set bg=dark
 inoremap {<CR> {<CR>}<Esc>ko<tab>
 ca Hash w !cpp -dD -P -fpreprocessed \|

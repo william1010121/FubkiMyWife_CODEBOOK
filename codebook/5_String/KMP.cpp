@@ -1,5 +1,5 @@
-// 1-base matches; empty t: all n+1 boundaries; |s|+1, |t| fit int.
-int n = s.size(), m = t.size(); vector<int> nxt(m); // O(n+m)
+// 1-base; empty t: n+1 matches; |s|+1, |t| fit int.
+int n=s.size(), m=t.size(); vector<int> nxt(m); // O(n+m)
 if (!m) for (int i = 0; i <= n; ++i) cout << i + 1 << '\n';
 else {
   for (int i = 1, j = 0; i < m; i++) {

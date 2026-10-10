@@ -1,13 +1,16 @@
-// Expected O(log n); int sizes fit, total <= RAND_MAX; stack for height.
-// Unique new'ed nodes; merge disjoint trees with a keys <= b keys.
-// Split outputs distinct, may alias root; interval needs
-// 1 <= l <= size+1, 0 <= r <= size-l+1 (1-base start l, length r).
-// split: <= key | > key; split2: first k nodes, 0 <= k <= size.
+// Expected O(log n); int sizes fit, total<=RAND_MAX.
+// Stack for height; uniquely owned new'ed nodes.
+// merge: disjoint trees, all a keys <= all b keys.
+// Split outputs distinct, may alias root.
+// split: <=k | >k; split2: first k, 0<=k<=size.
+// interval: 1-base l, length r; 1<=l<=size+1,
+// 0<=r<=size-l+1.
 struct node {
   int data, sz, priority; node *l, *r;
-  node(int k) : data(k), sz(1), priority(rand()), l(0), r(0) {}
+  node(int k) : data(k), sz(1), priority(rand()),
+    l(0), r(0) {}
   void up() { sz = 1 + (l ? l->sz : 0) + (r ? r->sz : 0); }
-  void down() {} // lazy also needs down() before kth/Rank/erase reads
+  void down() {} // Lazy: also down before kth/Rank/erase
 };
 int sz(node *a) { return a ? a->sz : 0; }
 node *merge(node *a, node *b) {
@@ -19,7 +22,8 @@ node *merge(node *a, node *b) {
 void split(node *o, node *&a, node *&b, int k) {
   if (!o) return a = b = 0, void();
   o->down();
-  if (o->data <= k) a = o, split(o->r, a->r, b, k), a->up();
+  if (o->data <= k)
+    a = o, split(o->r, a->r, b, k), a->up();
   else b = o, split(o->l, a, b->l, k), b->up();
 }
 void split2(node *o, node *&a, node *&b, int k) {
@@ -48,13 +52,16 @@ bool erase(node *&o, int k) { // erase one copy
   node *&t = k < o->data ? o->l : o->r;
   return erase(t, k) ? o->up(), 1 : 0;
 }
-void insert_node(node *&o, node *p) { // p is a fresh singleton
+void insert_node(node *&o, node *p) { // fresh singleton
   if (!o || p->priority < o->priority)
-    return split(o, p->l, p->r, p->data), o = p, o->up(), void();
-  o->down(); insert_node(p->data < o->data ? o->l : o->r, p); o->up();
+    return split(o, p->l, p->r, p->data), o = p,
+      o->up(), void();
+  o->down();
+  insert_node(p->data < o->data ? o->l : o->r, p); o->up();
 }
-void insert(node *&o, int k) { insert_node(o, new node(k)); }
-void interval(node *&o, int l, int r) { // 1-base start l, length r
+void insert(node *&o, int k) {
+  insert_node(o, new node(k)); }
+void interval(node *&o, int l, int r) { // start l, len r
   node *a, *b, *c;
   split2(o, a, b, l - 1), split2(b, b, c, r);
   o = merge(a, merge(b, c)); // modify b before merging

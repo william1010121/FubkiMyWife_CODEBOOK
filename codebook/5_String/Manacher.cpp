@@ -1,6 +1,6 @@
 int z[MAXN]; // O(n); 0-base; MAXN >= 2*|tmp|+1
 // Center i: z[2*i+1]/2; gap i,i+1: z[2*i+2]/2.
-// All index arithmetic must fit int; aba and abba have radius 2.
+// Index arithmetic fits int; aba, abba have radius 2.
 void Manacher(const string &tmp) {
   string s(2 * SZ(tmp) + 1, '%');
   for (int i = 0; i < SZ(tmp); ++i) s[2 * i + 1] = tmp[i];

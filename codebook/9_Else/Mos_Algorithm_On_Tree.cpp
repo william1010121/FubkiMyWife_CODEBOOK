@@ -1,9 +1,11 @@
-// Common block>0; valid 0-based 2n entry/exit tour/LCA; 2n fits int.
-// flip toggles; start empty; block~sqrt(n), q=O(n): O(n sqrt(n)).
+// Common block>0; valid 0-based 2n tour/LCA; 2n fits int.
+// Entry/exit tour; flip toggles; start empty.
+// block~sqrt(n), q=O(n): O(n sqrt(n)).
 struct Query {
   int L, R, LBid, lca, id;
   Query(int u, int v, int block, const vector<int> &in,
-        const vector<int> &out, auto get_lca, int query_id = -1)
+        const vector<int> &out, auto get_lca,
+        int query_id = -1)
     : id(query_id) {
     if (in[u] > in[v]) swap(u, v);
     int c = get_lca(u, v);

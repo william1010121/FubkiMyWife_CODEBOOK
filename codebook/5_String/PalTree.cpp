@@ -1,8 +1,8 @@
-struct palindromic_tree { // 'a'..'z'; n+2 fits int; O(n*26)
-  // Roots 0:0,1:-1; add takes char codes; count once after all add.
+struct palindromic_tree { // 'a'..'z'; n+2 fits int; O(26n)
+  // Roots 0:0,1:-1; add takes char codes.
   struct node {
     int next[26] = {}, fail = 0, len, cnt = 0, num = 0;
-    // cnt: occurrences; num: number of palindromic suffixes
+    // cnt: occurrences; num: palindromic suffix count
     node(int l = 0) : len(l) {}
   };
   vector<node> St;
@@ -22,7 +22,8 @@ struct palindromic_tree { // 'a'..'z'; n+2 fits int; O(n*26)
     if (!St[cur].next[c]) { int now = SZ(St);
       St.pb(St[cur].len + 2);
       St[now].fail = St[get_fail(St[cur].fail)].next[c];
-      St[cur].next[c] = now, St[now].num = St[St[now].fail].num + 1;
+      St[cur].next[c] = now;
+      St[now].num = St[St[now].fail].num + 1;
     } last = St[cur].next[c], ++St[last].cnt;
   }
   void count() { // call once after all add()

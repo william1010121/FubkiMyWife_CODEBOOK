@@ -1,19 +1,22 @@
 // Common block>0; 0<=L<=R<n; 0<=T<=U (#updates); C++20.
-// add_time/sub_time: apply/undo t (1-based); [L,R] may be empty.
-// Start empty at T=0; add/sub positions; answer(q) reads the state.
+// add_time/sub_time: apply/undo t>=1; [L,R] may be empty.
+// Start empty at T=0; add/sub positions; answer(q): state.
 // Block ~ N^(2/3), O(N^(5/3)) for O(N) queries/updates.
 struct Query {
   int L, R, LBid, RBid, T, id;
-  Query(int l, int r, int t, int block = 1, int query_id = -1)
-    : L(l), R(r), LBid(l / block), RBid(r / block), T(t), id(query_id) {}
+  Query(int l, int r, int t, int block = 1,
+        int query_id = -1) : L(l), R(r), LBid(l / block),
+        RBid(r / block), T(t), id(query_id) {}
   bool operator<(const Query &q) const {
     if (LBid != q.LBid) return LBid < q.LBid;
-    if (RBid != q.RBid) return LBid & 1 ? RBid > q.RBid : RBid < q.RBid;
+    if (RBid != q.RBid)
+      return LBid & 1 ? RBid > q.RBid : RBid < q.RBid;
     return (LBid ^ RBid) & 1 ? T > q.T : T < q.T;
   }
 };
-void solve(vector<Query> query, auto add_time, auto sub_time,
-           auto add, auto sub, auto answer) {
+void solve(vector<Query> query, auto add_time,
+           auto sub_time, auto add, auto sub,
+           auto answer) {
   sort(query.begin(), query.end());
   int L = 0, R = -1, T = 0;
   for (const Query &q : query) {

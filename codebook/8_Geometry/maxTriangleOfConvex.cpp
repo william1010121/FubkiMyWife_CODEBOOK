@@ -1,5 +1,6 @@
-// Cyclic CW/CCW convex hull; finite arithmetic; O(chnum^2).
-double ConvexHullMaxTriangleArea(Point p[], int res[], int chnum) {
+// Cyclic CW/CCW convex; finite arithmetic; O(chnum^2).
+double ConvexHullMaxTriangleArea(
+    Point p[], int res[], int chnum) {
   double area = 0;
   auto twice_area = [&](int i, int j, int k) {
     return fabs(Cross(p[res[j]] - p[res[i]],
@@ -13,7 +14,8 @@ double ConvexHullMaxTriangleArea(Point p[], int res[], int chnum) {
       k = max(k, j + 1);
       double cur = twice_area(i, j, k), next;
       while (k + 1 < chnum &&
-          (next = twice_area(i, j, k + 1)) >= cur) ++k, cur = next;
+          (next = twice_area(i, j, k + 1)) >= cur)
+        ++k, cur = next;
       area = max(area, cur);
     }
   } return area / 2;

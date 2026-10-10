@@ -1,5 +1,6 @@
-vector<int> vG[N]; int top, st[N]; // rooted tree: LCA, preorder dfn, dep
-void insert(int u) { // initially top=-1; distinct preorder keys [0,N)
+// Rooted tree: LCA, preorder dfn, dep; IDs [0,N).
+vector<int> vG[N]; int top, st[N];
+void insert(int u) { // top=-1 first; unique preorder keys
   if (top == -1) { st[++top] = u; return; }
   int p = LCA(st[top], u);
   while (top >= 1 && dep[st[top - 1]] >= dep[p])
@@ -7,13 +8,15 @@ void insert(int u) { // initially top=-1; distinct preorder keys [0,N)
   if (st[top] != p) vG[p].pb(st[top]), st[top] = p;
   st[++top] = u;
 }
-void reset(int u) { // valid root in [0,N); enough recursion stack
+void reset(int u) { // valid root; enough recursion stack
   for (int i : vG[u]) reset(i); vG[u].clear();
 }
-int build(vector<int> &v) { // IDs [0,N); clear vG; O(k log k+k*T_LCA)
+// Clear previous vG first; build O(k log k+k*T_LCA).
+int build(vector<int> &v) {
   if (v.empty()) return -1;
   top = -1;
-  sort(ALL(v), [&](int a, int b) { return dfn[a] < dfn[b]; });
+  sort(ALL(v), [&](int a, int b) {
+    return dfn[a] < dfn[b]; });
   v.erase(unique(ALL(v)), v.end());
   for (int i : v) insert(i);
   while (top > 0) vG[st[top - 1]].pb(st[top]), --top;

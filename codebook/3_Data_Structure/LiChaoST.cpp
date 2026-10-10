@@ -1,6 +1,6 @@
 // Max on integer x in [0,n); O(log n); inserted id != -1.
-// Caller INF > 0; values in [-INF,INF]; m*x and m*x+k fit ll.
-// For n>0, 4*n fits int/memory; n<=0: insert ignored, query -INF.
+// INF>0; values in [-INF,INF]; m*x and m*x+k fit ll.
+// 4*n fits int/memory; n<=0: no insert, query -INF.
 struct L {
   ll m, k, id; L() : id(-1) {}
   L(ll a, ll b, ll c) : m(a), k(b), id(c) {}
@@ -23,7 +23,8 @@ class LiChao {
   ll query(ll x) {
     ll ret = -INF; int l = 0, r = n, rt = 1;
     while (l < r && nodes[rt].id != -1) {
-      ret = max(ret, nodes[rt].at(x)); if (r - l == 1) break;
+      ret = max(ret, nodes[rt].at(x));
+      if (r - l == 1) break;
       int m = (l + r) >> 1; rt = rt << 1 | (x >= m);
       if (x < m) r = m; else l = m;
     } return ret;
