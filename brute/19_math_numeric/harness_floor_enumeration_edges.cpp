@@ -8,23 +8,26 @@ void instantiate_template(int n) {
 }
 
 struct observed_n {
-  int value, left = 0, quotient = 0;
+  int value, left = 0, quotient = 0, next_quotient = 0;
   bool pending = false;
+  operator int() { return next_quotient = value; }
   vector<tuple<int,int,int>> blocks;
   friend bool operator<=(int l, observed_n &n) {
     if (n.pending) n.blocks.emplace_back(n.left,l-1,n.quotient);
-    n.left = l; n.pending = false;
-    return l <= n.value;
+    n.left = l; n.quotient = n.next_quotient; n.next_quotient = 0;
+    return n.pending = l <= n.value;
   }
   friend int operator/(observed_n &n, int divisor) {
     int result = n.value / divisor;
-    if (!n.pending) n.quotient = result, n.pending = true;
+    if (divisor < n.left) n.quotient = divisor; // Body's r=n/x.
+    else if (divisor == n.left) n.quotient = result; // Body's x=n/l.
+    else n.next_quotient = result; // Update's x=n/next_l.
     return result;
   }
 };
 vector<tuple<int,int,int>> enumerate_oracle_input(int value) {
-  // Observe n/l once per iteration; the next loop bound reveals r+1.
-  // This records actual l,r,x even when the n/x division is skipped.
+  // Observe initial x, body/update divisions and the actual r+1 bound.
+  // A decremented x is observed as the divisor of the body's n/x.
   observed_n n{value};
 #include "../../codebook/6_Math/floor_enumeration.cpp"
   assert(!n.pending);

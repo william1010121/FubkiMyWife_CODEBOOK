@@ -35,7 +35,8 @@ void check(const vector<vector<ll>> &a) {
 int main() {
   mt19937_64 rng(0xD372);
   for (ll mod : {1LL, 2LL, 4LL, 6LL, 12LL, 25LL, 101LL,
-                 1000000007LL, LLONG_MAX - 1, LLONG_MAX}) {
+                 1000000007LL, ll(INT_MAX), ll(INT_MAX) + 1,
+                 LLONG_MAX - 1, LLONG_MAX}) {
     P = mod;
     check({}); check({{0}}); check({{P - 1}});
     check({{0, 1 % P}, {1 % P, 0}});

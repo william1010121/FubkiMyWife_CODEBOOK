@@ -1,8 +1,7 @@
 map<ll, int> cnt; // Clear per input; mul returns exact (a*b)%n.
 void PollardRho(ll n) { // 1<=n<=LLONG_MAX; needs correct prime().
-  while (n % 2 == 0) ++cnt[2], n /= 2;
-  if (n == 1) return;
-  if (prime(n)) return ++cnt[n], void();
+  if (int e = __builtin_ctzll(n)) cnt[2] += e, n >>= e; // Strip 2^e.
+  if (n == 1) return; if (prime(n)) return ++cnt[n], void();
   ll x=0, y=0, q=1, d=1, seed=1; int batch=1;
   auto f = [&](ll z) { ll t = mul(z,z,n);
     return t >= n-seed ? t-(n-seed) : t+seed; };

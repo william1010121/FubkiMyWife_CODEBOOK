@@ -54,14 +54,20 @@ int main() {
   check("cycle disconnected from DAG", {23, 1});
 
   // Potential differences telescope: every cycle has mean exactly -7.
-  const int dense_n = 240;
+  const int dense_n = N;
   clear_graph(dense_n);
   for (int u = 0; u < dense_n; ++u)
     for (int v = 0; v < dense_n; ++v)
       road[u][v] = -7 + (ll)v * v - (ll)u * u;
   check("dense potential graph", {-7, 1});
+  // Dense acyclic tails feed the sole cycle at the sink.
+  clear_graph(N);
+  for (int u = 0; u < N; ++u) for (int v = u + 1; v < N; ++v)
+    road[u][v] = (u * 37 + v * 19) % 101 - 50;
+  road[N - 1][N - 1] = -7;
+  check("dense DAG feeding sink cycle", {-7, 1});
   double seconds = chrono::duration<double>(
       chrono::steady_clock::now() - start).count();
-  cout << "minimum_mean_cycle stress PASS 5 graphs in "
+  cout << "minimum_mean_cycle stress PASS 6 graphs in "
        << seconds << "s\n";
 }

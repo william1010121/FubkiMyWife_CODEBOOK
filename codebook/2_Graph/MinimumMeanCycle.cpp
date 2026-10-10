@@ -5,15 +5,15 @@ struct MinimumMeanCycle { // init 0<=n<=N; fill active road entries
     return (__int128)a.first * b.second < (__int128)b.first * a.second;
   }
   pll solve() {
-    vector<tuple<int, int, ll>> edges;
+    vector<vector<pair<int, ll>>> edges(n);
     for (int u = 0; u < n; ++u) for (int v = 0; v < n; ++v)
-        if (road[u][v] < INF) edges.emplace_back(u, v, road[u][v]);
+        if (road[u][v] < INF) edges[u].emplace_back(v, road[u][v]);
     fill_n(dp[0], n, 0); // every vertex may be the start
     for (int k = 1; k <= n; ++k) {
       fill_n(dp[k], n, INF);
-      for (auto [u, v, w] : edges)
-        if (dp[k - 1][u] < INF)
-          dp[k][v] = min(dp[k][v], dp[k - 1][u] + w);
+      for (int u = 0; u < n; ++u) if (ll d = dp[k - 1][u]; d < INF)
+        for (auto [v, w] : edges[u])
+          dp[k][v] = min(dp[k][v], d + w);
     }
     pll ans = {-1, -1}; // O(VE+V^2); dp[n]-dp[k] must fit ll
     for (int v = 0; v < n; ++v) if (dp[n][v] < INF) {

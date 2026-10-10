@@ -1,7 +1,8 @@
-// All distinct LCS in lexical order; DP O(nm), output may be exponential.
+// Sorted distinct LCS; DP O(nm), O(n) if s==t; exponential output.
 // Reconstruction merges sorted lists, linear in their string data.
 // Lengths < INT_MAX; cells fit size_t; O(n+m) recursion stack.
 vector<string> all_lcs(const string &s, const string &t) {
+  if (s == t) return {s};
   int n = (int)s.size(), m = (int)t.size();
   vector<vector<int>> dp(n + 1, vector<int>(m + 1));
   for (int i = n - 1; i >= 0; --i)
@@ -23,6 +24,5 @@ vector<string> all_lcs(const string &s, const string &t) {
       auto &a = self(self, i + 1, j), &b = self(self, i, j + 1);
       set_union(ALL(a), ALL(b), back_inserter(ret));
     } return ret;
-  };
-  return move(go(go, 0, 0));
+  }; return move(go(go, 0, 0));
 }

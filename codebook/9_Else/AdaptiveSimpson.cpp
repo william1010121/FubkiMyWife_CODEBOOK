@@ -8,8 +8,7 @@ struct Simpson {
   }
   d eval(pdd l, pdd r, d fm, d eps) { // fm=f(midpoint).
     pdd m(l.first + (r.first - l.first) / 2, fm);
-    d s = mix(l, r, fm).second;
-    auto [flm, sl] = mix(l, m);
+    d s = mix(l, r, fm).second; auto [flm, sl] = mix(l, m);
     auto [fmr, sr] = mix(m, r);
     d delta = sl + sr - s;
     if (abs(delta) <= 15 * eps) return sl + sr + delta / 15;
@@ -19,12 +18,13 @@ struct Simpson {
   d eval(d l, d r, d eps) { // Error estimate, not a rigorous bound.
     return eval({l, f(l)}, {r, f(r)}, f(l + (r - l) / 2), eps);
   }
-  d eval2(d l, d r, d eps, int k = 997) { // k>0; split multi-peak f.
-    d h = (r - l) / k, s = 0;
-    for (int i = 0; i < k; ++i)
-      s += eval(l + h*i, i+1 == k ? r : l + h*(i+1), eps / k);
+  d eval2(d l, d r, d eps, int k = 997) { // k>0; split peaks, reuse ends.
+    d h = (r - l) / k, s = 0; pdd a(l, f(l));
+    for (int i = 0; i < k; ++i) {
+      d x = i+1 == k ? r : l + h*(i+1); pdd b(x, f(x));
+      s += eval(a, b, f(a.first + (x-a.first)/2), eps/k), a = b;
+    }
     return s;
   }
 };
-template<class Func>
-Simpson<Func> make_simpson(Func f) { return {f}; }
+template<class Func> Simpson<Func> make_simpson(Func f) { return {f}; }

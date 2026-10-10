@@ -339,8 +339,9 @@ void rounding_audit() {
 }
 
 struct FloorInput {
-  int value, left = 0, quotient = 0, count = 0;
+  int value, left = 0, quotient = 0, count = 0, next_quotient = 0;
   bool pending = false;
+  operator int() { return next_quotient = value; }
   friend bool operator<=(int l, FloorInput &n) {
     if (n.pending) {
       int r = l - 1;
@@ -350,12 +351,14 @@ struct FloorInput {
               "floor enumeration maximal right endpoint");
       ++n.count;
     }
-    n.left = l; n.pending = false;
-    return l <= n.value;
+    n.left = l; n.quotient = n.next_quotient; n.next_quotient = 0;
+    return n.pending = l <= n.value;
   }
   friend int operator/(FloorInput &n, int d) {
     int x = n.value / d;
-    if (!n.pending) n.quotient = x, n.pending = true;
+    if (d < n.left) n.quotient = d; // Body's r=n/x.
+    else if (d == n.left) n.quotient = x; // Body's x=n/l.
+    else n.next_quotient = x; // Update's x=n/next_l.
     return x;
   }
 };

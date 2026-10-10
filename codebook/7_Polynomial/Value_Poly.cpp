@@ -8,10 +8,9 @@ struct Poly { // Prime-field mint, canonical .v; 1<=n=size<=P.
     vector<mint> pre(n, 1);
     for (int i = 1; i < n; ++i) pre[i] = pre[i - 1] * (t - (i - 1));
     for (int i = n - 1; i >= 0; --i) {
-      rt += poly[i] * ifac[i] * inegfac[n - 1 - i] * pre[i] * suf;
+      rt += (poly[i] * ifac[i]) * (inegfac[n - 1 - i] * pre[i]) * suf;
       suf *= t - i;
-    }
-    return rt;
+    } return rt;
   }
   void raise() { // n<P; g(x)=sum_{k=base}^x f(k); O(n)
     if (SZ(poly) == 1 && poly[0] == 0) return;

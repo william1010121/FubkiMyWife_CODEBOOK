@@ -2,7 +2,7 @@ ll solve(ll x1, ll m1, ll x2, ll m2) {
   ll g = gcd(m1, m2); __int128 d = (__int128)x2 - x1;
   if (d % g) return -1; // Inconsistent; m1,m2>0, lcm fits ll.
   m2 /= g; pll p = exgcd(m1 / g, m2);
-  __int128 t = (__int128)p.first * (d / g) % m2;
+  __int128 t = m2 == 1 ? 0 : (__int128)p.first * (d / g) % m2;
   ll lcm = m1 * m2; __int128 res = x1 + (__int128)m1 * t;
   res %= lcm; return (ll)(res < 0 ? res + lcm : res);
 }
