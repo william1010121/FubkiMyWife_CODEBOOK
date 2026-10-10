@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std;
+#define ALL(v) v.begin(), v.end()
 
 namespace simpson_test {
 #include "../../codebook/9_Else/AdaptiveSimpson.cpp"

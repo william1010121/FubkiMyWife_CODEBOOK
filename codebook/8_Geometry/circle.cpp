@@ -1,4 +1,4 @@
-struct C {
+struct C { // Nonnegative radii; all operations O(1).
   P c; double r;
   C(P c = P(0, 0), double r = 0) : c(c), r(r) {}
 };
@@ -29,7 +29,7 @@ double IntersectArea(C a, C b) {
 // Segment by default; drop parameter-range checks for an infinite line.
 vector<P> CircleCrossLine(P a, P b, P o, double r) {
   double x = b.x - a.x, y = b.y - a.y, A = sq(x) + sq(y);
-  if (same(A, 0)) // Zero-length segment is a point.
+  if (!A) // Zero-length segment is a point.
     return same((a - o).abs(), r) ? vector<P>{a} : vector<P>{};
   double B = 2 * (x * (a.x - o.x) + y * (a.y - o.y)),
     C = sq(a.x - o.x) + sq(a.y - o.y) - sq(r), d = B * B - 4 * A * C;
@@ -45,8 +45,8 @@ vector<P> CircleCrossLine(P a, P b, P o, double r) {
 // Unsigned area of circle(r) cap triangle OAB.
 double AreaOfCircleTriangle(P a, P b, double r) {
   bool ina = a.abs() < r, inb = b.abs() < r;
-  auto p = CircleCrossLine(a, b, P(0, 0), r);
   if (ina && inb) return abs(a ^ b) / 2;
+  auto p = CircleCrossLine(a, b, P(0, 0), r);
   if (ina) return SectorArea(b, p[0], r) + abs(a ^ p[0]) / 2;
   if (inb) return SectorArea(p[0], a, r) + abs(p[0] ^ b) / 2;
   if (p.size() == 2) return SectorArea(a, p[0], r) +
@@ -57,10 +57,8 @@ double AreaOfCircleTriangle(P a, P b, double r) {
 double AreaOfCircleTriangle(vector<P> ps, double r) {
   double ans = 0;
   for (int i = 0; i < 3; ++i) {
-    int j = (i + 1) % 3;
-    double o = ps[i].angle() - ps[j].angle();
-    if (o >= pi) o -= 2 * pi;
-    if (o <= -pi) o += 2 * pi;
-    ans += AreaOfCircleTriangle(ps[i], ps[j], r) * (o >= 0 ? 1 : -1);
+    int j = (i + 1) % 3; double z = ps[i] ^ ps[j];
+    if (z) ans += AreaOfCircleTriangle(ps[i], ps[j], r) *
+      (z > 0 ? 1 : -1);
   } return abs(ans);
 }

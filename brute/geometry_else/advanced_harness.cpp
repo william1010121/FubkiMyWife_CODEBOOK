@@ -17,6 +17,7 @@ double Cross(Point a, Point b) { return a.x*b.y-a.y*b.x; }
 #include "../../codebook/8_Geometry/minDistOfTwoConvex.cpp"
 #include "../../codebook/8_Geometry/rotatingSweepLine.cpp"
 
+long long dot_calls = 0;
 struct P {
   double x, y, z;
   P(double x=0, double y=0, double z=0): x(x), y(y), z(z) {}
@@ -24,7 +25,9 @@ struct P {
   P operator^(P b) const {
     return {y*b.z-z*b.y, z*b.x-x*b.z, x*b.y-y*b.x};
   }
-  double operator*(P b) const { return x*b.x+y*b.y+z*b.z; }
+  double operator*(P b) const {
+    ++dot_calls; return x*b.x+y*b.y+z*b.z;
+  }
 };
 double abs(P a) { return sqrt(a.x*a.x+a.y*a.y+a.z*a.z); }
 
@@ -35,6 +38,50 @@ static void req(bool ok, const string &msg) {
 }
 static bool close(double a, double b) {
   return fabs(a-b) <= 1e-7 * max(1.0, max(fabs(a), fabs(b)));
+}
+using Plane = array<long long,4>;
+Plane plane(P a, P b, P c) {
+  P v=(b-a)^(c-a);
+  Plane key{llround(v.x),llround(v.y),llround(v.z),llround(v*a)};
+  long long g=0;
+  for (auto x:key) g=gcd(g,abs(x));
+  if (!g) return {};
+  for (auto &x:key) x/=g;
+  for (auto x:key) if (x) {
+    if (x<0) for (auto &y:key) y=-y;
+    break;
+  }
+  return key;
+}
+void check_3d(convex3D &h) {
+  set<Plane> want, got;
+  for (int a=0;a<h.n;++a) for (int b=a+1;b<h.n;++b)
+    for (int c=b+1;c<h.n;++c) {
+      P v=(h.p[b]-h.p[a])^(h.p[c]-h.p[a]);
+      bool pos=false, neg=false;
+      for (int i=0;i<h.n;++i) {
+        double s=v*(h.p[i]-h.p[a]);
+        pos |= s>eps; neg |= s < -eps;
+      }
+      if (pos != neg) want.insert(plane(h.p[a],h.p[b],h.p[c]));
+    }
+  map<pair<int,int>,int> edges;
+  set<int> vertices;
+  for (int i=0;i<h.m;++i) {
+    auto t=h.f[i];
+    req(t.res, "3D compacted faces are active");
+    got.insert(plane(h.p[t.a],h.p[t.b],h.p[t.c]));
+    for (int j=0;j<h.n;++j)
+      req(!h.on(h.f[i],h.p[j]), "3D random outward supporting face");
+    for (auto e:{pair{t.a,t.b},pair{t.b,t.c},pair{t.c,t.a}}) {
+      ++edges[e]; vertices.insert(e.first);
+    }
+  }
+  req(want==got, "3D exhaustive supporting-plane oracle");
+  for (auto [e,count]:edges)
+    req(count==1 && edges[{e.second,e.first}]==1,
+        "3D manifold directed edges");
+  req(h.m==0 || h.m==2*int(vertices.size())-4, "3D Euler count");
 }
 
 int main() {
@@ -133,5 +180,47 @@ int main() {
     for (int w=0;w<=1;++w) cube.p[z++]={x,y,w};
   cube();
   req(cube.faces()==6, "3D cube coplanar faces");
+  // Cyclic polytope: 2n-4 final faces but >8*1010 created faces.
+  static convex3D curve;
+  curve.n=200; curve.m=0;
+  for (int i=0;i<curve.n;++i)
+    curve.p[i]={double(i),double(i*i),double(i*i*i)};
+  curve();
+  req(curve.m==2*curve.n-4, "3D moment-curve face count");
+  req(curve.faces()==curve.m, "3D moment-curve planes distinct");
+  for (int i=0;i<curve.m;++i) for (int j=0;j<curve.n;++j)
+    req(!curve.on(curve.f[i],curve.p[j]), "3D outward supporting face");
+  curve.n=3; curve.m=0; curve();
+  req(curve.m==0, "3D fewer than four points");
+  curve.n=20; curve.m=0;
+  for (int i=0;i<curve.n;++i) curve.p[i]={double(i),double(i*i),0};
+  curve();
+  req(curve.m==0, "3D coplanar input");
+  for (int i=0;i<curve.n;++i) curve.p[i]={double(i),0,0};
+  curve();
+  req(curve.m==0, "3D collinear input");
+  // Full capacity: 200 hull vertices followed by 810 interior points.
+  curve.n=convex3D::maxn; curve.m=0;
+  for (int i=0;i<200;++i)
+    curve.p[i]={double(i),double(i*i),double(i*i*i)};
+  for (int i=200;i<curve.n;++i) {
+    double w=0.4-0.1*(i-199)/1000.0;
+    curve.p[i]={0.2*66+0.3*133+w*199,
+                0.2*66*66+0.3*133*133+w*199*199,
+                0.2*66*66*66+0.3*133*133*133+w*199*199*199};
+  }
+  dot_calls=0; curve();
+  req(curve.m==396, "3D 1010-point stress hull");
+  req(dot_calls<2LL*curve.n*curve.n, "3D stress evaluation bound");
+  for (int tc=0;tc<1000;++tc) {
+    set<array<int,3>> points;
+    int n=4+rng()%13;
+    while (int(points.size())<n)
+      points.insert({int(rng()%11)-5,int(rng()%11)-5,int(rng()%11)-5});
+    curve.n=n; curve.m=0; int j=0;
+    for (auto a:points)
+      curve.p[j++]={double(a[0]),double(a[1]),double(a[2])};
+    curve(); check_3d(curve);
+  }
   cout << "geometry advanced PASS: centroid, triangle, distance, sweep, 3D hull\n";
 }

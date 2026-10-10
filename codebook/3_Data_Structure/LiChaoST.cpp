@@ -10,10 +10,9 @@ class LiChao {
   void insert(int l, int r, int rt, L ln) {
     int m = (l + r) >> 1; L &o = nodes[rt];
     if (o.id == -1) return o = ln, void();
-    bool a = o.at(l) < ln.at(l);
-    if (o.at(m) < ln.at(m)) a ^= 1, swap(o, ln);
+    if (o.at(m) < ln.at(m)) swap(o, ln);
     if (r - l == 1 || o.m == ln.m) return;
-    if (a) insert(l, m, rt << 1, ln);
+    if (ln.m < o.m) insert(l, m, rt << 1, ln); // can win only left
     else insert(m, r, rt << 1 | 1, ln);
   }
   ll query(int l, int r, int rt, ll x) {

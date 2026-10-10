@@ -1,8 +1,7 @@
-struct SteinerTree { // 0-base, nonnegative edge/vertex costs
+struct SteinerTree { // 0-base, n <= N, t <= T; nonnegative costs
   int n, dst[N][N], dp[1 << T][N], tdst[N], vcst[N];
   void init(int _n) {
-    n = _n;
-    for (int i = 0; i < n; ++i)
+    n = _n; for (int i = 0; i < n; ++i)
       fill_n(dst[i], n, INF), dst[i][i] = vcst[i] = 0;
   }
   void chmin(int &x, int val) { x = min(x, val); }
@@ -18,13 +17,11 @@ struct SteinerTree { // 0-base, nonnegative edge/vertex costs
   }
   int solve(const vector<int>& ter) { // calls shortest_path; <= T distinct
     vector<int> terminals = ter;
-    sort(terminals.begin(), terminals.end());
-    terminals.erase(unique(terminals.begin(), terminals.end()),
-      terminals.end());
+    sort(ALL(terminals));
+    terminals.erase(unique(ALL(terminals)), terminals.end());
     if (terminals.empty()) return 0;
     shortest_path();
     int t = SZ(terminals), full = (1 << t) - 1;
-    for (int m = 0; m <= full; ++m) fill_n(dp[m], n, INF);
     copy_n(vcst, n, dp[0]);
     for (int msk = 1; msk <= full; ++msk) {
       if (!(msk & (msk - 1))) {
@@ -32,15 +29,14 @@ struct SteinerTree { // 0-base, nonnegative edge/vertex costs
         for (int i = 0; i < n; ++i) dp[msk][i] = vcst[u] + dst[u][i];
         continue; // singleton paths are already closed
       }
-      for (int sub = (msk - 1) & msk; sub; sub = (sub - 1) & msk)
-        if (sub < (msk ^ sub)) // merge each unordered split once
-          for (int i = 0; i < n; ++i)
-            chmin(dp[msk][i], dp[sub][i] + dp[msk ^ sub][i] - vcst[i]);
-      for (int i = 0; i < n; ++i) {
-        tdst[i] = INF;
-        for (int j = 0; j < n; ++j)
+      int rest = msk & (msk - 1); fill_n(dp[msk], n, INF);
+      for (int sub = rest; sub; sub = (sub - 1) & rest)
+        for (int i = 0; i < n; ++i) // lowest bit stays in complement
+          chmin(dp[msk][i], dp[sub][i] + dp[msk ^ sub][i] - vcst[i]);
+      fill_n(tdst, n, INF);
+      for (int j = 0; j < n; ++j)
+        for (int i = 0; i < n; ++i)
           chmin(tdst[i], dp[msk][j] + dst[j][i]);
-      }
       copy_n(tdst, n, dp[msk]);
     }
     return *min_element(dp[full], dp[full] + n);

@@ -14,7 +14,7 @@ auto sais(const auto &s) {
       if (y-- && !t[y]) sa[x[s[y]-1]++] = y;
     for (auto x = c; int y : sa | views::reverse)
       if (y-- && t[y]) sa[--x[s[y]]] = y;
-  }; lms.reserve(n);
+  }; lms.reserve(n/2);
   for (auto x = c; int i : views::iota(0, n) | is_lms)
     q[i] = SZ(lms), lms.pb(sa[--x[s[i]]] = i);
   induce(); int nz = 0; vector<int> ns(SZ(lms)), nsa;

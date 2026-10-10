@@ -7,12 +7,11 @@ struct matrix { // n equations, m variables; n,m<=MAXN.
       int row = rank; while (row < n && !M[row][col].n) ++row;
       if (row == n) continue;
       for (int k = 0; k <= m; ++k) swap(M[rank][k], M[row][k]);
-      piv[rank] = col;
       for (int j = 0; j < n; ++j) if (j != rank && M[j][col].n) {
         fraction t = -M[j][col] / M[rank][col];
         for (int k = col; k <= m; ++k) M[j][k] = t*M[rank][k]+M[j][k];
       }
-      ++rank;
+      piv[rank++] = col;
     }
     for (int i = rank; i < n; ++i) if (M[i][m].n) return -1;
     fill_n(sol, m, fraction());

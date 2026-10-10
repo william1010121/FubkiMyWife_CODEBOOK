@@ -1,5 +1,5 @@
 // Counts other points <= in all dims; O(n log^(max(1,k-1)) n).
-vector<ll> dominance(vector<vector<int>> a) {
+vector<ll> dominance(vector<vector<int>> a) { // Equal-size rows.
   int n = SZ(a), k = n ? SZ(a[0]) : 0;
   if (k) { // Only the last dim needs compression (for the BIT).
     vector<int> v(n);

@@ -1,4 +1,4 @@
-// Needs ModArithmetic; p prime, 0<=N<p. O(N+log p) init, O(1) C.
+// ModArithmetic; prime p, 0<=N<min(p,INT_MAX). O(N+log p) init.
 struct ModBinomial {
   ModArithmetic mod;
   vector<ll> fac, ifac;

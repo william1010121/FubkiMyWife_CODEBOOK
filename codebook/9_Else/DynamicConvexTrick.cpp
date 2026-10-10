@@ -1,4 +1,5 @@
-// Integer x only; max hull; amortised O(log n). Query a nonempty hull.
+// Max hull; integer x, -kInf<x<=kInf; query a nonempty hull.
+// All arithmetic fits ll; amortised O(log n) add, O(log n) query.
 struct Line {
   mutable ll a, b, p;
   bool operator<(const Line &rhs) const { return a < rhs.a; }

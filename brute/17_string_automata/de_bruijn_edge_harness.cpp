@@ -63,6 +63,12 @@ int main() {
   check(2, 3, 8), ++cases;
   // Unary output should not require a hundred thousand recursive frames.
   check(1, 100000, 1), ++cases;
+  // One window is all zeros for any alphabet, even at very large order.
+  vector<int> single(500000, -9);
+  dbs.solve(2, single.size(), 1, single.data());
+  if (any_of(single.begin(), single.end(), [](int x) { return x != 0; }))
+    fail("single-window output mismatch");
+  ++cases;
   cout << "PASS de-bruijn-edge cases=" << cases
        << " oracle=all-linear-window-uniqueness\n";
 }

@@ -7,10 +7,9 @@ void main_lorentz_impl(const string &s, int sft) {
          ru(u.rbegin(), u.rend()), rv(v.rbegin(), v.rend());
   main_lorentz_impl(u, sft), main_lorentz_impl(v, sft+nu);
   auto join = [](const string &a, const string &b) {
-    vector<int> x; x.reserve(a.size()+b.size()+1);
-    for (unsigned char c : a) x.push_back(c);
-    x.push_back(256); // separator outside byte alphabet
-    for (unsigned char c : b) x.push_back(c); return x;
+    vector<int> x(a.size()+b.size()+1, 256); // non-byte separator
+    copy(ALL(a), x.begin()), copy(ALL(b), x.begin()+a.size()+1);
+    return x;
   };
   auto zalgo = [](const auto &a) {
     int n = a.size(); vector<int> z(n);

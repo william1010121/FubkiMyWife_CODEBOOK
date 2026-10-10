@@ -1,14 +1,13 @@
 bool operator<(const P &a, const P &b) {
-  return same(a.x, b.x) ? a.y < b.y : a.x < b.x; }
-bool operator>(const P &a, const P &b) {
-  return same(a.x, b.x) ? a.y > b.y : a.x > b.x; }
+  return a.x == b.x ? a.y < b.y : a.x < b.x; }
+bool operator>(const P &a, const P &b) { return b < a; }
 double crx(P a, P b, P c) { return (b - a) ^ (c - a); }
 // CCW hull; drops collinear points. O(n log n).
 vector<P> convex(vector<P> ps) {
-  if (ps.empty()) return {};
+  if (SZ(ps) < 2) return ps;
   sort(ALL(ps));
-  vector<P> p;
-  p.reserve(2 * SZ(ps));
+  if (!(ps.front() < ps.back())) return {ps[0]};
+  vector<P> p; p.reserve(2 * SZ(ps));
   auto add = [&](P q, int t) {
     while (SZ(p) > t && crx(p[SZ(p) - 2], q, p.back()) >= 0)
       p.pop_back();
@@ -22,11 +21,11 @@ vector<P> convex(vector<P> ps) {
 }
 int sgn(double x) {
   return same(x, 0) ? 0 : x > 0 ? 1 : -1; }
-P isLL(P p1, P p2, P q1, P q2) {
+P isLL(P p1, P p2, P q1, P q2) { // Nonparallel lines.
   double a = crx(q1, q2, p1), b = -crx(q1, q2, p2);
   return (p1 * b + p2 * a) / (a + b);
 }
-struct CH { // Nondegenerate CCW hull; queries O(log n).
+struct CH { // Strictly convex CCW hull, n >= 3; queries O(log n).
   int n;
   vector<P> p, u, d;
   CH() {}
@@ -60,9 +59,9 @@ struct CH { // Nondegenerate CCW hull; queries O(log n).
       else r = m;
     } return isLL(a, b, p[l % n], p[(l + 1) % n]);
   }
-  vector<P> getLineIntersect(P a, P b) {
-    int x = findFarest((b - a).rot(pi / 2));
-    int y = findFarest((a - b).rot(pi / 2));
+  vector<P> getLineIntersect(P a, P b) { // a != b
+    P v = b - a;
+    int x = findFarest(P(-v.y, v.x)), y = findFarest(P(v.y, -v.x));
     if (x > y) swap(x, y);
     if (sgn(crx(a, b, p[x])) * sgn(crx(a, b, p[y])) < 0)
       return {get(x, y, a, b), get(y, x + n, a, b)};
@@ -84,14 +83,14 @@ struct CH { // Nondegenerate CCW hull; queries O(log n).
   }
   bool contain(P p) {
     if (p.x < d[0].x || p.x > d.back().x) return 0;
-    auto it = lower_bound(ALL(d), P(p.x, -1e12));
-    if (it->x == p.x) {
-      if (it->y > p.y) return 0;
-    } else if (crx(*prev(it), *it, p) < -eps) return 0;
-    it = lower_bound(ALL(u), P(p.x, 1e12), greater<P>());
-    if (it->x == p.x) {
-      if (it->y < p.y) return 0;
-    } else if (crx(*prev(it), *it, p) < -eps) return 0;
+    auto it = lower_bound(ALL(d), p.x,
+      [](P a, double x) { return a.x < x; });
+    if (it->x == p.x && it->y > p.y) return 0;
+    if (it->x != p.x && crx(*prev(it), *it, p) < -eps) return 0;
+    it = lower_bound(ALL(u), p.x,
+      [](P a, double x) { return a.x > x; });
+    if (it->x == p.x && it->y < p.y) return 0;
+    if (it->x != p.x && crx(*prev(it), *it, p) < -eps) return 0;
     return 1;
   }
   bool get_tangent(P p, int &a, int &b) { // b -> a

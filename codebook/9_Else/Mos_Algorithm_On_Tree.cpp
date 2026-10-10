@@ -1,5 +1,5 @@
-// in/out: zero-based entry/exit in a 2n Euler tour; ord maps to vertices.
-// flip(u) toggles u in the answer; block ~ sqrt(n), O(n sqrt(n)) for q~n.
+// block>0 (~sqrt(n)); in/out: zero-based entry/exit in a 2n Euler tour.
+// flip(ord[i]) toggles a vertex; start empty; O(n sqrt(n)) for q~n.
 struct Query {
   int L, R, LBid, lca, id;
   template<class LCA>

@@ -17,11 +17,13 @@ static ll oracle(const vector<vector<int>> &w, int mask,
   while (mask >> u & 1) ++u;
   ans = oracle(w, mask | (1 << u), memo);  // leave u unmatched
   for (int v = u + 1; v < n; ++v) if (!(mask >> v & 1) && w[u][v] > 0)
-    ans = max(ans, (ll)w[u][v] + oracle(w, mask | (1 << u) | (1 << v), memo));
+    ans = max(ans, (ll)w[u][v] +
+        oracle(w, mask | (1 << u) | (1 << v), memo));
   return ans;
 }
 
-static void check(const vector<vector<int>> &w, int tc, const char *label) {
+static void check(const vector<vector<int>> &w, int tc,
+                  const char *label) {
   int n = (int)w.size();
   WeightGraph graph(n);
   for (int i = 0; i < n; ++i) for (int j = i + 1; j < n; ++j) {
@@ -32,29 +34,34 @@ static void check(const vector<vector<int>> &w, int tc, const char *label) {
   }
   vector<ll> memo(1 << n, LLONG_MIN);
   ll want = oracle(w, 0, memo);
-  auto got = graph.solve();
+  // Rebuild from scratch even if the previous search left active blossoms.
+  for (int repeat = 0; repeat < 3; ++repeat) {
+    auto got = graph.solve();
 
-  ll internal = 0;
-  int pairs = 0;
-  for (int u = 1; u <= n; ++u) {
-    int v = graph.match[u];
-    if (!v) continue;
-    if (v < 1 || v > n || v == u || graph.match[v] != u || w[u - 1][v - 1] <= 0) {
-      cerr << "WeightGraph invalid matching case " << tc << " (" << label
-           << ") at " << u << " -> " << v << '\n';
+    ll internal = 0;
+    int pairs = 0;
+    for (int u = 1; u <= n; ++u) {
+      int v = graph.match[u];
+      if (!v) continue;
+      if (v < 1 || v > n || v == u || graph.match[v] != u ||
+          w[u - 1][v - 1] <= 0) {
+        cerr << "WeightGraph invalid matching case " << tc << " (" << label
+             << ") at " << u << " -> " << v << '\n';
+        exit(1);
+      }
+      if (u < v) internal += w[u - 1][v - 1], ++pairs;
+    }
+    if (got.first != want || got.first != internal ||
+        got.second != pairs) {
+      cerr << "WeightGraph mismatch case " << tc << " (" << label << ") n="
+           << n << " got=(" << got.first << ',' << got.second << ") want="
+           << want << " actual=(" << internal << ',' << pairs << ")\n";
+      for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j)
+          cerr << w[i][j] << (j + 1 == n ? '\n' : ' ');
+      }
       exit(1);
     }
-    if (u < v) internal += w[u - 1][v - 1], ++pairs;
-  }
-  if (got.first != want || got.first != internal || got.second != pairs) {
-    cerr << "WeightGraph mismatch case " << tc << " (" << label << ") n="
-         << n << " got=(" << got.first << ',' << got.second << ") want="
-         << want << " actual=(" << internal << ',' << pairs << ")\n";
-    for (int i = 0; i < n; ++i) {
-      for (int j = 0; j < n; ++j)
-        cerr << w[i][j] << (j + 1 == n ? '\n' : ' ');
-    }
-    exit(1);
   }
 }
 

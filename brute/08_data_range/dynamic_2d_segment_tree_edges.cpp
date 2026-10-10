@@ -56,6 +56,32 @@ static void run_case(int n, int m, const string &name, mt19937 &rng) {
 int main() {
   mt19937 rng(0x2D5E2D);
   mt19937 check_rng(0x2D57E55);
+  // Midpoints must not overflow, even if all stored sums are small.
+  {
+    Seg edge(INT_MAX);
+    edge.update(INT_MAX - 1, INT_MAX, 7);
+    edge.update(0, 1, -3);
+    assert(edge.query(0, INT_MAX) == 4);
+    assert(edge.query(INT_MAX - 2, INT_MAX) == 7);
+    edge.push(edge.root, 0, INT_MAX);
+    assert(edge.query(0, 1) == -3);
+    Seg lazy(INT_MAX);
+    lazy.update(0, INT_MAX, 1);
+    lazy.update(INT_MAX - 1, INT_MAX, -1);
+    lazy.push(lazy.root, 0, INT_MAX);
+    lazy.push(lazy.root->r, INT_MAX / 2, INT_MAX);
+    assert(lazy.query(0, INT_MAX) == INT_MAX - 1);
+    assert(lazy.query(INT_MAX - 2, INT_MAX) == 1);
+
+    Seg2D grid(INT_MAX, INT_MAX);
+    grid.update(INT_MAX - 1, INT_MAX, INT_MAX - 1, INT_MAX, 9);
+    grid.update(0, 1, 0, 1, -2);
+    assert(grid.query(0, INT_MAX, 0, INT_MAX) == 7);
+    assert(grid.query(INT_MAX - 2, INT_MAX,
+                      INT_MAX - 2, INT_MAX) == 9);
+    assert(grid.query(0, 1, 0, 1) == -2);
+    assert(grid.query(0, INT_MAX - 1, 1, INT_MAX) == 0);
+  }
   // Wide lazy range: point queries must not materialize children.
   Seg wide(1000000000);
   wide.update(0, wide.n, 1);

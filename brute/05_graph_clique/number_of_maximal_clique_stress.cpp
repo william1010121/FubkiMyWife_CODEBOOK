@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 constexpr int N = 151;
+#define SZ(v) ((int)(v).size())
 #include "../../codebook/2_Graph/NumberofMaximalClique.cpp"
 
 int main() {

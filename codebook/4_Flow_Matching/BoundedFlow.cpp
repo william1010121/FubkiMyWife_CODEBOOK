@@ -1,5 +1,5 @@
 // Requires MaxFlow (Dinic.cpp); MAXN >= n+3, 0 <= lo <= hi.
-struct BoundedFlow : MaxFlow { // 0-base, solve mutates the graph
+struct BoundedFlow : MaxFlow { // 0-base; solve once, mutates graph
   int vn, cnt[MAXN];
   using MaxFlow::add_edge; // ordinary zero-lower-bound edge
   void init(int _n) {
@@ -23,7 +23,7 @@ struct BoundedFlow : MaxFlow { // 0-base, solve mutates the graph
         G[i].pop_back(), G[vn + 2].pop_back();
     return sum != -1;
   }
-  int solve(int _s, int _t) {
+  int solve(int _s, int _t) { // max nonnegative flow; -1 if infeasible
     if (_s == _t) return solve() ? 0 : -1; // circulation
     add_edge(_t, _s, INF);
     if (!solve()) return -1;

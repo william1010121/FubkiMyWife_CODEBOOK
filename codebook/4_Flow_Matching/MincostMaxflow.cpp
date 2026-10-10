@@ -44,17 +44,14 @@ struct MinCostMaxFlow {
     bool need_bf = neg;
     if (!neg) for (int u = 0; u < n; ++u)
       for (auto &e : G[u]) need_bf |= e.cap > e.flow && e.cost < 0;
-    if (need_bf) {
-      if (!BellmanFord()) return;
-      for (int i = 0; i < n; ++i) if (dis[i] != INF) pot[i] = dis[i];
-    }
-    while (Dijkstra()) {
+    if (need_bf ? !BellmanFord() : !Dijkstra()) return;
+    do { // Use the initial shortest path without recomputing it.
       flow += up[t], cost += up[t] * (dis[t] + pot[t] - pot[s]);
       for (int i = 0; i < n; ++i) if (dis[i] != INF) pot[i] += dis[i];
       for (int i = t; past[i]; i = past[i]->from) {
         auto &e = *past[i]; e.flow += up[t], G[e.to][e.rev].flow -= up[t];
       }
-    }
+    } while (Dijkstra());
   }
   void init(int _n) {
     n = _n, fill_n(pot, n, 0);

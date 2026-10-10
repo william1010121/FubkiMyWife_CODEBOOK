@@ -1,6 +1,6 @@
-struct Poly { // Consecutive samples; ifac, inegfac through size-1<P.
+struct Poly { // Prime-field mint with canonical .v; 1<=size<=P.
   mint base; // f(base+i)=poly[i]; inegfac[i]=(-1)^i/i!
-  vector<mint> poly;
+  vector<mint> poly; // ifac, inegfac precomputed through size-1.
   Poly(mint b = 0, mint x = 0): base(b), poly(1, x) {}
   mint get_val(const mint &x) { // O(n) time/space
     int n = SZ(poly); mint t = x - base, rt = 0, suf = 1;
@@ -13,7 +13,7 @@ struct Poly { // Consecutive samples; ifac, inegfac through size-1<P.
     }
     return rt;
   }
-  void raise() { // g(x)=sum_{k=base}^x f(k); O(n)
+  void raise() { // n<P; g(x)=sum_{k=base}^x f(k); O(n)
     if (SZ(poly) == 1 && poly[0] == 0) return;
     mint nw = get_val(base + SZ(poly)); poly.pb(nw);
     for (int i = 1; i < SZ(poly); ++i) poly[i] += poly[i - 1];

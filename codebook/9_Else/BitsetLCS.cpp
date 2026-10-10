@@ -1,5 +1,6 @@
 // O(m+(n+D)ceil(m/64)) expected time; D distinct values in b.
 int bitset_lcs(const vector<int> &a, const vector<int> &b) {
+  if (a.empty() || b.empty()) return 0;
   int m = (int)b.size(), W = (m + 63) >> 6;
   unordered_map<int, vector<unsigned long long>> mask;
   for (int j = 0; j < m; ++j) {

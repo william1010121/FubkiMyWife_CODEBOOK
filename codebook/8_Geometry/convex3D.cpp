@@ -1,25 +1,23 @@
 double absvol(P a, P b, P c, P d) {
   return abs(((b-a)^(c-a))*(d-a))/6; }
-struct convex3D { // Set n, m=0; incremental O(n^2).
+struct convex3D { // n <= 1010, m=0; permutes p; O(n^2).
+  // f[0..m): outward triangles; degenerate input gives m=0.
   static const int maxn=1010;
   struct T{
     int a,b,c; bool res; T(){}
-    T(int a,int b,int c,bool res=1):a(a),
-      b(b),c(c),res(res){}
+    T(int a,int b,int c,bool res=1):a(a),b(b),c(c),res(res){}
   };
   int n,m; P p[maxn];
-  T f[maxn*8];
-  int id[maxn][maxn];
+  T f[maxn*8]; int id[maxn][maxn];
   bool on(T &t,P &q) { return ((p[t.c]-
     p[t.b])^(p[t.a]-p[t.b]))*(q-p[t.a])>eps; }
+  void add(T t){
+    id[t.a][t.b]=id[t.b][t.c]=id[t.c][t.a]=m; f[m++]=t; }
   void meow(int q,int a,int b){
     int g=id[a][b];
     if(f[g].res){
       if(on(f[g],p[q]))dfs(q,g);
-      else{
-        id[q][b]=id[a][q]=id[b][a]=m;
-        f[m++]=T(b,a,q,1);
-      }
+      else add(T(b,a,q));
     }
   }
   void dfs(int p,int i){ f[i].res=0;
@@ -40,12 +38,13 @@ struct convex3D { // Set n, m=0; incremental O(n^2).
     for(int i=0;i<4;++i){
       T t((i+1)%4,(i+2)%4,(i+3)%4,1);
       if(on(t,p[i]))swap(t.b,t.c);
-      id[t.a][t.b]=id[t.b][t.c]=id[t.c][t.a]=m;
-      f[m++]=t;
-    } for(int i=4;i<n;++i)for(int j=0;j<m;++j)
-      if(f[j].res && on(f[j],p[i])){ dfs(i,j); break; }
-    int mm=m; m=0;
-    for(int i=0;i<mm;++i)if(f[i].res)f[m++]=f[i];
+      add(t);
+    } for(int i=4;i<n;++i){
+      for(int j=0;j<m;++j)
+        if(on(f[j],p[i])){ dfs(i,j); break; }
+      int mm=m; m=0;
+      for(int j=0;j<mm;++j)if(f[j].res)add(f[j]);
+    }
   }
   bool same(int i,int j){
     for(int k : {f[j].a,f[j].b,f[j].c})

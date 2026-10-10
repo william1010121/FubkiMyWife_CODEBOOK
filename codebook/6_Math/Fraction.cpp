@@ -1,4 +1,4 @@
-struct fraction { // Reduced rationals; intermediates must fit ll.
+struct fraction { // No zero denominators/divisors, LLONG_MIN or overflow.
   ll n, d;
   fraction(const ll &a=0, const ll &b=1): n(a), d(b) {
     ll g = gcd(n, d); n /= g, d /= g;

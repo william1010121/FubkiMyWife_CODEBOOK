@@ -1,6 +1,6 @@
-// Zero-based inclusive [L,R]; updates numbered from 1.
-// add_time/sub_time apply/undo t and maintain the current [L,R].
-// Other callbacks add/remove a position, or report answer(q).
+// block>0; [L,R] zero-based inclusive; T is #updates applied.
+// add_time/sub_time apply/undo update t (1-based) in current [L,R].
+// Start empty at T=0; add/sub positions; answer(q) reads the state.
 // Block ~ N^(2/3), O(N^(5/3)) for O(N) queries/updates.
 struct Query {
   int L, R, LBid, RBid, T, id;

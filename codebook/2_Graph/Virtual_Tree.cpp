@@ -1,8 +1,7 @@
-vector<int> vG[N]; int top, st[N]; // needs LCA, dfn, dep
-void insert(int u) {
+vector<int> vG[N]; int top, st[N]; // LCA, dfn(preorder), dep
+void insert(int u) { // top=-1 initially; distinct keys by dfn
   if (top == -1) { st[++top] = u; return; }
   int p = LCA(st[top], u);
-  if (p == st[top]) { st[++top] = u; return; }
   while (top >= 1 && dep[st[top - 1]] >= dep[p])
     vG[st[top - 1]].pb(st[top]), --top;
   if (st[top] != p) vG[p].pb(st[top]), st[top] = p;
@@ -11,7 +10,7 @@ void insert(int u) {
 void reset(int u) {
   for (int i : vG[u]) reset(i); vG[u].clear();
 }
-int build(vector<int> &v) { // O(k log k + k * LCA cost)
+int build(vector<int> &v) { // clear vG first; O(k log k+k*T_LCA)
   if (v.empty()) return -1;
   top = -1;
   sort(ALL(v), [&](int a, int b) { return dfn[a] < dfn[b]; });

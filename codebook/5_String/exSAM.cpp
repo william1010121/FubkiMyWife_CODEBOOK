@@ -27,10 +27,10 @@ struct exSAM { // root=0; lowercase; insert all, then build/solve once
     }
   }
   void build() { // O(total input length * CNUM)
-    queue<int> q; q.push(0);
-    while (!q.empty()) { int cur = q.front(); q.pop();
+    lenSorted[0] = 0; // reuse as BFS queue before sorting by length
+    for (int h = 0, t = 1; h < t; ++h) { int cur = lenSorted[h];
       for (int i = 0; i < CNUM; ++i)
-        if (next[cur][i]) q.push(insertSAM(cur, i));
+        if (next[cur][i]) lenSorted[t++] = insertSAM(cur, i);
     } vector<int> lc(tot);
     for (int i = 1; i < tot; ++i) ++lc[len[i]];
     partial_sum(ALL(lc), lc.begin());

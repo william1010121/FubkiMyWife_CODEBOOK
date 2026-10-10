@@ -2,6 +2,7 @@
 using namespace std;
 using ll = long long;
 using ull = unsigned long long;
+#define ALL(v) v.begin(), v.end()
 
 namespace mo_update {
 #include "../../codebook/9_Else/Mos_Algorithm_With_modification.cpp"

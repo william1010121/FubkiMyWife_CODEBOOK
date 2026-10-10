@@ -1,12 +1,11 @@
-// Rectangle add/sum, initially zero; 0-base, half-open ranges.
-// O(log n log m) per operation; int sums/products may overflow.
+// n,m >= 0; rectangle add/sum, initially zero; 0-base half-open.
+// O(log n log m); ranges within domain; int arithmetic must fit.
 struct Seg { // 1D range add/sum; query allocates no nodes
   struct Node {
     int sum = 0, lazy = 0;
     Node *l = nullptr, *r = nullptr;
   };
-  int n;
-  Node *root = nullptr;
+  int n; Node *root = nullptr;
   Seg(int n = 0) : n(n) {}
   void apply(Node *&idx, int l, int r, int v) {
     if (!idx) idx = new Node();
@@ -14,7 +13,7 @@ struct Seg { // 1D range add/sum; query allocates no nodes
   }
   void push(Node *idx, int l, int r) {
     if (!idx || !idx->lazy || r - l == 1) return;
-    int m = (l + r) / 2;
+    int m = l + (r - l) / 2;
     apply(idx->l, l, m, idx->lazy);
     apply(idx->r, m, r, idx->lazy), idx->lazy = 0;
   }
@@ -22,16 +21,15 @@ struct Seg { // 1D range add/sum; query allocates no nodes
     if (ql >= qr || qr <= l || r <= ql) return;
     if (ql <= l && r <= qr) return apply(idx, l, r, v);
     if (!idx) idx = new Node();
-    int m = (l + r) / 2;
+    idx->sum += v * (min(r, qr) - max(l, ql));
+    int m = l + (r - l) / 2;
     update(idx->l, l, m, ql, qr, v);
     update(idx->r, m, r, ql, qr, v);
-    idx->sum = (idx->l ? idx->l->sum : 0)
-             + (idx->r ? idx->r->sum : 0) + idx->lazy * (r - l);
   }
   int query(Node *idx, int l, int r, int ql, int qr) {
     if (!idx || ql >= qr || qr <= l || r <= ql) return 0;
     if (ql <= l && r <= qr) return idx->sum;
-    int m = (l + r) / 2;
+    int m = l + (r - l) / 2;
     // Children exclude this lazy; count only the queried overlap.
     return idx->lazy * (min(r, qr) - max(l, ql))
          + query(idx->l, l, m, ql, qr)
@@ -46,8 +44,7 @@ struct Seg2D {
     Node *l = nullptr, *r = nullptr;
     Node(int m) : sum(m), lazy(m) {}
   };
-  int n, m;
-  Node *root = nullptr;
+  int n, m; Node *root = nullptr;
   Seg2D(int n, int m) : n(n), m(m) {}
   void update(Node *&idx, int l, int r,
               int xl, int xr, int yl, int yr, int v) {
@@ -56,7 +53,7 @@ struct Seg2D {
     // sum counts all updates intersecting this x interval.
     idx->sum.update(yl, yr, v * (min(r, xr) - max(l, xl)));
     if (xl <= l && r <= xr) return idx->lazy.update(yl, yr, v);
-    int md = (l + r) / 2;
+    int md = l + (r - l) / 2;
     update(idx->l, l, md, xl, xr, yl, yr, v);
     update(idx->r, md, r, xl, xr, yl, yr, v);
   }
@@ -64,7 +61,7 @@ struct Seg2D {
             int xl, int xr, int yl, int yr) {
     if (!idx || xl >= xr || yl >= yr || xr <= l || r <= xl) return 0;
     if (xl <= l && r <= xr) return idx->sum.query(yl, yr);
-    int md = (l + r) / 2;
+    int md = l + (r - l) / 2;
     // lazy covers this full x interval; children exclude it.
     return idx->lazy.query(yl, yr) * (min(r, xr) - max(l, xl))
          + query(idx->l, l, md, xl, xr, yl, yr)

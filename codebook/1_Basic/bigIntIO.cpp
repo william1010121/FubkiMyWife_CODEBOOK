@@ -3,14 +3,13 @@ bool read(__int128 &value) { // false on EOF/overflow; value unchanged
   for (;;) {
     while (ch != EOF && ch != '-' && ch != '+' && !isdigit(ch))
       ch = getchar();
-    if (ch == EOF) return false;
-    neg = ch == '-';
+    if (ch == EOF) return false; neg = ch == '-';
     if (isdigit(ch) || isdigit(ch = getchar())) break;
   }
   __uint128_t x = 0, lim = ((__uint128_t)1 << 127) - !neg;
   do {
     unsigned d = ch - '0';
-    if (x > (lim - d) / 10) overflow = true;
+    if (x > lim / 10 || (x == lim / 10 && d > lim % 10)) overflow = true;
     else x = x * 10 + d;
   } while (isdigit(ch = getchar()));
   if (overflow) return false;

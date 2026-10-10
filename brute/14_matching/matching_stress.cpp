@@ -7,14 +7,17 @@ static void require(bool ok, const char *what) {
 }
 
 static void check_weighted(WeightGraph &g, ll want, int count) {
-  require(g.solve() == make_pair(want, count), "weighted optimum");
-  ll sum = 0; int pairs = 0;
-  for (int u = 1; u <= g.n; ++u) if (int v = g.match[u]) {
-    require(v > 0 && v <= g.n && v != u && g.match[v] == u,
-            "weighted matching validity");
-    if (u < v) sum += g.g[u][v].w, ++pairs;
+  // Repeat with the same object; odd graphs leave contracted blossoms.
+  for (int repeat = 0; repeat < 2; ++repeat) {
+    require(g.solve() == make_pair(want, count), "weighted optimum");
+    ll sum = 0; int pairs = 0;
+    for (int u = 1; u <= g.n; ++u) if (int v = g.match[u]) {
+      require(v > 0 && v <= g.n && v != u && g.match[v] == u,
+              "weighted matching validity");
+      if (u < v) sum += g.g[u][v].w, ++pairs;
+    }
+    require(sum == want && pairs == count, "weighted sum/count");
   }
-  require(sum == want && pairs == count, "weighted sum/count");
 }
 
 int main() {
@@ -37,6 +40,12 @@ int main() {
     cycle.add_edge(u, u % cycle.n + 1, 7);
   check_weighted(cycle, 7LL * (cycle.n / 2), cycle.n / 2);
   WeightGraph clique(301);
+  for (int u = 1; u <= clique.n; ++u)
+    for (int v = u + 1; v <= clique.n; ++v) clique.add_edge(u, v, 3);
+  check_weighted(clique, 3LL * (clique.n / 2), clique.n / 2);
+  for (int u = 1; u <= clique.n; ++u)
+    for (int v = u + 1; v <= clique.n; ++v) clique.add_edge(u, v, -1);
+  check_weighted(clique, 0, 0); // Overwrites after a blossom search.
   for (int u = 1; u <= clique.n; ++u)
     for (int v = u + 1; v <= clique.n; ++v) clique.add_edge(u, v, 3);
   check_weighted(clique, 3LL * (clique.n / 2), clique.n / 2);
