@@ -18,7 +18,7 @@ struct Matching { // Undirected, loopless; 0-base; unmatched = n
       for (int z: {x, y}) if (fa[z] == z) fa[z] = l;
     }
   }
-  bool Bfs(int r) {
+  bool Bfs(int r) { if (G[r].empty()) return false;
     for (int u : G[r]) if (match[u] == n)
       return match[r] = u, match[u] = r, true;
     iota(ALL(fa), 0); fill(ALL(s), -1);

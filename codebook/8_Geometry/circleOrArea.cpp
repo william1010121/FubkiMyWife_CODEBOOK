@@ -15,15 +15,16 @@ void AppendCoverSegment(C &a, C &b, vector<pair<double, double>> &res) {
 }
 vector<pair<double, double>> CoverSegment(C &a, C &b) {
   vector<pair<double, double>> v; AppendCoverSegment(a, b, v); return v; }
-// r>=0; no eps-coincident pairs (d, |dr| <= eps); O(n^2 log n).
+// r>=0, n fits int; no pairs with d, |dr|<=eps; O(n^2 log n).
 // Floating intermediates finite; geometry resolved to required tolerance.
 double CircleUnionArea(vector<C> c) {
   if (!c.empty()) { P o = c[0].c; for (auto &v : c) v.c = v.c - o; }
   sort(c.begin(), c.end(), [](C a, C b) { return a.r > b.r; });
+  int n = c.size(); while (n && c[n - 1].r == 0) --n;
   double a = 0; vector<pair<double, double>> s;
-  for (int i = 0; i < (int)c.size(); ++i) {
+  for (int i = 0; i < n; ++i) {
     double w = 0; s = {{2 * pi, 2 * pi}};
-    for (int j = 0; j < (int)c.size(); ++j) if (i != j) {
+    for (int j = 0; j < n; ++j) if (i != j) {
       AppendCoverSegment(c[i], c[j], s);
       if (s.back() == make_pair(0., 2 * pi)) { s.clear(); break; }
     }
@@ -34,5 +35,4 @@ double CircleUnionArea(vector<C> c) {
       if (l > w) a += F(l) - F(w);
       w = max(w, r);
     }
-  } return a * 0.5;
-}
+  } return a * 0.5; }

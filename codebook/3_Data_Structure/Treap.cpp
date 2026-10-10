@@ -31,8 +31,7 @@ void split2(node *o, node *&a, node *&b, int k) {
   o->up();
 }
 node *kth(node *o, int k) { // 1 <= k <= size
-  int s = sz(o->l) + 1;
-  if (k == s) return o;
+  int s = sz(o->l) + 1; if (k == s) return o;
   return k < s ? kth(o->l, k) : kth(o->r, k - s);
 }
 int Rank(node *o, int key) { // count keys < key
@@ -42,18 +41,19 @@ int Rank(node *o, int key) { // count keys < key
 }
 bool erase(node *&o, int k) { // erase one copy
   if (!o) return 0;
-  if (o->data == k) {
-    node *t = o;
+  if (o->data == k) { node *t = o;
     o->down(), o = merge(o->l, o->r);
     delete t; return 1;
   }
   node *&t = k < o->data ? o->l : o->r;
   return erase(t, k) ? o->up(), 1 : 0;
 }
-void insert(node *&o, int k) {
-  node *a, *b;
-  split(o, a, b, k), o = merge(a, merge(new node(k), b));
+void insert_node(node *&o, node *p) { // p is a fresh singleton
+  if (!o || p->priority < o->priority)
+    return split(o, p->l, p->r, p->data), o = p, o->up(), void();
+  o->down(); insert_node(p->data < o->data ? o->l : o->r, p); o->up();
 }
+void insert(node *&o, int k) { insert_node(o, new node(k)); }
 void interval(node *&o, int l, int r) { // 1-base start l, length r
   node *a, *b, *c;
   split2(o, a, b, l - 1), split2(b, b, c, r);

@@ -25,7 +25,7 @@ double IntersectArea(C a, C b) {
     y = sqrt(max(0., sq(a.r) - sq(x))); // Common chord (x, +/-y).
   auto cap = [](double r, double t) { // Stable small-angle segment.
     return sq(r) * (t < 1e-3 ? t * t * t * (2. / 3 - 2. / 15 * t * t)
-      : t - sin(t) * cos(t));
+      : t - sin(2 * t) / 2);
   }; return cap(a.r, atan2(y, x)) + cap(b.r, atan2(y, d - x));
 }
 // Nonnegative r; endpoint tolerance eps in length, not parameter.
