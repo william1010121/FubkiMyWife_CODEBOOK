@@ -12,8 +12,7 @@ using namespace std;
 }
 
 int main() {
-  // The template has no EOF sentinel.  Therefore the contract is checked up
-  // to (and including) the final byte, without making an undefined extra read.
+  // Check every byte as int, so 0xff must remain distinct from EOF.
   const size_t size = 65536 + 37;
   vector<unsigned char> expected(size);
   for (size_t i = 0; i < size; ++i)
@@ -34,12 +33,14 @@ int main() {
   clearerr(stdin);
 
   for (size_t i = 0; i < expected.size(); ++i) {
-    unsigned char got = static_cast<unsigned char>(readchar());
+    int got = readchar();
     if (got != expected[i])
       fail("byte " + to_string(i) + ": got " + to_string(got) +
            ", expected " + to_string(expected[i]));
   }
+  for (int i = 0; i < 3; ++i)
+    if (readchar() != EOF) fail("EOF must be stable across repeated reads");
 
   cerr << "PASS readchar: " << expected.size()
-       << " bytes, embedded NUL, 0xff, full-buffer refill, final byte\n";
+       << " bytes, embedded NUL, 0xff, refill, final byte, repeated EOF\n";
 }

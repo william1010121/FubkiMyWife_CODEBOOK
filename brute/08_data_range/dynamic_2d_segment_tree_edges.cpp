@@ -55,6 +55,31 @@ static void run_case(int n, int m, const string &name, mt19937 &rng) {
 
 int main() {
   mt19937 rng(0x2D5E2D);
+  mt19937 check_rng(0x2D57E55);
+  // Wide lazy range: point queries must not materialize children.
+  Seg wide(1000000000);
+  wide.update(0, wide.n, 1);
+  for (int q = 0; q < 200000; ++q) {
+    int x = check_rng() % wide.n;
+    assert(wide.query(x, x + 1) == 1);
+  }
+  assert(!wide.root->l && !wide.root->r);
+
+  // The public push helper must still work with retained parent lazy.
+  Seg one(31);
+  vector<int> ref(one.n);
+  for (int q = 0; q < 1000; ++q) {
+    int l = check_rng() % (one.n + 1), r = check_rng() % (one.n + 1);
+    if (l > r) swap(l, r);
+    int v = int(check_rng() % 11) - 5;
+    one.update(l, r, v);
+    for (int i = l; i < r; ++i) ref[i] += v;
+    if (q % 3 == 0) one.push(one.root, 0, one.n);
+    for (int a = 0; a <= one.n; ++a)
+      for (int b = a; b <= one.n; ++b)
+        assert(one.query(a, b) ==
+               accumulate(ref.begin() + a, ref.begin() + b, 0));
+  }
   // The smallest domains expose midpoint and leaf handling.  2x3 and 3x2
   // also exercise asymmetric recursion in both dimensions.
   run_case(0, 0, "zero-by-zero", rng);

@@ -2,8 +2,8 @@
 using namespace std;
 using ull = unsigned long long;
 
-// The PDF template is intentionally a fragment: it expects ull and a
-// zero-initialized global basis supplied by the including program.
+// The template declares its own zero-initialized basis; ull is only used by
+// this harness's oracle, not required by the template.
 #include "../../codebook/3_Data_Structure/XOR_Basis.cpp"
 
 [[noreturn]] static void fail(const string &message) {

@@ -1,15 +1,14 @@
-set<pii>::iterator addInterval(set<pii>& is,
-  int L, int R) {
+// Canonical disjoint [L,R), L <= R; O(log s + erased intervals)
+set<pii>::iterator addInterval(set<pii>& is, int L, int R) {
   if (L == R) return is.end();
   auto it = is.lower_bound({L, R}), before = it;
   while (it != is.end() && it->X <= R) {
-    R = max(R, it->Y);
-    before = it = is.erase(it);
-  } if (it != is.begin() && (--it)->Y >= L) {
-    L = min(L, it->X);
-    R = max(R, it->Y);
-    is.erase(it);
-  } return is.insert(before, {L, R});
+    R = max(R, it->Y), before = it = is.erase(it);
+  }
+  if (it != is.begin() && (--it)->Y >= L) {
+    L = min(L, it->X), R = max(R, it->Y), is.erase(it);
+  }
+  return is.insert(before, {L, R});
 }
 void removeInterval(set<pii>& is, int L, int R) {
   if (L == R) return;

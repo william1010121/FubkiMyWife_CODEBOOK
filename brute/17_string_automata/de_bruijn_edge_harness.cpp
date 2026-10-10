@@ -58,6 +58,11 @@ int main() {
     for (int windows = 1; windows <= total; ++windows)
       check(10, order, windows), ++cases;
   }
+  // solve() must reset the seed even after the scratch buffer was reused.
+  dbs.buf[0] = 7;
+  check(2, 3, 8), ++cases;
+  // Unary output should not require a hundred thousand recursive frames.
+  check(1, 100000, 1), ++cases;
   cout << "PASS de-bruijn-edge cases=" << cases
        << " oracle=all-linear-window-uniqueness\n";
 }

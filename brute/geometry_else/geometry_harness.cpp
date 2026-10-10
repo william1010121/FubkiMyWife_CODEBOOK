@@ -11,7 +11,11 @@ double sq(double x) { return x * x; }
 #include "../../codebook/8_Geometry/circle.cpp"
 #include "../../codebook/8_Geometry/CircleTangent.cpp"
 #include "../../codebook/8_Geometry/circleOrArea.cpp"
+#define SZ(a) ((int)a.size())
+#define ALL(v) v.begin(), v.end()
+#define pb push_back
 #include "../../codebook/8_Geometry/convexHull.cpp"
+#undef pb
 #include "../../codebook/8_Geometry/PointInConvex.cpp"
 #include "../../codebook/8_Geometry/halfPlaneIntersect.cpp"
 

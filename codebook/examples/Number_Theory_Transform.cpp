@@ -1,2 +1,1 @@
-vector<int> c = mult(a, b); // modulo 998244353
-#undef int // if the listing's macro must not leak
+vector<ll> c = mult(a, b); // vector<ll> a,b; modulo 998244353

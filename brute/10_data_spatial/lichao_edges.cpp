@@ -41,6 +41,21 @@ static void run_case(int n, const vector<L> &to_insert,
 int main() {
   run_case(0, {L(7, 11, 0), L(-3, 4, 1)}, "zero-x");
 
+  // Equal slopes need only the best intercept, even on a wide domain.
+  {
+    const int n = 1 << 20;
+    LiChao tree(n), empty(n);
+    for (int q = 0; q < 200000; ++q) {
+      int x = (q * 7919LL) % n;
+      assert(empty.query(x) == -INF);
+      tree.insert(L(37, q, q));
+      tree.insert(L(37, -q, q + 200000));
+      assert(tree.query(x) == 37LL * x + q);
+    }
+    for (int x : {0, n / 2, n - 1})
+      assert(tree.query(x) == 37LL * x + 199999);
+  }
+
   run_case(1, {
       L(0, 0, 0), L(0, -7, 1), L(0, 7, 2),
       L(-1000000, 1000000, 3), L(1000000, -1000000, 4)},

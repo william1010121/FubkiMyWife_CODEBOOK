@@ -15,6 +15,8 @@ double Cross(Point a, Point b) {
   ++cross_calls;
   return a.x * b.y - a.y * b.x;
 }
+#define SZ(a) ((int)a.size())
+#define ALL(v) v.begin(), v.end()
 #include "../../codebook/8_Geometry/ClosestPair.cpp"
 #include "../../codebook/8_Geometry/maxTriangleOfConvex.cpp"
 

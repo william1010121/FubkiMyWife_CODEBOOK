@@ -90,6 +90,31 @@ int main() {
   check(!eof_result, "EOF must terminate without hanging");
   check(eof_value == 123, "EOF must not overwrite the destination");
 
+  // Failures must consume the entire token and preserve the destination.
+  FILE *edge_input = tmpfile();
+  check(edge_input != nullptr, "edge tmpfile");
+  std::string edge_text =
+      "170141183460469231731687303715884105728 "
+      "-170141183460469231731687303715884105729 " +
+      std::string(4096, '9') + " --12 ++34 +-56 -+78 9 +";
+  check(fwrite(edge_text.data(), 1, edge_text.size(), edge_input) ==
+            edge_text.size(), "write edge input");
+  fflush(edge_input), rewind(edge_input);
+  check(dup2(fileno(edge_input), STDIN_FILENO) >= 0,
+        "redirect edge stdin");
+  clearerr(stdin);
+  for (int i = 0; i < 3; ++i) {
+    i128 value = 123;
+    check(!read(value) && value == 123, "overflow preserves value");
+  }
+  for (int expected : {-12, 34, -56, 78, 9}) {
+    i128 value = 0;
+    check(read(value) && value == expected, "sign recovery after overflow");
+  }
+  eof_value = 123;
+  check(!read(eof_value) && eof_value == 123, "trailing sign EOF");
+  check(read() == 0, "value overload returns zero at EOF");
+
   check(dup2(fileno(output_file), STDOUT_FILENO) >= 0, "redirect stdout");
   clearerr(stdout);
   for (i128 value : parsed) {
@@ -113,5 +138,5 @@ int main() {
       check(cmp(x, y) == (x > y), "descending comparator");
 
   std::cerr << "PASS bigint_io: " << cases.size()
-            << " signed/zero/large tokens, EOF token, print, cmp\n";
+            << " tokens, EOF, overflow/sign recovery, print, cmp\n";
 }

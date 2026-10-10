@@ -1,36 +1,32 @@
-# decimal
-from decimal import *
-setcontext(Context(prec=MAX_PREC, Emax=MAX_EMAX, rounding=ROUND_FLOOR))
-print(Decimal(input()) * Decimal(input()))
+from decimal import (Decimal, Context, localcontext, MAX_PREC, MAX_EMAX,
+                     ROUND_FLOOR)
 from fractions import Fraction
-Fraction("3.14159").limit_denominator(10).numerator  # 22
-# N*M
-map(int, input().split())
-arr2d = [[list(map(int, input().split()))] for i in range(N)]
-# a^b%M
-pow(a, b, M)
-# random
-from random import *
-randrange(L, R, step)  # [L,R) L+k*step
-randint(L, R)  # int from [L,R]
-choice(list)  # pick 1 item from list
-choices(list, k)  # pick k item
-shuffle(list)
-Uniform(L, R)  # float from [L,R]
-# print
-print(f"num: {num}, pi: {pi:.2f}, str: {text}")
-print(1, 2, 3, 4, sep=" | ", end=" <-- END\n")
-# file IO
-r = open("filename.in")
-a = r.read()  # read whole content into one string
-w = open("filename.out", "w")
-w.write("123\n")
-# IO redirection
 import sys
-sys.stdin = open("filename.in")
-sys.stdout = open("filename.out", "w")
-print("123", file=sys.stderr)
-input_data = sys.stdin.buffer.read().split()
-n = int(input_data[0])
-arr = list(map(int, input_data[1 : n + 1]))
-sys.set_int_max_str_digits(5000000)
+# Exact decimals; local context leaves the caller's context unchanged.
+def decimal_multiply(a, b):
+    with localcontext(Context(prec=MAX_PREC, Emax=MAX_EMAX,
+                              rounding=ROUND_FLOOR)):
+        return Decimal(a) * Decimal(b)
+def limit_fraction(s, bound): return Fraction(s).limit_denominator(bound)
+def read_matrix(lines, n, m):
+    it = iter(lines)
+    a = [list(map(int, next(it).split())) for _ in range(n)]
+    if any(len(row) != m for row in a): raise ValueError("row length")
+    return a
+def modular_power(a, b, m): return pow(a, b, m)
+# rng = random.Random(seed); choices uses keyword k, uniform is lowercase.
+def random_examples(rng, values):
+    if not values: raise ValueError("empty choices")
+    a = list(values); rng.shuffle(a)
+    return rng.choice(values), rng.choices(values, k=2), a
+# rng.randrange(L,R,step), rng.randint(L,R), rng.uniform(L,R)
+def format_example(num, pi, text):
+    return f"num: {num}, pi: {pi:.2f}, str: {text}"
+def parse_int_array(data):  # data = sys.stdin.buffer.read()
+    a = list(map(int, data.split()))
+    if not a or a[0] < 0 or len(a) != a[0]+1: raise ValueError("length")
+    return a[0], a[1:]
+# with open("filename.in") as f: data = f.read()
+# with open("filename.out", "w") as f: print(1, 2, sep=" | ", file=f)
+# print("debug", file=sys.stderr); sys.stdin = open("filename.in")
+# sys.set_int_max_str_digits(5000000)  # Python 3.11+, huge integer input

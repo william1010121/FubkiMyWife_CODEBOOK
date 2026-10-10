@@ -1,26 +1,19 @@
-/*
-Mo's algorithm with point updates.
-`add_time(t, L, R)` applies update t,
-  `sub_time` rolls it back, and the other
-callbacks maintain the current [L,
-  R] answer.  Updates are numbered from 1.
-*/
+// Zero-based inclusive [L,R]; updates numbered from 1.
+// add_time/sub_time apply/undo t and maintain the current [L,R].
+// Other callbacks add/remove a position, or report answer(q).
+// Block ~ N^(2/3), O(N^(5/3)) for O(N) queries/updates.
 struct Query {
   int L, R, LBid, RBid, T, id;
-  Query(int l, int r, int t,
-    int block = 1, int query_id = -1)
-      : L(l), R(r), LBid(l / block),
-        RBid(r / block), T(t), id(query_id) {}
+  Query(int l, int r, int t, int block = 1, int query_id = -1)
+    : L(l), R(r), LBid(l / block), RBid(r / block), T(t), id(query_id) {}
   bool operator<(const Query &q) const {
-    return tie(LBid, RBid,
-      T) < tie(q.LBid, q.RBid, q.T);
+    if (LBid != q.LBid) return LBid < q.LBid;
+    if (RBid != q.RBid) return LBid & 1 ? RBid > q.RBid : RBid < q.RBid;
+    return (LBid + RBid) & 1 ? T > q.T : T < q.T;
   }
 };
-
-template<class AddTime, class SubTime,
-  class Add, class Sub, class Answer>
-void solve(vector<Query> query,
-  AddTime add_time, SubTime sub_time,
+template<class AddTime, class SubTime, class Add, class Sub, class Answer>
+void solve(vector<Query> query, AddTime add_time, SubTime sub_time,
            Add add, Sub sub, Answer answer) {
   sort(query.begin(), query.end());
   int L = 0, R = -1, T = 0;

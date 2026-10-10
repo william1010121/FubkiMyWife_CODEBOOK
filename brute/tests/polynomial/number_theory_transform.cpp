@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std;
+using ll = long long;
 constexpr int kN = 1 << 10;
 constexpr int kMod = 998244353;
 constexpr int kRoot = 3;
@@ -20,7 +21,6 @@ void BitReverse(vector<int> &a, int n) {
 namespace chris_ntt {
 #include "codebook/7_Polynomial/NTT_chrislaiisme.cpp"
 }
-#undef int
 
 static vector<int> oracle(const vector<int> &a, const vector<int> &b) {
   vector<int> c(a.size() + b.size() - 1);

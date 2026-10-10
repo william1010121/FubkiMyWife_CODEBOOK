@@ -44,6 +44,7 @@ pair<int, ll> hull(vector<Point> p) {
 }
 
 int main() {
+  auto *saved = delaunay::MakeEdge({-1, -2}, {-3, -4});
   mt19937 rng(11);
   for (int it = 0; it < 20000; ++it) {
     int n = rng() % 30, R = 1 + rng() % 8;
@@ -60,6 +61,10 @@ int main() {
     for (auto [x, y] : s) p.push_back(Point(x, y));
     n = p.size();
     auto tri = delaunay::Triangulate(p);
+    if (delaunay::edges.size() != 1 || saved->p.x != -1 ||
+        saved->F().x != -3 || saved->r()->r() != saved) {
+      puts("FAIL edge storage lifetime"); return 1;
+    }
     bool allcol = true;
     for (int i = 2; i < n; ++i) if (cr(p[0], p[1], p[i]) != 0) allcol = false;
     auto fail = [&](const char *m) {
@@ -80,5 +85,16 @@ int main() {
     }
     if (sum != A) fail("area");
   }
-  puts("OK");
+  vector<Point> grid;
+  for (int x = 0; x < 250; ++x) for (int y = 0; y < 200; ++y)
+    grid.emplace_back(x, y);
+  auto tri = delaunay::Triangulate(grid);
+  if (tri.size() != 2 * 249 * 199 || delaunay::edges.size() != 1) {
+    puts("FAIL 50000-point grid count/lifetime"); return 1;
+  }
+  for (auto t : tri) if (cr(t[0], t[1], t[2]) != 1) {
+    puts("FAIL grid triangle orientation/area"); return 1;
+  }
+  delaunay::edges.clear();
+  puts("OK: 20000 brute cases, repeated calls, 50000-point grid");
 }

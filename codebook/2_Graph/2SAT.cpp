@@ -1,6 +1,5 @@
-struct SAT { // 0-base
-  int n;
-  vector<bool> istrue;
+struct SAT { // 0-base: true=i, false=i+n; needs SCC, O(V+E)
+  int n; vector<bool> istrue;
   SCC scc;
   SAT(int _n): n(_n), istrue(n + n), scc(n + n) {}
   int rv(int a) { return a >= n ? a - n : a + n; }

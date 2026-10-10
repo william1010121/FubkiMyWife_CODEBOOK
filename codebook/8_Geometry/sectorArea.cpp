@@ -1,6 +1,4 @@
-// calc area of sector which include a, b
+// Minor sector between vectors a, b; O(1).
 double SectorArea(P a, P b, double r) {
-  double o = abs(remainder(a.angle() - b.angle(),
-    2 * pi));
-  return r * r * o / 2;
+  return r * r * abs(remainder(a.angle() - b.angle(), 2 * pi)) / 2;
 }

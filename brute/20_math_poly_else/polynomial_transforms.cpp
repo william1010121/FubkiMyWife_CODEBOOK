@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std;
+using ll = long long;
 
 namespace fft_test {
 #include "../../codebook/7_Polynomial/Fast_Fourier_Transform.cpp"
@@ -44,7 +45,6 @@ namespace ntt2_test {
 
 namespace ntt_pdf_test {
 #include "../../codebook/7_Polynomial/NTT_chrislaiisme.cpp"
-#undef int
 }
 
 static vector<long long> naive_conv(const vector<int> &a, const vector<int> &b,

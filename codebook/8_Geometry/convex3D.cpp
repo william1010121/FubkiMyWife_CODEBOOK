@@ -1,14 +1,13 @@
-double absvol(const P a,const P b,const P c,const P d)
-{ return abs(((b-a)^(c-a))*(d-a))/6; }
-struct convex3D {
+double absvol(P a, P b, P c, P d) {
+  return abs(((b-a)^(c-a))*(d-a))/6; }
+struct convex3D { // Set n, m=0; incremental O(n^2).
   static const int maxn=1010;
   struct T{
     int a,b,c; bool res; T(){}
     T(int a,int b,int c,bool res=1):a(a),
       b(b),c(c),res(res){}
   };
-  int n,m;
-  P p[maxn];
+  int n,m; P p[maxn];
   T f[maxn*8];
   int id[maxn][maxn];
   bool on(T &t,P &q) { return ((p[t.c]-
@@ -28,22 +27,16 @@ struct convex3D {
     meow(p,f[i].c,f[i].b); meow(p,f[i].a,f[i].c); }
   void operator()(){
     if(n<4)return;
-    if([&](){
-        for(int i=1;i<n;++i)if(abs(p[0]-p[i])>eps)
-          return swap(p[1],p[i]),0;
-        return 1;
-        }() || [&](){
-        for(int i=2;i<n;++i)
-          if(abs((p[0]-p[i])^(p[1]-p[i]))>eps)
-            return swap(p[2],p[i]),0;
-        return 1;
-        }() || [&](){
-        for(int i=3;i<n;++i)
-          if(abs(((p[1]-p[0])^(p[2]-
-            p[0]))*(p[i]-p[0]))>eps)
-            return swap(p[3],p[i]),0;
-        return 1;
-        }())return;
+    auto choose = [&](int k, auto test) {
+      for(int i=k;i<n;++i)if(test(p[i])){
+        swap(p[k],p[i]); return true;
+      } return false;
+    };
+    if(!choose(1,[&](P q){return abs(p[0]-q)>eps;}) ||
+       !choose(2,[&](P q){return abs((p[0]-q)^(p[1]-q))>eps;}) ||
+       !choose(3,[&](P q){
+         return abs(((p[1]-p[0])^(p[2]-p[0]))*(q-p[0]))>eps;
+       }))return;
     for(int i=0;i<4;++i){
       T t((i+1)%4,(i+2)%4,(i+3)%4,1);
       if(on(t,p[i]))swap(t.b,t.c);
@@ -55,18 +48,16 @@ struct convex3D {
     for(int i=0;i<mm;++i)if(f[i].res)f[m++]=f[i];
   }
   bool same(int i,int j){
-    return !(absvol(p[f[i].a],
-      p[f[i].b],p[f[i].c],p[f[j].a])>eps
-      || absvol(p[f[i].a],p[f[i].b],
-        p[f[i].c],p[f[j].b])>eps
-      || absvol(p[f[i].a],p[f[i].b],
-        p[f[i].c],p[f[j].c])>eps);
+    for(int k : {f[j].a,f[j].b,f[j].c})
+      if(absvol(p[f[i].a],p[f[i].b],p[f[i].c],p[k])>eps)
+        return false;
+    return true;
   }
   int faces(){
     int r=0;
     for(int i=0;i<m;++i){
       int iden=1;
-      for(int j=0;j<i;++j)if(same(i,j))iden=0;
+      for(int j=0;j<i;++j)if(same(i,j)){iden=0; break;}
       r+=iden;
     } return r;
   }

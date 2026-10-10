@@ -1,7 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std;
 using ll = long long;
-#define INF 0x3f3f3f3f
 #define ALL(x) (x).begin(), (x).end()
 #define SZ(x) ((int)(x).size())
 #define pb push_back

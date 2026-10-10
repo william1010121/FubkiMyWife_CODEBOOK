@@ -8,10 +8,10 @@
 #include <cstdlib>
 #include <algorithm>
 using namespace std;
+using ll = long long;
 #include "../../codebook/6_Math/Mod_Arithmetic.cpp"
 #include "../../codebook/6_Math/Mod_Binomial.cpp"
 #include "../../codebook/6_Math/QuadraticResidue.cpp"
-using ll = long long;
 ll norm(ll a,ll m){ __int128 t=a; return (t%m+m)%m; }
 ll mul_oracle(ll a,ll b,ll m){
   unsigned long long x=norm(a,m),y=norm(b,m),r=0;
