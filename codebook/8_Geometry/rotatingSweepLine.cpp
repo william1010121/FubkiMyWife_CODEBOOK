@@ -6,12 +6,11 @@ vector<int> rotatingSweepLineOrder(const vector<pair<int,int>> &ps) {
   for (int i = 0; i < n; ++i) for (int j = i + 1; j < n; ++j) {
     long long x = 1LL * ps[i].first - ps[j].first,
       y = 1LL * ps[i].second - ps[j].second;
-    // Unoriented directions need a common half-plane before sorting.
+    // Half-plane x>0 or x=0,y>0; vertical events sort last.
     if (x < 0 || (x == 0 && y < 0)) x = -x, y = -y;
     line.push_back({i, j, x, y});
   }
   sort(line.begin(), line.end(), [](const Event &a, const Event &b) {
-    if (!a.x || !b.x) return a.x && !b.x; // Vertical events last.
     return (__int128)a.y * b.x < (__int128)b.y * a.x;
   });
   iota(id.begin(), id.end(), 0);

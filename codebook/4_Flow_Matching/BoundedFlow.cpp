@@ -31,10 +31,8 @@ struct BoundedFlow : MaxFlow { // 0-base; solve once, mutates graph
     if (_s == _t) return solve() ? 0 : -1; // circulation
     add_edge(_t, _s, INF);
     if (!solve()) return -1;
-    int fake = SZ(G[_t]) - 1, rev = G[_t][fake].rev;
-    int x = G[_t][fake].cap = G[_t][fake].flow;
-    G[_s][rev].cap = G[_s][rev].flow;
-    x += maxflow(_s, _t);
-    return G[_t].pop_back(), G[_s].pop_back(), x;
+    int x = G[_t].back().flow; // remove the balancing edge
+    G[_t].pop_back(), G[_s].pop_back();
+    return x + maxflow(_s, _t);
   }
 };
