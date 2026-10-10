@@ -59,8 +59,13 @@ void run_case(const string &name, int n, const vector<Edge> &edges) {
     cd.init(n);
     for (auto e : edges) cd.add_edge(e.u, e.v, e.w);
     cd.build();
+    vector<int> component(n + 1);
+    for (int u = 1; u <= n; ++u)
+      for (int a = u; a; a = cd.pa[a]) ++component[a];
     for (int u = 1; u <= n; ++u) {
       assert(cd.done[u] == 0);
+      assert(cd.layer[u] <= __lg(n));
+      if (cd.pa[u]) assert(2 * component[u] <= component[cd.pa[u]]);
       for (int a = u; a; a = cd.pa[a]) {
         assert(cd.dis[cd.layer[a]][u] == d[a][u]);
         if (cd.pa[a]) assert(cd.layer[cd.pa[a]] + 1 == cd.layer[a]);
@@ -109,6 +114,21 @@ vector<Edge> star(int n) {
 }  // namespace
 
 int main() {
+  {
+    Cent_Dec cd;
+    for (int n : {N - 1, 1, 7, N - 1, 2}) {
+      cd.init(n);
+      auto e = n == 7 ? star(n) : chain(n);
+      for (auto edge : e) cd.add_edge(edge.u, edge.v, edge.w);
+      cd.build();
+      auto d = distances(n, e);
+      check("resize-empty", cd, d, {});
+      for (int u = n; u >= 1; --u) cd.modify(u);
+      vector<int> marked(n);
+      iota(marked.begin(), marked.end(), 1);
+      check("resize-marked", cd, d, marked);
+    }
+  }
   run_case("singleton", 1, {});
   run_case("two-vertex-zero-edge", 2, {{1, 2, 0}});
   run_case("chain", 63, chain(63));
@@ -125,6 +145,31 @@ int main() {
   for (int v = 2; v <= 63; ++v)
     balanced.push_back({v / 2, v, (v * 13) % 31});
   run_case("balanced", 63, balanced);
+
+  // All labeled trees through n=6 via independent Pruefer decoding.
+  for (int n = 2; n <= 6; ++n) {
+    int count = 1;
+    for (int i = 0; i < n - 2; ++i) count *= n;
+    for (int code = 0; code < count; ++code) {
+      int digits = code;
+      vector<int> sequence(n - 2), degree(n + 1, 1);
+      for (int &u : sequence) u = 1 + digits % n, digits /= n;
+      for (int u : sequence) ++degree[u];
+      vector<Edge> edges;
+      for (int u : sequence) {
+        int leaf = 1;
+        while (degree[leaf] != 1) ++leaf;
+        edges.push_back({leaf, u, (leaf + u + code) % 7 - 3});
+        --degree[leaf], --degree[u];
+      }
+      vector<int> ends;
+      for (int u = 1; u <= n; ++u) if (degree[u] == 1) ends.push_back(u);
+      edges.push_back({ends[0], ends[1], code % 5 - 2});
+      if (code & 1) reverse(edges.begin(), edges.end());
+      run_case("exhaustive-labeled-" + to_string(n) + "-" +
+               to_string(code), n, edges);
+    }
+  }
 
   mt19937 rng(0x11C0DE);
   for (int tc = 0; tc < 140; ++tc) {

@@ -24,10 +24,12 @@ int main() {
   auto start = chrono::steady_clock::now();
   // Disjoint chains of differing lengths need alternating paths/phases.
   // A chain's first pass shifts matches right, leaving its last node free.
-  for (int round = 0; round < 5; ++round) {
+  for (int round = 0; round < 6; ++round) {
     bm.init(N, N);
     for (int base = 0; base < N;) {
-      int len = min(N - base, 2 + (base * 17 + round * 31) % 199);
+      // The last round forces one alternating path through all N lefts.
+      int len = round == 5 ? N :
+          min(N - base, 2 + (base * 17 + round * 31) % 199);
       for (int i = base; i < base + len; ++i) {
         if (i + 1 < base + len) bm.add_edge(i, i + 1);
         bm.add_edge(i, i);
@@ -45,6 +47,6 @@ int main() {
   }
   double seconds = chrono::duration<double>(
       chrono::steady_clock::now() - start).count();
-  cout << "PASS bipartite stress: 10 solves, 60000+60000 vertices, "
+  cout << "PASS bipartite stress: 12 solves, 60000+60000 vertices, "
        << "~120000 edges, " << seconds << " s\n";
 }

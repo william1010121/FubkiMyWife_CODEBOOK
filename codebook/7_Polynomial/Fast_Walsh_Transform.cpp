@@ -1,6 +1,6 @@
 // x=a[j], y=a[j+L/2]: OR y+=x*op; AND x+=y*op.
-// XOR: (x,y)=((x+y)*op,(x-y)*op); inverse op=-1,-1,1/2.
-// n positive power of 2; O(n log n); int arithmetic must fit.
+// XOR: (x,y)=(x+y,x-y); inverse divides both by 2.
+// n=2^k, 0<=k<=29; op=1/-1; O(n log n); int arithmetic must fit.
 void fwt(int *a, int n, int op) { // OR
   for (int L = 2; L <= n; L <<= 1)
     for (int i = 0; i < n; i += L)
@@ -10,6 +10,7 @@ const int N = 21;
 int f[N + 1][1 << N], g[N + 1][1 << N], h[N + 1][1 << N];
 void subset_convolution(int *a, int *b, int *c, int L) {
   // c[k]=sum(a[i]*b[j]) for i|j=k, i&j=0; 0<=L<=N.
+  // a,b,c: 2^L ints outside f/g/h; c may alias a or b.
   // O(2^L L^2) time; three (N+1)*2^N int arrays.
   int n = 1 << L;
   for (int i = 0; i <= L; ++i)

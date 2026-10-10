@@ -1,5 +1,5 @@
-struct WeightGraph { // 1-base; O(n^3); only positive edges used
-  // All dual arithmetic (including doubled weights) must fit int.
+struct WeightGraph { // 1-base; loopless; O(n^3); positive edges only
+  // n >= 0; all int arithmetic (including doubled weights) must fit.
   struct edge { int u, v, w; }; int n, nx;
   vector<int> lab, slk, match, st, pa, S, vis;
   vector<vector<edge>> g;

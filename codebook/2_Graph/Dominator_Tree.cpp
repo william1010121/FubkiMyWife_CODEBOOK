@@ -1,4 +1,5 @@
 struct dominator_tree { // 1-base, O((V+E) log V); reachable only
+  // 1 <= n < N, valid root; recursive DFS/eval need enough stack.
   vector<int> G[N], rG[N], tree[N];
   int n, pa[N], dfn[N], id[N], Time, semi[N], idom[N], best[N];
   void init(int _n) {

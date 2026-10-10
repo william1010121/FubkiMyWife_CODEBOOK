@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std;
+using ll = long long;
 constexpr int N = 100, T = 12, INF = 1000000000;
 #define SZ(v) ((int)(v).size())
 #define ALL(v) (v).begin(), (v).end()

@@ -41,6 +41,23 @@ int main() {
   for (int i = 0; i < 3; ++i)
     if (readchar() != EOF) fail("EOF must be stable across repeated reads");
 
+  // Redirect only after the entire old stream and private buffer are drained.
+  for (size_t length : {0, 1, 65535, 65536, 65537, 131072, 131073}) {
+    FILE *edge = tmpfile();
+    if (!edge) fail("boundary tmpfile");
+    vector<unsigned char> bytes(length);
+    for (size_t i = 0; i < length; ++i) bytes[i] = (i * 131 + 255) & 255;
+    if (fwrite(bytes.data(), 1, length, edge) != length) fail("boundary write");
+    fflush(edge), rewind(edge);
+    if (dup2(fileno(edge), STDIN_FILENO) < 0) fail("boundary redirect");
+    clearerr(stdin);
+    for (size_t i = 0; i < length; ++i)
+      if (readchar() != bytes[i]) fail("boundary byte " + to_string(i));
+    for (int i = 0; i < 10; ++i)
+      if (readchar() != EOF) fail("boundary repeated EOF");
+    fclose(edge);
+  }
+
   cerr << "PASS readchar: " << expected.size()
-       << " bytes, embedded NUL, 0xff, refill, final byte, repeated EOF\n";
+       << " bytes plus 7 boundary streams, NUL, 0xff, repeated EOF\n";
 }

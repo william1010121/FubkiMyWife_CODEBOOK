@@ -1,4 +1,5 @@
-struct KM { // 0-base, max weight; needs perfect matching. O(n^3)
+struct KM { // Max weight; needs perfect matching, n <= N. O(n^3)
+  // 0-base; missing = -INF; INF > 2*n*max|real w|; arithmetic fits ll.
   ll w[N][N], hl[N], hr[N], slk[N];
   int fl[N], fr[N], pre[N], qu[N], ql, qr, n;
   bool vl[N], vr[N];

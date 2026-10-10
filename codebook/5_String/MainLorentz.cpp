@@ -1,4 +1,5 @@
 // rep[l]: 0-based inclusive starts of period-l squares; n/2<kN
+// n and sft+p (0<=p<n) fit int; empty input and all bytes allowed.
 vector<pair<int, int>> rep[kN];
 void main_lorentz_impl(const string &s, int sft) {
   int n = s.size(); if (n <= 1) return;
@@ -20,7 +21,7 @@ void main_lorentz_impl(const string &s, int sft) {
   for (int c = 0; c < n; ++c) {
     bool left = c < nu; int l, k1, k2;
     if (left) l = nu-c, k1 = z1[l], k2 = z2[nv+c];
-    else l = c-nu+1, k1 = min(nu, z3[n+nu-c-1]), k2 = z4[l];
+    else l = c-nu+1, k1 = min(nu, z3[n-l]), k2 = z4[l];
     int L = max(1, l-k2), R = min(l-left, k1), d = left ? 0 : l-1;
     if (L <= R) rep[l].emplace_back(sft+c-R-d, sft+c-L-d);
   }

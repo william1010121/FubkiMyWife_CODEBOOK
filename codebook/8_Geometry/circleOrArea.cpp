@@ -14,8 +14,9 @@ vector<pair<double, double>> CoverSegment(C &a, C &b) {
     else res.emplace_back(l, r);
   } return res;
 }
-// Remove duplicate circles first; O(n^2 log n).
+// Nonnegative radii; remove duplicate circles first; O(n^2 log n).
 double CircleUnionArea(vector<C> c) {
+  if (!c.empty()) { P o = c[0].c; for (auto &v : c) v.c = v.c - o; }
   double a = 0;
   for (int i = 0; i < (int)c.size(); ++i) {
     double w = 0; vector<pair<double, double>> s = {{2 * pi, 2 * pi}};

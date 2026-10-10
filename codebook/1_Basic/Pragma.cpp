@@ -1,3 +1,4 @@
+// GCC; judge must support targets; Ofast relaxes floating-point rules.
 #pragma GCC optimize("Ofast,no-stack-protector,no-math-errno,unroll-loops")
 #if defined(__x86_64__) || defined(__i386__)
 #pragma GCC target("sse,sse2,sse3,ssse3,sse4")

@@ -50,6 +50,10 @@ int main() {
       {"0000000000000000000000000000000000000000007", 7},
       {decimal(max_value), max_value},
       {decimal(min_value), min_value},
+      {decimal(max_value - 1), max_value - 1},
+      {decimal(min_value + 1), min_value + 1},
+      {"+" + std::string(4096, '0') + decimal(max_value), max_value},
+      {"-" + std::string(4096, '0') + decimal(max_value), -max_value},
       {"-9223372036854775808", static_cast<i128>(-9223372036854775807LL) - 1},
       {"18446744073709551616", static_cast<i128>(1) << 64},
   };
@@ -72,6 +76,11 @@ int main() {
   FILE *input_file = tmpfile();
   FILE *output_file = tmpfile();
   check(input_file && output_file, "tmpfile");
+  check(dup2(fileno(input_file), STDIN_FILENO) >= 0, "redirect empty stdin");
+  clearerr(stdin);
+  i128 empty_value = 123;
+  for (int i = 0; i < 3; ++i)
+    check(!read(empty_value) && empty_value == 123, "empty input");
   check(fwrite(input.data(), 1, input.size(), input_file) == input.size(),
         "write input");
   fflush(input_file);
@@ -115,17 +124,43 @@ int main() {
   check(!read(eof_value) && eof_value == 123, "trailing sign EOF");
   check(read() == 0, "value overload returns zero at EOF");
 
+  // Sticky overflow, high-byte delimiters, sign resynchronization and the
+  // documented consumption of the first nondigit after a numeric sequence.
+  FILE *more_input = tmpfile();
+  check(more_input != nullptr, "more tmpfile");
+  std::string more_text = std::string(1, char(0xff)) +
+      "170141183460469231731687303715884105728000000000000 "
+      "-170141183460469231731687303715884105729000000000000 "
+      "12-34 56+78 +- -+ -- ++ 9";
+  check(fwrite(more_text.data(), 1, more_text.size(), more_input) ==
+            more_text.size(), "write more input");
+  fflush(more_input), rewind(more_input);
+  check(dup2(fileno(more_input), STDIN_FILENO) >= 0, "redirect more stdin");
+  clearerr(stdin);
+  for (int i = 0; i < 2; ++i) {
+    i128 value = 123;
+    check(!read(value) && value == 123, "sticky overflow with trailing zeros");
+  }
+  for (int value : {12, 34, 56, 78, 9}) {
+    i128 got = 0;
+    check(read(got) && got == value, "delimiter consumption/sign recovery");
+  }
+  check(read() == 0, "more EOF");
+
   check(dup2(fileno(output_file), STDOUT_FILENO) >= 0, "redirect stdout");
   clearerr(stdout);
   for (i128 value : parsed) {
     print(value);
     putchar('|');
   }
+  print_unsigned(~u128(0));
+  putchar('|');
   fflush(stdout);
   rewind(output_file);
 
   std::string expected;
   for (i128 value : parsed) expected += decimal(value) + '|';
+  expected += "340282366920938463463374607431768211455|";
   std::string printed;
   char buffer[256];
   size_t got;

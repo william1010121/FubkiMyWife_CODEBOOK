@@ -42,7 +42,7 @@ int main() {
     check(s, cases++);
   }
 
-  // Rotation ordering is over raw string bytes; embedded NUL/high bytes must
+  // Rotation order is over raw bytes; embedded NUL/high bytes must
   // not be treated as a terminator or signed characters.
   const vector<string> byte_words = {
       string({char(0), 'A', char(0), 'B'}),
@@ -51,9 +51,33 @@ int main() {
   };
   for (const string &s : byte_words) check(s, cases++);
 
-  cout << "PASS Smallest_Rotation non-empty exhaustive/periodic/random cases="
+  for (int a = 0; a < 256; ++a) {
+    check(string(1, char(a)), cases++);
+    for (int b = 0; b < 256; ++b)
+      check(string({char(a), char(b)}), cases++);
+  }
+  const unsigned char alphabet[] = {0, 1, 127, 128, 255};
+  enumerate_strings(6, 5, [&](const vector<int> &values) {
+    string s;
+    for (int x : values) s += char(alphabet[x - 1]);
+    check(s, cases++);
+  });
+  for (int tc = 0; tc < 512; ++tc) {
+    string s(rng() % 600, '\0');
+    for (char &c : s) c = char(rng() & 255);
+    check(s, cases++);
+  }
+  // A late unique minimum defeats quadratic candidate comparison.
+  string long_word(200000, char(255));
+  long_word[100000] = '\0';
+  string want = string(1, '\0') + string(199999, char(255));
+  expect(mcp(long_word) == want, "large high-byte rotation");
+  ++cases;
+
+  cout << "PASS Smallest_Rotation exhaustive/periodic/byte/random cases="
        << cases << '\n';
   check({}, cases++);
-  cout << "PASS Smallest_Rotation exhaustive/periodic/random cases=" << cases
+  cout << "PASS Smallest_Rotation exhaustive/periodic/random cases="
+       << cases
        << " including empty\n";
 }

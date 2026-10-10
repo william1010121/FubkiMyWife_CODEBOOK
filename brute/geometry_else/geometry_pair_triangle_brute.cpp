@@ -106,6 +106,15 @@ int main() {
   double y = 1e16;
   check_pair({{0, y}, {1, nextafter(y, INFINITY)},
               {2, nextafter(y, -INFINITY)}, {3, y}});
+  double tiny=numeric_limits<double>::denorm_min();
+  double huge=numeric_limits<double>::max()/8;
+  check_pair({{0,0},{tiny,0},{2*tiny,0}});
+  p={{0,0},{tiny,tiny},{2*tiny,2*tiny}};
+  require(closest_pair(0,2)==hypot(tiny,tiny),
+          "subnormal diagonal correctly rounded distance");
+  check_pair({{-huge,huge},{0,0},{huge,huge}});
+  check_pair({{-huge,0},{0,0},{huge,0},{huge,0}});
+  check_pair({{0,huge},{tiny,huge},{2*tiny,huge}});
   for (auto poly : vector<vector<Point>>{
     {}, {{1, 2}}, {{0, 0}, {3, 4}}, {{0, 0}, {1, 1}, {2, 2}, {3, 3}},
     {{0, 0}, {1, 0}, {2, 0}, {2, 1}, {2, 2}, {1, 2}, {0, 2}, {0, 1}},

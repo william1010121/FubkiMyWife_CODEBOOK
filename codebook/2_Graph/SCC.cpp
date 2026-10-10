@@ -13,9 +13,9 @@ struct SCC { // 0-base; O(V+E), ids in reverse topological order
       instack[u] = 0, bln[u] = nscc++, stk.pop_back();
     }
   }
-  SCC(int _n): n(_n), dft(), nscc(), low(n),
+  SCC(int _n): n(_n), dft(), nscc(), low(n), // n>=0
     dfn(n), bln(n), instack(n), G(n) {}
   void add_edge(int u, int v) { G[u].pb(v); }
-  void solve() {
+  void solve() { // add all edges first; IDs [0,n); enough DFS stack
     for (int i = 0; i < n; ++i) if (!dfn[i]) dfs(i); }
 }; // scc_id(i): bln[i]

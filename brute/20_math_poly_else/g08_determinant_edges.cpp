@@ -52,6 +52,25 @@ int main() {
       check(a);
     }
   }
+  // Exhaust all 2x2 matrices over small composite rings.
+  for (P = 2; P <= 6; P += 2)
+    for (int mask = 0; mask < P * P * P * P; ++mask) {
+      int z = mask;
+      vector<vector<ll>> a(2, vector<ll>(2));
+      for (auto &row : a) for (ll &x : row) x = z % P, z /= P;
+      check(a);
+    }
+  // Consecutive Fibonacci pivots force a long Euclidean swap chain.
+  P = LLONG_MAX;
+  ll a = 1, b = 1;
+  while (a <= LLONG_MAX - b) { ll t = a + b; a = b; b = t; }
+  check({{b, P - 1}, {a, P - 2}});
+  check({{P - 1, P - 1}, {1, P - 1}}); // quotient near P
+  // row_swap is also a public helper.
+  Matrix rows{}; rows.n = rows.m = 2;
+  rows.M[0][0] = 1; rows.M[1][1] = P - 1;
+  if (rows.row_swap(0, 0) != 0 || rows.row_swap(0, 1) != 1 ||
+      rows.M[1][0] != 1 || rows.M[0][1] != P - 1) return 1;
   // Full-size permutation matrix: repeated zero-pivot row swaps.
   P = LLONG_MAX; Matrix mat{}; mat.n = mat.m = MAXN;
   for (int i = 0; i < MAXN; ++i) mat.M[i][MAXN - 1 - i] = 1;

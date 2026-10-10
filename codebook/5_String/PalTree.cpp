@@ -1,4 +1,5 @@
-struct palindromic_tree { // lowercase; roots 0:0,1:-1; O(n*26)
+struct palindromic_tree { // 'a'..'z'; n+2 fits int; O(n*26)
+  // Roots 0:0,1:-1; add takes char codes; count once after all add.
   struct node {
     int next[26] = {}, fail = 0, len, cnt = 0, num = 0;
     // cnt: occurrences; num: number of palindromic suffixes

@@ -53,7 +53,60 @@ static void run_case(int n, int m, const string &name, mt19937 &rng) {
   }
 }
 
+// Verify retained-lazy invariants and push at every allocated level.
+static void push_all(Seg &s, Seg::Node *o, int l, int r) {
+  if (!o) return;
+  long long children = (o->l ? o->l->sum : 0LL)
+                     + (o->r ? o->r->sum : 0LL);
+  assert(o->sum == children + 1LL * o->lazy * (r - l));
+  if (r - l == 1) return;
+  s.push(o, l, r);
+  children = (o->l ? o->l->sum : 0LL) + (o->r ? o->r->sum : 0LL);
+  assert(o->lazy == 0 && o->sum == children);
+  int m = l + (r - l) / 2;
+  push_all(s, o->l, l, m), push_all(s, o->r, m, r);
+}
+
+static void int_boundaries() {
+  Seg empty;
+  empty.update(0, 0, INT_MIN);
+  assert(empty.query(0, 0) == 0 && !empty.root);
+  Seg leaf(1);
+  leaf.update(0, 1, INT_MIN);
+  assert(leaf.query(0, 1) == INT_MIN);
+  leaf.push(leaf.root, 0, 1);
+  assert(!leaf.root->l && !leaf.root->r);
+  leaf.update(0, 1, INT_MAX);
+  assert(leaf.query(0, 1) == -1);
+  leaf.update(0, 1, 1);
+  assert(leaf.query(0, 1) == 0);
+
+  Seg2D singleton(1, 1);
+  singleton.update(0, 1, 0, 1, INT_MIN);
+  assert(singleton.query(0, 1, 0, 1) == INT_MIN);
+  singleton.update(0, 1, 0, 1, INT_MAX);
+  assert(singleton.query(0, 1, 0, 1) == -1);
+  singleton.update(0, 1, 0, 1, 1);
+  assert(singleton.query(0, 1, 0, 1) == 0);
+
+  // Near-limit parent lazy plus negative children, in both dimensions.
+  const int v = INT_MAX / 4;
+  Seg2D grid(2, 2);
+  vector<vector<int>> a(2, vector<int>(2, v));
+  grid.update(0, 2, 0, 2, v);
+  check_all(grid, a, 2, 2, "int-boundary-full");
+  for (int q = 0; q < 2; ++q) {
+    grid.update(1, 2, 0, 1, -v);
+    a[1][0] -= v;
+    check_all(grid, a, 2, 2, "int-boundary-partial");
+  }
+  grid.update(0, 2, 0, 2, -v);
+  for (auto &row : a) for (int &x : row) x -= v;
+  check_all(grid, a, 2, 2, "int-boundary-cancel");
+}
+
 int main() {
+  int_boundaries();
   mt19937 rng(0x2D5E2D);
   mt19937 check_rng(0x2D57E55);
   // Zero additions on wide domains must remain allocation-free.
@@ -128,6 +181,7 @@ int main() {
     one.update(l, r, v);
     for (int i = l; i < r; ++i) ref[i] += v;
     if (q % 3 == 0) one.push(one.root, 0, one.n);
+    if (q % 17 == 0) push_all(one, one.root, 0, one.n);
     for (int a = 0; a <= one.n; ++a)
       for (int b = a; b <= one.n; ++b)
         assert(one.query(a, b) ==

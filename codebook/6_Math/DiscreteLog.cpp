@@ -1,4 +1,5 @@
-// m>0, residues in [0,m); expected O(sqrt(m)) time/space.
+// m>0, x/y in [0,m); supply fpow(x,k,m); use 3-argument API.
+// Expected O(sqrt(m)) time/space; 4-argument helper is internal.
 int DiscreteLog(int s, int x, int y, int m) {
   int step = sqrt(m), b = 1; if (1LL * step * step < m) ++step;
   unordered_map<int, int> p; p.reserve(step);

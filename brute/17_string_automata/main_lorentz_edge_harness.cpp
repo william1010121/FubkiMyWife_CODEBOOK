@@ -54,12 +54,13 @@ static void check(const string &s, int offset = 0) {
 }
 
 static void check_consecutive_calls() {
-  // The second input has no tandem repeats.  It must not inherit the first
+  // The second input has no repeats. It must not inherit the first
   // call's ranges, even when both calls use nonzero coordinate offsets.
   main_lorentz("aaaa", 7);
   main_lorentz("ab", 19);
   for (const auto &ranges : rep)
-    if (!ranges.empty()) fail("stale tandem repeat after consecutive call");
+    if (!ranges.empty())
+      fail("stale tandem repeat after consecutive call");
 }
 
 static void enumerate_words(int alphabet, int length,
@@ -92,6 +93,18 @@ int main() {
   check(string("\0\0", 2), 23), ++cases;
   check(string("\0#\0#\0", 5), 25), ++cases;
   check_consecutive_calls(), ++cases;
+
+  // Every shifted input position fits int, including both limit values.
+  for (int n : {2, 3, 4, 5, 2 * kN - 2, 2 * kN - 1})
+    for (int offset : {INT_MIN, INT_MAX - (n - 1)})
+      check(string(n, char(255)), offset), ++cases;
+  // Force long cross-half matches with unequal half lengths and bytes.
+  const string bytes({char(0), char(128), char(255)});
+  for (int n : {127, 128, 129, 509, 510, 511}) {
+    string s;
+    for (int i = 0; i < n; ++i) s += bytes[i % bytes.size()];
+    check(s, -700), ++cases;
+  }
 
   for (int n = 0; n <= 8; ++n)
     enumerate_words(3, n, [&](const string &s) { check(s), ++cases; });

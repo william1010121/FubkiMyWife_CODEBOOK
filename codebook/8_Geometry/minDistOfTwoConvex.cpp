@@ -23,7 +23,7 @@ bool _inside_convex(Point p, Point poly[], int n) {
       sign = s; }
   } return true;
 }
-// Nonempty convex polygons, CW/CCW; O(n+m) time and space.
+// Nonempty convex polygons in cyclic CW/CCW order; O(n+m) time/space.
 double TwoConvexHullMinDist(Point P[], Point Q[], int n, int m) {
   auto prepare = [&](Point p[], int n, int s) {
     vector<Point> a(p, p + n);
@@ -41,7 +41,8 @@ double TwoConvexHullMinDist(Point P[], Point Q[], int n, int m) {
   n = a.size(), m = b.size();
   auto sum = [&](int i, int j) { return Point{
     a[i % n].x + b[j % m].x, a[i % n].y + b[j % m].y}; };
-  double ans = 1e100, area = 0; bool inside = true;
+  double ans = numeric_limits<double>::infinity(), area = 0;
+  bool inside = true;
   for (int i = 0, j = 0; i < n || j < m;) {
     Point p = sum(i, j), u = a[(i + 1) % n], v = b[(j + 1) % m];
     double z = _cross({0, 0}, {u.x - a[i % n].x, u.y - a[i % n].y},

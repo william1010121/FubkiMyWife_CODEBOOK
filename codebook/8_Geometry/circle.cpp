@@ -9,7 +9,8 @@ vector<P> Intersect(C a, C b) {
   if (same(a.r + b.r, d)) return {a.c + (b.c - a.c) / d * a.r};
   if (same(d + a.r, b.r)) return {a.c - (b.c - a.c) / d * a.r};
   if (a.r + b.r <= d || d + a.r < b.r) return {};
-  double h = (sq(a.r) + sq(d) - sq(b.r)) / (2 * a.r * d);
+  double z = d < b.r / 2 ? sq(d) + (a.r - b.r) * (a.r + b.r)
+    : sq(a.r) + (d - b.r) * (d + b.r), h = z / (2 * a.r * d);
   P u = (b.c - a.c) / d, v = u * (a.r * h),
     w = P(-u.y, u.x) * (a.r * sqrt(max(0., 1 - h * h)));
   return {a.c + v + w, a.c + v - w};
@@ -19,23 +20,30 @@ double IntersectArea(C a, C b) {
   double d = (a.c - b.c).abs();
   if (d >= a.r + b.r - eps) return 0;
   if (d + a.r <= b.r + eps) return sq(a.r) * acos(-1);
-  double p = acos((sq(a.r) + sq(d) - sq(b.r)) / (2 * a.r * d)),
-    q = acos((sq(b.r) + sq(d) - sq(a.r)) / (2 * b.r * d));
-  return p * sq(a.r) + q * sq(b.r) - a.r * d * sin(p);
+  double z = d < b.r / 2 ? sq(d) + (a.r - b.r) * (a.r + b.r)
+    : sq(a.r) + (d - b.r) * (d + b.r), x = z / (2 * d),
+    y = sqrt(max(0., sq(a.r) - sq(x))); // Common chord (x, +/-y).
+  auto cap = [](double r, double t) { // Stable small-angle segment.
+    return sq(r) * (t < 1e-3 ? t * t * t * (2. / 3 - 2. / 15 * t * t)
+      : t - sin(t) * cos(t));
+  }; return cap(a.r, atan2(y, x)) + cap(b.r, atan2(y, d - x));
 }
-// Segment by default; drop parameter-range checks for an infinite line.
+// Nonnegative r; endpoint tolerance eps in length, not parameter.
+// Drop parameter-range checks for an infinite line.
 vector<P> CircleCrossLine(P a, P b, P o, double r) {
   P u = b - a, v = a - o; double A = u * u;
   if (!A) // Zero-length segment is a point.
     return same((a - o).abs(), r) ? vector<P>{a} : vector<P>{};
-  double B = 2 * (u * v), C = v * v - sq(r), d = B * B - 4 * A * C;
+  // Compensated cross: long tilted lines can lose their small offset.
+  double t0 = u.y * v.x, z = fma(u.x, v.y, -t0) - fma(u.y, v.x, -t0);
+  double mid = -(u * v) / A, d = sq(r) - sq(z) / A, tol = eps / sqrt(A);
+  P p = P(-u.y, u.x) * (z / A);
   vector<P> t;
   if (d >= -eps) {
-    double root = sqrt(max(0., d)), i = (-B - root) / (2 * A),
-      j = (-B + root) / (2 * A);
-    if (i <= 1 + eps && i >= -eps) t.push_back(a + u * i);
-    if (fabs(j - i) > eps && j <= 1 + eps && j >= -eps)
-      t.push_back(a + u * j);
+    double root = sqrt(max(0., d) / A), i = mid - root, j = mid + root;
+    if (i <= 1 + tol && i >= -tol) t.push_back(o + p - u * root);
+    if (root > 0 && j <= 1 + tol && j >= -tol)
+      t.push_back(o + p + u * root);
   } return t;
 }
 // Unsigned area of circle(r) cap triangle OAB.

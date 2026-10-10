@@ -21,6 +21,11 @@ static void check_case(const string &where, int n, const vector<Edge> &edges) {
   ECC graph(n);
   for (auto [u, v] : edges) graph.add_edge(u, v);
   graph.solve();
+  if (graph.dft != n || !graph.stk.empty())
+    fail_case(where, n, edges, "DFS did not visit/pop every vertex");
+  for (int u = 0; u < n; ++u)
+    if (graph.bln[u] < 0 || graph.bln[u] >= graph.necc)
+      fail_case(where, n, edges, "component id out of range");
   if (graph.is_bridge.size() != edges.size())
     fail_case(where, n, edges, "bridge vector size differs");
   for (int i = 0; i < (int)edges.size(); ++i)
@@ -81,6 +86,9 @@ static vector<Edge> random_graph(mt19937 &rng, int n, int mode) {
 
 int main() {
   vector<pair<int, vector<Edge>>> fixed = {
+      {0, {}},
+      {10, {}},
+      {2, {{0, 1}, {0, 1}, {0, 1}, {0, 0}, {1, 1}}},
       {1, {}},
       {1, {{0, 0}, {0, 0}, {0, 0}, {0, 0}}},
       {7, {{0, 1}, {0, 1}, {1, 2}, {2, 3}, {2, 3}, {3, 4},

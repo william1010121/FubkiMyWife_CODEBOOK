@@ -1,4 +1,5 @@
 struct node { // max-heap; merge/pop O(log n), pop needs nonempty heap
+  // Disjoint, uniquely owned new'ed nodes; sum intermediates fit ll.
   ll v, data, sz, sum;
   node *l, *r;
   node(ll k) : v(0), data(k), sz(1), sum(k), l(0), r(0) {}

@@ -20,8 +20,26 @@ static int oracle(const vector<vector<char>> &adj, int mask,
   return ans;
 }
 
-static void check(const vector<vector<char>> &adj, int tc, const char *label,
-                  mt19937 &rng, bool duplicate) {
+static void validate(Matching &m, const vector<vector<char>> &adj,
+                     int want, int tc) {
+  int pairs = 0;
+  for (int u = 0; u < m.n; ++u) {
+    int v = m.match[u];
+    if (v == m.n) continue;
+    if (v < 0 || v >= m.n || v == u || m.match[v] != u || !adj[u][v]) {
+      cerr << "Invalid simple matching case " << tc << '\n';
+      exit(1);
+    }
+    pairs += u < v;
+  }
+  if (pairs != want || m.solve() != 0) {
+    cerr << "Invalid simple count/repeated solve case " << tc << '\n';
+    exit(1);
+  }
+}
+
+static void check(const vector<vector<char>> &adj, int tc,
+                  const char *label, mt19937 &rng, bool duplicate) {
   int n = (int)adj.size();
   Matching matching(n);
   vector<pair<int, int>> edges;
@@ -42,6 +60,7 @@ static void check(const vector<vector<char>> &adj, int tc, const char *label,
     cerr << '\n';
     exit(1);
   }
+  validate(matching, adj, want, tc);
 }
 
 static vector<vector<char>> empty_graph(int n) {
@@ -79,7 +98,8 @@ int main() {
     for (int i = 1; i < n; ++i) add(a, 0, i);
     check(a, tc++, "star", rng, false);
     a = empty_graph(n);
-    for (int i = 0; i < n; ++i) for (int j = i + 1; j < n; ++j) add(a, i, j);
+    for (int i = 0; i < n; ++i) for (int j = i + 1; j < n; ++j)
+      add(a, i, j);
     check(a, tc++, "clique", rng, true);
   }
   for (int petals = 1; petals <= 7; ++petals) {
@@ -98,12 +118,40 @@ int main() {
     int mode = z % 6;
     vector<vector<char>> a = empty_graph(n);
     for (int u = 0; u < n; ++u) for (int v = u + 1; v < n; ++v) {
-      bool take = mode == 0 ? false : mode == 1 ? true : mode == 2 ? local() % 5 == 0 :
-                  mode == 3 ? local() % 2 == 0 : mode == 4 ? local() % 5 != 0 :
+      bool take = mode == 0 ? false : mode == 1 ? true :
+                  mode == 2 ? local() % 5 == 0 :
+                  mode == 3 ? local() % 2 == 0 :
+                  mode == 4 ? local() % 5 != 0 :
                   ((u * 17 + v * 31 + z) % 11 < 5);
       if (take) add(a, u, v);
     }
     check(a, tc++, "seeded-random", local, z % 2 == 0);
   }
-  cout << "PASS " << tc << " general-matching edge/oracle cases\n";
+  // Incremental insertion must augment the existing matching, even after
+  // failed searches/contractions. Duplicate insertions must add no pairs.
+  int stages = 0;
+  for (int trial = 0; trial < 400; ++trial) {
+    int n = 2 + rng() % 11, total = 0;
+    Matching m(n);
+    auto a = empty_graph(n);
+    vector<pair<int, int>> edges;
+    for (int u = 0; u < n; ++u) for (int v = u + 1; v < n; ++v)
+      edges.push_back({u, v});
+    shuffle(edges.begin(), edges.end(), rng);
+    for (auto [u, v] : edges) {
+      m.add_edge(u, v); add(a, u, v);
+      vector<int> memo(1 << n, -1);
+      int want = oracle(a, 0, memo), added = m.solve();
+      if (added != want - total) {
+        cerr << "Incremental simple mismatch stage " << stages << '\n';
+        return 1;
+      }
+      total += added;
+      validate(m, a, want, stages++);
+      m.add_edge(u, v);
+      validate(m, a, want, stages++);
+    }
+  }
+  cout << "PASS " << tc << " general-matching edge/oracle cases, "
+       << stages << " incremental/duplicate stages\n";
 }

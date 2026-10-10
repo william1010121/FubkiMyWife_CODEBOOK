@@ -77,7 +77,35 @@ static void extreme_coordinates() {
     fail("INT_MIN split removal");
 }
 
+
+// Every coverage state over four compressed segments, at extreme endpoints.
+static void compressed_extremes() {
+  const vector<int> xs{INT_MIN, -1, 0, 1, INT_MAX};
+  for (int mask = 0; mask < 16; ++mask)
+    for (int l = 0; l < 5; ++l) for (int r = l; r < 5; ++r)
+      for (bool add : {false, true}) {
+        set<pii> got, want;
+        vector<bool> covered(4);
+        for (int i = 0; i < 4; ++i) if (mask >> i & 1)
+          addInterval(got, xs[i], xs[i + 1]), covered[i] = true;
+        if (add) {
+          auto it = addInterval(got, xs[l], xs[r]);
+          if (l == r ? it != got.end() :
+              it == got.end() || it->first > xs[l] || it->second < xs[r])
+            fail("returned insertion iterator at extreme endpoints");
+        } else removeInterval(got, xs[l], xs[r]);
+        for (int i = l; i < r; ++i) covered[i] = add;
+        for (int i = 0; i < 4; ) {
+          if (!covered[i]) { ++i; continue; }
+          int j = i + 1;
+          while (j < 4 && covered[j]) ++j;
+          want.emplace(xs[i], xs[j]), i = j;
+        }
+        if (got != want) fail("compressed extreme coverage/canonical form");
+      }
+}
 int main() {
+  compressed_extremes();
   deterministic_edges();
   extreme_coordinates();
 

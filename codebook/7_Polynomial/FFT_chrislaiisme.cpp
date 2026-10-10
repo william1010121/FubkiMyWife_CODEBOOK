@@ -1,6 +1,6 @@
 using cd = complex<double>;
 const double pi = acos(-1);
-// Positive power-of-two length; O(n log n). Double precision.
+// n=2^k, 0<=k<=29; O(n log n); finite complex arithmetic.
 void fft(vector<cd> &vec, bool inv = false) {
   int n = vec.size();
   for (int i = 0, j = 0; i < n; ++i) { // bit-reversed counter
@@ -22,6 +22,7 @@ void fft(vector<cd> &vec, bool inv = false) {
   if (inv) for (auto &x : vec) x /= n;
 }
 void ifft(vector<cd> &vec) { fft(vec, true); }
+// Padded n<=2^29; results fit int; error before rounding <0.5.
 vector<int> mult(const vector<int> &a, const vector<int> &b) {
   if (a.empty() || b.empty()) return {};
   int sz = a.size() + b.size() - 1, n = 1;

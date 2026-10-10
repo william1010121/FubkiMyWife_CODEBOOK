@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std;
+using ll = long long;
 #define N 8
 #define T 4
 #define SZ(v) ((int)(v).size())

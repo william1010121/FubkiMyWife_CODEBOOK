@@ -38,6 +38,12 @@ static void check(int tc, int n, const vector<Clause> &formula) {
     exit(1);
   }
   if (!have) return;
+  for (int i = 0; i < n; ++i)
+    if (got.istrue[i] == got.istrue[i + n] ||
+        got.rv(i) != i + n || got.rv(i + n) != i) {
+      cerr << "2SAT edge-case failure: literal complements differ\n";
+      exit(1);
+    }
   for (auto [a, b] : formula) {
     bool va = a < n ? got.istrue[a] : !got.istrue[a - n];
     bool vb = b < n ? got.istrue[b] : !got.istrue[b - n];
@@ -67,6 +73,21 @@ int main() {
       check(tc++, n, {{i, i}, {j, j}});     // direct contradiction
       check(tc++, n, {{i, i}, {i, i}, {j, j}}); // duplicate unit plus conflict
     }
+  }
+
+  // Duplicate implications force an alternating assignment across a chain.
+  for (int n = 2; n <= 10; ++n) {
+    vector<Clause> formula = {{0, 0}};
+    for (int i = 1; i < n; ++i) {
+      for (int copy = 0; copy < 7; ++copy) {
+        formula.push_back({i - 1, i});
+        formula.push_back({i - 1 + n, i + n});
+      }
+    }
+    check(tc++, n, formula);
+    int last_true = ((n - 1) & 1) ? 2 * n - 1 : n - 1;
+    formula.push_back({neg(last_true, n), neg(last_true, n)});
+    check(tc++, n, formula);
   }
 
   mt19937 rng(0x2A7ED6);

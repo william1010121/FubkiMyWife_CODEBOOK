@@ -167,7 +167,23 @@ static void randomized_stress() {
   }
 }
 
+
+static void integer_extremes() {
+  for (auto values : vector<vector<ll>>{
+      {LLONG_MIN}, {LLONG_MAX}, {LLONG_MIN, LLONG_MAX},
+      {LLONG_MIN, 0}, {LLONG_MAX, 0},
+      {LLONG_MIN + 1, LLONG_MAX, 0}}) {
+    node *h = nullptr;
+    multiset<ll> ref;
+    for (ll x : values) {
+      h = merge(h, new node(x)), ref.insert(x);
+      check_heap(h, ref);
+    }
+    drain(h, ref);
+  }
+}
 int main() {
+  integer_extremes();
   deterministic_edges();
   array<int, 5> ops{};
   enumerate_sequences(ops, 0);

@@ -1,5 +1,6 @@
 // n,m >= 0; rectangle add/sum, initially zero; 0-base half-open.
-// O(log n log m); ranges within domain; int arithmetic must fit.
+// O(log n log m); in-domain ranges; all int intermediates must fit.
+// Helpers use the node's [l,r); apply/push require l < r.
 struct Seg { // 1D range add/sum; query allocates no nodes
   struct Node {
     int sum = 0, lazy = 0;

@@ -8,7 +8,7 @@ def decimal_multiply(a, b):
                               rounding=ROUND_FLOOR)):
         return Decimal(a) * Decimal(b)
 def limit_fraction(s, bound): return Fraction(s).limit_denominator(bound)
-def read_matrix(lines, n, m):
+def read_matrix(lines, n, m):  # n,m>=0; at least n rows.
     it = iter(lines)
     a = [list(map(int, next(it).split())) for _ in range(n)]
     if any(len(row) != m for row in a): raise ValueError("row length")

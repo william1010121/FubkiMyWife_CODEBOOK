@@ -1,4 +1,5 @@
-struct Matching { // 0-base; O(n^3); unmatched = n
+struct Matching { // 0-base; loopless; O(n^3); unmatched = n
+  // n >= 0; O(n^2) adjacency entries; all int arithmetic must fit.
   queue<int> q; int n;
   vector<int> fa, s, vis, pre, match;
   vector<vector<int>> G;

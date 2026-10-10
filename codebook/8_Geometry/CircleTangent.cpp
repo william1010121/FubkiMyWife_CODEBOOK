@@ -20,7 +20,7 @@ vector<L> tangent(C a, C b) {
 }
 vector<L> tangent(C c, P p) {
   vector<L> z; double d = (p - c.c).abs();
-  if (same(d, c.r)) z.emplace_back(p, p + (p - c.c).rot(pi / 2));
+  if (d > 0 && same(d, c.r)) z.emplace_back(p, p + (p - c.c).rot(pi / 2));
   else if (d > c.r) {
     double o = acos(c.r / d); P u = (p - c.c) / d;
     for (double t : {o, -o}) z.emplace_back(c.c + u.rot(t) * c.r, p);

@@ -116,7 +116,62 @@ static void enumerate_graphs(int n, int &cases) {
   }
 }
 
+
+// Removing x disconnects exactly the reachable vertices dominated by x.
+static void reused_removal_oracle() {
+  dominator_tree dt;
+  mt19937 rng(0xD005);
+  for (int tc = 0; tc < 240; ++tc) {
+    int n = 1 + rng() % (N - 1);
+    dt.init(n);
+    vector<vector<int>> g(n + 1);
+    for (int u = 1; u <= n; ++u) for (int v = 1; v <= n; ++v)
+      if (rng() % 5 == 0 || v == u + 1) {
+        dt.add_edge(u, v), dt.add_edge(u, v);
+        g[u].push_back(v);
+      }
+    for (int root : {1, n, int(1 + rng() % n)}) {
+      dt.tarjan(root);
+      auto reach = [&](int blocked) {
+        vector<char> seen(n + 1);
+        vector<int> q;
+        if (root != blocked) q.push_back(root), seen[root] = 1;
+        for (int i = 0; i < (int)q.size(); ++i)
+          for (int v : g[q[i]]) if (v != blocked && !seen[v])
+            seen[v] = 1, q.push_back(v);
+        return seen;
+      };
+      vector<int> parent(n + 1);
+      for (int u = 1; u <= n; ++u) for (int v : dt.tree[u]) {
+        if (v < 1 || v > n || parent[v])
+          throw runtime_error("reused dominator tree children");
+        parent[v] = u;
+      }
+      auto seen = reach(0);
+      for (int v = 1; v <= n; ++v) {
+        if (bool(dt.dfn[v]) != bool(seen[v]))
+          throw runtime_error("reused dominator reachability");
+        if (seen[v] && v != root &&
+            dt.id[dt.idom[dt.dfn[v]]] != parent[v])
+          throw runtime_error("reused idom indexing");
+      }
+      for (int x = 1; x <= n; ++x) {
+        auto without = reach(x);
+        for (int v = 1; v <= n; ++v) {
+          bool ancestor = false;
+          if (seen[v]) for (int u = v, steps = 0; u; u = parent[u]) {
+            if (++steps > n) throw runtime_error("dominator tree cycle");
+            ancestor |= u == x;
+          }
+          if (ancestor != bool(seen[v] && !without[v]))
+            throw runtime_error("vertex-removal dominance oracle");
+        }
+      }
+    }
+  }
+}
 int main() {
+  reused_removal_oracle();
   int cases = 0;
   for (int n = 1; n <= 4; ++n) enumerate_graphs(n, cases);
 

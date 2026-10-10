@@ -172,7 +172,33 @@ static void randomized_histories() {
   }
 }
 
+
+static void dense_full_rank() {
+  mt19937_64 rng(0xB4515);
+  for (int tc = 0; tc < 100; ++tc) {
+    vector<ull> vectors;
+    for (int i = 0; i < 64; ++i)
+      vectors.push_back((1ULL << i) | (rng() & ((1ULL << i) - 1)));
+    // A triangular matrix is invertible; row permutation preserves rank.
+    shuffle(vectors.begin(), vectors.end(), rng);
+    clear_basis();
+    for (int i = 0; i < 64; ++i) {
+      ins(vectors[i]);
+      int rank = count_if(begin(basis), end(basis),
+                          [](ull x) { return x != 0; });
+      CHECK(rank == i + 1);
+    }
+    const BasisState full = state();
+    for (int i = 0; i < 100; ++i) {
+      ull x = rng();
+      CHECK(represented(x));
+      ins(x);
+      CHECK(state() == full);
+    }
+  }
+}
 int main() {
+  dense_full_rank();
   deterministic_edges();
   exhaustive_small_widths();
   randomized_histories();

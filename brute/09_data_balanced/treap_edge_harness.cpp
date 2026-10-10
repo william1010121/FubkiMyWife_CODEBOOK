@@ -12,6 +12,7 @@ using namespace std;
 
 static void collect(node *o, vector<int> &out) {
   if (!o) return;
+  CHECK(o->sz == 1 + sz(o->l) + sz(o->r));
   collect(o->l, out);
   out.push_back(o->data);
   collect(o->r, out);
@@ -34,7 +35,9 @@ static void check_tree(node *root, const multiset<int> &ref) {
   vector<int> want = as_vector(ref);
   CHECK(got == want);
   CHECK(sz(root) == (int)want.size());
-  for (int key = -20; key <= 20; ++key)
+  vector<int> probes = {INT_MIN, INT_MAX};
+  for (int key = -20; key <= 20; ++key) probes.push_back(key);
+  for (int key : probes)
     CHECK(Rank(root, key) == (int)distance(ref.begin(), ref.lower_bound(key)));
   if (!want.empty()) {
     for (int i = 1; i <= (int)want.size(); ++i)
@@ -53,7 +56,9 @@ static void check_split_operations(const vector<int> &values) {
   node *root = make_tree(values);
   check_tree(root, ref);
 
-  for (int key = -20; key <= 20; ++key) {
+  vector<int> keys = {INT_MIN, INT_MAX};
+  for (int key = -20; key <= 20; ++key) keys.push_back(key);
+  for (int key : keys) {
     node *left, *right;
     split(root, left, right, key);
     vector<int> a, b;
@@ -64,6 +69,19 @@ static void check_split_operations(const vector<int> &values) {
     sort(want_right.begin(), want_right.end());
     CHECK(a == want_left && b == want_right);
     root = merge(left, right);
+    check_tree(root, ref);
+
+    // Either split output may alias the input root variable.
+    split(root, root, right, key);
+    a.clear(), b.clear();
+    collect(root, a), collect(right, b);
+    CHECK(a == want_left && b == want_right);
+    root = merge(root, right);
+    split(root, left, root, key);
+    a.clear(), b.clear();
+    collect(left, a), collect(root, b);
+    CHECK(a == want_left && b == want_right);
+    root = merge(left, root);
     check_tree(root, ref);
   }
 
@@ -76,6 +94,19 @@ static void check_split_operations(const vector<int> &values) {
     CHECK(a == vector<int>(want.begin(), want.begin() + k));
     CHECK(b == vector<int>(want.begin() + k, want.end()));
     root = merge(left, right);
+    check_tree(root, ref);
+    split2(root, root, right, k);
+    a.clear(), b.clear();
+    collect(root, a), collect(right, b);
+    CHECK(a == vector<int>(want.begin(), want.begin() + k));
+    CHECK(b == vector<int>(want.begin() + k, want.end()));
+    root = merge(root, right);
+    split2(root, left, root, k);
+    a.clear(), b.clear();
+    collect(left, a), collect(root, b);
+    CHECK(a == vector<int>(want.begin(), want.begin() + k));
+    CHECK(b == vector<int>(want.begin() + k, want.end()));
+    root = merge(left, root);
     check_tree(root, ref);
   }
 
@@ -161,5 +192,29 @@ int main() {
   enumerate_sequences(root, ref, 0);
   CHECK(root == nullptr && ref.empty());
   randomized_stress();
+  // Larger duplicate/sorted inputs; verify every kth and node size.
+  for (int mode = 0; mode < 3; ++mode) {
+    node *tree = nullptr;
+    multiset<int> want;
+    for (int i = 0; i < 4096; ++i) {
+      int key = mode == 0 ? 0 : mode == 1 ? i : -i;
+      insert(tree, key), want.insert(key);
+    }
+    check_tree(tree, want);
+    for (int k : {0, 1, 2048, 4095, 4096}) {
+      node *a, *b;
+      split2(tree, a, b, k);
+      CHECK(sz(a) == k && sz(b) == 4096 - k);
+      tree = merge(a, b);
+      check_tree(tree, want);
+    }
+    while (!want.empty()) {
+      int key = *want.begin();
+      CHECK(erase(tree, key));
+      want.erase(want.begin());
+      CHECK(sz(tree) == (int)want.size());
+    }
+    CHECK(tree == nullptr && !erase(tree, 0));
+  }
   return 0;
 }

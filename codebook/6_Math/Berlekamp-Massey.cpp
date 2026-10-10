@@ -1,3 +1,4 @@
+// Field T: zero initialization, arithmetic, nonzero division, ==0.
 template<class T> vector<T> BerlekampMassey(const vector<T> &output) {
   vector<T> me, he; T last = 0;
   for (int f = 0, i = 1; i <= SZ(output); ++i) {

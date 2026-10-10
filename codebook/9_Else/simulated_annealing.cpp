@@ -1,4 +1,5 @@
 // Minimise score(state); next_state(state,rng) proposes a neighbour.
+// Pure finite score; finite temp/cooling; next_state preserves its input.
 // O(iterations * (proposal + scoring + state-copy cost)).
 template<class State, class Score, class NextState>
 State simulated_annealing(State current, Score score, NextState next_state,

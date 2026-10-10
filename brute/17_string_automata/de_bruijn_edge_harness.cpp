@@ -17,8 +17,11 @@ static long long power(int base, int exponent) {
 static void check(int alphabet, int order, int windows) {
   const long long total = power(alphabet, order);
   const long long length = (long long)order + windows - 1;
-  vector<int> out((size_t)max(0LL, length), -9);
-  dbs.solve(alphabet, order, windows, out.data());
+  vector<int> storage((size_t)length + 2, -9);
+  dbs.solve(alphabet, order, windows, storage.data() + 1);
+  if (storage.front() != -9 || storage.back() != -9)
+    fail("output buffer boundary overwritten");
+  vector<int> out(storage.begin() + 1, storage.end() - 1);
   if ((long long)out.size() != length)
     fail("output length mismatch");
 
@@ -69,6 +72,25 @@ int main() {
   if (any_of(single.begin(), single.end(), [](int x) { return x != 0; }))
     fail("single-window output mismatch");
   ++cases;
+  check(INT_MAX, 1, 8), ++cases;
+  check(46341, 2, 33), ++cases;
+  check(257, 2, 257 * 257), ++cases;
+  check(2, 16, 1 << 16), ++cases;
+  // Maximum buffer order still takes the single-window fast path.
+  single.assign(MAXC * MAXN - 1, -9);
+  dbs.solve(INT_MAX, single.size(), 1, single.data());
+  if (any_of(single.begin(), single.end(), [](int x) { return x != 0; }))
+    fail("maximum-order single window");
+  ++cases;
+  // K=2 takes DFS; the first two words differ only at their last symbol.
+  single.assign(2049, -9);
+  dbs.solve(INT_MAX, 2048, 2, single.data());
+  if (single.back() != 1 ||
+      any_of(single.begin(), single.end() - 1,
+             [](int x) { return x != 0; }))
+    fail("large-order two-window prefix");
+  ++cases;
+  dbs.solve(INT_MAX, 0, 1, nullptr), ++cases;
   cout << "PASS de-bruijn-edge cases=" << cases
        << " oracle=all-linear-window-uniqueness\n";
 }

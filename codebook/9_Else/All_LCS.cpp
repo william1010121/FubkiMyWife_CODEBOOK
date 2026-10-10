@@ -1,5 +1,6 @@
 // All distinct LCS in lexical order; DP O(nm), output may be exponential.
 // Reconstruction merges sorted lists, linear in their string data.
+// Lengths < INT_MAX; recursion needs O(n+m) stack.
 vector<string> all_lcs(const string &s, const string &t) {
   int n = (int)s.size(), m = (int)t.size();
   vector<vector<int>> dp(n + 1, vector<int>(m + 1));

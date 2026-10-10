@@ -1,9 +1,10 @@
 const ll mod = 998244353, g = 3;
+// pwr: b>=0, a/ret in [0,mod).
 ll pwr(ll a, ll b, ll ret = 1) {
   for (; b; b >>= 1, a = a * a % mod) if (b & 1) ret = ret * a % mod;
   return ret;
 }
-// Residues in [0,mod); length 2^k, k<=23; O(n log n).
+// Residues in [0,mod); n=2^k, 0<=k<=23 (also mult); O(n log n).
 void ntt(vector<ll> &vec, bool inv = false) {
   int n = vec.size();
   for (int i = 0, j = 0; i < n; ++i) { // bit-reversed counter

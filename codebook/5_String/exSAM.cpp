@@ -1,4 +1,6 @@
-struct exSAM { // root=0; lowercase; insert all, then build/solve once
+struct exSAM { // root=0; init, insert all, build once, solve once
+  // N,CNUM>=1; 2*N fits int; all states incl. clones fit 2*N.
+  // c-'a' in [0,CNUM); total input length (root count) fits int.
   int len[N * 2], link[N * 2], next[N * 2][CNUM], tot;
   int lenSorted[N * 2], cnt[N * 2]; // length order, occurrences
   int newnode() {

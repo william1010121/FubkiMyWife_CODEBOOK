@@ -68,11 +68,22 @@ int main() {
 
   bitset<0> empty;
   check(empty.none() && !empty.any() && empty.all(), "zero-width bitset");
+  empty.set().flip().reset();
+  check(empty.count() == 0 && empty.to_string().empty(), "empty mutations");
   bitset<65> wide;
   wide.set(0).set(64);
   check(wide.count() == 2 && wide[0] && wide[64], "wide endpoints");
   check(wide.to_string().front() == '1' && wide.to_string().back() == '1',
         "wide string endpoints");
+  bool overflow = false, out_of_range_bit = false;
+  try { (void)wide.to_ullong(); }
+  catch (const overflow_error &) { overflow = true; }
+  try { wide.set(65); }
+  catch (const out_of_range &) { out_of_range_bit = true; }
+  check(overflow && out_of_range_bit, "checked conversion/index bounds");
+  bitset<65> copy = wide;
+  check(hash<bitset<65>>{}(copy) == hash<bitset<65>>{}(wide),
+        "equal bitsets hash equally");
 
   cerr << "PASS bitset: 256 masks, bitwise/shift/reset/set/flip, widths 0/8/65\n";
 }

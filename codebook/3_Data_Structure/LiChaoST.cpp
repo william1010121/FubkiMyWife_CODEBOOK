@@ -1,5 +1,6 @@
-// Max on integer x in [0,n); O(log n). id != -1; m*x+k fits ll.
-// INF bounds values. n <= 0: insert ignored, query returns -INF.
+// Max on integer x in [0,n); O(log n); inserted id != -1.
+// Caller INF > 0; values in [-INF,INF]; m*x and m*x+k fit ll.
+// 4*n fits int and memory; n <= 0: insert ignored, query is -INF.
 struct L {
   ll m, k, id; L() : id(-1) {}
   L(ll a, ll b, ll c) : m(a), k(b), id(c) {}

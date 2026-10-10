@@ -2,7 +2,7 @@ struct Q {
   ll p, q;
   Q go(Q b, ll d) { return {p + b.p*d, q + b.q*d}; }
 };
-// Monotone pred; pred(1/0)=true; all intermediate arithmetic must fit ll.
+// Increasing bool pred; pred(1/0)=true; search arithmetic fits ll.
 // Smallest feasible p/q, 0<=p,q<=N, N>=1; q=0 denotes infinity.
 template<class Pred>
 Q frac_bs(ll N, Pred pred) {

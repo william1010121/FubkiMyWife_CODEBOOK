@@ -1,5 +1,6 @@
 MaxFlow Dinic;
 int g[MAXN], gh_w[MAXN];
+// Dinic.n == n <= MAXN; symmetric caps >= 0; arithmetic fits int.
 void GomoryHu(int n) { // 0-base, undirected; n-1 maxflows
   fill_n(g, n, 0), fill_n(gh_w, n, 0);
   for (int i = 1; i < n; ++i) {

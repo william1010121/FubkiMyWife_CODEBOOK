@@ -1,4 +1,5 @@
-struct BronKerbosch { // 1-base, n < N; count must fit int
+struct BronKerbosch { // 1-base, 0 <= n < N; count fits int
+  // Simple undirected graph; n=0 counts the empty clique.
   int n, S, g[N][N];
   void init(int _n) {
     n = _n; for (int i = 1; i <= n; ++i) fill_n(g[i], n + 1, 0);
@@ -25,4 +26,4 @@ struct BronKerbosch { // 1-base, n < N; count must fit int
     vector<int> P(n); iota(P.begin(), P.end(), 1);
     S = 0, dfs_vec(move(P), {}); return S;
   }
-}; // Bron-Kerbosch with pivot; O(3^(n/3)) search, polynomial overhead
+}; // Bron-Kerbosch with pivot; O(n^2 3^(n/3)) including overhead

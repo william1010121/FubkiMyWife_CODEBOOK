@@ -1,4 +1,5 @@
-// sais: positive integers + unique final 0; O(n+max(s)), C++20
+// sais: nonempty int sequence, positive symbols + final 0; C++20
+// size and A=1+max(s) fit int; time/space O(n+A).
 // sa: suffix order; ra: inverse; hi[i]: LCP(sa[i],sa[i-1])
 auto sais(const auto &s) {
   int n = SZ(s); if (n == 1) return vector{0};
@@ -29,7 +30,7 @@ auto sais(const auto &s) {
   for (auto x = c; int y : nsa | views::reverse)
     y = lms[y], sa[--x[s[y]]] = y;
   return induce(), sa; }
-struct Suffix { // _s[0,n) positive; empty input is allowed
+struct Suffix { // _s[0,n) positive; 0<=n<INT_MAX (empty allowed)
   int n; vector<int> sa, hi, ra;
   Suffix(const auto &_s, int _n) : n(_n), hi(n), ra(n) {
     vector<int> s(n+1); copy_n(_s, n, s.begin());

@@ -1,4 +1,5 @@
-// 0-base; no residual negative cycle reachable from s.
+// 0-base; n <= N, cap >= 0; no negative residual cycle for s != t.
+// Arithmetic fits ll; finite BF/reduced distances < INF.
 // A augmentations: O(VE + A(E+V)log(E+V)).
 struct MinCostMaxFlow {
   struct Edge { ll from, to, cap, flow, cost, rev; } *past[N];

@@ -1,4 +1,5 @@
-// Canonical disjoint [L,R), L <= R; O(log s + erased intervals)
+// Nonempty disjoint, nonadjacent [L,R); updates need L <= R.
+// O(log s + erased intervals) per update, amortized O(log s).
 set<pii>::iterator addInterval(set<pii>& is, int L, int R) {
   if (L == R) return is.end();
   auto it = is.lower_bound({L, R}), before = it;

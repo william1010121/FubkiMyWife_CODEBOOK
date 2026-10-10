@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Load vimrc.cpp in Vim and check each printed Hash abbreviation."""
 from pathlib import Path
+import hashlib
 import subprocess
 import tempfile
 
@@ -25,4 +26,27 @@ with tempfile.TemporaryDirectory() as directory:
         assert "tr -d '[:space:]' | md5sum | cut -c-6" in mapping
         assert ["cpp -dD -P -fpreprocessed", "cpp -dD -P | sed",
                 "g++ -E - | sed"][i] in mapping
-print("PASS vimrc: clean Vim load and all three complete Hash pipelines")
+        # Execute the actual abbreviation in Vim, including explicit ranges.
+        # Errors outside the selection must not reach the preprocessor.
+        samples = [
+            ("", "1,$", ""),
+            ("int main() { /* ignored */ return 0; }\n", "1,$",
+             "intmain(){return0;}"),
+            ("\tint main(){\nreturn 0; // ignored\n}\n", "1,$",
+             "intmain(){return0;}"),
+            ("#error outside\nint f(){return 1;}\n#error outside\n",
+             "2,2", "intf(){return1;}"),
+        ]
+        for source, selection, normalized in samples:
+            sample = temp / "sample.cpp"
+            sample.write_text(source)
+            result = subprocess.run(
+                ["vim", "-Nu", str(config), "-n", "-i", "NONE", "-es",
+                 str(sample), "-c",
+                 f"call feedkeys(':{selection} Hash' . nr2char(13), 'xt')",
+                 "-c", "qa!"], capture_output=True, text=True, timeout=15)
+            digest = hashlib.md5(normalized.encode()).hexdigest()[:6]
+            assert result.returncode == 0, result.stdout + result.stderr
+            assert result.stdout.strip() == digest, (i, source, result)
+            assert not result.stderr, result.stderr
+print("PASS vimrc: load and execute 3 Hash pipelines on 4 edge selections")

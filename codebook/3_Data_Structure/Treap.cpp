@@ -1,10 +1,13 @@
-// Expected O(log n); merge needs all keys in a <= all keys in b.
+// Expected O(log n); int sizes fit, total <= RAND_MAX; stack for height.
+// Merge disjoint trees with all keys in a <= all keys in b.
+// Split outputs distinct, may alias root; interval needs
+// 1 <= l <= size+1, 0 <= r <= size-l+1 (1-base start l, length r).
 // split: <= key | > key; split2: first k nodes, 0 <= k <= size.
 struct node {
   int data, sz; node *l, *r;
   node(int k) : data(k), sz(1), l(0), r(0) {}
   void up() { sz = 1 + (l ? l->sz : 0) + (r ? r->sz : 0); }
-  void down() {} // add lazy propagation here if needed
+  void down() {} // lazy also needs down() before kth/Rank/erase reads
 };
 int sz(node *a) { return a ? a->sz : 0; }
 node *merge(node *a, node *b) {

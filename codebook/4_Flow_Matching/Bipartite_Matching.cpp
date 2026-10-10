@@ -1,4 +1,4 @@
-struct Bipartite_Matching { // 0-base, O((E+V)sqrt(V))
+struct Bipartite_Matching { // 0-base, 0 <= l,r <= N; O((E+V)sqrt(V))
   int mp[N], mq[N], dis[N + 1], cur[N], l, r;
   vector<int> G[N + 1];
   bool dfs(int u) {

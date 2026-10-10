@@ -1,4 +1,4 @@
-struct BCC { // 0-base; O(V+E), edge ids support parallel edges
+struct BCC { // 0-base; O(V+E); handles multi-edges, ignores loops
   int n, dft, ecnt, nbcc;
   vector<int> low, dfn, bln, stk, is_ap, cir;
   vector<vector<pii>> G;
@@ -21,13 +21,13 @@ struct BCC { // 0-base; O(V+E), edge ids support parallel edges
     if (pe == -1 && child < 2) is_ap[u] = 0;
     if (pe == -1 && child == 0) make_bcc(u);
   }
-  BCC(int _n): n(_n), dft(), ecnt(), nbcc(),
+  BCC(int _n): n(_n), dft(), ecnt(), nbcc(), // n>=0; counts fit int
     low(n), dfn(n), bln(n), is_ap(n), G(n) {}
   void add_edge(int u, int v) {
     G[u].pb({v, ecnt}), G[v].pb({u, ecnt++}); }
-  void solve() {
+  void solve() { // add all edges first; IDs [0,n); enough DFS stack
     for (int i = 0; i < n; ++i) if (!dfn[i]) dfs(i, -1); }
-  void block_cut_tree() {
+  void block_cut_tree() { // once after solve; changes nbcc/bln
     int base = nbcc; cir.assign(base, 1);
     for (int i = 0; i < n; ++i) if (is_ap[i]) bln[i] = nbcc++;
     nG.assign(nbcc, {});

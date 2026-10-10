@@ -1,6 +1,6 @@
-int z[MAXN]; // O(n); 0-base; MAXN >= 2*SZ(tmp)+1
+int z[MAXN]; // O(n); 0-base; MAXN >= 2*|tmp|+1
 // Center i: z[2*i+1]/2; gap i,i+1: z[2*i+2]/2.
-// Both aba and abba have radius 2.
+// All index arithmetic must fit int; aba and abba have radius 2.
 void Manacher(const string &tmp) {
   string s = "%"; s.reserve(2 * SZ(tmp) + 1);
   for (char c : tmp) s.pb(c), s.pb('%');

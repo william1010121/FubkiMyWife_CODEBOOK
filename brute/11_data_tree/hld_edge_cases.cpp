@@ -21,6 +21,24 @@ struct Edge {
 void check(const string &name, Heavy_light_Decomposition &h,
            const vector<Edge> &edges, const vector<int> &values) {
   int n = static_cast<int>(values.size()) - 1;
+  vector<int> positions;
+  for (int u = 1; u <= n; ++u) {
+    positions.push_back(h.pl[u]);
+    assert(h.seg.query(h.pl[u], h.pl[u] + 1) == values[u]);
+    int weight = 1;
+    for (int v : h.G[u]) if (v != h.pa[u]) {
+      weight += h.w[v];
+      assert(h.mxson[u] && h.w[h.mxson[u]] >= h.w[v]);
+    }
+    assert(h.w[u] == weight);
+    if (h.mxson[u]) {
+      assert(h.pa[h.mxson[u]] == u);
+      assert(h.pl[h.mxson[u]] == h.pl[u] + 1);
+      assert(h.ulink[h.mxson[u]] == h.ulink[u]);
+    }
+  }
+  sort(positions.begin(), positions.end());
+  for (int p = 0; p < n; ++p) assert(positions[p] == p);
   vector<vector<int>> g(n + 1);
   for (auto e : edges)
     g[e.u].push_back(e.v), g[e.v].push_back(e.u);
@@ -63,6 +81,17 @@ void run_case(const string &name, int n, const vector<Edge> &edges,
   for (int u = 1; u <= n; ++u)
     if (h.query(u, u) != values[u]) mismatch(name, u, u, h.query(u, u), values[u]);
 
+  // Flattened interval updates, independent of the chain layout.
+  vector<int> live = values;
+  for (int q = 0; q < 5; ++q) {
+    int l = q * n / 5, r = n - l, delta = q - 2;
+    if (l > r) swap(l, r);
+    h.seg.update(l, r, delta);
+    for (int u = 1; u <= n; ++u)
+      if (l <= h.pl[u] && h.pl[u] < r) live[u] += delta;
+    check(name + ":seg-update", h, edges, live);
+  }
+
   // Reusing the same object catches stale graph/son/segment-tree state.
   vector<int> changed = values;
   for (int u = 1; u <= n; ++u) changed[u] = -values[u] + (u % 5) - 2;
@@ -96,6 +125,25 @@ vector<int> values(int n, int mode) {
 }  // namespace
 
 int main() {
+  {
+    Heavy_light_Decomposition h;
+    h.init(1), h.val[1] = INT_MIN, h.build();
+    assert(h.query(1, 1) == INT_MIN);
+    h.seg.update(0, 1, INT_MAX);
+    assert(h.query(1, 1) == -1);
+    h.seg.update(0, 1, 1);
+    assert(h.query(1, 1) == 0);
+    // Same object, changing sizes/topologies, with each value initialized.
+    for (int n : {N - 1, 1, 7, N - 1, 2}) {
+      h.init(n);
+      auto e = n == 7 ? star(n) : chain(n);
+      auto v = values(n, 1);
+      for (auto edge : e) h.add_edge(edge.u, edge.v);
+      for (int u = 1; u <= n; ++u) h.val[u] = v[u];
+      h.build();
+      check("resize-reuse", h, e, v);
+    }
+  }
   run_case("singleton", 1, {}, values(1, 0));
   run_case("two-vertex", 2, {{1, 2}}, values(2, 1));
   run_case("chain-zero", 127, chain(127), values(127, 0));

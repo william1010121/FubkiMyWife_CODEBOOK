@@ -77,6 +77,44 @@ void check_queries(vector<P> h, mt19937 &rng) {
     }
   }
 }
+void edge_queries(vector<P> h) {
+  if (SZ(h)<3) return;
+  for (int shift=0;shift<SZ(h);++shift) {
+    rotate(h.begin(),h.begin()+1,h.end()); CH ch(h);
+    for (int x=-2;x<=6;++x) for (int y=-2;y<=6;++y) {
+      P q(x*0.5,y*0.5);
+      bool inside=true;
+      for (int i=0;i<ch.n;++i)
+        inside &= crx(ch.p[i],ch.p[(i+1)%ch.n],q)>=-eps;
+      require(ch.contain(q)==inside,"exhaustive grid containment");
+      int a,b;
+      require(ch.get_tangent(q,a,b)==!inside,"grid tangent status");
+      if (!inside) for (P z:ch.p) {
+        require(crx(q,ch.p[a],z)<=eps,"grid tangent a");
+        require(crx(q,ch.p[b],z)>=-eps,"grid tangent b");
+      }
+      // Lines through every vertex, incl. edges and vertex crossings.
+      for (P end:ch.p) {
+        if (equal_point(q,end)) continue;
+        double lo=1e100,hi=-1e100;
+        for (P z:ch.p) lo=min(lo,crx(q,end,z)),
+                      hi=max(hi,crx(q,end,z));
+        auto hits=ch.getLineIntersect(q,end);
+        require(SZ(hits)==(lo < -eps && hi > eps ? 2:0),
+                "grid line through vertex status");
+        for (P z:hits) {
+          require(abs(crx(q,end,z))<1e-7,"vertex crossing on line");
+          bool on=false;
+          for (int i=0;i<ch.n;++i) {
+            P a=ch.p[i],b=ch.p[(i+1)%ch.n];
+            on |= abs(crx(a,b,z))<1e-7 && (z-a)*(z-b)<=eps;
+          }
+          require(on,"vertex crossing on boundary");
+        }
+      }
+    }
+  }
+}
 int main(int argc, char **argv) {
   string mode = argc > 1 ? argv[1] : "all";
   if (mode == "all" || mode == "order") {
@@ -122,6 +160,16 @@ int main(int argc, char **argv) {
         require(ch.p[ch.findFarest(v)]*v == want,
                 "horizontal, vertical and zero-direction extrema");
       }
+    }
+  }
+  if (mode == "all" || mode == "grid") {
+    for (int mask=0;mask<512;++mask) {
+      vector<P> a;
+      for (int i=0;i<9;++i) if (mask>>i&1)
+        a.pb(P(i%3,i/3));
+      check_hull(a); edge_queries(oracle(a));
+      // Duplicates at every boundary location.
+      auto twice=a; twice.insert(twice.end(),ALL(a)); check_hull(twice);
     }
   }
   if (mode == "all" || mode == "random") {

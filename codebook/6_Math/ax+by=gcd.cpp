@@ -1,4 +1,4 @@
-pll exgcd(ll a, ll b) {
+pll exgcd(ll a, ll b) { // a,b>=0; all ll intermediates must fit.
   if (!b) return {1, 0};
   auto p = exgcd(b, a % b); return {p.Y, p.X - p.Y * (a / b)};
 }

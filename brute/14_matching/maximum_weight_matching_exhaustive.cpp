@@ -22,16 +22,9 @@ static ll oracle(const vector<vector<int>> &w, int mask,
   return ans;
 }
 
-static void check(const vector<vector<int>> &w, int tc,
-                  const char *label) {
+static void validate(WeightGraph &graph, const vector<vector<int>> &w,
+                     int tc, const char *label) {
   int n = (int)w.size();
-  WeightGraph graph(n);
-  for (int i = 0; i < n; ++i) for (int j = i + 1; j < n; ++j) {
-    // Exercise overwrite semantics on half of the edges without changing
-    // their final value.
-    if ((i + j + tc) % 2 == 0) graph.add_edge(i + 1, j + 1, -7);
-    graph.add_edge(i + 1, j + 1, w[i][j]);
-  }
   vector<ll> memo(1 << n, LLONG_MIN);
   ll want = oracle(w, 0, memo);
   // Rebuild from scratch even if the previous search left active blossoms.
@@ -63,6 +56,18 @@ static void check(const vector<vector<int>> &w, int tc,
       exit(1);
     }
   }
+}
+
+static void check(const vector<vector<int>> &w, int tc,
+                  const char *label) {
+  int n = (int)w.size();
+  WeightGraph graph(n);
+  for (int i = 0; i < n; ++i) for (int j = i + 1; j < n; ++j) {
+    // Duplicate calls overwrite weights rather than keeping the maximum.
+    if ((i + j + tc) % 2 == 0) graph.add_edge(i + 1, j + 1, -7);
+    graph.add_edge(i + 1, j + 1, w[i][j]);
+  }
+  validate(graph, w, tc, label);
 }
 
 int main() {
@@ -108,5 +113,32 @@ int main() {
       w[i][j] = w[j][i] = (int)(rng() % 13) - 4;
     check(w, tc++, "seeded-random-signed");
   }
-  cout << "PASS " << tc << " maximum-weight matching oracle cases\n";
+  // Extreme weights without contractions, and a total exceeding int.
+  for (int value : {INT_MIN, -1, 0, 1, INT_MAX / 2}) {
+    check({{0, value}, {value, 0}}, tc++, "extreme-single-edge");
+  }
+  vector<vector<int>> large(8, vector<int>(8));
+  for (int u = 0; u < 8; ++u) for (int v = u + 1; v < 8; ++v)
+    large[u][v] = large[v][u] = INT_MAX / 2;
+  check(large, tc++, "large-labels-and-ll-total");
+
+  // Scaling preserves optima but exercises larger dual updates/blossoms.
+  // Mutations include deletion, restoration, ties, and negative weights.
+  int mutations = 0;
+  for (int trial = 0; trial < 500; ++trial) {
+    int n = 2 + rng() % 9;
+    vector<vector<int>> w(n, vector<int>(n));
+    WeightGraph graph(n);
+    for (int stage = 0; stage < 20; ++stage) {
+      for (int u = 0; u < n; ++u) for (int v = u + 1; v < n; ++v) {
+        int value = ((int)(rng() % 25) - 8) * 1000000;
+        if (stage % 5 == 0) value = 0;
+        w[u][v] = w[v][u] = value;
+        graph.add_edge(u + 1, v + 1, value);
+      }
+      validate(graph, w, mutations++, "mutated-scaled-weights");
+    }
+  }
+  cout << "PASS " << tc << " maximum-weight matching oracle cases, "
+       << mutations << " mutation stages\n";
 }

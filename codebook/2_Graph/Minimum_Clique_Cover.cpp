@@ -1,4 +1,5 @@
 struct Clique_Cover { // 0-base, O(n2^n); probabilistic modulo 2^32
+  // Simple undirected, 0 <= n <= N < 31; OR-zeta fwt(int*,int,int).
   int co[1 << N], n, E[N];
   unsigned dp[1 << N]; // defined wraparound (32-bit unsigned)
   void init(int _n) { n = _n; fill_n(E, n, 0); }

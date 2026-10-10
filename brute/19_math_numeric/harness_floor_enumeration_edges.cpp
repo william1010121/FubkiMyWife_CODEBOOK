@@ -7,21 +7,34 @@ void instantiate_template(int n) {
 #include "../../codebook/6_Math/floor_enumeration.cpp"
 }
 
-vector<tuple<int, int, int>> enumerate_oracle_input(int n) {
-  vector<tuple<int, int, int>> got;
-  // The bare source has no output hook, so this direct copy records its
-  // quotient blocks for comparison with the deliberately simple scan below.
-  for (int l = 1, r; l <= n; l = r + 1) {
-    int x = n / l;
-    r = n / x;
-    got.emplace_back(l, r, x);
+struct observed_n {
+  int value, left = 0, quotient = 0;
+  bool pending = false;
+  vector<tuple<int,int,int>> blocks;
+  friend bool operator<=(int l, const observed_n &n) {
+    return l <= n.value;
   }
-  return got;
+  friend int operator/(observed_n &n, int divisor) {
+    int result = n.value / divisor;
+    if (!n.pending) n.left = divisor, n.quotient = result;
+    else n.blocks.emplace_back(n.left, result, n.quotient);
+    n.pending = !n.pending;
+    return result;
+  }
+};
+vector<tuple<int,int,int>> enumerate_oracle_input(int value) {
+  // Observe the actual snippet's n/l and n/x divisions, using exactly
+  // int arithmetic. No copied algorithm supplies the recorded blocks.
+  observed_n n{value};
+#include "../../codebook/6_Math/floor_enumeration.cpp"
+  assert(!n.pending);
+  return n.blocks;
 }
 
 void check(int n) {
   instantiate_template(n);
   const auto got = enumerate_oracle_input(n);
+  if (n == 0) { assert(got.empty()); return; }
   if (got.empty()) {
     cerr << "empty enumeration n=" << n << '\n';
     exit(1);
@@ -71,6 +84,7 @@ void check(int n) {
 }
 
 int main() {
+  check(0);
   for (int n = 1; n <= 3000; ++n) check(n);
   const vector<int> selected = {
       9999, 10000, 10001, 46340, 46341, 1000000, 1000000007,
@@ -81,5 +95,6 @@ int main() {
   for (int tc = 0; tc < 250; ++tc)
     check(1 + static_cast<int>(rng() % 1000000000u));
 
-  cout << "PASS floor_enumeration direct blocks, maximality, and large n\n";
+  cout << "PASS floor_enumeration actual snippet, zero, maximality, "
+       << "and large n\n";
 }

@@ -1,10 +1,12 @@
-// Rectangular n x w, w>=n; pivots in first n columns. O(n^2*w).
+// Rectangular, 0<=n<=w<=INT_MAX; first n pivot columns. O(n^2*w).
+// Max-abs pivot, epsilon 1e-12; finite input/intermediates required.
 void GAS(vector<vector<double>> &vc) {
   int len = vc.size(), row = 0;
   for (int col = 0; col < len && row < len; ++col) {
     int idx = row;
-    while (idx < len && fabs(vc[idx][col]) < 1e-12) ++idx;
-    if (idx == len) continue;
+    for (int j = row + 1; j < len; ++j)
+      if (fabs(vc[j][col]) > fabs(vc[idx][col])) idx = j;
+    if (fabs(vc[idx][col]) < 1e-12) continue;
     swap(vc[idx], vc[row]); double pivot = vc[row][col];
     for (double &x : vc[row]) x /= pivot;
     for (int j = 0; j < len; ++j) {

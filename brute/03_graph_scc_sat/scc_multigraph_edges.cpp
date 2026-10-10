@@ -20,6 +20,11 @@ static void check(int tc, int n, const vector<Edge> &edges) {
   SCC got(n);
   for (auto [u, v] : edges) got.add_edge(u, v);
   got.solve();
+  if (got.dft != n || !got.stk.empty() ||
+      any_of(got.instack.begin(), got.instack.end(), [](int x) { return x; })) {
+    cerr << "SCC multigraph failure tc=" << tc << ": active stack remains\n";
+    exit(1);
+  }
   auto r = closure(n, edges);
   for (int u = 0; u < n; ++u)
     for (int v = 0; v < n; ++v)
@@ -43,6 +48,12 @@ static void add_repeated(vector<Edge> &e, int u, int v, int count) {
 
 int main() {
   int tc = 0;
+  check(tc++, 0, {});
+  check(tc++, 1, {});
+  check(tc++, 1, {{0, 0}, {0, 0}});
+  // A completed SCC is reachable later but must not lower active low links.
+  check(tc++, 5, {{0, 1}, {1, 0}, {2, 1}, {2, 3},
+                  {3, 2}, {4, 3}, {4, 0}});
   check(tc++, 7, {});  // all vertices disconnected
 
   {

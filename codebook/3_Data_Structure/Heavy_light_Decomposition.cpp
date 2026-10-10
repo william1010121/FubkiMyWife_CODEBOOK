@@ -1,4 +1,6 @@
 struct Heavy_light_Decomposition { // 1-base, root 1; needs Seg
+  // Connected tree, 1 <= n < N; caller supplies N; stack for depth.
+  // init, edges, all val, build, then query; int intermediates fit.
   // Build O(n log n), path sum O(log^2 n); positions 0-base.
   int n, ulink[N], deep[N], mxson[N], w[N], pa[N];
   int t, pl[N], val[N]; // val: vertex data

@@ -1,4 +1,5 @@
-struct MinCostCirculation { // 0-base, O(VE * ElogC)
+struct MinCostCirculation { // 0-base; solve once, O(V(E+1)^2log(C+2))
+  // n <= N, cap >= 0; finite distances < INF; arithmetic fits ll.
   struct Edge { ll from, to, cap, fcap, flow, cost, rev; } *past[N];
   vector<Edge> G[N];
   ll dis[N], inq[N], n;
@@ -24,7 +25,7 @@ struct MinCostCirculation { // 0-base, O(VE * ElogC)
       }
     } ++cur.cap;
   }
-  void solve(int mxlg) { // highest set bit of max capacity; call once
+  void solve(int mxlg) { // highest bit of max cap; 0 if all zero
     for (int b = mxlg; b >= 0; --b) {
       for (int i = 0; i < n; ++i)
         for (auto &e : G[i]) e.cap *= 2, e.flow *= 2;

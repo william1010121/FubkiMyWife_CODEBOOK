@@ -1,4 +1,5 @@
 // O(n) rooted tree fingerprint; adjacency order independent; may collide.
+// Nonempty tree, valid root/adjacency; needs O(height) stack.
 using tree_hash_u64 = unsigned long long;
 constexpr tree_hash_u64 tree_hash_default_seed = 0x9e3779b97f4a7c15ULL;
 tree_hash_u64 tree_hash_shift(tree_hash_u64 x) {

@@ -1,4 +1,4 @@
-ll PrimeCount(ll n) { // pi(n); tested through 10^13; O(sqrt(n)) space.
+ll PrimeCount(ll n) { // n<=10^13; n<=1 -> 0; O(sqrt(n)) space.
   if (n <= 1) return 0;
   int v = sqrt(n), s = (v + 1) / 2, pc = 0;
   vector<int> smalls(v + 1), roughs(s); vector<char> skip(v + 1);

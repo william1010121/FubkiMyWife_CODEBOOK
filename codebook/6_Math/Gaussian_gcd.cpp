@@ -1,4 +1,5 @@
-complex<ll> gaussian_gcd(complex<ll> a, complex<ll> b) { // b!=0.
+// b!=0; all ll intermediates (including rounding) must fit.
+complex<ll> gaussian_gcd(complex<ll> a, complex<ll> b) {
   ll c = a.real()*b.real() + a.imag()*b.imag(),
      d = a.imag()*b.real() - a.real()*b.imag(),
      r = b.real()*b.real() + b.imag()*b.imag();

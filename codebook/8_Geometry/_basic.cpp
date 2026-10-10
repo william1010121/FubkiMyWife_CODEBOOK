@@ -1,3 +1,5 @@
+// unit(): nonzero vector; project/reflect/get_ratio: nonzero line.
+// Intersect(L,L): nonparallel lines; segment tests include endpoints.
 bool same(double a, double b) { return abs(a - b) < eps; }
 struct P {
   double x, y;

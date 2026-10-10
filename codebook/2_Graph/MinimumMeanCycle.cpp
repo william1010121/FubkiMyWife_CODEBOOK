@@ -1,7 +1,7 @@
-ll road[N][N]; // input; INF if absent, |walk sums| < INF
-struct MinimumMeanCycle {
-  ll dp[N + 1][N]; int n;
-  static bool less_frac(pll a, pll b) {
+ll road[N][N]; // ll INF>0; absent=INF; |walk sums, <=n edges|<INF
+struct MinimumMeanCycle { // init 0<=n<=N; fill active road entries
+  ll dp[N + 1][N]; int n; // large object: static or ample storage
+  static bool less_frac(pll a, pll b) { // positive denominators
     return (__int128)a.first * b.second < (__int128)b.first * a.second;
   }
   pll solve() {
@@ -15,7 +15,7 @@ struct MinimumMeanCycle {
         if (dp[k - 1][u] < INF)
           dp[k][v] = min(dp[k][v], dp[k - 1][u] + w);
     }
-    pll ans = {-1, -1}; // O(VE+V^2); differences must fit ll
+    pll ans = {-1, -1}; // O(VE+V^2); dp[n]-dp[k] must fit ll
     for (int v = 0; v < n; ++v) if (dp[n][v] < INF) {
       pll high = {dp[n][v], n}; // shorter suffixes are reachable
       for (int k = 1; k < n; ++k) {

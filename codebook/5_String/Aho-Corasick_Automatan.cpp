@@ -1,4 +1,6 @@
-// Root 1; c-'A' in [0,sigma). Build O(top*sigma), scan O(|T|).
+// Root 1; len>=2, sigma>=1; nodes [1,top), top<=len.
+// c-'A' in [0,sigma); total visits fit int; init, insert all, make_fl.
+// Scan via rnx, solve once. Build O(top*sigma), scan O(|T|).
 struct AC_Automatan {
   int nx[len][sigma], fl[len], cnt[len], ord[len], top;
   int rnx[len][sigma]; // complete transitions
@@ -11,7 +13,7 @@ struct AC_Automatan {
     int x = 1; for (char c : s) {
       int &v = nx[x][c - 'A']; if (v < 0) v = newnode();
       x = v;
-    } return x; // pattern endpoint
+    } return x; // endpoint; empty pattern needs cnt[1]=1 before scan
   }
   void make_fl() {
     ord[0] = 1; for (int h = 0, t = 1; h < t; ++h) {

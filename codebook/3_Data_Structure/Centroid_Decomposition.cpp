@@ -1,4 +1,6 @@
 struct Cent_Dec { // 1-base; build O(n log n), modify/query O(log n)
+  // Connected weighted tree, 1 <= n < N; N supplied; stack for depth.
+  // init, edges, build, then modify/query; all ll intermediates fit.
   vector<pll> G[N];
   pll info[N], upinfo[N]; // (sum distance, count); subtract same branch
   int n, pa[N], layer[N], sz[N], done[N];
@@ -41,7 +43,7 @@ struct Cent_Dec { // 1-base; build O(n log n), modify/query O(log n)
       if (pa[a]) upinfo[a].X += dis[ly - 1][u], ++upinfo[a].Y;
     }
   }
-  ll query(int u) { // sum distances to all marked copies
+  ll query(int u) { // sum path weights to marked copies; signed edges OK
     ll rt = 0;
     for (int a = u, ly = layer[a]; a; a = pa[a], --ly) {
       rt += info[a].X + info[a].Y * dis[ly][u];

@@ -1,4 +1,5 @@
-struct MaxClique { // 0-base, n <= N; fast for n <= 100
+struct MaxClique { // 0-base, 0 <= n <= N; N > 0, simple undirected
+  // GCC/libstdc++ bitset search; exponential, fast for n <= 100.
   bitset<N> G[N], cs[N + 2];
   int ans, sol[N], q, cur[N], d[N], n;
   void init(int _n) {

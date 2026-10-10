@@ -199,6 +199,36 @@ int main() {
   for (int i=0;i<curve.n;++i) curve.p[i]={double(i),0,0};
   curve();
   req(curve.m==0, "3D collinear input");
+  // Adversarial insertion orders: boundary grids and interior points.
+  mt19937 boundary_rng(516729);
+  vector<P> lattice;
+  for (int x=-2;x<=2;++x) for (int y=-2;y<=2;++y)
+    for (int z=-2;z<=2;++z) lattice.push_back({double(x),double(y),double(z)});
+  for (int tc=0;tc<200;++tc) {
+    shuffle(lattice.begin(),lattice.end(),boundary_rng);
+    curve.n=lattice.size(); curve.m=0;
+    copy(lattice.begin(),lattice.end(),curve.p); curve();
+    req(curve.faces()==6,"3D lattice coplanar facets");
+    map<pair<int,int>,int> edges; set<int> vertices;
+    for (int i=0;i<curve.m;++i) {
+      auto t=curve.f[i];
+      req(t.res && abs((curve.p[t.b]-curve.p[t.a])^
+          (curve.p[t.c]-curve.p[t.a]))>eps,"3D nonzero active triangle");
+      for (int j=0;j<curve.n;++j)
+        req(!curve.on(curve.f[i],curve.p[j]),"3D lattice supports");
+      for (auto e:{pair{t.a,t.b},pair{t.b,t.c},pair{t.c,t.a}}) {
+        ++edges[e]; vertices.insert(e.first);
+        req(curve.id[e.first][e.second]==i,"3D compact edge indices");
+      }
+    }
+    for (auto [e,count]:edges)
+      req(count==1 && edges[{e.second,e.first}]==1,"3D lattice manifold");
+    req(curve.m==2*int(vertices.size())-4,"3D lattice Euler count");
+  }
+  for (int n=0;n<4;++n) {
+    curve.n=n; curve.m=0; curve();
+    req(curve.m==0,"3D empty/small reused object");
+  }
   // Full capacity: 200 hull vertices followed by 810 interior points.
   curve.n=convex3D::maxn; curve.m=0;
   for (int i=0;i<200;++i)

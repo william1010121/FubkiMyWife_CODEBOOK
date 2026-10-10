@@ -11,8 +11,11 @@ constexpr int MAXN = 4096;
 #undef SZ
 
 static vector<int> template_radii(const string &input) {
-  fill(z, z + 2 * input.size() + 1, 0);
+  fill(z, z + MAXN, INT_MIN);
   Manacher(input);
+  expect(all_of(z + 2 * input.size() + 1, z + MAXN,
+                [](int x) { return x == INT_MIN; }),
+         "Manacher no suffix write", shown(input));
   return vector<int>(z, z + 2 * input.size() + 1);
 }
 
@@ -61,10 +64,23 @@ int main() {
   for (const string &input : byte_words) check(input), ++cases;
   cases += 8;
 
+  // Separators mixed with every byte; no alphabet exclusion is allowed.
+  for (int c = 0; c < 256; ++c) {
+    check(string(1, char(c)));
+    check(string({'%', char(c), '%', char(c), '%'})); cases += 2;
+  }
+
   mt19937 rng(0x4D414E32u);
   for (int tc = 0; tc < 3000; ++tc) {
     check(random_word(rng, "abc", rng() % 420));
     ++cases;
+  }
+
+  for (int tc = 0; tc < 1000; ++tc) {
+    string input(rng() % 210, '\0');
+    for (char &c : input) c = char(rng() % 256);
+    string rev(input.rbegin(), input.rend());
+    check(input + rev); check(input + '%' + rev); cases += 2;
   }
 
   cout << "PASS Manacher exhaustive_cases=" << cases

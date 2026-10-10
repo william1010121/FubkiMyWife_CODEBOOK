@@ -1,3 +1,4 @@
+// Signed decimal; skips junk, consumes first nondigit after each number.
 bool read(__int128 &value) { // false on EOF/overflow; value unchanged
   int ch = getchar(); bool neg, overflow = false;
   for (;;) {

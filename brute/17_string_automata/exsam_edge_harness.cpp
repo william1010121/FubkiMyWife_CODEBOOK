@@ -21,7 +21,7 @@ static map<string, int> brute_occ(const vector<string> &strings) {
 }
 
 // A generalized SAM has one state per distinct end-position set.  Keep the
-// document id in each endpoint so occurrences in different input strings do
+// document id so occurrences in different input strings do
 // not accidentally merge.
 static int brute_endpos_states(const vector<string> &strings) {
   map<string, set<pair<int, int>>> endpos;
@@ -34,7 +34,8 @@ static int brute_endpos_states(const vector<string> &strings) {
       }
   }
   set<set<pair<int, int>>> classes;
-  for (const auto &[sub, positions] : endpos) (void)sub, classes.insert(positions);
+  for (const auto &[sub, positions] : endpos)
+    (void)sub, classes.insert(positions);
   return (int)classes.size() + 1;  // include the root state
 }
 
@@ -88,6 +89,25 @@ static void enumerate_words(int alphabet, int length,
   }
 }
 
+static void check_capacity() {
+  exSAM ex;
+  ex.init();
+  ex.insert(string(2 * N - 1, 'c'));
+  ex.build();
+  if (ex.tot != 2 * N) fail("exact state capacity");
+  ex.solve();
+  for (int v = 1; v < ex.tot; ++v)
+    if (ex.len[v] != v || ex.link[v] != v - 1 ||
+        ex.lenSorted[v - 1] != v || ex.cnt[v] != 2 * N - v)
+      fail("exact-capacity unary state data");
+  ex.init();
+  ex.insert("c"), ex.build();
+  ex.cnt[1] = INT_MAX; // equivalent to INT_MAX identical documents
+  ex.solve();
+  if (ex.tot != 2 || ex.cnt[0] != INT_MAX || ex.cnt[1] != INT_MAX)
+    fail("maximum representable occurrence count after reuse");
+}
+
 int main() {
   int cases = 0;
   check({}), ++cases;
@@ -106,6 +126,14 @@ int main() {
     for (const string &b : short_words) check({a, b}), ++cases;
 
   mt19937 rng(0xE5A17EEDu);
+  mt19937 shuffle_rng(0xE5A105u);
+  vector<string> overlap = {"abacaba", "bacab", "aba", "c", "",
+                             "abacaba", "cabac", "abac"};
+  for (int i = 0; i < 24; ++i) {
+    shuffle(overlap.begin(), overlap.end(), shuffle_rng);
+    check(overlap), ++cases;
+  }
+  check_capacity(), ++cases;
   for (int tc = 0; tc < 1200; ++tc) {
     vector<string> strings;
     const int m = rng() % 7;
