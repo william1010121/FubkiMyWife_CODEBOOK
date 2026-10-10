@@ -1,35 +1,129 @@
-\( \sum_{d=1}^n \mu(d)\,\lfloor n/d \rfloor = 1
- = \sum_{k=1}^n \sum_{d\mid k} \mu(d). \)
-\( n = \sum_{d\mid n} \mu(d)\,\sigma(n/d)
- = \sum_{d\mid n} \mu(n/d)\,\sigma(d). \)
-\( \sum_{k=1}^n \sigma(k) = \sum_{d=1}^n d\,\lfloor n/d \rfloor. \)
-\( \varphi(n) = \sum_{d\mid n} \mu(d)\,n/d. \)
-\par\noindent
-Lucas: for prime $p$, $\binom nk\equiv\prod_i\binom{n_i}{k_i}\pmod p$;
-see Modular Binomial / Lucas for digit-wise evaluation.\\
-CRT: compatible equations have one residue class modulo the lcm;
-see chineseRemainder for the non-coprime implementation.
-\begin{verbatim}
-Kirchhoff's theorem
-  A_{ii} = deg(i), A_{ij} = (i,j) \in E ? -1 : 0
-  Deleting any one row, one column, and cal the det(A)
-Mobius Formula
-mu(n) = 1        , if n = 1
-        (-1)^r   , if n is square-free with r distinct prime factors
-        0        , otherwise
-- Property
-1. (multiplicative) mu(a)mu(b) = mu(ab) if gcd(a,b)=1
-2. sum_{d|n} mu(d) = [n == 1]
-Mobius Inversion Formula
-if      f(n) = sum_{d|n} g(d)
-then    g(n) = sum_{d|n} mu(n/d)f(d)
-             = sum_{d|n} mu(d)f(n/d)
-- Application
-For 1 <= i,j <= n, the number of pairs with gcd(i,j)=k is
-  sum_{d=1}^{floor(n/k)} mu(d) * floor(n/(kd))^2.
-- Trick
-分塊, O(sqrt(n))
-Burnside's lemma
-|G| * |X/G|  = sum( |X^g| ) where g in G
-總方法數: 每一種旋轉下不動點的個數總和 除以 旋轉的方法數
-\end{verbatim}
+{\footnotesize\ttfamily\raggedright
+\MTversion{codebook}
+\spaceskip=.3333em\relax
+\xspaceskip=.3333em\relax
+\setlength{\leftskip}{.6em}
+\newcommand{\MobiusHeading}[1]{%
+  \par\smallskip{\leftskip=0pt\noindent\textbf{#1}\par}\nobreak}
+\newcommand{\MobiusStep}[1]{%
+  {\leftskip=1.8em\noindent#1\par}}
+\MobiusHeading{Notation}
+
+$[P]\in\{0,1\}$ is the indicator of $P$; $p$ is prime; $H=\min(N,M)$;
+$(f*g)(n)=\sum_{d\mid n}f(d)g(n/d)$.
+Quotient blocks over $\lfloor N/d\rfloor,\lfloor M/d\rfloor$: $O(\sqrt N+\sqrt M)$.
+Linear sieve for $\mu,\varphi$ or any multiplicative function up to $L$: $O(L)$.\par
+
+\MobiusHeading{Core identities}
+
+\MobiusStep{$\mu(1)=1$, $\mu(p)=-1$, $\mu(p^e)=0\ (e\ge2)$, multiplicative.}
+
+\MobiusStep{$\sum_{d\mid n}\mu(d)=[n=1]$ \quad(the only identity the recipe uses).}
+
+\MobiusStep{$\sum_{d\mid n}\varphi(d)=n$,\quad
+$\varphi(n)=\sum_{d\mid n}\mu(d)\,n/d=n\prod_{p\mid n}(1-1/p)$.}
+
+\MobiusStep{$f(n)=\sum_{d\mid n}g(d)\Leftrightarrow g(n)=\sum_{d\mid n}\mu(d)f(n/d)$.}
+
+\MobiusStep{$F(n)=\sum_{n\mid d}f(d)\Leftrightarrow f(n)=\sum_{n\mid d}\mu(d/n)F(d)$
+\quad(finite support).}
+
+\MobiusStep{$f,g$ multiplicative $\rightarrow f*g$ multiplicative $\rightarrow$ linear sieve.
+Any $c=f*g$ up to $L$ by looping multiples: $O(L\log L)$.}
+
+\MobiusHeading{Recipe: sum of $h(\gcd)$}
+
+\MobiusStep{\textbf{1. Exact gcd $\rightarrow$ coprime.}
+$i=ga,\ j=gb$: $[\gcd(i,j)=g]=[\gcd(a,b)=1]$, bounds $\lfloor N/g\rfloor,\lfloor M/g\rfloor$.}
+
+\MobiusStep{\textbf{2. Kill the bracket.}
+$[\gcd(i,j)=1]=\sum_{d\mid i,\ d\mid j}\mu(d)$.
+Shortcut: $h(\gcd(i,j))=\sum_{d\mid i,\ d\mid j}c(d)$ with $c=\mu*h$
+(e.g.\ $h=\mathrm{id}\rightarrow c=\varphi$), skips step 1.}
+
+\MobiusStep{\textbf{3. Swap sums, $d$ outermost.}
+$\#\{1\le i\le N: d\mid i\}=\lfloor N/d\rfloor$, independent per variable.}
+
+\MobiusStep{\textbf{4. Merge $T=gd$.}
+$\lfloor\lfloor N/g\rfloor/d\rfloor=\lfloor N/(gd)\rfloor$;
+everything not in the floors becomes $c(T)=\sum_{g\mid T}h(g)\mu(T/g)$.}
+
+\MobiusStep{\textbf{5. Evaluate.}
+Final shape $\sum_T c(T)\prod\lfloor N_\cdot/T\rfloor$:
+sieve $c$, prefix sums, quotient blocks.}
+
+\MobiusHeading{Example: $S(N,M)=\sum_{i\le N}\sum_{j\le M}\gcd(i,j)$}
+
+\MobiusStep{(1) $S=\sum_g g\sum_{a\le\lfloor N/g\rfloor}\sum_{b\le\lfloor M/g\rfloor}[\gcd(a,b)=1]$.}
+
+\MobiusStep{(2,3) $\rightarrow S=\sum_g g\sum_d\mu(d)
+\lfloor N/(gd)\rfloor\lfloor M/(gd)\rfloor$.}
+
+\MobiusStep{(4) $T=gd\rightarrow S=\sum_{T=1}^H\lfloor N/T\rfloor\lfloor M/T\rfloor
+\sum_{g\mid T}g\,\mu(T/g)$.}
+
+\MobiusStep{(5) $\sum_{g\mid T}g\,\mu(T/g)=\varphi(T)
+\rightarrow S=\sum_{T=1}^H\varphi(T)\lfloor N/T\rfloor\lfloor M/T\rfloor$.}
+
+\MobiusHeading{Example: $\sum_{i=1}^k\gcd(i,n)$}
+
+\MobiusStep{(2) $\gcd(i,n)=\sum_{d\mid i,\ d\mid n}\varphi(d)$.}
+
+\MobiusStep{(3) $\rightarrow\sum_{i=1}^k\gcd(i,n)=\sum_{d\mid n}\varphi(d)\lfloor k/d\rfloor$.
+Given divisors of $n$: $O(\tau(n))$.}
+
+\MobiusHeading{Results}
+
+\MobiusStep{$\sum_{i\le N}\sum_{j\le M}[\gcd(i,j)=1]=\sum_{d=1}^H\mu(d)\lfloor N/d\rfloor\lfloor M/d\rfloor$.}
+
+\MobiusStep{$\sum_{i\le N}\sum_{j\le M}[\gcd(i,j)=g]$: same with $N,M\rightarrow\lfloor N/g\rfloor,\lfloor M/g\rfloor$.}
+
+\MobiusStep{$\sum_{i\le N}\sum_{j\le M}h(\gcd(i,j))=\sum_{d=1}^H(\mu*h)(d)\lfloor N/d\rfloor\lfloor M/d\rfloor$.}
+
+\MobiusStep{$h(n)=n^s\rightarrow\mu*h=J_s(d)=d^s\prod_{p\mid d}(1-p^{-s})$.}
+
+\MobiusStep{$k$ variables:
+$\sum_{i_1..i_k\le N}[\gcd=1]=\sum_d\mu(d)\lfloor N/d\rfloor^k$,\quad
+$\sum_{i_1..i_k\le N}\gcd=\sum_T\varphi(T)\lfloor N/T\rfloor^k$.}
+
+\MobiusStep{$\sum_{a\le x}[\gcd(a,m)=1]=\sum_{e\mid m}\mu(e)\lfloor x/e\rfloor$.}
+
+\MobiusHeading{Prefix recurrences (Du Jiao)}
+
+\MobiusStep{$\mathcal M(N)=\sum_{d\le N}\mu(d)=1-\sum_{i=2}^N\mathcal M(\lfloor N/i\rfloor)$.}
+
+\MobiusStep{$\Phi(N)=\sum_{d\le N}\varphi(d)=N(N+1)/2-\sum_{i=2}^N\Phi(\lfloor N/i\rfloor)$.}
+
+\MobiusStep{Why: $\sum_{i=1}^N\sum_{d\le\lfloor N/i\rfloor}f(d)=\sum_{t\le N}(f*1)(t)$.
+Sieve up to $B=\Theta(N^{2/3})$ + memo: $O(N^{2/3})$.}
+
+\MobiusHeading{Quotient blocks}
+
+\MobiusStep{$q_N=\lfloor N/l\rfloor,\ q_M=\lfloor M/l\rfloor,\
+r=\min(\lfloor N/q_N\rfloor,\lfloor M/q_M\rfloor)$; floors constant on $[l,r]$.}
+
+\MobiusStep{$\rightarrow\sum_{d=l}^r c(d)\lfloor N/d\rfloor\lfloor M/d\rfloor
+=q_Nq_M(P_c(r)-P_c(l-1))$; $l\leftarrow r+1$ while $l\le H$.}
+
+\MobiusHeading{Other theorems}
+
+\MobiusStep{\textbf{Lucas:} prime $p$,
+$n=\sum_i n_i p^i$, $k=\sum_i k_i p^i$
+$\rightarrow\binom nk\equiv\prod_i\binom{n_i}{k_i}\pmod p$.
+Factorial/inverse-factorial preprocessing: $O(p)$ time/space;
+query: $O(1+\log_p(n+1))$.}
+
+\textbf{CRT:} compatible residues determine one solution modulo the lcm of the moduli.
+For $r$ congruences and intermediate values bounded by $U$:
+$O(r\log U)$ arithmetic operations.\par
+
+\MobiusStep{\textbf{Kirchhoff:} for an undirected graph,
+$L_{ii}=\deg(i)$, $L_{ij}=-\#\{\text{edges between }i,j\}$ for $i\ne j$.
+Delete row and column $r$ to obtain $L^{(r)}$
+$\rightarrow\#\{\text{spanning trees}\}=\det L^{(r)}$.
+For $v$ vertices, Gaussian elimination: $O(v^3)$ time, $O(v^2)$ space.}
+
+\MobiusStep{\textbf{Burnside:} $|X/G|=|G|^{-1}\sum_{g\in G}|\operatorname{Fix}(g)|$.
+Cost $T_{\rm fix}$ per fixed-point count
+$\rightarrow O(|G|T_{\rm fix})$ total time.}
+}

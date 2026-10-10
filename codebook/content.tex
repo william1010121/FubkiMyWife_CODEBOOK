@@ -67,8 +67,6 @@
 {Line container over an integer $x$ domain, $O(\log n)$. Keeps the \textbf{maximum}; negate for minimum. For $n=0$, insertion is a no-op and query returns \texttt{-INF}.}{examples/LiChaoST.cpp}
 \inputcodeex{XOR Basis}{3_Data_Structure/XOR_Basis.cpp}%
 {Inserts a 64-bit unsigned integer into a linear basis in $O(64)$. \texttt{basis[i]} has highest set bit $i$; a dependent value is discarded.}{examples/XOR_Basis.cpp}
-\inputcodeex{KDTree}{3_Data_Structure/KDTree.cpp}%
-{Nearest neighbour, build $O(n\log n)$, query $O(\log n)$ average. Returns \textbf{squared} distance (saturating at \texttt{LLONG\_MAX}) and skips distance-0 points; empty data, or a query equal to every stored point, returns that sentinel.}{examples/KDTree.cpp}
 \inputcodeex{Treap}{3_Data_Structure/Treap.cpp}%
 {Rotation-free treap, expected $O(\log n)$; \texttt{split} by key, \texttt{split2} by size. \texttt{down()} is empty --- add lazy tags there.}{examples/Treap.cpp}
 % \inputcode{Range Chmin Chmax Add Range Sum*}{3_Data_Structure/Range_Chmin_Chmax_Add_Range_Sum.cpp} % test by Lib-Checker Range Chmin Chmax Add Range Sum
@@ -94,8 +92,6 @@
 {All-pairs min cut as a tree ($n-1$ max-flow runs, Gusfield). Needs a MaxFlow named Dinic. 0-base.}{examples/Gomory_Hu_tree.cpp}
 \inputcodeex{Minimum Cost Circulation*}{4_Flow_Matching/MinCostCirculation.cpp}%
 {Min cost circulation via capacity scaling; cancels negative cycles. $O(VE\cdot E\log C)$. 0-base.}{examples/MinCostCirculation.cpp}
-\subsection{Flow Models}
-\input{4_Flow_Matching/Model.tex}
 \subsection{matching}
 \input{4_Flow_Matching/matching.tex}
 
@@ -131,8 +127,6 @@
 {Floor/ceil division that is correct for \textbf{negative} operands ($C++$ truncates toward zero).}
 \inputcodedesc{Floor Enumeration}{6_Math/floor_enumeration.cpp}%
 {Enumerates the $O(\sqrt n)$ distinct values of $\lfloor n/i\rfloor$ with their index ranges.}
-\inputcodeex{Modular Arithmetic}{6_Math/Mod_Arithmetic.cpp}%
-{Normalize signed inputs; add/subtract/multiply, binary power, and inverse. Any positive \texttt{long long} modulus; 128-bit intermediates avoid product overflow. Power needs $e\ge0$; inverse returns $-1$ if $m=1$ or $\gcd(a,m)\ne1$. $O(1)$ arithmetic, $O(\log e)$ power, $O(\log m)$ inverse. Modular division requires an inverse.}{examples/Mod_Arithmetic.cpp}
 \inputcodeex{Modular Binomial / Lucas}{6_Math/Mod_Binomial.cpp}%
 {Requires \texttt{ModArithmetic}, prime $p$, and $0\le N<p$. Precompute factorials / inverse factorials in $O(N+\log p)$, query $\binom nk$ in $O(1)$ for $n\le N$. Invalid $k$ returns 0. Lucas handles large $n$ in $O(\log_p n)$, but needs the full $N=p-1$ table: use only small primes.}{examples/Mod_Binomial.cpp}
 \inputcodeex{Linear Congruence}{6_Math/Linear_Congruence.cpp}%
@@ -188,8 +182,6 @@
 %\input{6_Math/Euclidean.tex}
 \subsection{General Purpose Numbers}
 \input{6_Math/numbers.tex}
-\subsection{Tips for Generating Functions}
-\input{6_Math/Generating_function.tex}
 
 \section{Polynomial}
 \inputcodeex{Fast Fourier Transform}{7_Polynomial/FFT_chrislaiisme.cpp}%
@@ -209,7 +201,8 @@
 \inputcodedesc{Basic}{8_Geometry/_basic.cpp}%
 {Point/line primitives the rest of this section depends on: \texttt{*} is dot, \texttt{\^} is cross; \texttt{project}, \texttt{reflect}, segment \texttt{inside}, \texttt{SegmentIntersect} (endpoints included). \textbf{\texttt{Intersect} divides by zero on parallel lines.}}
 % KD Tree: see Data Structure section (identical file, was duplicated here)
-%\inputcodewithtext{Delaunay Triangulation}{8_Geometry/Triangulation.cpp}{Fast Delaunay triangulation assuming no duplicates and not all points collinear (in latter case, result will be empty). Should work for doubles as well, though there may be precision issues in 'circ'.  Returns triangles in ccw order. Each circumcircle will contain none of the input points. If coordinates are ints at most $B$ then \texttt{T} should be large enough to support ints on the order of $B^4$. We don't need \texttt{double} in \texttt{Point} if the coordinates are integers.}
+\inputcodeex{Delaunay Triangulation}{8_Geometry/Triangulation.cpp}%
+{Divide-and-conquer quad-edge Delaunay, $O(n\log n)$. \textbf{Points must be distinct}, integer, $|x|,|y|\le5\cdot10^8$ (\texttt{\_\_int128} in-circle test). Returns CCW triangles with no input point strictly inside any circumcircle; empty if fewer than 3 points or all collinear. Cocircular points give one valid triangulation.}{examples/Delaunay.cpp}
 %\inputcodewithtext{Voronoi Diagram}{8_Geometry/Triangulation_Vonoroi_short.cpp}{Vertices in Voronoi Diagram are circumcenters of triangles in the Delaunay Triangulation.}
 \inputcodedesc{Sector Area}{8_Geometry/sectorArea.cpp}%
 {Area of the sector between two vectors, $O(1)$. \textbf{Returns the minor arc} --- subtract from the full disc for the major one.}
@@ -245,6 +238,8 @@
 \section{Else}
 \inputcodeex{Cyclic Ternary Search*}{9_Else/cyc_tsearch.cpp}%
 {Minimum of a \textbf{cyclically shifted} unimodal array in $O(\log n)$; \texttt{pred(a,b)} compares two positions. The cyclic U-shape must have pairwise-distinct values (equivalently, strict comparisons); $n\ge1$.}{examples/cyc_tsearch.cpp}
+\inputcodeex{CDQ: k-D Dominance Count}{9_Else/CDQ_Dominance.cpp}%
+{For each point, counts other points $\le$ it in every coordinate (ties and duplicates counted). Any $k\ge1$ dims. Lexicographic sort removes dim 0, each CDQ layer removes one more, the last uses a BIT: $O(n\log^{k-1}n)$ for $k\ge2$; $n=10^5$: 0.4s at $k=3$, 1.5s at $k=4$. For strict $<$ in a dim, map that coordinate to break ties first.}{examples/CDQ_Dominance.cpp}
 \inputcodeex{Mo's Algorithm(With modification)}{9_Else/Mos_Algorithm_With_modification.cpp}%
 {Mo's with point updates, block $N^{2/3}$, $O(N^{5/3})$. The callback-based \texttt{solve} applies/rolls back updates and reports each query.}{examples/Mos_Algorithm_With_modification.cpp}
 \inputcodeex{Mo's Algorithm On Tree}{9_Else/Mos_Algorithm_On_Tree.cpp}%

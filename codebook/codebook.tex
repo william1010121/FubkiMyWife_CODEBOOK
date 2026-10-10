@@ -24,6 +24,13 @@
 
 %\usepackage[T1]{fontenc}
 \usepackage{amsmath, courier, listings, fancyhdr, graphicx}
+\IfFontExistsTF{Noto Sans Mono CJK TC}
+  {\setCJKmonofont{Noto Sans Mono CJK TC}}
+  {\setCJKmonofont{Songti TC}}
+\usepackage[subdued,defaultmathsizes]{mathastext}
+\ttfamily
+\Mathastext[codebook]
+\normalfont
 \topmargin=0pt
 \headsep=5pt
 \textheight=808pt
