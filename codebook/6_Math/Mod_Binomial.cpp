@@ -17,7 +17,7 @@ struct ModBinomial {
   ll lucas(ll n, ll k) const { // N=p-1, small p; O(log_p n).
     if (n < 0 || k < 0 || k > n) return 0;
     assert((ll)fac.size() == mod.m); ll r = 1;
-    for (; n || k; n /= mod.m, k /= mod.m)
+    for (; r && (n || k); n /= mod.m, k /= mod.m)
       r = (__int128)r*C(n % mod.m, k % mod.m)%mod.m;
     return r;
   }

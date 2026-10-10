@@ -11,6 +11,6 @@ double closest_pair(int l, int r) {
     for (; it != active.end() && it->first <= p[i].y + d; ++it)
       d = min(d, dist(p[i], p[it->second]));
     if (d == 0) return 0;
-    active.insert({p[i].y, i});
+    if (i < r && p[i + 1].x - p[i].x < d) active.insert({p[i].y, i});
   } return d;
 }

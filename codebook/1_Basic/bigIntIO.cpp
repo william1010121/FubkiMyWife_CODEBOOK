@@ -5,8 +5,7 @@ bool read(__int128 &value) { // false on EOF/overflow; value unchanged
     prev = ch, ch = getchar_unlocked();
   if (ch == EOF) return false; bool neg = prev == '-';
   __uint128_t x = 0, lim = ((__uint128_t)1 << 127) - !neg;
-  do {
-    unsigned d = ch - '0';
+  do { unsigned d = ch - '0';
     if (x > lim / 10 || (x == lim / 10 && d > lim % 10)) overflow = true;
     else x = x * 10 + d;
   } while (isdigit(ch = getchar_unlocked())); // consumes first nondigit
@@ -16,8 +15,9 @@ bool read(__int128 &value) { // false on EOF/overflow; value unchanged
   return true;
 }
 __int128 read() { __int128 value = 0; read(value); return value; }
-void print_unsigned(__uint128_t x) {
-  if (x > 9) print_unsigned(x / 10); putchar_unlocked(x % 10 + '0');
+void print_unsigned(__uint128_t x) { // prefer 64-bit division
+  auto q = x >> 64 ? x / 10 : (uint64_t)x / 10;
+  if (q) print_unsigned(q); putchar_unlocked(x - q * 10 + '0');
 }
 void print(__int128 x) {
   if (x < 0) putchar_unlocked('-');

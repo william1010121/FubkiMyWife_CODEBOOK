@@ -11,6 +11,7 @@ struct BronKerbosch { // 1-base, 0 <= n < N; count fits int
     for (int u = U._Find_first(); u < N; u = U._Find_next(u)) {
       int score = (P & g[u]).count();
       if (score > best) best = score, pivot = u;
+      if (X.none() && score + 1 == P.count()) break; // max score
     }
     auto cand = P & ~g[pivot];
     for (int v = cand._Find_first(); v < N; v = cand._Find_next(v)) {
@@ -20,8 +21,7 @@ struct BronKerbosch { // 1-base, 0 <= n < N; count fits int
   }
   void dfs_vec(vector<int> P, vector<int> X) {
     bitset<N> p, x; for (int v : P) p[v] = 1;
-    for (int v : X) x[v] = 1;
-    dfs(p, x);
+    for (int v : X) x[v] = 1; dfs(p, x);
   }
   int solve() {
     bitset<N> P; for (int i = 1; i <= n; ++i) P[i] = 1;

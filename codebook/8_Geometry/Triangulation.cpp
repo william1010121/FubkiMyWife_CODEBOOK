@@ -15,7 +15,7 @@ bool InCircle(Point p, Point a, Point b, Point c) {
   __int128 x = __int128(a.Norm()) * (b ^ c) +
     __int128(b.Norm()) * (c ^ a) + __int128(c.Norm()) * (a ^ b);
   ll s = (b - a) ^ (c - a);
-  return x * ((s > 0) - (s < 0)) > 0;
+  return s > 0 ? x > 0 : s < 0 && x < 0;
 }
 struct Quad {
   bool mark = 0; Point p;
@@ -71,8 +71,8 @@ pair<Quad*, Quad*> Dfs(const vector<Point>& s, int l, int r) {
     if (Valid(rc))
       while (InCircle(rc->prev()->F(), base->F(), base->p, rc->F()))
         { Quad* t = rc->prev(); Kill(rc); rc = t; }
-    if (!Valid(lc) && !Valid(rc)) break;
-    if (!Valid(lc) || (Valid(rc) &&
+    bool lv = Valid(lc), rv = Valid(rc); if (!lv && !rv) break;
+    if (!lv || (rv &&
         InCircle(rc->F(), rc->p, lc->F(), lc->p)))
       base = Connect(rc, base->r());
     else base = Connect(base->r(), lc->r());

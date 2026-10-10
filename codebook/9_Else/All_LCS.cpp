@@ -9,10 +9,9 @@ vector<string> all_lcs(const string &s, const string &t) {
       dp[i][j] = s[i] == t[j] ? 1 + dp[i + 1][j + 1]
         : max(dp[i + 1][j], dp[i][j + 1]);
   if (!dp[0][0]) return {""};
-  vector<vector<vector<string>>> memo(n + 1,
-    vector<vector<string>>(m + 1));
+  vector<vector<string>> memo(size_t(n + 1) * (m + 1));
   auto go = [&](auto &&self, int i, int j) -> vector<string> & {
-    auto &ret = memo[i][j];
+    auto &ret = memo[size_t(i) * (m + 1) + j];
     if (!ret.empty()) return ret; // Even an empty LCS gives {""}.
     if (!dp[i][j]) return ret.push_back(""), ret;
     if (s[i] == t[j]) {

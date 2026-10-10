@@ -29,11 +29,11 @@ struct exSAM { // root=0; init, insert all, build once, solve once
     }
   }
   void build() { // O(total input length * CNUM)
-    lenSorted[0] = 0; // reuse as BFS queue before sorting by length
-    for (int h = 0, t = 1; h < t; ++h) { int cur = lenSorted[h];
+    int t = 1; lenSorted[0] = 0; // BFS queue, then length order
+    for (int h = 0; h < t; ++h) { int cur = lenSorted[h];
       for (int i = 0; i < CNUM; ++i)
         if (next[cur][i]) lenSorted[t++] = insertSAM(cur, i);
-    } vector<int> lc(tot);
+    } vector<int> lc(len[lenSorted[t-1]]+1); // max trie depth
     for (int i = 1; i < tot; ++i) ++lc[len[i]];
     partial_sum(ALL(lc), lc.begin());
     for (int i = 1; i < tot; ++i) lenSorted[--lc[len[i]]] = i;

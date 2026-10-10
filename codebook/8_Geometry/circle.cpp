@@ -38,12 +38,12 @@ vector<P> CircleCrossLine(P a, P b, P o, double r) {
   double t0 = u.y * v.x, z = fma(u.x, v.y, -t0) - fma(u.y, v.x, -t0);
   double mid = -(u * v) / A, d = sq(r) - sq(z) / A, tol = eps / sqrt(A);
   P p = P(-u.y, u.x) * (z / A);
+  auto within = [&](double t) { return -tol <= t && t <= 1 + tol; };
   vector<P> t;
   if (d >= -eps) {
     double root = sqrt(max(0., d) / A), i = mid - root, j = mid + root;
-    if (i <= 1 + tol && i >= -tol) t.push_back(o + p - u * root);
-    if (root > 0 && j <= 1 + tol && j >= -tol)
-      t.push_back(o + p + u * root);
+    if (within(i)) t.reserve(2), t.push_back(o + p - u * root);
+    if (root > 0 && within(j)) t.push_back(o + p + u * root);
   } return t;
 }
 // r >= 0; unsigned circle cap OAB area; last root is the exit from a.

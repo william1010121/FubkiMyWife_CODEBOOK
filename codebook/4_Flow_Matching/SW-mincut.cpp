@@ -14,7 +14,7 @@ struct SW { // 0-base, undirected, nonnegative weights. O(V^3)
       cur = max_element(wei, wei + n) - wei, mx = wei[cur];
       vst[cur] = 1, wei[cur] = -1, s = t, t = cur;
       for (int i = 0; i < n; ++i)
-        if (!vst[i]) wei[i] += edge[cur][i];
+        wei[i] += !vst[i] * edge[cur][i];
     } return mx;
   }
   int solve(int n) {

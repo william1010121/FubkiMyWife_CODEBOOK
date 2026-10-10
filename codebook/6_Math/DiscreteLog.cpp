@@ -2,7 +2,7 @@
 // Expected O(sqrt(m)) time/space; 4-argument helper is internal.
 int DiscreteLog(int s, int x, int y, int m) {
   int step = sqrt(m), b = 1; if (1LL * step * step < m) ++step;
-  unordered_map<int, int> p; p.reserve(step);
+  unordered_map<int, int> p; p.reserve(2 * step);
   for (int i = 0; i < step; ++i)
     p[y] = i, y = 1LL * y * x % m, b = 1LL * b * x % m;
   for (long long i = 0; i < 1LL * m + 10; i += step) {

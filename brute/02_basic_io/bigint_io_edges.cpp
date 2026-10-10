@@ -67,6 +67,30 @@ int main() {
     cases.push_back({decimal(value), value});
   }
 
+  // Decimal recursion crossing the 64-bit boundary, on either side.
+  for (i128 base = i128(1) << 64;; base *= 10) {
+    for (int delta = -10; delta <= 10; ++delta)
+      for (int sign : {-1, 1}) {
+        i128 value = sign * (base + delta);
+        cases.push_back({decimal(value), value});
+      }
+    if (base > (max_value - 10) / 10) break;
+  }
+  for (i128 base = 1;; base *= 10) {
+    for (int delta : {-1, 0, 1})
+      for (int sign : {-1, 1}) {
+        i128 value = sign * (base + delta);
+        cases.push_back({decimal(value), value});
+      }
+    if (base > (max_value - 1) / 10) break;
+  }
+  std::mt19937_64 low_rng(0x64dec1a1);
+  for (int tc = 0; tc < 256; ++tc) {
+    i128 value = low_rng();
+    if (tc & 1) value = -value;
+    cases.push_back({decimal(value), value});
+  }
+
   std::string input = "  leading-text\n\t";
   for (size_t i = 0; i < cases.size(); ++i) {
     input += cases[i].token;

@@ -17,7 +17,7 @@ vector<P> HPI(vector<L> &ls) {
       dq[dq.size() - 2])) dq.pop_back();
   while (dq.size() > 1 && jizz(dq.back(), dq[0], dq[1])) dq.pop_front();
   if (dq.size() < 3) return {};
-  vector<P> rt; for (int i = 0; i < (int)dq.size(); ++i)
-    rt.push_back(Intersect(dq[i], dq[(i + 1) % dq.size()]));
+  vector<P> rt(dq.size()); for (int i = 0; i < (int)dq.size(); ++i)
+    rt[i] = Intersect(dq[i], dq[(i + 1) % dq.size()]);
   return rt;
 }

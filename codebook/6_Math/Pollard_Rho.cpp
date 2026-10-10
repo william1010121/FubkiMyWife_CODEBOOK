@@ -1,11 +1,11 @@
-// 1<=n<=LLONG_MAX; needs mul(),prime(). Clear cnt per input.
-map<ll, int> cnt;
-void PollardRho(ll n) {
+map<ll, int> cnt; // Clear per input. Needs mul(),prime().
+void PollardRho(ll n) { // 1<=n<=LLONG_MAX.
   while (n % 2 == 0) ++cnt[2], n /= 2;
   if (n == 1) return;
   if (prime(n)) return ++cnt[n], void();
   ll x=0, y=0, q=1, d=1, seed=1; int batch=1;
-  auto f = [&](ll z) { return (ll)(((__int128)mul(z,z,n)+seed)%n); };
+  auto f = [&](ll z) { ll t = mul(z,z,n);
+    return t >= n-seed ? t-(n-seed) : t+seed; };
   while (d == 1) {
     for (int i = 0; i < batch; ++i) {
       if (x == y) { x = seed = (seed + 1) % n; y = f(x); }

@@ -1,7 +1,7 @@
 struct Cent_Dec { // 1-base; build O(n log n), modify/query O(log n)
-  // Connected weighted tree, 1 <= n < N; N supplied; stack for depth.
+  // Connected tree; int weights; 1 <= n < supplied N; stack for depth.
   // init, edges, build, then modify/query; all ll intermediates fit.
-  vector<pll> G[N];
+  vector<pii> G[N];
   pll info[N], upinfo[N]; // (sum distance, count); subtract same branch
   int n, pa[N], layer[N], sz[N], done[N];
   ll dis[__lg(N) + 1][N];

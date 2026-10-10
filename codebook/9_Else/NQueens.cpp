@@ -1,6 +1,6 @@
 void solve(vector<int> &ret, int n) { // n>=0; append 1-based cols; O(n).
   if (n == 2 || n == 3) return; // No solution.
-  auto offset = ret.size();
+  auto offset = ret.size(); if (!offset) ret.reserve(n);
   for (ll i = 2; i <= n; i += 2) ret.pb(i); // Evens, then odds.
   for (ll i = 1; i <= n; i += 2) ret.pb(i);
   auto first = ret.begin() + offset, odd = first + n / 2;

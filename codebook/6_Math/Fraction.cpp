@@ -1,7 +1,7 @@
 struct fraction { // No zero denominators/divisors, LLONG_MIN or overflow.
   ll n, d;
   fraction(const ll &a=0, const ll &b=1): n(a), d(b) {
-    ll g = gcd(n, d); n /= g, d /= g;
+    ll g = d == 1 ? 1 : gcd(n, d); n /= g, d /= g;
     if (d < 0) n = -n, d = -d;
   }
   fraction operator-() const { return {-n, d}; }
