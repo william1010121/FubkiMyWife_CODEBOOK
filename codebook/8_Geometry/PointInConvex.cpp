@@ -13,19 +13,14 @@ bool onSegment(IPoint a, IPoint b, IPoint p) {
 }
 int pointInConvex(const vector<IPoint>& ch, IPoint p) {
   int n = ch.size();
-  if (!n) return 0;
-  if (n == 1) return p.x == ch[0].x && p.y == ch[0].y;
-  if (n == 2) return onSegment(ch[0], ch[1], p);
+  if (n < 3) return n && onSegment(ch[0], ch[n - 1], p);
   auto a = cross(ch[0], ch[1], p), b = cross(ch[0], ch[n - 1], p);
   if (a < 0 || b > 0) return 0;
   if (!a) return onSegment(ch[0], ch[1], p);
   if (!b) return onSegment(ch[0], ch[n - 1], p);
-  int l = 1, r = n - 1;
-  while (r - l > 1) {
-    int m = l + (r - l) / 2;
-    if (cross(ch[0], ch[m], p) >= 0) l = m;
-    else r = m;
-  }
-  auto c = cross(ch[l], ch[r], p);
+  auto it = partition_point(ch.begin() + 1, ch.end(), [&](IPoint q) {
+    return cross(ch[0], q, p) >= 0;
+  });
+  auto c = cross(*prev(it), *it, p);
   return c < 0 ? 0 : (c == 0 ? 1 : 2);
 }

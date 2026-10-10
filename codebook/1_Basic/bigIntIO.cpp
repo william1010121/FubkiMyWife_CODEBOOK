@@ -1,12 +1,9 @@
 // Unlocked stdio: one thread; skips junk, consumes first nondigit.
 bool read(__int128 &value) { // false on EOF/overflow; value unchanged
-  int ch = getchar_unlocked(); bool neg, overflow = false;
-  for (;;) {
-    while (ch != EOF && ch != '-' && ch != '+' && !isdigit(ch))
-      ch = getchar_unlocked();
-    if (ch == EOF) return false; neg = ch == '-';
-    if (isdigit(ch) || isdigit(ch = getchar_unlocked())) break;
-  }
+  int ch = getchar_unlocked(), prev = 0; bool overflow = false;
+  while (ch != EOF && !isdigit(ch))
+    prev = ch, ch = getchar_unlocked();
+  if (ch == EOF) return false; bool neg = prev == '-';
   __uint128_t x = 0, lim = ((__uint128_t)1 << 127) - !neg;
   do {
     unsigned d = ch - '0';

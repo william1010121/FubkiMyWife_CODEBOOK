@@ -2,7 +2,7 @@
 // Equal-size rows; row count and dimension fit int.
 vector<ll> dominance(vector<vector<int>> a) {
   int n = SZ(a), k = n ? SZ(a[0]) : 0;
-  if (k) { // Only the last dim needs compression (for the BIT).
+  if (k > 1) { // Only the last dim needs compression (for the BIT).
     vector<int> v(n);
     for (int i = 0; i < n; ++i) v[i] = a[i].back();
     sort(ALL(v));
@@ -16,6 +16,7 @@ vector<ll> dominance(vector<vector<int>> a) {
     ++w.back(), grp[ord[i]] = SZ(rep) - 1;
   }
   vector<ll> ans(SZ(rep)), bit(size_t(n) + 1), res(n);
+  if (k < 2) exclusive_scan(ALL(w), ans.begin(), 0LL);
   vector<int> coord; coord.reserve(rep.size() * size_t(k));
   for (int i : rep) coord.insert(coord.end(), ALL(a[i]));
   struct It { int g; bool up, qu; };
@@ -23,12 +24,7 @@ vector<ll> dominance(vector<vector<int>> a) {
   // Count earlier updates satisfying dims d..k-1 for each query.
   auto rec = [&](auto &&self, int d, span<It> v) -> void {
     if (SZ(v) < 2) return;
-    if (d >= k) {
-      ll s = 0;
-      for (auto x : v) {
-        if (x.qu) ans[x.g] += s; if (x.up) s += w[x.g];
-      } return;
-    } if (d == k - 1) {
+    if (d == k - 1) {
       for (auto x : v) {
         if (x.qu) for (int i = val(x, d); i; i -= i & -i)
           ans[x.g] += bit[i];
@@ -48,7 +44,7 @@ vector<ll> dominance(vector<vector<int>> a) {
   };
   vector<It> v(SZ(rep));
   for (int i = 0; i < SZ(v); ++i) v[i] = {i, 1, 1};
-  rec(rec, 1, v);
+  if (k > 1) rec(rec, 1, v);
   for (int i = 0; i < n; ++i) res[i] = ans[grp[i]] + w[grp[i]] - 1;
   return res;
 }

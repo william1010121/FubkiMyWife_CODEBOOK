@@ -3,12 +3,9 @@ int calc(int x) {
   if (x < 0) return 0;
   static constexpr auto f = [] { array<int, 32> f{1, 2};
     for (int i = 2; i < 32; ++i) f[i] = f[i-1] + f[i-2];
-    return f; }(); int ans = 0, pre = 0;
-  for (int i = 30; i >= 0; --i) {
-    if (x >> i & 1) {
-      ans += f[i];
-      if (pre) return ans;
-      pre = 1;
-    } else pre = 0;
+    return f; }(); int ans = 0;
+  for (int i = 30; i >= 0; --i) if (x >> i & 1) {
+    ans += f[i];
+    if ((x >> i & 3) == 3) return ans; // Two adjacent ones.
   } return ans + 1;
 }

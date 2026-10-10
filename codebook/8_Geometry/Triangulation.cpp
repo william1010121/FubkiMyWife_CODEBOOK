@@ -86,15 +86,13 @@ vector<array<Point, 3>> Triangulate(vector<Point> pts) {
   size_t start = edges.size(), used = start ? edges.back().size() : 0;
   Quad* e = Dfs(pts, 0, SZ(pts)).first;
   vector<Quad*> q = {e}; q.reserve(6 * pts.size());
-  pts.reserve(6 * pts.size());
+  vector<array<Point, 3>> res; res.reserve(2 * pts.size());
   while (((e->F() - e->o->F()) ^ (e->p - e->o->F())) < 0) e = e->o;
   auto Add = [&]() { Quad* c = e;
-    do c->mark = 1, pts.pb(c->p), q.pb(c->r()), c = c->next();
-    while (c != e); };
-  Add(), pts.clear();
-  for (int i = 0; i < SZ(q); ++i) if (!(e = q[i])->mark) Add();
-  vector<array<Point, 3>> res(SZ(pts) / 3);
-  for (int i = 0; i < SZ(pts); ++i) res[i / 3][i % 3] = pts[i];
+    do c->mark = 1, q.pb(c->r()), c = c->next();
+    while (c != e); }; Add(); // Mark the outer face first.
+  for (int i = 0; i < SZ(q); ++i) if (!(e = q[i])->mark)
+    res.pb({e->p, e->F(), e->next()->F()}), Add();
   while (edges.size() > start) edges.pop_back();
   while (start && edges.back().size() > used) edges.back().pop_back();
   return res; }
