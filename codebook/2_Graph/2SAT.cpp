@@ -1,4 +1,4 @@
-struct SAT { // 0-base: true=i, false=i+n; needs SCC, O(V+E)
+struct SAT { // 0-base true=i,false=i+n; SCC; enough DFS stack; O(V+E)
   int n; vector<bool> istrue; // n>=0; 2*n fits int; literals [0,2*n)
   SCC scc;
   SAT(int _n): n(_n), istrue(n + n), scc(n + n) {}

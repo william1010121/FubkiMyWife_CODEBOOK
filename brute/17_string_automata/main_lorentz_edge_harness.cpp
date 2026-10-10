@@ -117,6 +117,23 @@ int main() {
   check_consecutive_calls(), ++cases;
   check_accumulation(), ++cases;
 
+  // Period 255 at the exact capacity boundary, with every byte value
+  // appearing in a mutation; alternates large/small scratch lifetimes.
+  string alphabet;
+  for (int c = 0; c < 255; ++c) alphabet += char(c);
+  for (int shift : {0, 1, 127, 254}) {
+    rotate(alphabet.begin(), alphabet.begin() + shift, alphabet.end());
+    string s = alphabet + alphabet;
+    for (int p : {0, 254, 255, 509}) {
+      check(s, INT_MIN), ++cases;
+      string mutated = s;
+      mutated[p] = char(255);
+      check(mutated, INT_MAX - 509), ++cases;
+      check("aa"), ++cases;
+    }
+    s += s[0]; check(s, INT_MAX - 510), ++cases;
+  }
+
   // Every shifted input position fits int, including both limit values.
   for (int n : {2, 3, 4, 5, 2 * kN - 2, 2 * kN - 1})
     for (int offset : {INT_MIN, INT_MAX - (n - 1)})

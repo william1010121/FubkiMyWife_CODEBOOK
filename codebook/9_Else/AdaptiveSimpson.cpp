@@ -15,7 +15,7 @@ struct Simpson {
     if (abs(delta) <= 15 * eps) return sl + sr + delta / 15;
     return eval(l, m, flm, eps / 2) + eval(m, r, fmr, eps / 2);
   }
-  // eps>0; smooth deterministic f; other arithmetic/samples stay finite.
+  // eps>0; smooth deterministic f; finite arithmetic; enough stack.
   d eval(d l, d r, d eps) { // Error estimate, not a rigorous bound.
     return eval({l, f(l)}, {r, f(r)}, f(l + (r - l) / 2), eps);
   }

@@ -1,6 +1,6 @@
 double closest_pair(int l, int r) {
-  // Inclusive [l,r]; finite x-sorted p; Euclidean dist; p unchanged.
-  // O(n log n), O(n) space; finite differences/dist; <2 points: 1e9.
+  // Inclusive [l,r]; valid finite x-sorted p if l<r; Euclidean dist.
+  // O(n log n), O(n) space; finite arithmetic; p unchanged; l>=r: 1e9.
   if (l >= r) return 1e9;
   double d = dist(p[l], p[l + 1]);
   set<pair<double, int>> active; // (y, index) in the x-window.

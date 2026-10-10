@@ -4,8 +4,8 @@ double a[MAXN][MAXM], b[MAXN], c[MAXM], d[MAXN][MAXM], x[MAXM];
 int ix[MAXN + MAXM];
 // max cx: Ax<=b, x>=0; 0-indexed; n constraints, m variables.
 // n,m>=0; n+2<=MAXN,m+2<=MAXM; x[] optimal on success.
-// -1: infeasible/unbounded (also a possible optimal value).
-// Finite arithmetic; absolute eps; O(nm)/pivot, worst exponential.
+// -1: infeasible/unbounded or valid optimum; well-scaled arithmetic.
+// Finite arithmetic; absolute eps; O((n+1)(m+1))/pivot, exponential.
 double simplex(int n, int m) {
   ++m; fill_n(d[n], m + 1, 0), fill_n(d[n + 1], m + 1, 0);
   iota(ix, ix + n + m, 0); int r = n, s = m - 1;

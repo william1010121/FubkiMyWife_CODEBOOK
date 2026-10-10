@@ -1,5 +1,5 @@
-// block>0 (~sqrt(n)); in/out: zero-based entry/exit in a 2n Euler tour.
-// flip(ord[i]) toggles a vertex; start empty; O(n sqrt(n)) for q~n.
+// block>0; valid 0-based 2n entry/exit tour and LCA; 2n fits int.
+// flip toggles vertices; start empty; block~sqrt(n): O(n sqrt(n)), q~n.
 struct Query {
   int L, R, LBid, lca, id;
   Query(int u, int v, int block, const vector<int> &in,

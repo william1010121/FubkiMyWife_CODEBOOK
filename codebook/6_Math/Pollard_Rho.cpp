@@ -1,5 +1,5 @@
-map<ll, int> cnt; // Clear per input. Needs mul(),prime().
-void PollardRho(ll n) { // 1<=n<=LLONG_MAX.
+map<ll, int> cnt; // Clear per input; mul returns exact (a*b)%n.
+void PollardRho(ll n) { // 1<=n<=LLONG_MAX; needs correct prime().
   while (n % 2 == 0) ++cnt[2], n /= 2;
   if (n == 1) return;
   if (prime(n)) return ++cnt[n], void();

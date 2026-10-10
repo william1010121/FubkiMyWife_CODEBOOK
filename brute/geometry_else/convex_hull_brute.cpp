@@ -215,6 +215,18 @@ int main(int argc, char **argv) {
   }
   if (mode == "all" || mode == "random") {
     mt19937 rng(8731);
+    // Integer shears retain exact cross signs while making long skinny
+    // hulls with near-parallel edges and widely separated dot products.
+    for (int mask=0;mask<512;++mask) {
+      vector<P> input;
+      for (int i=0;i<9;++i) if (mask>>i&1) {
+        double x=i%3-1,y=i/3-1;
+        input.pb(P(1024*x+y,x)); input.pb(input.back());
+      }
+      check_hull(input); check_queries(oracle(input),rng);
+      for (auto &p:input) swap(p.x,p.y), p.x=-p.x;
+      check_hull(input); check_queries(oracle(input),rng);
+    }
     for (int tc = 0; tc < 2000; ++tc) {
       vector<P> a;
       int n = 3 + rng()%40;

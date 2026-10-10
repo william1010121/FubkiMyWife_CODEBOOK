@@ -1,4 +1,4 @@
-// rep[l]: 0-based inclusive starts of period-l squares; n/2<kN
+// rep[l]: inclusive 0-based starts (+sft), period-l squares; n/2<kN
 // n and sft+p (0<=p<n) fit int; empty/all bytes OK; C++17.
 vector<pair<int, int>> rep[kN];
 void main_lorentz_impl(const string &s, int sft) {
@@ -28,4 +28,4 @@ void main_lorentz_impl(const string &s, int sft) {
 void main_lorentz(const string &s, int sft = 0) { // fresh report
   for (auto &v : rep) v.clear();
   main_lorentz_impl(s, sft); }
-// O(n log n + kN); p in rep[l] => s[p,p+l)==s[p+l,p+2l)
+// O(n log n+kN); local p=start-sft: s[p,p+l)==s[p+l,p+2l)

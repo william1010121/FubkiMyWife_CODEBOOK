@@ -90,6 +90,23 @@ int main() {
     if (tc & 1) value = -value;
     cases.push_back({decimal(value), value});
   }
+  // Every binary magnitude boundary exercises both printer division paths.
+  for (int bit = 0; bit < 127; ++bit)
+    for (int delta : {-1, 0, 1}) for (int sign : {-1, 1}) {
+      i128 value = sign * ((i128(1) << bit) + delta);
+      cases.push_back({decimal(value), value});
+    }
+  // getchar returns unsigned bytes: all nondigit bytes are valid junk,
+  // including NUL and 0xff, and must not hide the adjacent minus sign.
+  for (int byte = 0; byte < 256; ++byte)
+    if (byte < '0' || byte > '9')
+      cases.push_back({std::string(1, char(byte)) + "-42", -42});
+  std::vector<u128> unsigned_values{0, ~u128(0)};
+  for (int bit = 0; bit < 128; ++bit)
+    for (int delta : {-1, 0, 1})
+      unsigned_values.push_back((u128(1) << bit) + delta);
+  for (int i = 0; i < 256; ++i)
+    unsigned_values.push_back((u128(low_rng()) << 64) | low_rng());
 
   std::string input = "  leading-text\n\t";
   for (size_t i = 0; i < cases.size(); ++i) {
@@ -179,12 +196,23 @@ int main() {
   }
   print_unsigned(~u128(0));
   putchar('|');
+  for (u128 value : unsigned_values) {
+    print_unsigned(value); putchar('|');
+  }
   fflush(stdout);
   rewind(output_file);
 
   std::string expected;
   for (i128 value : parsed) expected += decimal(value) + '|';
   expected += "340282366920938463463374607431768211455|";
+  for (u128 value : unsigned_values) {
+    std::string digits;
+    do {
+      digits.push_back(char('0' + value % 10)); value /= 10;
+    } while (value);
+    std::reverse(digits.begin(), digits.end());
+    expected += digits + '|';
+  }
   std::string printed;
   char buffer[256];
   size_t got;

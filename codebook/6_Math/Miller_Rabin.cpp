@@ -1,4 +1,4 @@
-// One witness a>=0; needs mul(). Use prime() in Usage.
+// One witness a>=0; exact mul(x,y,n) for 0<=x,y<n; see prime() in Usage.
 bool Miller_Rabin(ll a, ll n) {
   if (n < 2) return 0;
   if ((a %= n) == 0) return 1;

@@ -1,4 +1,4 @@
-// Noncollinear triangle; each center O(1).
+// Noncollinear triangle; finite arithmetic, nonzero determinant; O(1).
 Point TriangleCircumCenter(Point a, Point b, Point c) {
   Point u = b - a, v = c - a, w = c - b;
   double x = u.x * u.x + u.y * u.y, y = v.x * v.x + v.y * v.y,

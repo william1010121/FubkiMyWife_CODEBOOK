@@ -99,6 +99,12 @@ int main() {
   for (int tc = 0; tc < 250; ++tc)
     check(1 + static_cast<int>(rng() % 1000000000u));
 
+  // Consecutive top-of-domain inputs exercise the final r+1 increment.
+  for (int delta = 1; delta <= 64; ++delta) check(INT_MAX-delta);
+  // k*(k+1) is the other transition of the square-root shortcut.
+  for (int k : {1,2,31,32,1000,32767,46339,46340})
+    for (int delta : {-1,0,1}) check(k*(k+1)+delta);
+
   cout << "PASS floor_enumeration actual snippet, zero, maximality, "
        << "and large n\n";
 }

@@ -105,6 +105,19 @@ int main() {
   close[2][3] = offset, close[3][4] = offset;
   close[4][2] = offset + 1;
   check(++tc, close);
+
+  // Huge cancelling cycle edges followed by a transient DAG tail.
+  // Tail endpoints can have finite n-edge DP rows without lying on a cycle.
+  for (int n : {3, 4, 8, 12}) {
+    vector<vector<ll>> w(n, vector<ll>(n, INF));
+    ll span = INF - 64;
+    w[0][1] = span, w[1][2] = -span, w[2][0] = 1;
+    for (int u = 2; u + 1 < n; ++u) w[u][u + 1] = 1;
+    check(++tc, w);
+    for (auto &row : w) for (ll &weight : row)
+      if (weight != INF) weight = -weight;
+    check(++tc, w);
+  }
   for (auto &row : close) for (ll &weight : row)
     if (weight != INF) weight = -weight;
   check(++tc, close);

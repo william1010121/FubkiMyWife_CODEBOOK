@@ -1,5 +1,5 @@
-// Counts other points <= in all dims; O(n log^(max(1,k-1)) n).
-// Equal-size rows; row count and dimension fit int.
+// Other points <= in all dims; fixed k: O(n log^max(1,k-1) n).
+// Equal-size rows; n,k fit int; enough recursion stack.
 vector<ll> dominance(vector<vector<int>> a) {
   int n = SZ(a), k = n ? SZ(a[0]) : 0;
   if (k > 1) { // Only the last dim needs compression (for the BIT).

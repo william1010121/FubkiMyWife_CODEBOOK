@@ -4,6 +4,8 @@ from __future__ import annotations
 from decimal import Decimal, ROUND_CEILING, getcontext, localcontext
 from fractions import Fraction
 import importlib.util
+import subprocess
+import sys
 from pathlib import Path
 from random import Random
 
@@ -134,6 +136,30 @@ def main() -> None:
     expect(repeated == [1, 1, 2, 2] and sorted(shuffled) == repeated
            and chosen in repeated and all(x in repeated for x in choices),
            "random duplicate values preserve multiplicity and input")
+    # Closed stdin ensures the snippet stays safe to import.
+    probe = "import sys, runpy\nsys.stdin.close()\nrunpy.run_path(sys.argv[1])"
+    subprocess.run([sys.executable, "-c", probe, str(TEMPLATE)],
+                   check=True, capture_output=True, text=True)
+    rng = Random(1108)
+    for _ in range(250):
+        a, b = (rng.randrange(-10**80, 10**80) for _ in range(2))
+        ea, eb = rng.randrange(-80, 81), rng.randrange(-80, 81)
+        want = Decimal(f"{a*b}e{ea+eb}")
+        expect(misc.decimal_multiply(f"{a}e{ea}", f"{b}e{eb}") == want,
+               "exact signed coefficient/exponent oracle")
+    # Enumerate alternatives to check the nearest bounded denominator.
+    for p in range(-20, 21):
+        for q in range(1, 10):
+            target = Fraction(p, q)
+            for bound in range(1, 11):
+                got = misc.limit_fraction(f"{p}/{q}", bound)
+                error = abs(got - target)
+                expect(got.denominator <= bound, "fraction bound")
+                for d in range(1, bound + 1):
+                    num = (p*d) // q
+                    expect(error <= abs(Fraction(num, d) - target)
+                           and error <= abs(Fraction(num+1, d) - target),
+                           "nearest fraction exhaustive oracle")
     print("python misc PASS")
 
 

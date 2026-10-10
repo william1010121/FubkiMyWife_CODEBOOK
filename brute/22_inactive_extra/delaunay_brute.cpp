@@ -126,6 +126,19 @@ int main() {
   for (int i=0;i<101;++i) line.emplace_back(-M+i,-M+i);
   adversarial(line);
   mt19937 rng(11);
+  // Almost collinear integer strips at both coordinate extremes: many
+  // boundary points, determinant-one triangles and opposite orientations.
+  for (int tc=0;tc<300;++tc) {
+    set<pair<ll,ll>> points;
+    for (ll x:{-M,-M+1,0LL,M-1,M})
+      for (ll y:{M-1,M}) points.emplace(x,y);
+    for (int i=0;i<10;++i)
+      points.emplace(ll(rng()%1000000001)-M,M-(rng()&1));
+    vector<Point> p;
+    for (auto [x,y]:points) p.emplace_back(x,y);
+    shuffle(p.begin(),p.end(),rng); adversarial(p);
+    for (auto &q:p) q={-q.y,q.x}; adversarial(p);
+  }
   for (int it = 0; it < 20000; ++it) {
     int n = rng() % 30, R = 1 + rng() % 8;
     bool big = it % 10 == 0;

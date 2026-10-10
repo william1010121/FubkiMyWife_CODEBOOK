@@ -23,7 +23,7 @@ bool _inside_convex(Point p, Point poly[], int n) { // Nonzero area.
       sign = s; }
   } return true;
 }
-// Nonempty cyclic convex CW/CCW polygons (repeats OK); O(n+m) time/space.
+// Nonempty cyclic convex CW/CCW, repeats OK; reliable signs/tests.
 double TwoConvexHullMinDist(Point P[], Point Q[], int n, int m) {
   auto prepare = [&](Point p[], int n, int s) {
     vector<Point> a; a.reserve(n + 1); a.assign(p, p + n);
@@ -42,7 +42,7 @@ double TwoConvexHullMinDist(Point P[], Point Q[], int n, int m) {
   auto sum = [&](int i, int j) { return Point{
     a[i].x + b[j].x, a[i].y + b[j].y}; };
   double ans = numeric_limits<double>::infinity(), area = 0;
-  bool inside = true; // Edge angles must distinguish opposite directions.
+  bool inside = true; // Finite arithmetic; distinguish opposite edges.
   auto half = [](Point p) { return p.y < 0 || (!p.y && p.x < 0); };
   for (int i = 0, j = 0; i < n || j < m;) {
     Point p = sum(i, j), u = a[min(i + 1, n)], v = b[min(j + 1, m)];
@@ -56,5 +56,5 @@ double TwoConvexHullMinDist(Point P[], Point Q[], int n, int m) {
     inside &= _cross(p, q, {0, 0}) >= -1e-10;
     area += _cross({0, 0}, p, q);
     ans = min(ans, _point_seg_dist({0, 0}, p, q));
-  } return inside && area > 0 ? 0 : ans; // Origin to P + (-Q).
+  } return inside && area > 0 ? 0 : ans; // P-Q; O(n+m) time/space.
 }

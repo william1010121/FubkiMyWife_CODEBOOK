@@ -1,5 +1,5 @@
-// 0-base; n <= N, cap >= 0; no negative residual cycle for s != t.
-// Arithmetic fits ll; finite BF/reduced distances < INF.
+// Init 0<=n<=N, 0-base IDs, cap>=0; s!=t: no neg residual cycle.
+// INF>0; ll arithmetic fits; finite BF/reduced distances < INF.
 // A augmentations: O(VE + A(E+V)log(E+V)).
 struct MinCostMaxFlow {
   struct Edge { int from, to; ll cap, flow, cost; int rev; } *past[N];

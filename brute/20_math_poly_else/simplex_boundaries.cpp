@@ -200,4 +200,5 @@ int main() {
   }
   cout << "simplex_boundaries: PASS 1380 brute-vertex LPs + "
           "zero dimensions/cycling/array limits\n";
+  return 0;
 }

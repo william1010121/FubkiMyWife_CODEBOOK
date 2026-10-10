@@ -36,7 +36,8 @@ long double segment_dist(Point p, Point a, Point b) {
   long double t=x*x+y*y;
   t=t?clamp((((long double)p.x-a.x)*x+
     ((long double)p.y-a.y)*y)/t,0.L,1.L):0;
-  return hypotl(p.x-(a.x+t*x),p.y-(a.y+t*y));
+  return hypotl(((long double)p.x-a.x)-t*x,
+                ((long double)p.y-a.y)-t*y);
 }
 bool contains(const vector<Point>& a, Point p) {
   if (a.size()==1) return a[0].x==p.x && a[0].y==p.y;
@@ -85,7 +86,12 @@ void check(vector<Point> a, vector<Point> b) {
   auto original_a=a,original_b=b;
   for (int dir=0;dir<4;++dir) {
     double got=TwoConvexHullMinDist(a.data(),b.data(),a.size(),b.size());
-    require(fabsl(got-want)<1e-8L*max(1.L,want),"distance oracle");
+    if (!(fabsl(got-want)<1e-8L*max(1.L,want))) {
+      cerr << setprecision(20) << "got=" << got << " want=" << want << '\n';
+      for (auto p:a) cerr << "A " << p.x << ' ' << p.y << '\n';
+      for (auto p:b) cerr << "B " << p.x << ' ' << p.y << '\n';
+      require(false,"distance oracle");
+    }
     rotate(a.begin(),a.begin()+1,a.end());
     rotate(b.begin(),b.begin()+1,b.end());
     if (dir&1) reverse(a.begin(),a.end());
@@ -107,6 +113,29 @@ int main(int argc,char**) {
   check(square,{{1,1},{2,1},{2,2},{1,2}});
   check(square,{{4,0},{8,0},{8,4},{4,4}});
   check(square,{{5,5},{9,5},{9,9},{5,9}});
+  // Exhaust pairs of all nonempty 3x2 lattice subsets, including points
+  // and segments. Dyadic subdivision introduces zero and parallel edges.
+  for (double scale : {0.125, 4096.0}) {
+    vector<vector<Point>> polygons;
+    for (int mask=1;mask<64;++mask) {
+      vector<Point> p;
+      for (int i=0;i<6;++i) if (mask>>i&1)
+        p.push_back({1073741824.0+(i%3-1)*scale,
+                     -1073741824.0+(i/3)*scale});
+      auto h=hull(p); p.clear();
+      for (int i=0;i<(int)h.size();++i) {
+        Point a=h[i],b=h[(i+1)%h.size()];
+        p.push_back(a); p.push_back(a);
+        p.push_back({(a.x+b.x)/2,(a.y+b.y)/2});
+      }
+      p.push_back(p[0]); polygons.push_back(p);
+    }
+    for (auto a:polygons) for (auto b:polygons) {
+      check(a,b);
+      for (auto &p:b) p.x+=4*scale, p.y+=scale;
+      check(a,b); // Separated shapes and shared parallel directions.
+    }
+  }
   for (int tc=0;tc<10000;++tc) {
     vector<Point> a,b;
     for (int i=0;i<20;++i) {

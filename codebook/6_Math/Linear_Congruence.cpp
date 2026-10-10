@@ -1,5 +1,5 @@
 // Sorted a*x=b (mod n) in [0,n); n>0, needs exgcd. O(log n+g).
-vector<ll> mod_leq(ll a, ll b, ll n) {
+vector<ll> mod_leq(ll a, ll b, ll n) { // g answers must fit memory
   a %= n; if (a < 0) a += n;
   b %= n; if (b < 0) b += n;
   ll g = gcd(a, n), step = n / g;

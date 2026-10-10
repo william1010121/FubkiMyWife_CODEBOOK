@@ -1,4 +1,4 @@
-struct C { // Nonnegative radii; all operations O(1).
+struct C { // Nonnegative radii; finite arithmetic; O(1) operations.
   P c; double r;
   C(P c = P(0, 0), double r = 0) : c(c), r(r) {}
 };

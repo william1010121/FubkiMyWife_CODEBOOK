@@ -1,5 +1,5 @@
 struct SW { // 0-base, undirected, nonnegative weights. O(V^3)
-  // n <= MXN; all cut sums fit int; loops ignored, solve mutates.
+  // 0<=n<=MXN; all cut sums fit int; loops ignored, solve mutates.
   static const int MXN = 514, INF = 2147483647;
   int vst[MXN], edge[MXN][MXN], wei[MXN];
   void init(int n) { for (int i = 0; i < n; ++i)

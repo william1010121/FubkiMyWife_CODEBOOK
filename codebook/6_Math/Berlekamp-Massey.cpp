@@ -1,4 +1,4 @@
-// Field T: zero initialization, arithmetic, nonzero division, ==0.
+// Field T: zero init, arithmetic, nonzero division, ==0; size<INT_MAX.
 template<class T> vector<T> BerlekampMassey(const vector<T> &output) {
   vector<T> me, he; T last = 0;
   for (int f = 0, i = 1; i <= SZ(output); ++i) {
@@ -12,6 +12,5 @@ template<class T> vector<T> BerlekampMassey(const vector<T> &output) {
     for (int j = 0; j < SZ(me); ++j) o[j] += me[j];
     if (i - f + SZ(he) >= SZ(me)) he = move(me), f = i, last = d;
     me = move(o);
-  }
-  return me; // Field T; a[i]=sum(c[j]*a[i-j-1]); O(n^2).
+  } return me; // a[i]=sum(c[j]*a[i-j-1]); O(n^2).
 }

@@ -1,6 +1,6 @@
 // Requires MaxFlow (Dinic.cpp); MAXN >= n+3, 0 <= lo <= hi.
 // Arithmetic fits int; INF >= max capacity and sum of positive cnt.
-struct BoundedFlow : MaxFlow { // 0-base; solve once, mutates graph
+struct BoundedFlow : MaxFlow { // 0-base; n>=0; solve once, mutates graph
   int vn, cnt[MAXN];
   void add_edge(int u, int v, int cap) { // zero lower bound
     int id = SZ(G[u]); MaxFlow::add_edge(u, v, cap);

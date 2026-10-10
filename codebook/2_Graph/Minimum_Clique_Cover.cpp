@@ -1,7 +1,7 @@
 struct Clique_Cover { // 0-base, O(n2^n); may overestimate (mod 2^32)
-  // Simple undirected, 0 <= n <= N < 31; OR-zeta fwt(int*,int,int).
+  // Simple undirected, valid endpoints; 0<=n<=N<31; feasible arrays.
   int co[1 << N], n, E[N];
-  unsigned dp[1 << N]; // defined wraparound (32-bit unsigned)
+  unsigned dp[1 << N]; // 32-bit unsigned; OR-zeta fwt(int*,int,int).
   void init(int _n) { n = _n; fill_n(E, n, 0); }
   void add_edge(int u, int v) { E[u] |= 1 << v, E[v] |= 1 << u; }
   int solve() {

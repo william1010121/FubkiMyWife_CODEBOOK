@@ -155,6 +155,21 @@ int main() {
   // Scaling preserves optima but exercises larger dual updates/blossoms.
   // Mutations include deletion, restoration, ties, and negative weights.
   int mutations = 0;
+  // Two odd components force seed rerouting through a bridge. Every
+  // ordering moves the free vertices and contraction representatives.
+  for (int bridge : {1, 99999999, 100000000}) {
+    vector<int> order{0, 1, 2, 3, 4, 5};
+    do {
+      vector<vector<int>> w(6, vector<int>(6, -100000000));
+      for (int u = 0; u < 6; ++u) w[u][u] = 0;
+      for (int base : {0, 3})
+        for (int u = base; u < base + 3; ++u)
+          for (int v = u + 1; v < base + 3; ++v)
+            w[order[u]][order[v]] = w[order[v]][order[u]] = 100000000;
+      w[order[0]][order[3]] = w[order[3]][order[0]] = bridge;
+      check(w, tc++, "permuted-odd-components-large-weights");
+    } while (next_permutation(order.begin(), order.end()));
+  }
   for (int trial = 0; trial < 500; ++trial) {
     int n = 2 + rng() % 9;
     vector<vector<int>> w(n, vector<int>(n));

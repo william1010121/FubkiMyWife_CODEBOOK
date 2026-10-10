@@ -1,4 +1,4 @@
-// Convex hull indices in cyclic CW/CCW order; O(chnum^2).
+// Cyclic CW/CCW convex hull; finite arithmetic; O(chnum^2).
 double ConvexHullMaxTriangleArea(Point p[], int res[], int chnum) {
   double area = 0;
   auto twice_area = [&](int i, int j, int k) {

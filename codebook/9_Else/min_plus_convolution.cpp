@@ -1,5 +1,5 @@
 // Convex a: a[i+1]-a[i] <= a[i+2]-a[i+1]; b arbitrary.
-// O((n+m) log(n+m)); empty -> {}; sizes, n+m fit int; sums fit T.
+// O((n+m)log(n+m)); empty -> {}; n+m fit int; exact sums fit T.
 template<class T>
 vector<T> min_plus_convolution(const vector<T> &a, const vector<T> &b) {
   int n = (int)a.size(), m = (int)b.size();

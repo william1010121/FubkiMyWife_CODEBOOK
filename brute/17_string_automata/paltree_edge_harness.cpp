@@ -90,6 +90,8 @@ static void check(const string &s, palindromic_tree &pt) {
   }
 
   pt.count();
+  if (pt.St[0].cnt != (int)s.size() ||
+      pt.St[1].cnt != (int)s.size()) fail("root occurrence counts");
   for (int v = 2; v < SZ(pt.St); ++v) {
     const string p = node_string(pt, v, memo, done);
     if (pt.St[v].cnt != want.at(p))
@@ -118,6 +120,23 @@ static void check_large() {
   check("azzzazzzaza", pt);
   check("", pt);
   check("abcdefghijklmnopqrstuvwxyzzyxwvutsrqponmlkjihgfedcba", pt);
+
+  // A long non-palindromic alphabet cycle keeps only 26 nodes while
+  // repeatedly terminating failure searches at the odd sentinel root.
+  pt.clear();
+  for (int i = 0; i < n; ++i) {
+    pt.add('a' + i % 26);
+    if (pt.St[pt.last].len != 1 || pt.St[pt.last].num != 1)
+      fail("alphabet cycle suffix data");
+  }
+  if (pt.size() != 26) fail("alphabet cycle distinct count");
+  pt.count();
+  for (int c = 0; c < 26; ++c)
+    if (pt.St[pt.St[1].next[c]].cnt != (n + 25 - c) / 26)
+      fail("alphabet cycle occurrence count");
+  if (pt.St[0].cnt != n || pt.St[1].cnt != n)
+    fail("large root occurrence counts");
+  check("zaz", pt);
 }
 
 static void enumerate_words(int alphabet, int length,

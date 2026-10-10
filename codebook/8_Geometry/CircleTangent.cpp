@@ -1,4 +1,4 @@
-// Positive radii; coincident circles have no finite tangent list.
+// Positive radii; finite arithmetic; eps-coincident centers: empty.
 vector<L> tangent(C a, C b) {
   if (a.r < b.r) swap(a, b);
   vector<L> z; double d = (a.c - b.c).abs();

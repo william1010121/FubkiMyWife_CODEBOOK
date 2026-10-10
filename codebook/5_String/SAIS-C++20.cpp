@@ -1,4 +1,4 @@
-// sais: nonempty int sequence, positive symbols + final 0; C++20
+// sais: nonempty random-access ints, positive symbols + final 0; C++20
 // size and A=1+max(s) fit int; time/space O(n+A).
 // sa: suffix order; ra: inverse; hi[i]: LCP(sa[i],sa[i-1])
 auto sais(const auto &s) {

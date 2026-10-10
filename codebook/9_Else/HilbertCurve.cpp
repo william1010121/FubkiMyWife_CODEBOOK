@@ -6,4 +6,4 @@ ll hilbert(int n, int x, int y) {
     if (!ry && rx) x = s - 1 - x, y = s - 1 - y;
     if (!ry) swap(x, y);
   } return res;
-} // n=2^k; 0<=x,y<n; O(log n).
+} // n: positive int power of 2; 0<=x,y<n; O(log n).

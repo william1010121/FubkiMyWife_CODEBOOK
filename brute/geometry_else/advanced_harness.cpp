@@ -217,6 +217,34 @@ int main() {
     subset(); check_3d(subset);
     req(subset.m==4 && subset.faces()==4,"3D determinant-one tetrahedron");
   } while (next_permutation(tetra_order.begin(),tetra_order.end()));
+  // A reflected/sheared pentagonal prism with points on edges, face
+  // interiors, and in its interior. Exact integer predicates throughout.
+  vector<pair<int,int>> polygon{{0,0},{6,0},{8,4},{4,8},{0,6}};
+  vector<P> prism;
+  auto skew = [](int x, int y, int z) {
+    return P(1000000+x+2*y, -1000000+y+3*z, 1000000-z);
+  };
+  for (int z : {0,6}) for (int i=0;i<5;++i) {
+    auto [x,y]=polygon[i]; auto [u,v]=polygon[(i+1)%5];
+    prism.push_back(skew(x,y,z));
+    prism.push_back(skew((x+u)/2,(y+v)/2,z));
+  }
+  for (int z : {0,3,6}) prism.push_back(skew(3,3,z));
+  for (int order=0;order<48;++order) {
+    if (order) shuffle(prism.begin(),prism.end(),subset_rng);
+    subset.n=prism.size(); subset.m=0;
+    copy(prism.begin(),prism.end(),subset.p); subset();
+    check_3d(subset);
+    req(subset.faces()==7,"3D reflected prism facets");
+    for (int i=0;i<subset.m;++i) {
+      auto t=subset.f[i];
+      req(abs((subset.p[t.b]-subset.p[t.a])^
+              (subset.p[t.c]-subset.p[t.a]))>eps,
+          "3D prism triangle is nondegenerate");
+      for (auto e:{pair{t.a,t.b},pair{t.b,t.c},pair{t.c,t.a}})
+        req(subset.id[e.first][e.second]==i,"3D prism edge index");
+    }
+  }
   // Cyclic polytope: 2n-4 final faces but >8*1010 created faces.
   static convex3D curve;
   curve.n=200; curve.m=0;

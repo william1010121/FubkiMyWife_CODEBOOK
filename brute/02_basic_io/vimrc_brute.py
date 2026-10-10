@@ -34,6 +34,9 @@ with tempfile.TemporaryDirectory() as directory:
              "intmain(){return0;}"),
             ("\tint main(){\nreturn 0; // ignored\n}\n", "1,$",
              "intmain(){return0;}"),
+            ("/* comments only */\n// no tokens\n", "1,$", ""),
+            ('const char *s="/*|//*/"; /* ignored */', "1,$",
+             'constchar*s="/*|//*/";'),
             ("#error outside\nint f(){return 1;}\n#error outside\n",
              "2,2", "intf(){return1;}"),
         ]
@@ -49,4 +52,4 @@ with tempfile.TemporaryDirectory() as directory:
             assert result.returncode == 0, result.stdout + result.stderr
             assert result.stdout.strip() == digest, (i, source, result)
             assert not result.stderr, result.stderr
-print("PASS vimrc: load and execute 3 Hash pipelines on 4 edge selections")
+print("PASS vimrc: load and execute 3 Hash pipelines on 6 edge selections")
