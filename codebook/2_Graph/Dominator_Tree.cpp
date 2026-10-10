@@ -2,8 +2,7 @@ struct dominator_tree { // 1-base, O((V+E) log V); reachable only
   vector<int> G[N], rG[N], tree[N];
   int n, pa[N], dfn[N], id[N], Time, semi[N], idom[N], best[N];
   void init(int _n) {
-    n = _n;
-    for (int i = 1; i <= n; ++i) G[i].clear(), rG[i].clear();
+    n = _n; for (int i = 1; i <= n; ++i) G[i].clear(), rG[i].clear();
   }
   void add_edge(int u, int v) { G[u].pb(v), rG[v].pb(u); }
   void dfs(int u) {
@@ -17,8 +16,7 @@ struct dominator_tree { // 1-base, O((V+E) log V); reachable only
     return pa[y] = tmp;
   }
   void tarjan(int root) {
-    Time = 0;
-    for (int i = 1; i <= n; ++i)
+    Time = 0; for (int i = 1; i <= n; ++i)
       dfn[i] = idom[i] = 0, tree[i].clear(), best[i] = semi[i] = i;
     dfs(root);
     for (int i = Time; i > 1; --i) {

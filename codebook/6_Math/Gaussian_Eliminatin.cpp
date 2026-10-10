@@ -1,4 +1,4 @@
-// n rows, >=n columns; RREF in place, O(n^3) for n x (n+1).
+// Rectangular n x w, w>=n; pivots in first n columns. O(n^2*w).
 void GAS(vector<vector<double>> &vc) {
   int len = vc.size(), row = 0;
   for (int col = 0; col < len && row < len; ++col) {

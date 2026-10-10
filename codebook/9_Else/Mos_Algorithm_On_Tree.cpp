@@ -2,9 +2,8 @@
 // flip(ord[i]) toggles a vertex; start empty; O(n sqrt(n)) for q~n.
 struct Query {
   int L, R, LBid, lca, id;
-  template<class LCA>
   Query(int u, int v, int block, const vector<int> &in,
-        const vector<int> &out, LCA get_lca, int query_id = -1)
+        const vector<int> &out, auto get_lca, int query_id = -1)
     : id(query_id) {
     if (in[u] > in[v]) swap(u, v);
     int c = get_lca(u, v);
@@ -17,9 +16,8 @@ struct Query {
     return LBid & 1 ? R > q.R : R < q.R;
   }
 };
-template<class Flip, class Answer>
 void solve(vector<Query> query, const vector<int> &ord,
-           Flip flip, Answer answer) {
+           auto flip, auto answer) {
   sort(query.begin(), query.end());
   int L = 0, R = -1;
   for (const Query &q : query) {

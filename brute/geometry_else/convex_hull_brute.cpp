@@ -99,6 +99,31 @@ int main(int argc, char **argv) {
       require(!ch.contain({1,y+3}), "large-coordinate outside");
     }
   }
+  if (mode == "all" || mode == "stress") {
+    // Every integer point on this parabola is a strict hull vertex.
+    for (int side : {-1, 1}) {
+      vector<P> h;
+      for (int x = -50000; x <= 50000; ++x)
+        h.pb(P(x, -side * double(x) * x));
+      if (side > 0) reverse(ALL(h)); // CCW upper parabola.
+      CH ch(h);
+      for (int k = -50000; k <= 50000; ++k) {
+        P q = ch.p[ch.findFarest(P(2.0*k, side))];
+        require(q.x == k, "100001-vertex parabola extreme point");
+        // A supporting edge gives two equal, adjacent maxima.
+        if (k < 50000) {
+          q = ch.p[ch.findFarest(P(2.0*k+1, side))];
+          require(q.x == k || q.x == k+1, "adjacent equal maxima");
+        }
+      }
+      for (P v : vector<P>{{1,0},{-1,0},{0,1},{0,-1},{0,0}}) {
+        double want = -1e100;
+        for (P q : ch.p) want = max(want, q*v);
+        require(ch.p[ch.findFarest(v)]*v == want,
+                "horizontal, vertical and zero-direction extrema");
+      }
+    }
+  }
   if (mode == "all" || mode == "random") {
     mt19937 rng(8731);
     for (int tc = 0; tc < 2000; ++tc) {

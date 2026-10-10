@@ -56,6 +56,33 @@ static void run_case(int n, int m, const string &name, mt19937 &rng) {
 int main() {
   mt19937 rng(0x2D5E2D);
   mt19937 check_rng(0x2D57E55);
+  // Zero additions on wide domains must remain allocation-free.
+  {
+    mt19937 zero_rng(0x2D0);
+    const int n = 1000000000;
+    Seg line(n);
+    Seg2D grid(n, n);
+    for (int q = 0; q < 200000; ++q) {
+      int xl = zero_rng() % n, xr = xl + 1 + zero_rng() % (n - xl);
+      int yl = zero_rng() % n, yr = yl + 1 + zero_rng() % (n - yl);
+      line.update(xl, xr, 0);
+      grid.update(xl, xr, yl, yr, 0);
+    }
+    assert(!line.root && !grid.root);
+    assert(line.query(0, n) == 0 && grid.query(0, n, 0, n) == 0);
+    // A subsequent nonzero update must work on the untouched trees.
+    line.update(n - 1, n, 7);
+    grid.update(n - 1, n, n - 1, n, -3);
+    assert(line.query(0, n) == 7 && grid.query(0, n, 0, n) == -3);
+    // Zero updates must not descend below already populated roots either.
+    auto line_left = line.root->l;
+    auto grid_left = grid.root->l;
+    line.update(0, 1, 0);
+    grid.update(0, 1, 0, 1, 0);
+    assert(line.root->l == line_left && grid.root->l == grid_left);
+    assert(!line_left && !grid_left);
+    assert(line.query(0, n) == 7 && grid.query(0, n, 0, n) == -3);
+  }
   // Midpoints must not overflow, even if all stored sums are small.
   {
     Seg edge(INT_MAX);

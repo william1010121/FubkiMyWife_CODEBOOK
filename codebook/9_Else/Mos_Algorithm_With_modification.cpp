@@ -9,12 +9,11 @@ struct Query {
   bool operator<(const Query &q) const {
     if (LBid != q.LBid) return LBid < q.LBid;
     if (RBid != q.RBid) return LBid & 1 ? RBid > q.RBid : RBid < q.RBid;
-    return (LBid + RBid) & 1 ? T > q.T : T < q.T;
+    return (LBid ^ RBid) & 1 ? T > q.T : T < q.T;
   }
 };
-template<class AddTime, class SubTime, class Add, class Sub, class Answer>
-void solve(vector<Query> query, AddTime add_time, SubTime sub_time,
-           Add add, Sub sub, Answer answer) {
+void solve(vector<Query> query, auto add_time, auto sub_time,
+           auto add, auto sub, auto answer) {
   sort(query.begin(), query.end());
   int L = 0, R = -1, T = 0;
   for (const Query &q : query) {

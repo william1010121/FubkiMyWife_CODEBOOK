@@ -1,11 +1,11 @@
-pt center(const pt &a, const pt &b, const pt &c) {
+pt center(const pt &a, const pt &b, const pt &c) { // Noncollinear.
   pt p0 = b - a, p1 = c - a;
   double c1 = norm2(p0) * 0.5, c2 = norm2(p1) * 0.5;
   double d = p0 ^ p1;
   return a + pt(c1 * p1.y - c2 * p0.y,
                 c2 * p0.x - c1 * p1.x) / d;
 }
-// Shuffles p; expected O(n), worst O(n^3).
+// pt() is the origin. Shuffles p; expected O(n), worst O(n^3).
 circle min_enclosing(vector<pt> &p) {
   static mt19937 rng(712367821);
   shuffle(ALL(p), rng);

@@ -6,7 +6,7 @@ ll PrimeCount(ll n) { // pi(n); tested through 10^13; O(sqrt(n)) space.
   for (int i = 2; i <= v; ++i) smalls[i] = (i + 1) / 2;
   for (int i = 0; i < s; ++i)
     roughs[i] = 2 * i + 1, larges[i] = (n / roughs[i] + 1) / 2;
-  for (int p = 3; p <= v; ++p) {
+  for (int p = 3; p <= v; p += 2) {
     if (smalls[p] == smalls[p - 1]) continue;
     int q = p * p; ++pc;
     if (1LL * q * q > n) break;

@@ -58,12 +58,12 @@ struct WeightGraph { // 1-base; O(n^3); only positive edges used
   void add_blossom(int u, int o, int v) {
     int b = find(n + 1 + ALL(st), 0) - begin(st);
     lab[b] = 0, S[b] = 0, match[b] = match[o];
-    vector<int> f = {o};
+    auto &f = flo[b]; f.clear(); f.pb(o);
     for (int t : {u, v}) {
       reverse(1 + ALL(f));
       for (int x = t, y; x != o; x = st[pa[y]])
         f.pb(x), f.pb(y = st[match[x]]), q_push(y);
-    } flo[b] = move(f); set_st(b, b);
+    } set_st(b, b);
     for (int x = 1; x <= nx; ++x) g[b][x].w = g[x][b].w = 0;
     fill(ALL(flo_from[b]), 0);
     for (int xs : flo[b]) {
@@ -134,7 +134,7 @@ struct WeightGraph { // 1-base; O(n^3); only positive edges used
     fill(ALL(match), 0), fill(ALL(st), 0); // reset blossoms
     for (int u = 0; u <= n; ++u) st[u] = flo_from[u][u] = u;
     int w_max = 0, n_matches = 0; ll tot_weight = 0;
-    for (int u = 1; u <= n; ++u) for (int v = 1; v <= n; ++v)
+    for (int u = 1; u <= n; ++u) for (int v = 1; v <= u; ++v)
       w_max = max(w_max, g[u][v].w);
     fill(ALL(lab), w_max);
     while (matching()) ++n_matches;

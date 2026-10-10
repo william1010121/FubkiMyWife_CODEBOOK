@@ -22,5 +22,8 @@ int main() {
     for (int j = 0; j < T; ++j) st.add_edge(j, i, 1000);
   if (st.solve(terminals) != want)
     throw runtime_error("large Steiner star");
-  cout << "PASS Steiner n=100 t=12 directed-star stress\n";
+  st.init(N);
+  if (st.solve(terminals) != INF)
+    throw runtime_error("large disconnected Steiner graph");
+  cout << "PASS Steiner n=100 t=12 star/disconnected stress\n";
 }

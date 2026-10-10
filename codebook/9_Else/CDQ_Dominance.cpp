@@ -19,6 +19,7 @@ vector<ll> dominance(vector<vector<int>> a) { // Equal-size rows.
   auto val = [&](It x, int d) { return a[rep[x.g]][d]; };
   // Count earlier updates satisfying dims d..k-1 for each query.
   auto rec = [&](auto &&self, int d, vector<It> &v) -> void {
+    if (SZ(v) < 2) return;
     if (d >= k) {
       ll s = 0;
       for (auto x : v) {
@@ -35,7 +36,6 @@ vector<ll> dominance(vector<vector<int>> a) { // Equal-size rows.
         for (int i = val(x, d); i <= n; i += i & -i) bit[i] = 0;
       return;
     } int mid = SZ(v) / 2;
-    if (!mid) return;
     vector<It> L(v.begin(), v.begin() + mid), R(v.begin()+mid, v.end()), c;
     self(self, d, L), self(self, d, R);
     for (auto x : L) if (x.up) c.pb({x.g, 1, 0});

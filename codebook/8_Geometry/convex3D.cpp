@@ -1,7 +1,7 @@
 double absvol(P a, P b, P c, P d) {
   return abs(((b-a)^(c-a))*(d-a))/6; }
-struct convex3D { // n <= 1010, m=0; permutes p; O(n^2).
-  // f[0..m): outward triangles; degenerate input gives m=0.
+struct convex3D { // Distinct p; n <= 1010, m=0; O(n^2).
+  // Permutes p; f[0..m): outward; degenerate input gives m=0.
   static const int maxn=1010;
   struct T{
     int a,b,c; bool res; T(){}
@@ -39,12 +39,12 @@ struct convex3D { // n <= 1010, m=0; permutes p; O(n^2).
       T t((i+1)%4,(i+2)%4,(i+3)%4,1);
       if(on(t,p[i]))swap(t.b,t.c);
       add(t);
-    } for(int i=4;i<n;++i){
+    } for(int i=4;i<n;++i)
       for(int j=0;j<m;++j)
-        if(on(f[j],p[i])){ dfs(i,j); break; }
-      int mm=m; m=0;
-      for(int j=0;j<mm;++j)if(f[j].res)add(f[j]);
-    }
+        if(on(f[j],p[i])){
+          dfs(i,j); int mm=m; m=0;
+          for(int k=0;k<mm;++k)if(f[k].res)add(f[k]);
+          break; }
   }
   bool same(int i,int j){
     for(int k : {f[j].a,f[j].b,f[j].c})

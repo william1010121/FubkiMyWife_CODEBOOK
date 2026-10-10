@@ -7,12 +7,12 @@ vector<P> Intersect(C a, C b) {
   double d = (a.c - b.c).abs(); vector<P> p;
   if (same(d, 0)) return p; // Coincident: no finite point list.
   if (same(a.r + b.r, d))
-    p.push_back(a.c + (b.c - a.c).unit() * a.r);
+    p.push_back(a.c + (b.c - a.c) / d * a.r);
   else if (same(d + a.r, b.r))
-    p.push_back(a.c - (b.c - a.c).unit() * a.r);
+    p.push_back(a.c - (b.c - a.c) / d * a.r);
   else if (a.r + b.r > d && d + a.r >= b.r) {
     double o = acos((sq(a.r) + sq(d) - sq(b.r)) / (2 * a.r * d));
-    P i = (b.c - a.c).unit();
+    P i = (b.c - a.c) / d;
     p.push_back(a.c + i.rot(o) * a.r);
     p.push_back(a.c + i.rot(-o) * a.r);
   } return p;
@@ -28,18 +28,17 @@ double IntersectArea(C a, C b) {
 }
 // Segment by default; drop parameter-range checks for an infinite line.
 vector<P> CircleCrossLine(P a, P b, P o, double r) {
-  double x = b.x - a.x, y = b.y - a.y, A = sq(x) + sq(y);
+  P u = b - a, v = a - o; double A = u * u;
   if (!A) // Zero-length segment is a point.
     return same((a - o).abs(), r) ? vector<P>{a} : vector<P>{};
-  double B = 2 * (x * (a.x - o.x) + y * (a.y - o.y)),
-    C = sq(a.x - o.x) + sq(a.y - o.y) - sq(r), d = B * B - 4 * A * C;
+  double B = 2 * (u * v), C = v * v - sq(r), d = B * B - 4 * A * C;
   vector<P> t;
   if (d >= -eps) {
     double root = sqrt(max(0., d)), i = (-B - root) / (2 * A),
       j = (-B + root) / (2 * A);
-    if (i <= 1 + eps && i >= -eps) t.push_back(a + (b - a) * i);
+    if (i <= 1 + eps && i >= -eps) t.push_back(a + u * i);
     if (fabs(j - i) > eps && j <= 1 + eps && j >= -eps)
-      t.push_back(a + (b - a) * j);
+      t.push_back(a + u * j);
   } return t;
 }
 // Unsigned area of circle(r) cap triangle OAB.

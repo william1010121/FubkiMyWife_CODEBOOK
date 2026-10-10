@@ -18,7 +18,7 @@ struct Seg { // 1D range add/sum; query allocates no nodes
     apply(idx->r, m, r, idx->lazy), idx->lazy = 0;
   }
   void update(Node *&idx, int l, int r, int ql, int qr, int v) {
-    if (ql >= qr || qr <= l || r <= ql) return;
+    if (!v || ql >= qr || qr <= l || r <= ql) return;
     if (ql <= l && r <= qr) return apply(idx, l, r, v);
     if (!idx) idx = new Node();
     idx->sum += v * (min(r, qr) - max(l, ql));
@@ -48,7 +48,7 @@ struct Seg2D {
   Seg2D(int n, int m) : n(n), m(m) {}
   void update(Node *&idx, int l, int r,
               int xl, int xr, int yl, int yr, int v) {
-    if (xl >= xr || yl >= yr || xr <= l || r <= xl) return;
+    if (!v || xl >= xr || yl >= yr || xr <= l || r <= xl) return;
     if (!idx) idx = new Node(m);
     // sum counts all updates intersecting this x interval.
     idx->sum.update(yl, yr, v * (min(r, xr) - max(l, xl)));

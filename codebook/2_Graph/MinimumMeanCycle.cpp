@@ -17,16 +17,15 @@ struct MinimumMeanCycle {
     }
     pll ans = {-1, -1}; // O(VE+V^2); differences must fit ll
     for (int v = 0; v < n; ++v) if (dp[n][v] < INF) {
-      pll high = {dp[n][v], n}; // k=0 is always reachable
-      for (int k = 1; k < n; ++k) if (dp[k][v] < INF) {
+      pll high = {dp[n][v], n}; // shorter suffixes are reachable
+      for (int k = 1; k < n; ++k) {
         pll cur = {dp[n][v] - dp[k][v], n - k};
         if (less_frac(high, cur)) high = cur;
       }
       if (ans.second < 0 || less_frac(high, ans)) ans = high;
     }
     if (ans.second < 0) return ans;
-    ll g = gcd(ans.first, ans.second);
-    return {ans.first / g, ans.second / g};
+    auto [p, q] = ans; ll g = gcd(p, q); return {p / g, q / g};
   }
   void init(int _n) { n = _n; }
 };

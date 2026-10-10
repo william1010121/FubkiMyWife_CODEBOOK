@@ -9,8 +9,7 @@ struct ECC { // 0-base; O(V+E), edge ids support parallel edges
       else if (e != f) low[u] = min(low[u], dfn[v]);
     if (low[u] == dfn[u]) {
       if (f != -1) is_bridge[f] = 1;
-      for (; stk.back() != u; stk.pop_back())
-        bln[stk.back()] = necc;
+      for (; stk.back() != u; stk.pop_back()) bln[stk.back()] = necc;
       bln[u] = necc++, stk.pop_back();
     }
   }

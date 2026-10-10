@@ -22,8 +22,7 @@ void ntt(vector<ll> &vec, bool inv = false) {
       }
     }
   }
-  if (inv) {
-    ll invn = pwr(n, mod - 2);
+  if (inv) { ll invn = mod - (mod - 1) / n; // n divides mod-1.
     for (auto &x : vec) x = x * invn % mod;
   }
 }

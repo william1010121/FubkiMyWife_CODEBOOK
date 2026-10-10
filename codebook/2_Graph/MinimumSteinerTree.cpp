@@ -11,13 +11,12 @@ struct SteinerTree { // 0-base, n <= N, t <= T; nonnegative costs
       for (int j = 0; j < n; ++j)
         if (i != j && dst[i][j] < INF) dst[i][j] += vcst[j];
     for (int k = 0; k < n; ++k)
-      for (int i = 0; i < n; ++i)
+      for (int i = 0; i < n; ++i) if (dst[i][k] < INF)
         for (int j = 0; j < n; ++j)
           chmin(dst[i][j], dst[i][k] + dst[k][j]);
   }
   int solve(const vector<int>& ter) { // calls shortest_path; <= T distinct
-    vector<int> terminals = ter;
-    sort(ALL(terminals));
+    vector<int> terminals = ter; sort(ALL(terminals));
     terminals.erase(unique(ALL(terminals)), terminals.end());
     if (terminals.empty()) return 0;
     shortest_path();
@@ -34,7 +33,7 @@ struct SteinerTree { // 0-base, n <= N, t <= T; nonnegative costs
         for (int i = 0; i < n; ++i) // lowest bit stays in complement
           chmin(dp[msk][i], dp[sub][i] + dp[msk ^ sub][i] - vcst[i]);
       fill_n(tdst, n, INF);
-      for (int j = 0; j < n; ++j)
+      for (int j = 0; j < n; ++j) if (dp[msk][j] < INF)
         for (int i = 0; i < n; ++i)
           chmin(tdst[i], dp[msk][j] + dst[j][i]);
       copy_n(tdst, n, dp[msk]);

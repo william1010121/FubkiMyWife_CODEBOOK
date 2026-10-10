@@ -35,16 +35,13 @@ struct CH { // Strictly convex CCW hull, n >= 3; queries O(log n).
     d = vector<P>(p.begin(), next(t));
     u = vector<P>(t, p.end()); u.pb(p[0]);
   }
-  int find(vector<P> &v, P d) {
+  int find(vector<P> &v, P d) { // Peak of findFarest's chosen chain.
     int l = 0, r = SZ(v);
-    while (l + 5 < r) {
-      int L = (l * 2 + r) / 3, R = (l + r * 2) / 3;
-      if (v[L] * d > v[R] * d) r = R;
-      else l = L;
-    } int x = l;
-    for (int i = l + 1; i < r; ++i)
-      if (v[i] * d > v[x] * d) x = i;
-    return x;
+    while (l + 1 < r) {
+      int m = (l + r) / 2;
+      if (v[m - 1] * d >= v[m] * d) r = m;
+      else l = m;
+    } return l;
   }
   int findFarest(P v) {
     if (v.y > 0 || (v.y == 0 && v.x > 0))
