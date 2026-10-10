@@ -42,6 +42,25 @@ int main() {
       }
       bk.S = 7; bk.dfs_vec(P, X);
       if (bk.S != 7 + want) throw runtime_error("P/X helper oracle");
+      // Same graph and candidate sets on vertices in three machine words.
+      const int label[4] = {1, 64, 65, 150};
+      bk.init(150);
+      for (int u = 0; u < 4; ++u) for (int v = u + 1; v < 4; ++v)
+        if (adj[u][v]) bk.add_edge(label[u], label[v]);
+      bitset<N> p, x;
+      vector<int> pv, xv;
+      for (int v = 0; v < 4; ++v) {
+        if (pm >> v & 1) p[label[v]] = 1, pv.push_back(label[v]);
+        if (xm >> v & 1) x[label[v]] = 1, xv.push_back(label[v]);
+      }
+      bk.S = 7; bk.dfs(p, x);
+      if (bk.S != 7 + want) throw runtime_error("scattered P/X bitsets");
+      bk.S = 7; bk.dfs_vec(pv, xv);
+      if (bk.S != 7 + want) throw runtime_error("scattered P/X vectors");
+      // Restore the original graph for the next low-vertex assignment.
+      bk.init(n);
+      for (int u = 0; u < 4; ++u) for (int v = u + 1; v < 4; ++v)
+        if (adj[u][v]) bk.add_edge(u + 1, v + 1);
       ++cases;
     }
   }

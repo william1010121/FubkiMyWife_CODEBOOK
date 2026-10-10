@@ -62,6 +62,43 @@ int main() {
         ++cases;
       }
   }
+  // Exhaust arbitrary sample vectors, rather than generated coefficients.
+  // Product-form Lagrange independently checks public poly mutation.
+  for (int p : {2, 3, 5}) {
+    mint::P = p; ifac.assign(p, 1); inegfac.assign(p, 1);
+    int fac = 1;
+    for (int i = 0; i < p; ++i) {
+      if (i) fac = fac * i % p;
+      int inv = 1; while (inv * fac % p != 1) ++inv;
+      ifac[i] = inv; inegfac[i] = (i & 1) ? -ifac[i] : ifac[i];
+    }
+    for (int n = 1, total = p; n <= p; ++n, total *= p)
+      for (int base = 0; base < p; ++base)
+        for (int mask = 0; mask < total; ++mask) {
+          Poly f(base); f.poly.resize(n); int z = mask;
+          for (auto &x : f.poly) x = z % p, z /= p;
+          vector<mint> want(p);
+          for (int t = 0; t < p; ++t) {
+            for (int i = 0; i < n; ++i) {
+              mint term = f.poly[i];
+              for (int j = 0; j < n; ++j) if (i != j) {
+                mint d = i - j; int inv = 1;
+                while (inv * d.v % p != 1) ++inv;
+                term *= mint(t - j) * mint(inv);
+              }
+              want[t] += term;
+            }
+            if (!(f.get_val(base + t) == want[t])) abort();
+          }
+          if (n < p) {
+            f.raise();
+            for (int t = 1; t < p; ++t) want[t] += want[t - 1];
+            for (int t = 0; t < p; ++t)
+              if (!(f.get_val(base + t) == want[t])) abort();
+          }
+          ++cases;
+        }
+  }
   cout << "g08_value_poly_small_fields: PASS " << cases
        << " full-field interpolation and repeated wrapped lifts\n";
 }

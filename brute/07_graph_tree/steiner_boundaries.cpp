@@ -62,6 +62,28 @@ int main() {
   check(2, {{0, 1, INF - 10}}, {0, 1}, {20, 20});
   check(4, {{0, 2, 0}, {1, 2, 0}, {2, 3, 0}},
         {0, 1, 3, 0}, {200000000, 200000000, 300000000, 1});
+  // All simple directed topologies and terminal sets on three vertices,
+  // Root costs near saturation, including cycles and unreachable roots.
+  const vector<int> vc_values{0, INF / 2, INF - 1};
+  for (int graph = 0; graph < 64; ++graph)
+    for (int code = 0; code < 27; ++code) {
+      vector<Edge> es;
+      vector<int> vc(3);
+      for (int u = 0, k = code; u < 3; ++u, k /= 3)
+        vc[u] = vc_values[k % 3];
+      int e = 0;
+      for (int u = 0; u < 3; ++u) for (int v = 0; v < 3; ++v)
+        if (u != v) {
+          if (graph >> e & 1) es.push_back({u, v, (e & 1) ? 0 : 1});
+          ++e;
+        }
+      for (int mask = 0; mask < 8; ++mask) {
+        vector<int> term;
+        for (int u = 0; u < 3; ++u) if (mask >> u & 1)
+          term.push_back(u), term.push_back(u);
+        check(3, es, term, vc);
+      }
+    }
   mt19937 rng(0xB005);
   const vector<int> costs{0, 1, 7, INF / 4, INF / 2, INF - 1};
   for (int tc = 0; tc < 2200; ++tc) {

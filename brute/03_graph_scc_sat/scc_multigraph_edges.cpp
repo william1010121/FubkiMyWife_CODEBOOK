@@ -97,5 +97,24 @@ int main() {
     check(tc++, n, e);
   }
 
+  // A later sibling reaches both a popped SCC and an active ancestor's
+  // descendant. Relabeling changes DFS roots, and shuffling changes siblings.
+  vector<Edge> adversarial = {{0, 1}, {1, 2}, {2, 0}, {0, 3},
+      {3, 4}, {4, 1}, {4, 5}, {5, 6}, {6, 5}, {0, 7},
+      {7, 6}, {7, 3}, {8, 7}, {8, 8}, {9, 8}};
+  mt19937 order_rng(0x8085CC);
+  vector<int> labels(11);
+  iota(labels.begin(), labels.end(), 0);
+  for (int rep = 0; rep < 600; ++rep) {
+    shuffle(labels.begin(), labels.end(), order_rng);
+    vector<Edge> edges;
+    for (auto [u, v] : adversarial) {
+      edges.push_back({labels[u], labels[v]});
+      edges.push_back({labels[u], labels[v]});
+    }
+    shuffle(edges.begin(), edges.end(), order_rng);
+    check(tc++, labels.size(), edges);
+  }
+
   cout << "SCC multigraph edge-case PASS " << tc << " cases\n";
 }

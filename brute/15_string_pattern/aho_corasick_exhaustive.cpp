@@ -105,6 +105,21 @@ int main() {
   expect(ac.cnt[1] == INT_MAX, "AC maximum representable visits", "");
   ++cases;
 
+  // Every prefix/suffix is a pattern; the absent C forces root fallback.
+  string periodic;
+  for (int i = 0; i < 80; ++i) periodic += "ABBA"[i % 4];
+  vector<string> nested = {"", ""};
+  for (int i = 1; i <= (int)periodic.size(); ++i) {
+    nested.push_back(periodic.substr(0, i));
+    nested.push_back(periodic.substr(periodic.size() - i));
+  }
+  for (int i = 0; i < 8; ++i) {
+    string text = periodic + 'C' + periodic;
+    text[79 + i] = 'C';
+    check(nested, text), ++cases;
+    reverse(nested.begin(), nested.end());
+  }
+
   mt19937 rng(0xAC0F2026u);
   for (int tc = 0; tc < 2500; ++tc) {
     vector<string> patterns;

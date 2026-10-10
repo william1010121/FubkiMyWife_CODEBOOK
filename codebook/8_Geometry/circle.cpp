@@ -46,18 +46,18 @@ vector<P> CircleCrossLine(P a, P b, P o, double r) {
       t.push_back(o + p + u * root);
   } return t;
 }
-// Unsigned area of circle(r) cap triangle OAB.
+// r >= 0; unsigned circle cap OAB area; last root is the exit from a.
 double AreaOfCircleTriangle(P a, P b, double r) {
   bool ina = a.abs() < r, inb = b.abs() < r;
   if (ina && inb) return abs(a ^ b) / 2;
   auto p = CircleCrossLine(a, b, P(0, 0), r);
-  if (ina) return SectorArea(b, p[0], r) + abs(a ^ p[0]) / 2;
+  if (ina) return SectorArea(b, p.back(), r) + abs(a ^ p.back()) / 2;
   if (inb) return SectorArea(p[0], a, r) + abs(p[0] ^ b) / 2;
   if (p.size() == 2) return SectorArea(a, p[0], r) +
     SectorArea(p[1], b, r) + abs(p[0] ^ p[1]) / 2;
   return SectorArea(a, b, r);
 }
-// Any triangle, three vertices; circle centered at origin.
+// r >= 0; any triangle, three vertices; circle centered at origin.
 double AreaOfCircleTriangle(vector<P> ps, double r) {
   double ans = 0;
   for (int i = 0; i < 3; ++i) {

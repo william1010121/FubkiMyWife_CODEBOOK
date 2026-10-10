@@ -120,6 +120,20 @@ def main() -> None:
         else:
             raise AssertionError("input length validation")
 
+    # Empty dimensions must not consume a row from an input iterator.
+    rows = iter(["sentinel"])
+    expect(misc.read_matrix(rows, 0, 8) == [] and next(rows) == "sentinel",
+           "zero-row matrix preserves iterator")
+    coefficient = "9" * 700
+    expect(misc.decimal_multiply(coefficient, coefficient)
+           == Decimal(int(coefficient) ** 2), "long exact coefficient")
+    expect(misc.parse_int_array(b"  +3\r\n-0\t+1  -2\r\n")
+           == (3, [0, 1, -2]), "stdin whitespace and signed zero")
+    repeated = [1, 1, 2, 2]
+    chosen, choices, shuffled = misc.random_examples(Random(8011), repeated)
+    expect(repeated == [1, 1, 2, 2] and sorted(shuffled) == repeated
+           and chosen in repeated and all(x in repeated for x in choices),
+           "random duplicate values preserve multiplicity and input")
     print("python misc PASS")
 
 

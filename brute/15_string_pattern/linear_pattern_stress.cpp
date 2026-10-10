@@ -50,6 +50,47 @@ int main() {
       require(manacher_test::z[i] == 1 + min(i, 2 * n - i),
               "Manacher equal characters/separators");
   }
+
+  // Long byte-periodic strings exercise reused boxes and both parities.
+  for (int i = 0; i < n; ++i) s[i] = i % 2 ? char(255) : char(0);
+  t = s.substr(0, m);
+  istringstream periodic(matches(s, t));
+  for (int pos = 1, got; pos <= n - m + 1; pos += 2)
+    require(bool(periodic >> got) && got == pos, "KMP byte-periodic");
+  require(!(periodic >> extra), "KMP periodic extra output");
+  z_test::make_z(s);
+  for (int i = 1; i < n; ++i)
+    require(z_test::z[i] == (i % 2 ? 0 : n - i), "Z-value periodic");
+  manacher_test::Manacher(s);
+  for (int i = 0; i <= 2 * n; ++i)
+    require(manacher_test::z[i] == (i % 2 ?
+            2 * min(i / 2, n - 1 - i / 2) + 2 : 1),
+            "Manacher periodic odd/even radii");
+
+  // Shrinking inputs must not read stale output or overwrite its suffix.
+  vector<int> old_z(z_test::z, z_test::z + z_test::MAXn);
+  z_test::make_z(""); z_test::make_z("%");
+  require(equal(ALL(old_z), z_test::z), "Z empty/singleton reuse");
+  z_test::make_z("aaa");
+  require(z_test::z[1] == 2 && z_test::z[2] == 1 &&
+          equal(old_z.begin() + 3, old_z.end(), z_test::z + 3),
+          "Z short reuse and untouched suffix");
+  vector<int> old_r(manacher_test::z,
+                    manacher_test::z + manacher_test::MAXN);
+  manacher_test::Manacher("");
+  require(manacher_test::z[0] == 1 &&
+          equal(old_r.begin() + 1, old_r.end(), manacher_test::z + 1),
+          "Manacher empty reuse and untouched suffix");
+  manacher_test::Manacher("%");
+  require(manacher_test::z[0] == 1 && manacher_test::z[1] == 2 &&
+          manacher_test::z[2] == 1 &&
+          equal(old_r.begin() + 3, old_r.end(), manacher_test::z + 3),
+          "Manacher singleton reuse and untouched suffix");
+  istringstream boundaries(matches(s, ""));
+  for (int pos = 1, got; pos <= n + 1; ++pos)
+    require(bool(boundaries >> got) && got == pos, "KMP empty boundaries");
+  require(!(boundaries >> extra) && matches("", "") == "1\n",
+          "KMP empty output count");
   double seconds = chrono::duration<double>(
       chrono::steady_clock::now() - start).count();
   cout << "PASS linear string stress n=" << n

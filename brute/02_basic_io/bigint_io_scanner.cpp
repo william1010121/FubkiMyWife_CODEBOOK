@@ -37,6 +37,45 @@ int main() {
   // Every nondigit byte immediately before a number, including signed char.
   for (int c = 0; c < 256; ++c)
     if (c < '0' || c > '9') append(std::string(1, char(c)));
+  // Consecutive scanner calls: independently lex decimal runs, accounting
+  // for one consumed terminator. Compare text to limits before conversion.
+  std::mt19937_64 rng(0x80128);
+  std::string stream;
+  const std::string tokens[] = {
+      "12-34", "56--78", "- 9", "0", "-0", digits[2], digits[3],
+      "-" + digits[3], "170141183460469231731687303715884105729",
+      std::string(300, '9') + std::string(300, '0'),
+      std::string(300, '0') + digits[2]};
+  for (int i = 0; i < 60000; ++i) {
+    for (int j = rng() % 6; j--; ) stream += char(rng() % 256);
+    if (i % 3) stream += tokens[rng() % std::size(tokens)];
+    else for (int j = rng() % 80; j--; ) stream += char('0' + rng() % 10);
+    stream += alphabet[rng() % alphabet.size()];
+  }
+  size_t at = 0, sequence_cases = 0;
+  while (at < stream.size()) {
+    size_t start = stream.find_first_of("0123456789", at);
+    if (start == std::string::npos) break;
+    bool negative = start > at && stream[start - 1] == '-';
+    size_t end = stream.find_first_not_of("0123456789", start);
+    if (end == std::string::npos) end = stream.size();
+    std::string magnitude = stream.substr(start, end - start);
+    size_t nonzero = magnitude.find_first_not_of('0');
+    magnitude = nonzero == std::string::npos ? "0" : magnitude.substr(nonzero);
+    const std::string &limit = digits[negative ? 3 : 2];
+    bool ok = magnitude.size() < limit.size() ||
+        (magnitude.size() == limit.size() && magnitude <= limit);
+    i128 value = 0;
+    if (ok) {
+      __uint128_t x = 0;
+      for (char digit : magnitude) x = x * 10 + digit - '0';
+      value = !negative ? i128(x) : magnitude == digits[3] ? lo : -i128(x);
+    }
+    cases.push_back({ok, value});
+    ++sequence_cases;
+    at = end + (end < stream.size());
+  }
+  input += stream + "\n";
   input += "-+x --\xff"; // junk and signs ending at EOF
 
   FILE *file = tmpfile();
@@ -58,5 +97,6 @@ int main() {
     if (read(value) || value != 123 || read() != 0) return 1;
   }
   std::cerr << "PASS bigint scanner: " << cases.size()
-            << " prefixes/limits and stable EOF\n";
+            << " prefixes/limits and " << sequence_cases
+            << " consecutive decimal runs, stable EOF\n";
 }

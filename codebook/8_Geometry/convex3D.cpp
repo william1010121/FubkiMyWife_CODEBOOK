@@ -1,7 +1,7 @@
 double absvol(P a, P b, P c, P d) {
   return abs(((b-a)^(c-a))*(d-a))/6; }
-struct convex3D { // Distinct p; n <= 1010, m=0; O(n^2).
-  // Permutes p; f[0..m): outward; degenerate input gives m=0.
+struct convex3D { // Distinct p; 0<=n<=1010, m=0; O(n^2).
+  // Permutes p; outward f[0..m); reliable eps tests; degenerate: m=0.
   static const int maxn=1010;
   struct T{
     int a,b,c; bool res; T(){}

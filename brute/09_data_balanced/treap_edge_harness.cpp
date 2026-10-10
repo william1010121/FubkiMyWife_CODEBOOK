@@ -182,6 +182,47 @@ static void randomized_stress() {
   }
 }
 
+static void priority_collisions() {
+  const vector<int> keys = {INT_MIN, -1, 0, 0, 1, INT_MAX};
+  // All 3^6 priority patterns include mixed ties and both chain shapes.
+  for (int code = 0; code < 729; ++code) {
+    int digits = code;
+    node *root = nullptr;
+    multiset<int> ref(keys.begin(), keys.end());
+    for (int key : keys) {
+      node *o = new node(key);
+      o->priority = digits % 3, digits /= 3;
+      root = merge(root, o);
+    }
+    check_tree(root, ref);
+    for (int k = 0; k <= (int)keys.size(); ++k) {
+      node *a, *b;
+      split2(root, root, b, k);
+      CHECK(sz(root) == k && sz(b) == (int)keys.size() - k);
+      root = merge(root, b);
+      split2(root, a, root, k);
+      CHECK(sz(a) == k && sz(root) == (int)keys.size() - k);
+      root = merge(a, root);
+      check_tree(root, ref);
+    }
+    for (int key : keys) {
+      node *b;
+      split(root, root, b, key);
+      CHECK(sz(root) == (int)distance(ref.begin(), ref.upper_bound(key)));
+      root = merge(root, b);
+      check_tree(root, ref);
+    }
+    // Alternate extreme deletions, then remove both duplicate copies.
+    for (int key : {INT_MIN, INT_MAX, -1, 1, 0, 0}) {
+      CHECK(erase(root, key));
+      ref.erase(ref.find(key));
+      check_tree(root, ref);
+      CHECK(!erase(root, 2));
+    }
+    CHECK(!root && !erase(root, 0));
+  }
+}
+
 int main() {
   srand(0x09b1a1);
   check_split_operations({});
@@ -218,5 +259,6 @@ int main() {
     }
     CHECK(tree == nullptr && !erase(tree, 0));
   }
+  priority_collisions();
   return 0;
 }

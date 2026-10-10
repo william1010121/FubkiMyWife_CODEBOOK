@@ -82,6 +82,23 @@ int main(int argc,char **argv) {
       {{-5,0},{5,0},{0,0}},{{0,0},{1,0},{0,1}},
       {{-1,0},{1,0},{0,1e-12}},{{-1,0},{1,0},{0,1e12}},
       {{0,0},{2,0},{2,2},{0,2},{0,0},{2,2}}}) check(p);
+  // Exhaustive grid supports, with duplicates and every reflection.
+  for (int mask=0;mask<512;++mask) for (int side : {-1,1}) {
+    vector<pt> grid;
+    for (int i=0;i<9;++i) if (mask>>i&1)
+      grid.push_back({double(side*(i%3-1)),double(i/3-1)});
+    check(grid);
+    auto twice=grid; twice.insert(twice.end(),ALL(grid)); check(twice);
+  }
+  // All orders of a collinear multiset, including a repeated endpoint.
+  vector<pt> ordered{{-7,-21},{-7,-21},{-1,-3},{2,6},{9,27}};
+  auto less=[](pt a,pt b){return tie(a.x,a.y)<tie(b.x,b.y);};
+  do { check(ordered); } while (next_permutation(ALL(ordered),less));
+  for (double step : {1e-13,1e-12,1e-11}) {
+    // A point just outside an existing unit-radius support circle.
+    for (int repeat=0;repeat<100;++repeat)
+      check({{-1,0},{1,0},{0,1+step},{0,-1},{0,0},{0,1+step}});
+  }
   mt19937_64 rng(516731);
   for (int tc=0;tc<15000;++tc) {
     vector<pt> p;

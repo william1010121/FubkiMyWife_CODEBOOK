@@ -1,4 +1,4 @@
-// Unlocked stdio: one thread; skips junk, consumes first nondigit.
+// Unlocked stdio: one thread; skips junk; sign must touch first digit.
 bool read(__int128 &value) { // false on EOF/overflow; value unchanged
   int ch = getchar_unlocked(), prev = 0; bool overflow = false;
   while (ch != EOF && !isdigit(ch))
@@ -9,7 +9,7 @@ bool read(__int128 &value) { // false on EOF/overflow; value unchanged
     unsigned d = ch - '0';
     if (x > lim / 10 || (x == lim / 10 && d > lim % 10)) overflow = true;
     else x = x * 10 + d;
-  } while (isdigit(ch = getchar_unlocked()));
+  } while (isdigit(ch = getchar_unlocked())); // consumes first nondigit
   if (overflow) return false;
   value = !neg ? (__int128)x : x >> 127 ?
     -(__int128)(x - 1) - 1 : -(__int128)x;

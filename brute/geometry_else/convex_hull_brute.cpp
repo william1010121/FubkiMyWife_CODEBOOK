@@ -117,6 +117,47 @@ void edge_queries(vector<P> h) {
 }
 int main(int argc, char **argv) {
   string mode = argc > 1 ? argv[1] : "all";
+  if (mode == "all" || mode == "affine") {
+    // Anisotropic, reflected and translated hulls; queries on edge rays.
+    for (int swap_axes : {0,1}) for (int side : {-1,1}) {
+      vector<P> input;
+      for (P q : vector<P>{{0,0},{4,0},{5,1},{5,3},{3,5},
+                           {1,5},{0,4},{-1,2},{2,2},{4,0}}) {
+        if (swap_axes) swap(q.x,q.y);
+        input.pb(P(1024+side*ldexp(q.x,-10),-2048+ldexp(q.y,10)));
+      }
+      check_hull(input);
+      auto h=oracle(input);
+      for (int shift=0;shift<SZ(h);++shift) {
+        rotate(h.begin(),h.begin()+1,h.end()); CH ch(h);
+        for (int i=0;i<ch.n;++i) {
+          P a=ch.p[i],b=ch.p[(i+1)%ch.n],edge=b-a;
+          P v(edge.y,-edge.x);
+          double want=-INFINITY;
+          for (P z:ch.p) want=max(want,z*v);
+          require(ch.p[ch.findFarest(v)]*v==want,
+                  "anisotropic supporting-edge extreme tie");
+          require(ch.getLineIntersect(a,b).empty(),
+                  "anisotropic supporting-edge intersection");
+          for (double t : {-2.0,-0.5,0.0,0.5,1.0,1.5,3.0}) {
+            P q=a+edge*t; bool inside=true;
+            for (int j=0;j<ch.n;++j)
+              inside &= crx(ch.p[j],ch.p[(j+1)%ch.n],q)>=-eps;
+            require(ch.contain(q)==inside,"affine edge-ray containment");
+            int x,y;
+            require(ch.get_tangent(q,x,y)==!inside,"affine tangent status");
+            if (!inside) for (P z:ch.p) {
+              require(crx(q,ch.p[x],z)<=eps,"affine tangent a support");
+              require(crx(q,ch.p[y],z)>=-eps,"affine tangent b support");
+            }
+          }
+        }
+      }
+    }
+    P hit=isLL({0,0},{100000,99999},{0,1},{99999,99999});
+    require(equal_point(hit,{9999900000.0,9999800001.0}),
+            "nonparallel integer lines with determinant one");
+  }
   if (mode == "all" || mode == "order") {
     vector<P> near{{0,2},{0.75*eps,1},{1.5*eps,0}};
     for (P a : near) for (P b : near) for (P c : near) {

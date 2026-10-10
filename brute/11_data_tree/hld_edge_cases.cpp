@@ -126,6 +126,23 @@ vector<int> values(int n, int mode) {
 
 int main() {
   {
+    // Nonzero descendants must survive a cancelling parent sum.
+    Heavy_light_Decomposition h;
+    h.init(3), h.add_edge(1, 2), h.add_edge(1, 3);
+    vector<int> v = {0, 0, INT_MIN, INT_MAX};
+    for (int u = 1; u <= 3; ++u) h.val[u] = v[u];
+    h.build();
+    check("extreme-cancellation", h, {{1, 2}, {1, 3}}, v);
+    h.seg.update(h.pl[2], h.pl[2] + 1, INT_MAX);
+    h.seg.update(h.pl[3], h.pl[3] + 1, -INT_MAX);
+    check("extreme-cancelled", h, {{1, 2}, {1, 3}}, {0, 0, -1, 0});
+    v = {0, 0, -INT_MAX, INT_MAX};
+    for (int u = 1; u <= 3; ++u) h.val[u] = v[u];
+    h.build();
+    assert(h.seg.root && h.seg.root->sum == 0);
+    check("extreme-zero-subtree", h, {{1, 2}, {1, 3}}, v);
+  }
+  {
     // Direct calls to the original public helpers still populate Seg.
     Heavy_light_Decomposition h;
     h.init(7);
@@ -160,6 +177,35 @@ int main() {
   run_case("chain-zero", 127, chain(127), values(127, 0));
   run_case("chain-alternating", 127, chain(127), values(127, 1));
   run_case("star-duplicate", 127, star(127), values(127, 2));
+
+  // Every labeled tree through n=6; ties and root labels vary freely.
+  for (int n = 2; n <= 6; ++n) {
+    int count = 1;
+    for (int i = 0; i < n - 2; ++i) count *= n;
+    for (int code = 0; code < count; ++code) {
+      int digits = code;
+      vector<int> sequence(n - 2), degree(n + 1, 1);
+      for (int &u : sequence) u = 1 + digits % n, digits /= n;
+      for (int u : sequence) ++degree[u];
+      vector<Edge> e;
+      for (int u : sequence) {
+        int leaf = 1;
+        while (degree[leaf] != 1) ++leaf;
+        e.push_back({leaf, u});
+        --degree[leaf], --degree[u];
+      }
+      vector<int> ends;
+      for (int u = 1; u <= n; ++u)
+        if (degree[u] == 1) ends.push_back(u);
+      e.push_back({ends[0], ends[1]});
+      if (code & 1) reverse(e.begin(), e.end());
+      vector<int> v(n + 1);
+      for (int u = 1; u <= n; ++u)
+        v[u] = ((u + code) % 3 - 1) * (INT_MAX / 12);
+      run_case("all-labeled-" + to_string(n) + "-" +
+               to_string(code), n, e, v);
+    }
+  }
 
   mt19937 rng(0x11A1D);
   for (int tc = 0; tc < 180; ++tc) {

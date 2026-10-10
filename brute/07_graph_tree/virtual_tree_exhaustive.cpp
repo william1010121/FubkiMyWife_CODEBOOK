@@ -111,6 +111,36 @@ static void check_raw_duplicates(int tc, int n, const vector<int> &raw, int &cas
   ++cases;
 }
 
+// Partial key sets need LCAs absent from the input: unlike all-key trees,
+// these exercise every stack-rewiring branch of the public insert path.
+static void check_direct(int tc, int n, vector<int> keys, int &cases) {
+  sort(keys.begin(), keys.end(),
+       [](int a, int b) { return dfn[a] < dfn[b]; });
+  keys.erase(unique(keys.begin(), keys.end()), keys.end());
+  Expected want = expected_tree(keys);
+  for (int u = 0; u < n; ++u)
+    if (!vG[u].empty()) fail(tc, n, keys, "previous reset left edges");
+  top = -1;
+  for (int u : keys) insert(u);
+  while (top > 0) vG[st[top - 1]].pb(st[top]), --top;
+  int root = keys.empty() ? -1 : st[0];
+  set<pair<int, int>> got;
+  for (int u = 0; u < n; ++u) for (int v : vG[u]) {
+    if (!got.insert({u, v}).second)
+      fail(tc, n, keys, "partial direct insert repeats an edge");
+  }
+  if (root != want.root || got != want.edges)
+    fail(tc, n, keys, "partial direct insert differs");
+  if (root != -1) reset(root);
+  for (int u = 0; u < n; ++u)
+    if (!vG[u].empty()) fail(tc, n, keys, "direct reset left edges");
+  // Also cover the printed solve wrapper on a freshly cleaned graph.
+  solve(keys);
+  for (int u = 0; u < n; ++u)
+    if (!vG[u].empty()) fail(tc, n, keys, "solve wrapper left edges");
+  ++cases;
+}
+
 static void enumerate_keys(int n, int mask, int tc, int &cases) {
   vector<int> keys;
   for (int i = 0; i < n; ++i) if (mask >> i & 1) keys.push_back(i);
@@ -171,6 +201,7 @@ int main() {
     dep[root] = 0;
     dfs(root, root);
     check_raw_duplicates(tc++, n, raw, cases);
+    check_direct(tc++, n, raw, cases);
   }
   vector<int> empty;
   clear_virtual(1);

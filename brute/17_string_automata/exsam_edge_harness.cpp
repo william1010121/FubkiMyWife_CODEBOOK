@@ -46,6 +46,27 @@ static void check(const vector<string> &strings) {
   ex.build();
   ex.solve();
 
+  int total_length = 0;
+  for (const string &s : strings) total_length += s.size();
+  if (ex.cnt[0] != total_length) fail("root occurrence count mismatch");
+  vector<bool> sorted(ex.tot, false);
+  for (int i = 0; i < ex.tot - 1; ++i) {
+    int v = ex.lenSorted[i];
+    if (v <= 0 || v >= ex.tot || sorted[v] ||
+        (i && ex.len[ex.lenSorted[i - 1]] > ex.len[v]))
+      fail("nonroot length order is not a sorted permutation");
+    sorted[v] = true;
+  }
+  for (int v = 0; v < ex.tot; ++v)
+    for (int c = 0; c < CNUM; ++c) {
+      int q = ex.next[v][c];
+      if (q && (q < 0 || q >= ex.tot ||
+                ex.link[q] < 0 || ex.link[q] >= ex.tot ||
+                ex.len[q] <= ex.len[v] ||
+                ex.len[ex.link[q]] > ex.len[v]))
+        fail("transition does not contain the extended length");
+    }
+
   const auto want = brute_occ(strings);
   long long distinct = 0;
   for (int v = 1; v < ex.tot; ++v) {
@@ -134,6 +155,21 @@ int main() {
     check(overlap), ++cases;
   }
   check_capacity(), ++cases;
+
+  // All suffixes/prefixes plus duplicates stress clones and trie order.
+  for (int tc = 0; tc < 24; ++tc) {
+    string s;
+    for (int i = 0; i < 18; ++i)
+      s += char('a' + (tc % 2 ? shuffle_rng() % 3 : i % 3));
+    vector<string> family = {s, s, ""};
+    for (int i = 1; i < (int)s.size(); ++i) {
+      family.push_back(s.substr(i));
+      family.push_back(s.substr(0, i));
+    }
+    check(family), ++cases;
+    shuffle(family.begin(), family.end(), shuffle_rng);
+    check(family), ++cases;
+  }
   for (int tc = 0; tc < 1200; ++tc) {
     vector<string> strings;
     const int m = rng() % 7;

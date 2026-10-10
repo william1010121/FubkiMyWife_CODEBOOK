@@ -88,6 +88,26 @@ int main() {
     }
   }
 
+  // Frequent matches/fallbacks with separator, NUL and signed-char bytes.
+  string alphabet({'%', char(0), char(255)});
+  for (const string &text : words(alphabet, 5))
+    for (const string &pattern : words(alphabet, 4))
+      check(text, pattern), ++cases;
+
+  // A defect at each boundary of a long periodic prefix/fallback chain.
+  for (int n : {31, 127, 511}) for (string unit : {"a", "ab", "abacaba"}) {
+    string text;
+    while ((int)text.size() < n) text += unit;
+    text.resize(n);
+    string pattern = text.substr(0, n / 2);
+    check(text, pattern); ++cases;
+    for (int at : {0, 1, n / 2 - 1, n / 2, n - 2, n - 1}) {
+      string changed = text; changed[at] = '!';
+      check(changed, pattern); check(text, changed.substr(0, n / 2));
+      cases += 2;
+    }
+  }
+
   mt19937 rng(0x4B4D5032u);
   for (int tc = 0; tc < 4000; ++tc) {
     string text = random_word(rng, "abc", rng() % 160);

@@ -141,6 +141,36 @@ int main() {
            {{1, 2, INT_MAX}, {2, 3, INT_MAX},
             {3, 4, INT_MIN}, {4, 5, INT_MIN}});
 
+  {
+    // Even path: two possible centroids, labels unrelated to traversal.
+    int n = N - 2;
+    vector<Edge> e;
+    auto label = [&](int i) { return (5 * i + 17) % n + 1; };
+    for (int i = 1; i < n; ++i)
+      e.push_back({label(i - 1), label(i),
+                   i & 1 ? INT_MIN : INT_MAX});
+    reverse(e.begin(), e.end());
+    run_case("even-relabeled-signed-path", n, e);
+
+    // Repeated marks make count*distance far exceed int; ll still fits.
+    Cent_Dec cd;
+    cd.init(n);
+    for (auto &edge : e) {
+      edge.w = INT_MAX;
+      cd.add_edge(edge.u, edge.v, edge.w);
+    }
+    cd.build();
+    auto d = distances(n, e);
+    const int marked = label(0), copies = 200000;
+    for (int q = 1; q <= copies; ++q) {
+      cd.modify(marked);
+      if (q == 1 || q == copies || q % 10000 == 0)
+        for (int u = 1; u <= n; ++u)
+          assert(cd.query(u) == q * d[u][marked]);
+    }
+    assert(cd.query(marked) == 0);
+  }
+
   vector<Edge> balanced;
   for (int v = 2; v <= 63; ++v)
     balanced.push_back({v / 2, v, (v * 13) % 31});

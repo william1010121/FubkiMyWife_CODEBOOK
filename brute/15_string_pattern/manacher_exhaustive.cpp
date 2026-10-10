@@ -70,6 +70,22 @@ int main() {
     check(string({'%', char(c), '%', char(c), '%'})); cases += 2;
   }
 
+  for (const string &input : words(string({'%', char(0), char(255)}), 7))
+    check(input), ++cases;
+  // Move the longest palindrome and break a mirrored radius near either
+  // boundary, including the largest input that fits this array.
+  for (int n : {31, 127, 511, 2047})
+    for (string unit : {"a", "ab", "abacaba"}) {
+      string input;
+      while ((int)input.size() < n) input += unit;
+      input.resize(n);
+      check(input); ++cases;
+      for (int at : {0, 1, n / 2 - 1, n / 2, n - 2, n - 1}) {
+        string changed = input; changed[at] = '!';
+        check(changed); ++cases;
+      }
+    }
+
   mt19937 rng(0x4D414E32u);
   for (int tc = 0; tc < 3000; ++tc) {
     check(random_word(rng, "abc", rng() % 420));

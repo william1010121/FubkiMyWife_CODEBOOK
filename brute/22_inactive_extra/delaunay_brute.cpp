@@ -114,6 +114,14 @@ int main() {
   for (ll x:{-M,0LL,M}) for (ll y:{-M,0LL,M})
     boundary.emplace_back(x,y);
   adversarial(boundary);
+  // Exhaust every subset of a 4x3 grid at both small and maximum scale.
+  // Reverse input order; the first pair is often vertical or on a facet.
+  for (int mask=0;mask<4096;++mask) for (ll scale : {1LL,250000000LL}) {
+    vector<Point> points;
+    for (int i=0;i<12;++i) if (mask>>i&1)
+      points.emplace_back((i%4-2)*scale,(i/4-1)*scale);
+    reverse(points.begin(),points.end()); adversarial(points);
+  }
   vector<Point> line;
   for (int i=0;i<101;++i) line.emplace_back(-M+i,-M+i);
   adversarial(line);

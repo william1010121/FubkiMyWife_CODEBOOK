@@ -105,6 +105,18 @@ int main() {
   }
   for (auto &w : fixed) check(w, tc++, "fixed-ties-and-unmatched");
 
+  // All three-level weights on five vertices: tied greedy seeds, odd
+  // cycles and alternative augmentations under every vertex ordering.
+  for (int code = 0; code < 59049; ++code) {
+    vector<vector<int>> w(5, vector<int>(5));
+    int x = code;
+    for (int u = 0; u < 5; ++u) for (int v = u + 1; v < 5; ++v) {
+      w[u][v] = w[v][u] = x % 3;
+      x /= 3;
+    }
+    check(w, tc++, "five-vertex-ternary-exhaustive");
+  }
+
   mt19937 rng(0x14E17A);
   for (int z = 0; z < 3200; ++z) {
     int n = 1 + rng() % 10;
@@ -121,6 +133,24 @@ int main() {
   for (int u = 0; u < 8; ++u) for (int v = u + 1; v < 8; ++v)
     large[u][v] = large[v][u] = INT_MAX / 2;
   check(large, tc++, "large-labels-and-ll-total");
+
+  // Larger odd cycles with chords and heavily tied/scaled weights.
+  // Random relabeling changes seed selection and blossom traversal order.
+  for (int n : {7, 9, 11, 13, 15})
+    for (int trial = 0; trial < 40; ++trial) {
+    vector<int> order(n);
+    iota(order.begin(), order.end(), 0);
+    shuffle(order.begin(), order.end(), rng);
+    vector<vector<int>> w(n, vector<int>(n));
+    for (int u = 0; u < n; ++u) {
+      int v = (u + 1) % n;
+      int a = order[u], b = order[v];
+      w[a][b] = w[b][a] = 17000000;
+      v = (u + 3) % n; b = order[v];
+      w[a][b] = w[b][a] = (int)(rng() % 25) * 1000000 - 8000000;
+    }
+    check(w, tc++, "relabeled-odd-cycle-chords");
+  }
 
   // Scaling preserves optima but exercises larger dual updates/blossoms.
   // Mutations include deletion, restoration, ties, and negative weights.

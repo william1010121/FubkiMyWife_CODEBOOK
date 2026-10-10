@@ -42,6 +42,33 @@ int main() {
     require(path.match[u] == (u ^ 1), "path matching validity");
   require(path.solve() == 0, "path repeated solve");
 
+  Matching shifted(20000);
+  for (int u = 1; u + 1 < shifted.n; ++u) shifted.add_edge(u, u + 1);
+  require(shifted.solve() == shifted.n / 2 - 1, "shifted path seeds");
+  shifted.add_edge(0, 1);
+  require(shifted.solve() == 1, "long alternating augmentation");
+  for (int u = 0; u < shifted.n; ++u)
+    require(shifted.match[u] == (u ^ 1), "long rerouting validity");
+  require(shifted.solve() == 0, "long rerouting repeated solve");
+
+  Matching barbell(402);
+  for (int base : {0, 201})
+    for (int u = base; u < base + 201; ++u)
+      for (int v = u + 1; v < base + 201; ++v) barbell.add_edge(u, v);
+  require(barbell.solve() == 200, "two odd simple cliques");
+  int a = 0, b = 201;
+  while (barbell.match[a] != barbell.n) ++a;
+  while (barbell.match[b] != barbell.n) ++b;
+  barbell.add_edge(a, b);
+  require(barbell.solve() == 1, "simple blossom reuse after bridge");
+  for (int u = 0; u < barbell.n; ++u) {
+    int v = barbell.match[u];
+    require(v < barbell.n && barbell.match[v] == u &&
+            find(ALL(barbell.G[u]), v) != barbell.G[u].end(),
+            "simple bridged matching validity");
+  }
+  require(barbell.solve() == 0, "simple bridge repeated solve");
+
   Matching reroute(4);
   reroute.add_edge(0, 1); // The first greedy edge must be undone.
   reroute.add_edge(0, 2); reroute.add_edge(1, 3);
@@ -54,6 +81,20 @@ int main() {
   weighted_reroute.add_edge(1, 3, 9);
   weighted_reroute.add_edge(2, 4, 9);
   check_weighted(weighted_reroute, 18, 2);
+
+  WeightGraph weighted_barbell(102);
+  for (int base : {1, 52})
+    for (int u = base; u < base + 51; ++u)
+      for (int v = u + 1; v < base + 51; ++v)
+        weighted_barbell.add_edge(u, v, 7);
+  check_weighted(weighted_barbell, 350, 50);
+  // A low-weight bridge must reroute maximum-weight seeds in both cliques.
+  weighted_barbell.add_edge(1, 52, 1);
+  check_weighted(weighted_barbell, 351, 51);
+  weighted_barbell.add_edge(1, 52, -1);
+  check_weighted(weighted_barbell, 350, 50);
+  weighted_barbell.add_edge(2, 53, 1);
+  check_weighted(weighted_barbell, 351, 51);
 
   WeightGraph cycle(601);
   for (int u = 1; u <= cycle.n; ++u)

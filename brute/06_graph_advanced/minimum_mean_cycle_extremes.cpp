@@ -97,9 +97,23 @@ int main() {
   for (int u = 0; u + 1 < N; ++u) dag[u][u + 1] = INF / N - 1;
   check(++tc, dag);
 
+  // Competing cycle lengths: huge common offset, tiny exact mean gap.
+  // A floating comparison loses this gap. All <=5-edge sums stay below INF.
+  vector<vector<ll>> close(5, vector<ll>(5, INF));
+  ll offset = INF / 6 - 10;
+  close[0][1] = offset, close[1][0] = offset + 1;
+  close[2][3] = offset, close[3][4] = offset;
+  close[4][2] = offset + 1;
+  check(++tc, close);
+  for (auto &row : close) for (ll &weight : row)
+    if (weight != INF) weight = -weight;
+  check(++tc, close);
+
   // The comparison helper must not overflow even for extreme numerators.
   vector<pll> fractions = {{LLONG_MIN, 1}, {LLONG_MAX, 1},
-      {LLONG_MIN, INT_MAX}, {LLONG_MAX, INT_MAX}, {0, 1}, {-1, 2}, {1, 2}};
+      {LLONG_MIN, INT_MAX}, {LLONG_MAX, INT_MAX},
+      {LLONG_MIN, LLONG_MAX}, {LLONG_MAX, LLONG_MAX},
+      {LLONG_MAX - 1, LLONG_MAX}, {0, 1}, {-1, 2}, {1, 2}};
   for (pll a : fractions) for (pll b : fractions)
     if (MinimumMeanCycle::less_frac(a, b) !=
         (i128(a.first) * b.second < i128(b.first) * a.second))

@@ -115,6 +115,21 @@ int main() {
   check_pair({{-huge,huge},{0,0},{huge,huge}});
   check_pair({{-huge,0},{0,0},{huge,0},{huge,0}});
   check_pair({{0,huge},{tiny,huge},{2*tiny,huge}});
+  // Every length-five sequence on a 2x3 grid: ties, duplicates, x-only
+  // sorting, and every nonempty inclusive subrange.
+  for (int code=0;code<7776;++code) {
+    vector<Point> points;
+    int v=code;
+    for (int i=0;i<5;++i,v/=6)
+      points.push_back({double(v%6/3),double(v%3-1)});
+    for (int l=0;l<5;++l) for (int r=l;r<5;++r)
+      check_pair(points,l,r,true);
+  }
+  for (double step : {nextafter(1.0,0.0),1.0,nextafter(1.0,INFINITY)}) {
+    // The best pair lies across an eviction/y-window boundary.
+    check_pair({{0,0},{0,1},{step,0},{step,1},{2*step,0}},0,-2,true);
+    check_pair({{0,0},{0,1},{0.25,step},{0.5,step/2},{0.75,step/2}});
+  }
   for (auto poly : vector<vector<Point>>{
     {}, {{1, 2}}, {{0, 0}, {3, 4}}, {{0, 0}, {1, 1}, {2, 2}, {3, 3}},
     {{0, 0}, {1, 0}, {2, 0}, {2, 1}, {2, 2}, {1, 2}, {0, 2}, {0, 1}},

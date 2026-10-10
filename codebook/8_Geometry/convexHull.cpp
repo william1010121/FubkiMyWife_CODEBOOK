@@ -2,7 +2,7 @@ bool operator<(const P &a, const P &b) {
   return a.x == b.x ? a.y < b.y : a.x < b.x; }
 bool operator>(const P &a, const P &b) { return b < a; }
 double crx(P a, P b, P c) { return (b - a) ^ (c - a); }
-// CCW hull; drops collinear points. O(n log n).
+// CCW; drops collinear points. O(n log n); reliable cross/dot signs.
 vector<P> convex(vector<P> ps) {
   if (SZ(ps) < 2) return ps;
   sort(ALL(ps));
@@ -25,7 +25,7 @@ P isLL(P p1, P p2, P q1, P q2) { // Nonparallel lines.
   double a = crx(q1, q2, p1), b = -crx(q1, q2, p2);
   return (p1 * b + p2 * a) / (a + b);
 }
-struct CH { // Strictly convex CCW hull, n >= 3; queries O(log n).
+struct CH { // Strictly convex CCW, n>=3; reliable eps tests; O(log n).
   int n;
   vector<P> p, u, d;
   CH() {}

@@ -113,6 +113,21 @@ int main() {
   }
 
   mt19937 local(0x14EDE6A);
+  // Relabeled overlapping odd cycles; attaching leaves can force the
+  // search to open contracted cycles instead of retaining greedy pairs.
+  for (int trial = 0; trial < 200; ++trial) {
+    auto a = empty_graph(16);
+    vector<int> order(16);
+    iota(order.begin(), order.end(), 0);
+    shuffle(order.begin(), order.end(), local);
+    for (int u = 0; u < 13; ++u) {
+      add(a, order[u], order[(u + 1) % 13]);
+      if (u % 2 == 0) add(a, order[u], order[(u + 3) % 13]);
+    }
+    for (int u = 13; u < 16; ++u)
+      add(a, order[u], order[local() % 13]);
+    check(a, tc++, "relabeled-overlapping-blossoms", local, true);
+  }
   for (int z = 0; z < 1200; ++z) {
     int n = 1 + local() % 14;
     int mode = z % 6;

@@ -1,6 +1,6 @@
-struct Poly { // Prime-field mint with canonical .v; 1<=size<=P.
-  mint base; // f(base+i)=poly[i]; inegfac[i]=(-1)^i/i!
-  vector<mint> poly; // ifac, inegfac precomputed through size-1.
+struct Poly { // Prime-field mint, canonical .v; 1<=n=size<=P.
+  mint base; // f(base+i)=poly[i], deg(f)<n; precompute tables to n-1.
+  vector<mint> poly; // ifac[i]=1/i!, inegfac[i]=(-1)^i/i!
   Poly(mint b = 0, mint x = 0): base(b), poly(1, x) {}
   mint get_val(const mint &x) { // O(n) time/space
     int n = SZ(poly); mint t = x - base, rt = 0, suf = 1;

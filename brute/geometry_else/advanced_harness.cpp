@@ -181,6 +181,42 @@ int main() {
     for (int w=0;w<=1;++w) cube.p[z++]={x,y,w};
   cube();
   req(cube.faces()==6, "3D cube coplanar faces");
+  // Every subset of a skewed cube, shuffled to exercise simplex selection.
+  static convex3D subset;
+  mt19937 subset_rng(861257);
+  for (int mask=0;mask<256;++mask) {
+    vector<P> points;
+    for (int i=0;i<8;++i) if (mask>>i&1) {
+      int x=i&1,y=(i>>1)&1,z=i>>2;
+      points.push_back({double(1024+16*(2*x+y)),
+                        double(-2048+16*(y+z)),
+                        double(4096+16*(z+x))});
+    }
+    for (int order=0;order<8;++order) {
+      shuffle(points.begin(),points.end(),subset_rng);
+      subset.n=points.size(); subset.m=0;
+      copy(points.begin(),points.end(),subset.p); subset();
+      check_3d(subset);
+      int count=subset.faces();
+      req(subset.faces()==count,"3D repeated facet query");
+      for (int i=0;i<subset.m;++i) {
+        auto t=subset.f[i];
+        for (auto e:{pair{t.a,t.b},pair{t.b,t.c},pair{t.c,t.a}})
+          req(subset.id[e.first][e.second]==i,"3D subset edge indices");
+      }
+    }
+  }
+  // Thin unimodular tetrahedron: exact nonzero volume is only 1/6.
+  // All 24 insertion orders, with large, almost parallel integer vectors.
+  vector<P> thin{{0,0,0},{1000000,999999,999999},
+                 {1000001,1000000,1000000},{1000000,999999,1000000}};
+  array<int,4> tetra_order{0,1,2,3};
+  do {
+    subset.n=4; subset.m=0;
+    for (int i=0;i<4;++i) subset.p[i]=thin[tetra_order[i]];
+    subset(); check_3d(subset);
+    req(subset.m==4 && subset.faces()==4,"3D determinant-one tetrahedron");
+  } while (next_permutation(tetra_order.begin(),tetra_order.end()));
   // Cyclic polytope: 2n-4 final faces but >8*1010 created faces.
   static convex3D curve;
   curve.n=200; curve.m=0;

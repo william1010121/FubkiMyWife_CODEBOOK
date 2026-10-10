@@ -105,8 +105,47 @@ static void int_boundaries() {
   check_all(grid, a, 2, 2, "int-boundary-cancel");
 }
 
+// Pushing either 1D tree must preserve the outer retained-lazy invariant.
+static void push_inner(Seg2D::Node *o, int l, int r) {
+  if (!o) return;
+  push_all(o->sum, o->sum.root, 0, o->sum.n);
+  push_all(o->lazy, o->lazy.root, 0, o->lazy.n);
+  if (r - l == 1) return;
+  int m = l + (r - l) / 2;
+  push_inner(o->l, l, m), push_inner(o->r, m, r);
+}
+
+static void paired_rectangles() {
+  // Every pair of nonempty rectangles, with both update orders/signs.
+  for (auto [n, m] : {pair{2, 3}, pair{3, 2}}) {
+    vector<array<int, 4>> rectangles;
+    for (int l = 0; l < n; ++l)
+      for (int r = l + 1; r <= n; ++r)
+        for (int a = 0; a < m; ++a)
+          for (int b = a + 1; b <= m; ++b)
+            rectangles.push_back({l, r, a, b});
+    for (auto first : rectangles) for (auto second : rectangles) {
+      Seg2D s(n, m);
+      vector<vector<int>> a(n, vector<int>(m));
+      auto add = [&](array<int, 4> q, int v) {
+        auto [xl, xr, yl, yr] = q;
+        s.update(xl, xr, yl, yr, v);
+        for (int x = xl; x < xr; ++x)
+          for (int y = yl; y < yr; ++y) a[x][y] += v;
+        check_all(s, a, n, m, "paired-before-push");
+        push_inner(s.root, 0, n);
+        check_all(s, a, n, m, "paired-after-push");
+      };
+      add(first, 11), add(second, -13);
+      add(first, -11), add(second, 13);
+      assert(s.query(0, n, 0, m) == 0);
+    }
+  }
+}
+
 int main() {
   int_boundaries();
+  paired_rectangles();
   mt19937 rng(0x2D5E2D);
   mt19937 check_rng(0x2D57E55);
   // Zero additions on wide domains must remain allocation-free.

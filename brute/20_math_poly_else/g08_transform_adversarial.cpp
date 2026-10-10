@@ -40,6 +40,37 @@ int main() {
       if (b != dft(a, inv)) abort();
     }
   }
+  // Every impulse location exposes DIF permutation and inverse scaling.
+  for (int n : {1, 2, 8, 64, 128}) for (int at = 0; at < n; ++at) {
+    vector<ll> a(n); a[at] = mod - 1;
+    for (bool inv : {false, true}) {
+      auto b = a; ntt_case::ntt(b, inv);
+      if (b != dft(a, inv)) abort();
+    }
+  }
+  for (int n : {256, 512}) {
+    vector<ll> a(n);
+    for (auto &x : a) x = rng() % mod;
+    for (bool inv : {false, true}) {
+      auto b = a; ntt_case::ntt(b, inv);
+      if (b != dft(a, inv)) abort();
+    }
+  }
+  // Independent long-double complex DFT at stage-root reuse boundaries.
+  for (int n : {64, 128}) for (bool inv : {false, true}) {
+    vector<fft_case::cd> a(n);
+    for (auto &x : a) x = {double(int(rng() % 2001) - 1000),
+                          double(int(rng() % 2001) - 1000)};
+    auto got = a; fft_case::fft(got, inv);
+    for (int k = 0; k < n; ++k) {
+      complex<long double> want = 0;
+      for (int j = 0; j < n; ++j)
+        want += complex<long double>(a[j]) * polar(1.L,
+          2 * acosl(-1.L) * j * k / n * (inv ? -1 : 1));
+      if (inv) want /= n;
+      if (abs(complex<long double>(got[k]) - want) > 1e-8L) abort();
+    }
+  }
   for (ll x : {0LL, 1LL, mod - 1})
     for (ll e : {0LL, 1LL, 2LL, LLONG_MAX})
       for (ll acc : {0LL, 1LL, mod - 1})
@@ -129,6 +160,14 @@ int main() {
   int one = 1, out;
   fwt_case::subset_convolution(&minimum[1], &one, &out, 0);
   if (out != INT_MIN) abort();
+  // Full scratch/rank limit: disjoint impulse union has exactly one term.
+  int n = 1 << fwt_case::N;
+  vector<int> a(n), b(n), c(n);
+  int left = (1 << 10) - 1, right = (n - 1) ^ left;
+  a[left] = -1; b[right] = 1;
+  fwt_case::subset_convolution(a.data(), b.data(), c.data(), fwt_case::N);
+  for (int i = 0; i < n; ++i)
+    if (c[i] != (i == n - 1 ? -1 : 0)) abort();
   cout << "g08_transform_adversarial: PASS independent NTT DFT, "
           "2^23 boundary, signed FFT differences, FWT aliases/extremes\n";
 }

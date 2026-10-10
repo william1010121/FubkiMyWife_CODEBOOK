@@ -1,5 +1,5 @@
 vector<int> vG[N]; int top, st[N]; // rooted tree: LCA, preorder dfn, dep
-void insert(int u) { // top=-1; distinct keys in preorder; IDs [0,N)
+void insert(int u) { // initially top=-1; distinct preorder keys [0,N)
   if (top == -1) { st[++top] = u; return; }
   int p = LCA(st[top], u);
   while (top >= 1 && dep[st[top - 1]] >= dep[p])

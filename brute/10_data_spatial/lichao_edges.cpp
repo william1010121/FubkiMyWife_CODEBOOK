@@ -61,6 +61,27 @@ int main() {
                L(-LLONG_MAX / 2, LLONG_MAX / 2, 1)},
            "large-midpoint-tie");
 
+  // Exact endpoint/midpoint ties and one-integer wins, in every order.
+  // Large slopes stress products separately from intercept addition.
+  for (int n = 2; n <= 33; ++n)
+    for (int pivot : {0, n / 2, n - 1})
+      for (int delta : {-1, 0, 1}) {
+        ll slope = LLONG_MAX / (8LL * n);
+        vector<L> lines = {
+          L(0, 0, 0), L(slope, -slope * pivot + delta, 0),
+          L(-slope, slope * pivot + delta, 0),
+          L(2 * slope, -2 * slope * (n - 1) + 1, 0)
+        };
+        vector<int> order = {0, 1, 2, 3};
+        do {
+          vector<L> permuted;
+          for (int i : order) permuted.push_back(lines[i]);
+          // Reinsert a discarded or retained line after replacements.
+          permuted.push_back(lines[order.front()]);
+          run_case(n, permuted, "endpoint-pruning-permutations");
+        } while (next_permutation(order.begin(), order.end()));
+      }
+
   // Equal slopes need only the best intercept, even on a wide domain.
   {
     const int n = 1 << 20;

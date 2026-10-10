@@ -11,7 +11,7 @@ vector<int> rotatingSweepLineOrder(const vector<pair<int,int>> &ps) {
     line.push_back({i, j, x, y});
   }
   sort(line.begin(), line.end(), [](const Event &a, const Event &b) {
-    if (!a.x || !b.x) return !a.x && b.x;
+    if (!a.x || !b.x) return a.x && !b.x; // Vertical events last.
     return (__int128)a.y * b.x < (__int128)b.y * a.x;
   });
   iota(id.begin(), id.end(), 0);

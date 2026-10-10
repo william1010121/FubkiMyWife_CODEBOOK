@@ -433,12 +433,271 @@ static void test_circulation() {
   }
 }
 
+
+// Round 8: insertion-order adversaries and heterogeneous capacity bits.
+static void test_order_matching() {
+  mt19937 rng(80801);
+  for (int tc = 0; tc < 500; ++tc) {
+    int l = tc % 9, r = tc / 9 % 9;
+    vector<pair<int, int>> edges;
+    vector<int> adj(l);
+    for (int u = 0; u < l; ++u) for (int v = 0; v < r; ++v)
+      if (rng() % 3) {
+        adj[u] |= 1 << v;
+        edges.push_back({u, v}), edges.push_back({u, v});
+      }
+    vector<int> dp(1 << r, -1); dp[0] = 0;
+    for (int u = 0; u < l; ++u) {
+      auto next = dp;
+      for (int mask = 0; mask < (1 << r); ++mask) if (dp[mask] >= 0)
+        for (int v = 0; v < r; ++v)
+          if ((adj[u] >> v & 1) && !(mask >> v & 1))
+            next[mask | (1 << v)] = dp[mask] + 1;
+      dp.swap(next);
+    }
+    int want = *max_element(dp.begin(), dp.end());
+    for (int order = 0; order < 3; ++order) {
+      shuffle(edges.begin(), edges.end(), rng);
+      bipartite::Bipartite_Matching bm; bm.init(l, r);
+      for (auto [u, v] : edges) bm.add_edge(u, v);
+      for (int repeat = 0; repeat < 2; ++repeat) {
+        require(bm.matching() == want, "HK shuffled duplicate edges");
+        int count = 0;
+        for (int u = 0; u < l; ++u) if (bm.mp[u] >= 0) {
+          int v = bm.mp[u]; ++count;
+          require(v < r && (adj[u] >> v & 1) && bm.mq[v] == u,
+                  "HK shuffled inverse/edge");
+        }
+        require(count == want, "HK shuffled matching cardinality");
+      }
+    }
+  }
+  for (int n = 1; n <= 10; ++n) for (int tc = 0; tc < 30; ++tc) {
+    assignment::KM km; km.init(n);
+    vector<int> perm(n); iota(perm.begin(), perm.end(), 0);
+    shuffle(perm.begin(), perm.end(), rng);
+    ll big = assignment::INF / (2 * n) - 1;
+    vector<vector<ll>> w(n, vector<ll>(n, -assignment::INF));
+    vector<pair<int, int>> edges;
+    for (int u = 0; u < n; ++u) for (int v = 0; v < n; ++v)
+      if (v == perm[u] || rng() % 4 == 0) {
+        w[u][v] = (int(rng() % 3) - 1) * big;
+        edges.push_back({u, v});
+      }
+    shuffle(edges.begin(), edges.end(), rng);
+    for (auto [u, v] : edges) {
+      km.add_edge(u, v, -w[u][v]); // Last write must win.
+      km.add_edge(u, v, w[u][v]);
+    }
+    const Wide absent = -(Wide(1) << 100);
+    vector<Wide> dp(1 << n, absent); dp[0] = 0;
+    for (int mask = 0; mask + 1 < (1 << n); ++mask) {
+      int u = popcount((unsigned)mask);
+      if (dp[mask] == absent) continue;
+      for (int v = 0; v < n; ++v)
+        if (!(mask >> v & 1) && w[u][v] != -assignment::INF)
+          dp[mask | (1 << v)] = max(dp[mask | (1 << v)],
+                                   dp[mask] + w[u][v]);
+    }
+    for (int repeat = 0; repeat < 2; ++repeat) {
+      require(km.solve() == dp.back(), "KM off-diagonal perfect graph");
+      Wide total = 0;
+      for (int u = 0; u < n; ++u) {
+        int v = km.fl[u];
+        require(v >= 0 && v < n && km.fr[v] == u &&
+                    w[u][v] != -assignment::INF,
+                "KM shuffled inverse/nonmissing");
+        total += w[u][v];
+      }
+      require(total == dp.back(), "KM shuffled weight");
+    }
+  }
+}
+
+static void test_order_cuts() {
+  mt19937 rng(80802);
+  for (int tc = 0; tc < 160; ++tc) {
+    int n = 2 + tc % 7;
+    vector<vector<int>> w(n, vector<int>(n));
+    for (int u = 0; u < n; ++u) for (int v = u + 1; v < n; ++v)
+      w[u][v] = w[v][u] = rng() % 4;
+    ll largest = 0;
+    for (int mask = 1; mask + 1 < (1 << n); ++mask) {
+      ll cut = 0;
+      for (int u = 0; u < n; ++u) for (int v = u + 1; v < n; ++v)
+        if ((mask >> u & 1) != (mask >> v & 1)) cut += w[u][v];
+      largest = max(largest, cut);
+    }
+    int scale = largest ? INT_MAX / largest : 1;
+    vector<tuple<int, int, int>> edges;
+    for (int u = 0; u < n; ++u) for (int v = u + 1; v < n; ++v) {
+      w[u][v] *= scale, w[v][u] = w[u][v];
+      int half = w[u][v] / 2;
+      edges.push_back({u, v, half});
+      edges.push_back({v, u, w[u][v] - half});
+    }
+    for (int order = 0; order < 3; ++order) {
+      shuffle(edges.begin(), edges.end(), rng);
+      globalcut::sw.init(n), cuttree::Dinic.init(n);
+      for (auto [u, v, cap] : edges) {
+        globalcut::sw.addEdge(u, v, cap);
+        cuttree::Dinic.add_edge(u, v, cap);
+        cuttree::Dinic.add_edge(v, u, cap);
+      }
+      require(globalcut::sw.solve(n) == cut_oracle(w),
+              "SW shuffled parallel near-int cuts");
+      cuttree::GomoryHu(n);
+      for (int u = 0; u < n; ++u) for (int v = u + 1; v < n; ++v)
+        require(tree_cut(n, u, v) == cut_oracle(w, u, v),
+                "GH shuffled parallel pair cuts");
+    }
+  }
+}
+
+static void test_order_flows() {
+  mt19937 rng(80803);
+  for (int tc = 0; tc < 500; ++tc) {
+    int n = 2 + tc % 4, m = tc % 9;
+    vector<int> potential(n);
+    for (int &x : potential) x = int(rng() % 7) - 3;
+    vector<CostArc> arcs;
+    vector<BoundArc> bounds;
+    for (int i = 0; i < m; ++i) {
+      int u = rng() % n, v = rng() % n, cap = rng() % 3;
+      // Nonnegative reduced costs, including many zero-cost cycles.
+      arcs.push_back({u, v, cap,
+                     potential[v] - potential[u] + ll(rng() % 2)});
+      bounds.push_back({u, v, int(rng() % (cap + 1)), cap});
+    }
+    vector<int> bal(n);
+    int best_flow = -1, maximum = -1;
+    Wide best_cost = 0;
+    bool feasible = false;
+    function<void(int, Wide, bool)> visit =
+        [&](int at, Wide cost, bool bounded_mode) {
+      if (at == m) {
+        if (bounded_mode)
+          feasible |= all_of(bal.begin(), bal.end(),
+                             [](int x) { return x == 0; });
+        if (bal[0] < 0 || bal.back() != -bal[0] ||
+            any_of(bal.begin() + 1, bal.end() - 1,
+                   [](int x) { return x != 0; })) return;
+        if (bounded_mode) maximum = max(maximum, bal[0]);
+        else if (bal[0] > best_flow ||
+                 (bal[0] == best_flow && cost < best_cost))
+          best_flow = bal[0], best_cost = cost;
+        return;
+      }
+      const auto &e = arcs[at];
+      int lower = bounded_mode ? bounds[at].lo : 0;
+      for (int f = lower; f <= e.cap; ++f) {
+        bal[e.u] += f, bal[e.v] -= f;
+        visit(at + 1, cost + Wide(f) * e.cost, bounded_mode);
+        bal[e.u] -= f, bal[e.v] += f;
+      }
+    };
+    visit(0, 0, false), visit(0, 0, true);
+    int total = 0;
+    for (auto e : bounds) total += e.hi;
+    int bound_scale = total ? INT_MAX / total : 1;
+    for (auto &e : bounds) e.lo *= bound_scale, e.hi *= bound_scale;
+    for (int order = 0; order < 3; ++order) {
+      shuffle(bounds.begin(), bounds.end(), rng);
+      check_bounded(n, bounds, feasible,
+                    maximum < 0 ? -1 : maximum * bound_scale);
+      shuffle(arcs.begin(), arcs.end(), rng);
+      for (bool neg : {false, true}) {
+        costflow::MinCostMaxFlow mf; mf.init(n);
+        ll scale = 1LL << 30, weight = 1LL << 20;
+        vector<pair<int, int>> refs;
+        for (auto e : arcs) {
+          refs.push_back({e.u, SZ(mf.G[e.u])});
+          mf.add_edge(e.u, e.v, e.cap * scale, e.cost * weight);
+        }
+        ll flow, cost;
+        mf.solve(0, n - 1, flow, cost, neg);
+        require(flow == best_flow * scale &&
+                    Wide(cost) == best_cost * scale * weight,
+                "MCMF scaled zero-cycle exhaustive oracle");
+        vector<Wide> balance(n);
+        Wide actual_cost = 0;
+        for (auto [u, id] : refs) {
+          const auto &e = mf.G[u][id], &rev = mf.G[e.to][e.rev];
+          require(0 <= e.flow && e.flow <= e.cap &&
+                      rev.to == u && rev.rev == id &&
+                      rev.flow == -e.flow,
+                  "MCMF shuffled flow/reverse bounds");
+          balance[u] += e.flow, balance[e.to] -= e.flow;
+          actual_cost += Wide(e.flow) * e.cost;
+        }
+        for (int u = 0; u < n; ++u)
+          require(balance[u] == (u == 0 ? flow :
+                                 u == n - 1 ? -flow : 0),
+                  "MCMF shuffled conservation");
+        require(actual_cost == cost, "MCMF shuffled actual cost");
+        mf.solve(0, n - 1, flow, cost, neg);
+        require(flow == 0 && cost == 0, "MCMF shuffled exhausted");
+      }
+    }
+  }
+}
+
+static void test_order_circulation() {
+  mt19937 rng(80804);
+  for (int tc = 0; tc < 500; ++tc) {
+    int n = 1 + tc % 5, m = tc % 8;
+    vector<CostArc> arcs;
+    for (int i = 0; i < m; ++i)
+      arcs.push_back({int(rng() % n), int(rng() % n),
+                      ll(rng() % 5), ll(rng() % 11) - 5});
+    vector<int> bal(n);
+    Wide best = 0;
+    function<void(int, Wide)> visit = [&](int at, Wide cost) {
+      if (at == m) {
+        if (all_of(bal.begin(), bal.end(), [](int x) { return x == 0; }))
+          best = min(best, cost);
+        return;
+      }
+      const auto &e = arcs[at];
+      for (int f = 0; f <= e.cap; ++f) {
+        bal[e.u] += f, bal[e.v] -= f;
+        visit(at + 1, cost + Wide(f) * e.cost);
+        bal[e.u] -= f, bal[e.v] += f;
+      }
+    };
+    visit(0, 0);
+    for (int order = 0; order < 3; ++order) {
+      shuffle(arcs.begin(), arcs.end(), rng);
+      require(run_circulation(n, arcs) == best,
+              "circulation shuffled heterogeneous bits");
+      auto scaled = arcs;
+      for (auto &e : scaled) e.cap <<= 40;
+      require(run_circulation(n, scaled) == best * (1LL << 40),
+              "circulation shifted heterogeneous bits");
+    }
+  }
+  for (int bit : {1, 10, 31, 60, 62}) {
+    ll cap = (1LL << bit) - 1;
+    vector<CostArc> arcs = {{0, 1, cap, -1}, {1, 2, cap - 1, 0},
+                           {2, 0, cap, 0}, {1, 1, cap, 1}};
+    for (int order = 0; order < 6; ++order) {
+      shuffle(arcs.begin(), arcs.end(), rng);
+      require(run_circulation(3, arcs) == -(cap - 1),
+              "circulation unequal negative ring high bits");
+    }
+  }
+}
+
 int main(int argc, char **argv) {
   vector<pair<string, void (*)()>> suites = {
       {"bipartite", test_bipartite}, {"KM", test_assignment},
       {"MCMF", test_costflow}, {"SW", test_globalcut},
       {"bounded", test_bounded}, {"GH", test_cuttree},
-      {"circulation", test_circulation}};
+      {"circulation", test_circulation},
+      {"order_matching", test_order_matching},
+      {"order_cuts", test_order_cuts},
+      {"order_flows", test_order_flows},
+      {"order_circulation", test_order_circulation}};
   for (auto [name, test] : suites) if (argc == 1 || argv[1] == name) {
     test();
     cout << "PASS round5 " << name << '\n';

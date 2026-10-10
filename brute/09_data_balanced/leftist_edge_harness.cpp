@@ -182,7 +182,39 @@ static void integer_extremes() {
     drain(h, ref);
   }
 }
+static void tournament_merges() {
+  // Merge heaps of comparable size, including equal roots and signed sums.
+  vector<node *> heaps;
+  multiset<ll> ref;
+  for (int i = 0; i < 4096; ++i) {
+    ll x = (i % 7 - 3) * 1000000000000LL;
+    heaps.push_back(new node(x)), ref.insert(x);
+  }
+  while (heaps.size() > 1) {
+    vector<node *> next;
+    for (size_t i = 0; i < heaps.size(); i += 2) {
+      node *h = merge(heaps[i], heaps[i + 1]);
+      audit(h);
+      next.push_back(h);
+    }
+    heaps.swap(next);
+  }
+  node *h = heaps[0];
+  check_heap(h, ref);
+  // Collect every node once before pop starts deleting roots.
+  set<node *> nodes;
+  vector<node *> queue{h};
+  for (size_t i = 0; i < queue.size(); ++i) {
+    node *p = queue[i];
+    CHECK(nodes.insert(p).second);
+    if (p->l) queue.push_back(p->l);
+    if (p->r) queue.push_back(p->r);
+  }
+  CHECK(nodes.size() == ref.size());
+  drain(h, ref);
+}
 int main() {
+  tournament_merges();
   integer_extremes();
   deterministic_edges();
   array<int, 5> ops{};

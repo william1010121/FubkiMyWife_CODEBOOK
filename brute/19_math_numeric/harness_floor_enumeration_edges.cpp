@@ -91,6 +91,10 @@ int main() {
       2147483646};
   for (int n : selected) check(n);
 
+  // The division shortcut changes branch at perfect-square boundaries.
+  for (int k : {1,2,3,31,32,1000,32767,46339,46340})
+    for (int delta : {-1,0,1}) check(k*k+delta);
+
   mt19937 rng(190019);
   for (int tc = 0; tc < 250; ++tc)
     check(1 + static_cast<int>(rng() % 1000000000u));

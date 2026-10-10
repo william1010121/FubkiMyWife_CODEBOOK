@@ -39,7 +39,28 @@ static void large_frequencies() {
     }
   }
 }
+static void incremental_updates() {
+  mt19937 rng(0xB178);
+  vector<int> freq(N + 1);
+  fill(begin(bit), end(bit), 0);
+  int total = 0;
+  for (int step = 0; step < 20000; ++step) {
+    int index = 1 + rng() % N;
+    int value = step % 3 ? rng() % 1000000 : 0;
+    int delta = value - freq[index];
+    freq[index] = value, total += delta;
+    for (int j = index; j <= N; j += j & -j) bit[j] += delta;
+    if (!total) continue; // Empty multiset has no valid rank query.
+    for (int k : {1, total, int(1 + rng() % total)}) {
+      int prefix = 0, want = 0;
+      while (prefix < k) prefix += freq[++want];
+      if (query_kth(k) != want)
+        throw runtime_error("BIT mixed positive/negative updates");
+    }
+  }
+}
 int main() {
+  incremental_updates();
   large_frequencies();
   vector<int> freq(N + 1);
   for (int i = 1; i <= N; ++i) {

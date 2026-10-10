@@ -60,6 +60,21 @@ int main() {
     check(string(1, char(c))); check(string(7, char(c))); cases += 2;
   }
 
+  for (const string &input : words(string({'%', char(0), char(255)}), 8))
+    check(input), ++cases;
+  // Break a periodic box at its prefix, middle and right boundary.
+  for (int n : {31, 127, 511, 4096})
+    for (string unit : {"a", "ab", "abacaba"}) {
+      string input;
+      while ((int)input.size() < n) input += unit;
+      input.resize(n);
+      check(input); ++cases;
+      for (int at : {0, 1, n / 2 - 1, n / 2, n - 2, n - 1}) {
+        string changed = input; changed[at] = '!';
+        check(changed); ++cases;
+      }
+    }
+
   mt19937 rng(0x5A56414Cu);
   for (int tc = 0; tc < 3000; ++tc) {
     check(random_word(rng, "abc", rng() % 520));

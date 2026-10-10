@@ -95,6 +95,23 @@ int main() {
     fail("large-order two-window prefix");
   ++cases;
   dbs.solve(INT_MAX, 0, 1, nullptr), ++cases;
+
+  // Cut just before/after necklace boundaries and cyclic zero padding.
+  for (auto [alphabet, order] :
+       {pair{2, 9}, pair{3, 6}, pair{5, 4}, pair{11, 3}}) {
+    int total = power(alphabet, order);
+    vector<int> full(total + order - 1);
+    dbs.solve(alphabet, order, total, full.data());
+    for (int k : {1, 2, order - 1, order, order + 1,
+                  total - order, total - 1, total}) {
+      check(alphabet, order, k), ++cases;
+      vector<int> prefix(k + order - 1, -9);
+      fill_n(dbs.buf, MAXC * MAXN, -7);
+      dbs.solve(alphabet, order, k, prefix.data());
+      if (!equal(prefix.begin(), prefix.end(), full.begin()))
+        fail("truncated output differs from complete prefix");
+    }
+  }
   cout << "PASS de-bruijn-edge cases=" << cases
        << " oracle=all-linear-window-uniqueness\n";
 }

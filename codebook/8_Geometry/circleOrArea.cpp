@@ -17,7 +17,7 @@ void AppendCoverSegment(C &a, C &b, vector<pair<double, double>> &res) {
 vector<pair<double, double>> CoverSegment(C &a, C &b) {
   vector<pair<double, double>> v; AppendCoverSegment(a, b, v); return v;
 }
-// Nonnegative radii; remove duplicate circles first; O(n^2 log n).
+// r >= 0; no eps-coincident circles (d, |dr| <= eps); O(n^2 log n).
 double CircleUnionArea(vector<C> c) {
   if (!c.empty()) { P o = c[0].c; for (auto &v : c) v.c = v.c - o; }
   double a = 0; vector<pair<double, double>> s;

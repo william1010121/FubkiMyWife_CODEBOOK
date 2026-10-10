@@ -178,6 +178,26 @@ int main() {
     }
     check_bounded(A, b, c, "random phase-I case");
   }
-  cout << "simplex_boundaries: PASS 580 brute-vertex LPs + "
+  // Finite boxes give independent status checks, including infeasible LPs.
+  for (int tc = 0; tc < 800; ++tc) {
+    int m = 1 + rng() % 3;
+    vector<vector<double>> A(m, vector<double>(m));
+    vector<double> b(m, 4), c(m);
+    for (int j = 0; j < m; ++j) {
+      A[j][j] = 1; c[j] = int(rng() % 9) - 4;
+    }
+    for (int i = 0; i < 5; ++i) {
+      vector<double> row(m);
+      for (double &v : row) v = int(rng() % 7) - 3;
+      A.push_back(row); b.push_back(int(rng() % 13) - 6);
+    }
+    auto want = oracle(A, b, c);
+    if (want) check_bounded(A, b, c, "signed bounded status case");
+    else {
+      load(A, b, c);
+      if (tested::simplex(A.size(), m) != -1) abort();
+    }
+  }
+  cout << "simplex_boundaries: PASS 1380 brute-vertex LPs + "
           "zero dimensions/cycling/array limits\n";
 }

@@ -107,6 +107,19 @@ int main() {
       if (residue ? got < 0 || got >= p || 1LL * got * got % p != x
                   : got != -1) abort();
     }
+  // Enumerate all targets, including nonresidues, over more small primes.
+  for (int p = 2; p <= 257; ++p) {
+    bool prime = true;
+    for (int q = 2; q * q <= p; ++q) prime &= p % q != 0;
+    if (!prime) continue;
+    vector<bool> square(p);
+    for (int x = 0; x < p; ++x) square[x * x % p] = true;
+    for (int a = -p; a < p; ++a) {
+      int got = qr::QuadraticResidue(a, p), x = (a + p) % p;
+      if (square[x] ? got < 0 || got >= p || got * got % p != x
+                    : got != -1) abort();
+    }
+  }
   for (ll n : {LLONG_MIN, -100LL, -1LL, 0LL, 1LL})
     if (pc::PrimeCount(n) != 0) abort();
   const int lim = 1000000;
@@ -122,6 +135,28 @@ int main() {
       ll n = p * p * p * p + d;
       if (pc::PrimeCount(n) != pi[n]) abort();
     }
+  for (int k = 2; k * k + 1 <= lim; ++k)
+    for (int d : {-1, 0, 1})
+      if (pc::PrimeCount(k * k + d) != pi[k * k + d]) abort();
+  // Independent segmented sieve + known pi(10^13): large sqrt edges.
+  const ll top = 10000000000000LL, low = top - 12000000;
+  const int root = 3162277;
+  vector<bool> base(root + 1), segment(top - low + 1);
+  for (int p = 2; p <= root; ++p) if (!base[p]) {
+    if (1LL * p * p <= root)
+      for (int j = p * p; j <= root; j += p) base[j] = true;
+    for (ll j = (low + p - 1) / p * p; j <= top; j += p)
+      segment[j - low] = true;
+  }
+  vector<int> suffix(segment.size() + 1);
+  for (int i = int(segment.size()) - 1; i >= 0; --i)
+    suffix[i] = suffix[i + 1] + !segment[i];
+  for (int k : {root - 1, root}) for (int d : {-1, 0, 1}) {
+    ll n = 1LL * k * k + d;
+    if (n < low || n >= top) abort();
+    ll want = 346065536839LL - suffix[n - low + 1];
+    if (pc::PrimeCount(n) != want) abort();
+  }
   for (int m : {1, 2, 4, 16, 27, 81, 125, 256, 343, 625, 1024})
     for (int x = 0; x < m; ++x) {
       vector<int> first(m, -1);
@@ -133,6 +168,22 @@ int main() {
       for (int t : {0, 1 % m, m - 1, int(rng() % m)})
         if (dl::DiscreteLog(x, t, m) != first[t]) abort();
     }
+  for (int tc = 0; tc < 600; ++tc) {
+    int m = 1000 + rng() % 199001, x = rng() % m;
+    vector<int> first(m, -1), orbit;
+    for (int y = 1 % m; first[y] < 0; y = 1LL * y * x % m)
+      first[y] = orbit.size(), orbit.push_back(y);
+    int step = ceil(sqrt(m));
+    for (int k : {0, 99, 100, 101, step, 2 * step,
+                  int(orbit.size()) - 1}) {
+      int y = orbit[min(k, int(orbit.size()) - 1)];
+      if (dl::DiscreteLog(x, y, m) != first[y]) abort();
+    }
+    for (int i = 0; i < 8; ++i) {
+      int y = rng() % m;
+      if (dl::DiscreteLog(x, y, m) != first[y]) abort();
+    }
+  }
   int count = 0;
   for (int p : {2, 3, 5, 7}) {
     F::P = p;

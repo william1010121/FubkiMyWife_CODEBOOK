@@ -15,7 +15,7 @@ bool _segments_intersect(Point a, Point b, Point c, Point d) {
   return _on_segment(a, b, c) || _on_segment(a, b, d) ||
     _on_segment(c, d, a) || _on_segment(c, d, b) ||
     ((x1 > 0) != (x2 > 0) && (x3 > 0) != (x4 > 0)); }
-bool _inside_convex(Point p, Point poly[], int n) {
+bool _inside_convex(Point p, Point poly[], int n) { // Nonzero area.
   int sign = 0; for (int i = 0; i < n; ++i) {
     double c = _cross(poly[i], poly[(i + 1) % n], p);
     if (fabs(c) > 1e-10) { int s = c > 0 ? 1 : -1;
@@ -23,7 +23,7 @@ bool _inside_convex(Point p, Point poly[], int n) {
       sign = s; }
   } return true;
 }
-// Nonempty convex polygons in cyclic CW/CCW order; O(n+m) time/space.
+// Nonempty cyclic convex CW/CCW polygons (repeats OK); O(n+m) time/space.
 double TwoConvexHullMinDist(Point P[], Point Q[], int n, int m) {
   auto prepare = [&](Point p[], int n, int s) {
     vector<Point> a; a.reserve(n + 1); a.assign(p, p + n);
@@ -42,13 +42,14 @@ double TwoConvexHullMinDist(Point P[], Point Q[], int n, int m) {
   auto sum = [&](int i, int j) { return Point{
     a[i].x + b[j].x, a[i].y + b[j].y}; };
   double ans = numeric_limits<double>::infinity(), area = 0;
-  bool inside = true;
+  bool inside = true; // Edge angles must distinguish opposite directions.
+  auto half = [](Point p) { return p.y < 0 || (!p.y && p.x < 0); };
   for (int i = 0, j = 0; i < n || j < m;) {
     Point p = sum(i, j), u = a[min(i + 1, n)], v = b[min(j + 1, m)];
-    double z = _cross({0, 0}, {u.x - a[i].x, u.y - a[i].y},
-      {v.x - b[j].x, v.y - b[j].y});
-    bool az = u.x == a[i].x && u.y == a[i].y,
-      bz = v.x == b[j].x && v.y == b[j].y;
+    u.x -= a[i].x, u.y -= a[i].y, v.x -= b[j].x, v.y -= b[j].y;
+    double z = _cross({0, 0}, u, v);
+    bool az = !u.x && !u.y, bz = !v.x && !v.y;
+    if (!az && !bz && half(u) != half(v)) z = half(v) - half(u);
     bool x = i < n && (j == m || az || (!bz && z >= 0)),
       y = j < m && (i == n || bz || (!az && z <= 0));
     i += x, j += y; Point q = sum(i, j);

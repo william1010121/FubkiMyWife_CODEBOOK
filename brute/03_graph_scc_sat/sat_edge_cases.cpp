@@ -136,5 +136,28 @@ int main() {
     check(tc++, n, formula);
   }
 
+  // Signed variable renaming preserves clauses but thoroughly changes SCC
+  // discovery order. Check satisfiable equality chains and late conflicts.
+  mt19937 rename_rng(0x8025A7);
+  for (int n = 1; n <= 10; ++n) for (int rep = 0; rep < 40; ++rep) {
+    vector<int> labels(n), flip(n);
+    iota(labels.begin(), labels.end(), 0);
+    shuffle(labels.begin(), labels.end(), rename_rng);
+    for (int &f : flip) f = rename_rng() % 2;
+    auto rename = [&](int a) {
+      return labels[a % n] + ((a >= n) != bool(flip[a % n]) ? n : 0);
+    };
+    vector<Clause> formula = {{0, 0}};
+    for (int i = 1; i < n; ++i) {
+      formula.push_back({i - 1 + n, i});
+      formula.push_back({i - 1, i + n});
+    }
+    for (auto &[a, b] : formula) a = rename(a), b = rename(b);
+    shuffle(formula.begin(), formula.end(), rename_rng);
+    check(tc++, n, formula);
+    formula.push_back({rename(2 * n - 1), rename(2 * n - 1)});
+    check(tc++, n, formula);
+  }
+
   cout << "2SAT edge-case PASS " << tc << " formulas\n";
 }

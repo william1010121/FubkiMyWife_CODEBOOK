@@ -60,6 +60,32 @@ int main() {
       for (auto &row : a) for (ll &x : row) x = z % P, z /= P;
       check(a);
     }
+  P = 2;
+  for (int mask = 0; mask < (1 << 9); ++mask) {
+    vector<vector<ll>> a(3, vector<ll>(3));
+    for (int i = 0; i < 9; ++i) a[i / 3][i % 3] = mask >> i & 1;
+    check(a);
+  }
+  // Known determinant under row additions/swaps, over non-fields too.
+  for (ll modulus : {4LL, 12LL, 1000000006LL, LLONG_MAX})
+    for (int n : {8, 16}) for (int tc = 0; tc < 20; ++tc) {
+      P = modulus;
+      Matrix mat{}; mat.n = mat.m = n;
+      ll want = 1;
+      for (int i = 0; i < n; ++i) {
+        mat.M[i][i] = rng() % P;
+        want = (__int128)want * mat.M[i][i] % P;
+        for (int j = i + 1; j < n; ++j) mat.M[i][j] = rng() % P;
+      }
+      for (int k = 0; k < 80; ++k) {
+        int i = rng() % n, j = (i + 1 + rng() % (n - 1)) % n;
+        ll q = rng() % P;
+        for (int c = 0; c < n; ++c)
+          mat.M[i][c] = ((__int128)q * mat.M[j][c] + mat.M[i][c]) % P;
+        if (k & 1) mat.row_swap(i, j), want = (P - want) % P;
+      }
+      if (mat.det() != want) abort();
+    }
   // Consecutive Fibonacci pivots force a long Euclidean swap chain.
   P = LLONG_MAX;
   ll a = 1, b = 1;

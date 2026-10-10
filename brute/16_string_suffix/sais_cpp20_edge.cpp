@@ -85,6 +85,20 @@ int main() {
                 "wrapper reads exactly n symbols", vector<int>{2, 1, 2});
   cases += 2;
 
+  // Ternary LMS ties beyond the old exhaustive length-seven boundary.
+  enumerate_strings(9, 3,
+                    [&](const vector<int> &s) { check(s, cases++); });
+  // Recursive words create equal LMS prefixes at several length scales.
+  for (int n : {63, 64, 65, 255, 256, 257}) {
+    vector<int> s(n);
+    for (int i = 0; i < n; ++i) s[i] = 1 + popcount((unsigned)i) % 2;
+    check(s, cases++);
+    reverse(s.begin(), s.end());
+    check(s, cases++);
+    s[n / 2] = 3;
+    check(s, cases++);
+  }
+
   cout << "PASS SAIS-C++20 exhaustive/periodic/random cases=" << cases
        << '\n';
 }

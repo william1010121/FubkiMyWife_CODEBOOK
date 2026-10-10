@@ -77,6 +77,17 @@ static void check(const string &s, palindromic_tree &pt) {
         !is_palindrome(p, 0, (int)p.size() - 1))
       fail("palindrome node reconstruction mismatch");
   }
+  for (int v = 2; v < SZ(pt.St); ++v) {
+    int f = pt.St[v].fail;
+    if (f < 0 || f >= v || pt.St[f].len < 0)
+      fail("invalid palindrome failure link");
+    const string &p = memo[v];
+    int start = 1;
+    while (start < (int)p.size() &&
+           !is_palindrome(p, start, (int)p.size() - 1)) ++start;
+    if (memo[f] != p.substr(start))
+      fail("failure link is not the longest proper palindrome suffix");
+  }
 
   pt.count();
   for (int v = 2; v < SZ(pt.St); ++v) {
@@ -141,6 +152,20 @@ int main() {
                           string(""), string("z"), string("zaaz")})
     check(s, reused), ++cases;
   check_large(), ++cases;
+
+  // Nested palindromes create long failure chains with many letters.
+  string nested;
+  for (int depth = 0; depth < 7; ++depth) {
+    nested = nested + char('a' + depth) + nested;
+    check(nested, reused), ++cases;
+    for (int p : {0, (int)nested.size() / 2, (int)nested.size() - 1}) {
+      string t = nested;
+      t[p] = 'z';
+      check(t, reused), ++cases;
+      t.erase(p, 1);
+      check(t, reused), ++cases;
+    }
+  }
 
   mt19937 rng(0x0A17EEDu);
   for (int tc = 0; tc < 600; ++tc) {

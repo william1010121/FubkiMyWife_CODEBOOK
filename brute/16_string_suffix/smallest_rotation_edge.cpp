@@ -74,6 +74,20 @@ int main() {
   expect(mcp(long_word) == want, "large high-byte rotation");
   ++cases;
 
+  // Long tied rotations, then a mismatch at every possible byte position.
+  for (int period : {1, 2, 3, 7, 16}) {
+    string s(8 * period + 1, char(255));
+    for (int i = 0; i < (int)s.size(); ++i)
+      s[i] = char((i % period) ? 128 : 0);
+    for (int p = 0; p < (int)s.size(); ++p) {
+      string t = s;
+      t[p] = char(1);
+      check(t, cases++);
+      reverse(t.begin(), t.end());
+      check(t, cases++);
+    }
+  }
+
   cout << "PASS Smallest_Rotation exhaustive/periodic/byte/random cases="
        << cases << '\n';
   check({}, cases++);

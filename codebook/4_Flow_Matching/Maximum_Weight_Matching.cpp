@@ -1,5 +1,5 @@
-struct WeightGraph { // 1-base; loopless; O(n^3); positive edges only
-  // n >= 0; all int arithmetic (including doubled weights) must fit.
+struct WeightGraph { // Undirected, loopless; 1-base; O(n^3)
+  // n >= 0; w>0 edges only; all int arithmetic (incl. 2*w) must fit.
   struct edge { int u, v, w; }; int n, nx;
   vector<int> lab, slk, match, st, pa, S, vis;
   vector<vector<edge>> g;
@@ -130,7 +130,7 @@ struct WeightGraph { // 1-base; loopless; O(n^3); positive edges only
         if (st[b] == b && S[b] == 1 && lab[b] == 0) expand_blossom(b);
     }
   }
-  pair<ll, int> solve() {
+  pair<ll, int> solve() { // Rebuild; ties needn't maximize pair count.
     fill(ALL(match), 0), fill(ALL(st), 0); // reset blossoms
     for (int u = 0; u <= n; ++u) st[u] = flo_from[u][u] = u;
     int w_max = 0, n_matches = 0; ll tot_weight = 0;
