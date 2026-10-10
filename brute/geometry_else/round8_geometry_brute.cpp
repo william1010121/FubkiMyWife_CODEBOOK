@@ -1,6 +1,9 @@
 #include <bits/stdc++.h>
 using namespace std;
 using ll = long long;
+using pii = pair<int, int>;
+#define X first
+#define Y second
 const double eps = 1e-9, pi = acos(-1.);
 int sign(double x) { return abs(x) < eps ? 0 : (x > 0 ? 1 : -1); }
 double sq(double x) { return x * x; }

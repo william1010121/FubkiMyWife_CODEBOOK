@@ -1,11 +1,10 @@
 // Distinct points, no 3 collinear; n fits int; O(n^2 log n)/O(n^2).
-vector<int> rotatingSweepLineOrder(const vector<pair<int,int>> &ps) {
+vector<int> rotatingSweepLineOrder(const vector<pii> &ps) {
   int n = ps.size(); vector<int> id(n), pos(n);
-  struct Event { int a, b; long long x, y; };
+  struct Event { int a, b; ll x, y; };
   vector<Event> line; line.reserve(1LL * n * (n - 1) / 2);
   for (int i = 0; i < n; ++i) for (int j = i + 1; j < n; ++j) {
-    long long x = 1LL * ps[i].first - ps[j].first,
-      y = 1LL * ps[i].second - ps[j].second;
+    ll x = ll(ps[i].X) - ps[j].X, y = ll(ps[i].Y) - ps[j].Y;
     // Half-plane x>0 or x=0,y>0; vertical events sort last.
     if (x < 0 || (x == 0 && y < 0)) x = -x, y = -y;
     line.push_back({i, j, x, y});
@@ -20,6 +19,4 @@ vector<int> rotatingSweepLineOrder(const vector<pair<int,int>> &ps) {
     swap(id[pos[e.a]], id[pos[e.b]]), swap(pos[e.a], pos[e.b]);
   return id;
 }
-void rotatingSweepLine(vector<pair<int,int>> &ps) {
-  (void)rotatingSweepLineOrder(ps);
-}
+void rotatingSweepLine(vector<pii> &ps) { rotatingSweepLineOrder(ps); }

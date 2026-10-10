@@ -10,6 +10,6 @@ template<class T> vector<T> BerlekampMassey(const vector<T> &output) {
     if (grow) old.resize(SZ(me)), copy(me.begin(), me.end(), old.begin());
     me.resize(max(s, SZ(me))), me[i - f - 1] += -k;
     for (int j = 0; j < SZ(he); ++j) me[i - f + j] += he[j] * k;
-    if (grow) he = move(old), f = i, last = d;
+    if (grow) he.swap(old), f = i, last = d;
   } return me; // a[i]=sum(c[j]*a[i-j-1]); O(n^2).
 }

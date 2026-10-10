@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std;
+#define ALL(v) v.begin(), v.end()
 
 namespace tested {
 #include "../../codebook/7_Polynomial/FFT_chrislaiisme.cpp"
@@ -38,6 +39,17 @@ int main() {
   check({INT_MAX, INT_MIN, 0, INT_MAX}, {1}); ++cases;
   check({INT_MAX, INT_MIN, 0, INT_MAX}, {0, 0, 0}); ++cases;
 
+  // Same-object and equal-value squares, then a late difference.
+  mt19937 square_rng(0x16ff7);
+  for (int n : {1, 2, 3, 31, 32, 33, 127, 128, 129, 511, 2048}) {
+    vector<int> a(n);
+    for (int &x : a) x = int(square_rng() % 2001) - 1000;
+    auto b = a;
+    check(a, a); check(a, b); cases += 2;
+    ++b.back();
+    check(a, b); check(b, a); cases += 2;
+  }
+
   // Direct complex DFT checks ordering and sign, not just round trips.
   for (int n : {1, 2, 4, 8, 16, 32}) {
     vector<tested::cd> a(n);
@@ -61,5 +73,5 @@ int main() {
     }
   }
   cout << "g08_fft_precision_edges: PASS " << cases
-       << " unbalanced convolution and direct DFT cases\n";
+       << " convolution and direct DFT cases\n";
 }

@@ -1,6 +1,9 @@
 #include <bits/stdc++.h>
 using namespace std;
 using ll = long long;
+using pii = pair<int, int>;
+#define X first
+#define Y second
 #define SZ(a) ((int)(a).size())
 #define ALL(a) (a).begin(), (a).end()
 #define pb push_back

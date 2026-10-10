@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std;
+#define ALL(v) v.begin(), v.end()
 using ll = long long;
 namespace fft_test {
 #include "../../codebook/7_Polynomial/FFT_chrislaiisme.cpp"
