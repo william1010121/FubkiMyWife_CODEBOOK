@@ -7,17 +7,15 @@ struct MinCostMaxFlow {
   ll dis[N], up[N], pot[N];
   bool BellmanFord() {
     fill_n(dis, n, INF), fill_n(inq, n, 0); queue<int> q;
-    auto relax = [&](int u, ll d, ll cap, Edge *e) {
-      if (cap > 0 && dis[u] > d) {
-        dis[u] = d, up[u] = cap, past[u] = e;
-        if (!inq[u]) inq[u] = 1, q.push(u);
-      }
-    }; relax(s, 0, INF, 0);
+    dis[s] = 0, up[s] = INF, past[s] = nullptr, q.push(s), inq[s] = 1;
     while (!q.empty()) {
       int u = q.front(); q.pop(), inq[u] = 0;
-      for (auto &e : G[u]) if (e.cap > e.flow)
-        relax(e.to, dis[u] + e.cost,
-          min(up[u], e.cap - e.flow), &e);
+      for (auto &e : G[u])
+        if (e.cap > e.flow && dis[e.to] > dis[u] + e.cost) {
+          dis[e.to] = dis[u] + e.cost, past[e.to] = &e;
+          up[e.to] = min(up[u], e.cap - e.flow);
+          if (!inq[e.to]) q.push(e.to), inq[e.to] = 1;
+        }
     } return dis[t] != INF;
   }
   bool Dijkstra() {

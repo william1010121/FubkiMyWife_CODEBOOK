@@ -4,22 +4,18 @@ vector<L> tangent(C a, C b) {
   vector<L> z; double d = (a.c - b.c).abs();
   if (same(d, 0) || d + b.r < a.r) return z;
   P u = (b.c - a.c) / d;
-  auto one = [&] {
-    P i = u * a.r, j(i.y, -i.x);
-    z.emplace_back(a.c + i, a.c + i + j);
-  };
-  auto two = [&](double e, double side) {
-    double o = acos(e / d);
-    for (double t : {o, -o}) {
-      P v = u.rot(t);
-      z.emplace_back(a.c + v * a.r, b.c + v * (side * b.r));
+  for (double side : {1., -1.}) { // External, then internal.
+    bool touch = side == 1 ? same(d + b.r, a.r) :
+      same(d, a.r + b.r);
+    if (touch) { P i = u * a.r, j(i.y, -i.x);
+      z.emplace_back(a.c + i, a.c + i + j);
+      if (side == 1) break;
+    } else if (side == 1 || d > a.r + b.r) {
+      double h = (a.r - side * b.r) / d, t = sqrt(max(0., 1 - h * h));
+      for (double k : {t, -t}) { P v = u * h + P(-u.y, u.x) * k;
+        z.emplace_back(a.c + v * a.r, b.c + v * (side * b.r));
+      }
     }
-  };
-  if (same(d + b.r, a.r)) one();
-  else {
-    two(a.r - b.r, 1);
-    if (same(d, a.r + b.r)) one();
-    else if (d > a.r + b.r) two(a.r + b.r, -1);
   } return z;
 }
 vector<L> tangent(C c, P p) {

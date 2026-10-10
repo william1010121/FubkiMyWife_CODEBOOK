@@ -67,16 +67,18 @@ static void sa_stress() {
 }
 
 static void lorentz_stress() {
-  const int n = 200000;
-  main_lorentz(string(n, 'a'), 13);
-  for (int l = 1; l <= n / 2; ++l) {
-    sort(rep[l].begin(), rep[l].end());
-    int next = 13;
-    for (auto [a, b] : rep[l]) {
-      require(a == next && b >= a, "Lorentz gap/overlap");
-      next = b + 1;
+  // Odd length requires capping reverse-prefix matches at n/2.
+  for (int n : {200000, 200001}) {
+    main_lorentz(string(n, 'a'), 13);
+    for (int l = 1; l <= n / 2; ++l) {
+      sort(rep[l].begin(), rep[l].end());
+      int next = 13;
+      for (auto [a, b] : rep[l]) {
+        require(a == next && b >= a, "Lorentz gap/overlap");
+        next = b + 1;
+      }
+      require(next == 13 + n - 2*l + 1, "Lorentz uniform coverage");
     }
-    require(next == 13 + n - 2*l + 1, "Lorentz uniform coverage");
   }
   main_lorentz("ab");
   for (const auto &v : rep) require(v.empty(), "Lorentz reset");
@@ -92,7 +94,7 @@ int main() {
     };
     run("AC 120002 nodes", ac_stress);
     run("SAIS 200000 symbols x2", sa_stress);
-    run("MainLorentz 200000 bytes", lorentz_stress);
+    run("MainLorentz 200000/200001 bytes", lorentz_stress);
   } catch (const exception &e) {
     cerr << "FAIL g06 stress: " << e.what() << '\n'; return 1;
   }

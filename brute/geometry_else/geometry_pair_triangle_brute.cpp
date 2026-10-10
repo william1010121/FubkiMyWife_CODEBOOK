@@ -30,9 +30,10 @@ static long double cross(Point o, Point a, Point b) {
   return ((long double)a.x - o.x) * ((long double)b.y - o.y)
     - ((long double)a.y - o.y) * ((long double)b.x - o.x);
 }
-static void check_pair(vector<Point> points, int l = 0, int r = -2) {
-  sort(points.begin(), points.end(), [](Point a, Point b) {
-    return tie(a.x, a.y) < tie(b.x, b.y);
+static void check_pair(vector<Point> points, int l = 0, int r = -2,
+                       bool x_only = false) {
+  stable_sort(points.begin(), points.end(), [&](Point a, Point b) {
+    return x_only ? a.x < b.x : tie(a.x, a.y) < tie(b.x, b.y);
   });
   if (r == -2) r = (int)points.size() - 1;
   p = points;
@@ -40,7 +41,10 @@ static void check_pair(vector<Point> points, int l = 0, int r = -2) {
   for (int i = l; i <= r; ++i) for (int j = i + 1; j <= r; ++j)
     want = min(want, hypotl((long double)p[i].x - p[j].x,
                            (long double)p[i].y - p[j].y));
-  require(near(closest_pair(l, r), want), "closest pair brute oracle");
+  double got = closest_pair(l, r);
+  require(near(got, want), "closest pair brute oracle");
+  require(fabsl(got - want) <= 2e-12L * fabsl(want),
+          "closest pair relative error, including tiny distances");
   for (size_t i = 0; i < p.size(); ++i)
     require(p[i].x == points[i].x && p[i].y == points[i].y,
             "closest pair preserves all input points");
@@ -96,6 +100,12 @@ int main() {
     {{1e12, -1e12}, {1e12 + 1, -1e12 + 1}, {-1e12, 1e12}},
     {{3, -5}, {3, 10}, {3, 10.25}, {3, 100}},
     {{-4, 0}, {-2, 0}, {0, 0}, {2, 0}, {4, 0}}}) check_pair(points);
+  check_pair({{0, 40}, {0, 3}, {0, 10}, {0, 4}, {0, -2}},
+             0, -2, true); // Same x needs no y ordering.
+  check_pair({{0, 100}, {1, -100}, {2, 5}, {3, 5}, {4, 5}});
+  double y = 1e16;
+  check_pair({{0, y}, {1, nextafter(y, INFINITY)},
+              {2, nextafter(y, -INFINITY)}, {3, y}});
   for (auto poly : vector<vector<Point>>{
     {}, {{1, 2}}, {{0, 0}, {3, 4}}, {{0, 0}, {1, 1}, {2, 2}, {3, 3}},
     {{0, 0}, {1, 0}, {2, 0}, {2, 1}, {2, 2}, {1, 2}, {0, 2}, {0, 1}},
@@ -115,6 +125,17 @@ int main() {
                         (int(rng() % 41) - 20) * scale});
     check_pair(points);
     if (n >= 4) check_pair(points, 1, n - 2);
+  }
+  mt19937_64 fraction_rng(823173); // Preserve existing random cases.
+  for (int tc = 0; tc < 3000; ++tc) {
+    double scale = ldexp(1.0, 200 * (tc % 3 - 1));
+    vector<Point> points;
+    for (int i = 0, n = 2 + fraction_rng() % 40; i < n; ++i)
+      points.push_back({
+        (double(fraction_rng() % 1000000) / 997 - 500) * scale,
+        (double(fraction_rng() % 1000000) / 991 - 500) * scale});
+    check_pair(points);
+    if (points.size() >= 4) check_pair(points, 1, points.size() - 2);
   }
   for (int tc = 0; tc < 6000; ++tc) {
     vector<Point> points;
@@ -141,6 +162,11 @@ int main() {
   distance_calls = 0;
   require(closest_pair(0, n - 1) == 1, "large vertical closest pair");
   require(distance_calls < 64LL * n * 17, "closest pair evaluation bound");
+  for (int i = 0; i < n; ++i) p[i] = {double(i), 0};
+  distance_calls = 0;
+  require(closest_pair(0, n - 1) == 1, "large horizontal closest pair");
+  require(distance_calls < 64LL * n * 17,
+          "horizontal closest pair evaluation bound");
   vector<Point> poly(1000);
   vector<int> ids(poly.size()); iota(ids.begin(), ids.end(), 0);
   for (int i = 0; i < (int)poly.size(); ++i) {
@@ -151,6 +177,7 @@ int main() {
   double area = ConvexHullMaxTriangleArea(poly.data(), ids.data(), poly.size());
   require(area > 1 && cross_calls < 16LL * (int)poly.size() * (int)poly.size(),
           "maximum triangle quadratic evaluation bound");
-  cout << "pair/triangle PASS: 10000 pair, 6000 hull + collinear/duplicate cases; "
+  cout << "pair/triangle PASS: 13000 pair (3000 fractional), "
+       << "6000 hull + collinear/duplicate cases; "
        << "sentinels, large coordinates, subranges, input preservation and scaling\n";
 }

@@ -4,16 +4,14 @@ struct MinCostCirculation { // 0-base, O(VE * ElogC)
   ll dis[N], inq[N], n;
   void BellmanFord(int s) {
     fill_n(dis, n, INF), fill_n(inq, n, 0); queue<int> q;
-    auto relax = [&](int u, ll d, Edge *e) {
-      if (dis[u] > d) {
-        dis[u] = d, past[u] = e;
-        if (!inq[u]) inq[u] = 1, q.push(u);
-      }
-    }; relax(s, 0, 0);
+    dis[s] = 0, past[s] = nullptr, q.push(s), inq[s] = 1;
     while (!q.empty()) {
       int u = q.front(); q.pop(), inq[u] = 0;
-      for (auto &e : G[u]) if (e.cap > e.flow)
-        relax(e.to, dis[u] + e.cost, &e);
+      for (auto &e : G[u])
+        if (e.cap > e.flow && dis[e.to] > dis[u] + e.cost) {
+          dis[e.to] = dis[u] + e.cost, past[e.to] = &e;
+          if (!inq[e.to]) q.push(e.to), inq[e.to] = 1;
+        }
     }
   }
   void try_edge(Edge &cur) {

@@ -29,11 +29,9 @@ struct Cent_Dec { // 1-base; build O(n log n), modify/query O(log n)
     int mx = num + 1, c = 0;
     get_cent(u, f, mx, c, num);
     done[c] = 1, pa[c] = f, layer[c] = layer[f] + 1;
-    dis[layer[c]][c] = 0;
-    for (auto [v, w] : G[c]) if (!done[v]) {
-      int lc = cut(v, c, sz[v] > sz[c] ? num - sz[c] : sz[v]);
-      upinfo[lc] = pll(), dfs(v, c, w, c);
-    }
+    dfs(c, f, 0, c); // fill distances before cutting child components
+    for (auto [v, w] : G[c]) if (!done[v])
+      upinfo[cut(v, c, sz[v] > sz[c] ? num - sz[c] : sz[v])] = pll();
     return done[c] = 0, c;
   }
   void build() { cut(1, 0, n); }

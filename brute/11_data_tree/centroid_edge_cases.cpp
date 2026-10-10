@@ -59,6 +59,13 @@ void run_case(const string &name, int n, const vector<Edge> &edges) {
     cd.init(n);
     for (auto e : edges) cd.add_edge(e.u, e.v, e.w);
     cd.build();
+    for (int u = 1; u <= n; ++u) {
+      assert(cd.done[u] == 0);
+      for (int a = u; a; a = cd.pa[a]) {
+        assert(cd.dis[cd.layer[a]][u] == d[a][u]);
+        if (cd.pa[a]) assert(cd.layer[cd.pa[a]] + 1 == cd.layer[a]);
+      }
+    }
   };
 
   rebuild();
@@ -106,6 +113,13 @@ int main() {
   run_case("two-vertex-zero-edge", 2, {{1, 2, 0}});
   run_case("chain", 63, chain(63));
   run_case("star", 63, star(63));
+  run_case("capacity-chain", N - 1, chain(N - 1));
+  run_case("capacity-star", N - 1, star(N - 1));
+  run_case("signed-path", 5,
+           {{1, 2, -7}, {2, 3, 0}, {3, 4, 7}, {4, 5, -11}});
+  run_case("wide-signed-weights", 5,
+           {{1, 2, INT_MAX}, {2, 3, INT_MAX},
+            {3, 4, INT_MIN}, {4, 5, INT_MIN}});
 
   vector<Edge> balanced;
   for (int v = 2; v <= 63; ++v)

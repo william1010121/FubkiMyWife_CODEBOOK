@@ -1,17 +1,13 @@
-void solve(vector<int> &ret, int n) { // Append 1-based columns; O(n).
+void solve(vector<int> &ret, int n) { // n>=0; append 1-based cols; O(n).
   if (n == 2 || n == 3) return; // No solution.
+  auto offset = ret.size();
+  for (ll i = 2; i <= n; i += 2) ret.pb(i); // Evens, then odds.
+  for (ll i = 1; i <= n; i += 2) ret.pb(i);
+  auto first = ret.begin() + offset, odd = first + n / 2;
   if (n % 6 == 2) {
-    for (int i = 2; i <= n; i += 2) ret.pb(i);
-    ret.pb(3), ret.pb(1);
-    for (int i = 7; i <= n; i += 2) ret.pb(i);
-    ret.pb(5);
+    swap(odd[0], odd[1]); rotate(odd + 2, odd + 3, ret.end());
   } else if (n % 6 == 3) {
-    for (int i = 4; i <= n; i += 2) ret.pb(i);
-    ret.pb(2);
-    for (int i = 5; i <= n; i += 2) ret.pb(i);
-    ret.pb(1), ret.pb(3);
-  } else {
-    for (int i = 2; i <= n; i += 2) ret.pb(i);
-    for (int i = 1; i <= n; i += 2) ret.pb(i);
+    rotate(first, first + 1, odd);
+    rotate(odd, odd + 2, ret.end());
   }
 }

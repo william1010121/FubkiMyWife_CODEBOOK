@@ -4,18 +4,15 @@ struct C { // Nonnegative radii; all operations O(1).
 };
 vector<P> Intersect(C a, C b) {
   if (a.r > b.r) swap(a, b);
-  double d = (a.c - b.c).abs(); vector<P> p;
-  if (same(d, 0)) return p; // Coincident: no finite point list.
-  if (same(a.r + b.r, d))
-    p.push_back(a.c + (b.c - a.c) / d * a.r);
-  else if (same(d + a.r, b.r))
-    p.push_back(a.c - (b.c - a.c) / d * a.r);
-  else if (a.r + b.r > d && d + a.r >= b.r) {
-    double o = acos((sq(a.r) + sq(d) - sq(b.r)) / (2 * a.r * d));
-    P i = (b.c - a.c) / d;
-    p.push_back(a.c + i.rot(o) * a.r);
-    p.push_back(a.c + i.rot(-o) * a.r);
-  } return p;
+  double d = (a.c - b.c).abs();
+  if (same(d, 0)) return {}; // Coincident: no finite point list.
+  if (same(a.r + b.r, d)) return {a.c + (b.c - a.c) / d * a.r};
+  if (same(d + a.r, b.r)) return {a.c - (b.c - a.c) / d * a.r};
+  if (a.r + b.r <= d || d + a.r < b.r) return {};
+  double h = (sq(a.r) + sq(d) - sq(b.r)) / (2 * a.r * d);
+  P u = (b.c - a.c) / d, v = u * (a.r * h),
+    w = P(-u.y, u.x) * (a.r * sqrt(max(0., 1 - h * h)));
+  return {a.c + v + w, a.c + v - w};
 }
 double IntersectArea(C a, C b) {
   if (a.r > b.r) swap(a, b);
