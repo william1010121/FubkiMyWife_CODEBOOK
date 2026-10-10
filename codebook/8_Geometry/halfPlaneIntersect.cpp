@@ -1,6 +1,6 @@
 bool jizz(L l1, L l2, L l3) { P p = Intersect(l2, l3);
   return ((l1.pb - l1.pa) ^ (p - l1.pa)) < -eps; }
-// Exact ordering/deduplication; epsilon only for feasibility.
+// Equal directions need equal o; finite, reliable eps predicates.
 bool cmp(const L &a, const L &b) { return a.o == b.o ?
   a.c / hypot(a.a, a.b) < b.c / hypot(b.a, b.b) : a.o < b.o; }
 // Nonzero lines, left side feasible; bounded positive area. O(n log n).
@@ -19,5 +19,4 @@ vector<P> HPI(vector<L> &ls) {
   if (dq.size() < 3) return {};
   vector<P> rt(dq.size()); for (int i = 0; i < (int)dq.size(); ++i)
     rt[i] = Intersect(dq[i], dq[(i + 1) % dq.size()]);
-  return rt;
-}
+  return rt; }

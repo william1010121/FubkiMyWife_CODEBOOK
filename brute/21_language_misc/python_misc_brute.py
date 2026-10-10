@@ -160,6 +160,34 @@ def main() -> None:
                     expect(error <= abs(Fraction(num, d) - target)
                            and error <= abs(Fraction(num+1, d) - target),
                            "nearest fraction exhaustive oracle")
+    # Exact float inputs are dyadic rationals, so build the expected
+    # decimal from integer arithmetic without using Decimal multiplication.
+    for _ in range(200):
+        a, b = (rng.randrange(-2**20, 2**20) / 2**20 for _ in range(2))
+        x, dx = a.as_integer_ratio()
+        y, dy = b.as_integer_ratio()
+        bits = (dx * dy).bit_length() - 1
+        want = Decimal(f"{x*y*5**bits}e{-bits}")
+        expect(misc.decimal_multiply(a, b) == want,
+               "exact dyadic float product")
+    expect(misc.decimal_multiply("1e-800000", "3e-800000")
+           == Decimal("3e-1600000"), "exact subnormal decimal product")
+    rows = iter([b"-1\t+2\r\n", b"3 4", b"sentinel"])
+    expect(misc.read_matrix(rows, 2, 2) == [[-1, 2], [3, 4]]
+           and next(rows) == b"sentinel", "byte-row iterator boundary")
+    # Parsing/list ownership and byte tokenization at contest input sizes.
+    values = [i % 199 - 99 for i in range(200000)]
+    data = (str(len(values)) + "\n" + " ".join(map(str, values))).encode()
+    n, parsed = misc.parse_int_array(data)
+    expect(n == len(values) and parsed == values,
+           "large signed integer input")
+    parsed[0] = 123456
+    expect(values[0] == -99 and misc.parse_int_array(data)[1] == values,
+           "parse returns independently owned lists")
+    source = [1, 1, 2]
+    _, _, shuffled = misc.random_examples(Random(140006), source)
+    shuffled.clear()
+    expect(source == [1, 1, 2], "shuffle result has no source alias")
     print("python misc PASS")
 
 

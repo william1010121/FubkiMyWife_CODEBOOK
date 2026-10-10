@@ -1,4 +1,3 @@
-#include <bits/stdc++.h>
 #include <bits/extc++.h>
 #include <ext/rope>
 using namespace __gnu_pbds; using namespace __gnu_cxx;
@@ -19,7 +18,7 @@ int main() {
   assert(s.order_of_key(22) == 0 && s.order_of_key(71) == 1);
   s.erase(22);
   assert(*s.find_by_order(0) == 71 && s.order_of_key(71) == 0);
-  // Meldable heap: join empties b.
+  // Meldable heap: distinct heaps; join empties b.
   heap a, b; a.push(1), b.push(2), a.join(b);
   rope<char> r[2]; r[1] = r[0]; // persistent copy
   r[1].insert(0, "abc"), r[1].erase(1, 1);

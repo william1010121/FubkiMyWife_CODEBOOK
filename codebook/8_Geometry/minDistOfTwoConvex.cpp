@@ -23,7 +23,7 @@ bool _inside_convex(Point p, Point poly[], int n) { // Nonzero area.
       sign = s; }
   } return true;
 }
-// Nonempty cyclic convex CW/CCW, repeats OK; reliable signs/tests.
+// Nonempty cyclic convex CW/CCW, repeats OK; finite, reliable signs/tests.
 double TwoConvexHullMinDist(Point P[], Point Q[], int n, int m) {
   auto prepare = [&](Point p[], int n, int s) {
     vector<Point> a; a.reserve(n + 1); a.assign(p, p + n);

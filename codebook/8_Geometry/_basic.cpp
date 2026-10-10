@@ -1,7 +1,7 @@
 // unit(): nonzero vector; project/reflect/get_ratio: nonzero line.
 // Intersect(L,L): nonparallel lines; segment tests include endpoints.
 bool same(double a, double b) { return abs(a - b) < eps; }
-struct P {
+struct P { // eps>0, compatible sign; finite arithmetic, reliable tests.
   double x, y;
   P() : x(0), y(0) {}
   P(double x, double y) : x(x), y(y) {}

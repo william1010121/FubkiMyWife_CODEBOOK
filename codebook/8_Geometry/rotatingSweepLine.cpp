@@ -1,4 +1,4 @@
-// Distinct points, no three collinear; O(n^2 log n), O(n^2) space.
+// Distinct points, no 3 collinear; n fits int; O(n^2 log n)/O(n^2).
 vector<int> rotatingSweepLineOrder(const vector<pair<int,int>> &ps) {
   int n = ps.size(); vector<int> id(n), pos(n);
   struct Event { int a, b; long long x, y; };

@@ -1,4 +1,4 @@
-ll road[N][N]; // ll INF>0; absent=INF; |walk sums, <=n edges|<INF
+ll road[N][N]; // N>0; ll INF>0; absent=INF; |walk sums, <=n edges|<INF
 struct MinimumMeanCycle { // init 0<=n<=N; fill active road entries
   ll dp[N + 1][N]; int n; // large object: static or ample storage
   static bool less_frac(pll a, pll b) { // positive denominators

@@ -1,5 +1,5 @@
-// Positive radii; finite arithmetic; eps-coincident centers: empty.
-vector<L> tangent(C a, C b) {
+// eps>0, positive radii; finite arithmetic; eps-close centers: empty.
+vector<L> tangent(C a, C b) { // Resolved contact points/directions.
   if (a.r < b.r) swap(a, b);
   vector<L> z; double d = (a.c - b.c).abs();
   if (same(d, 0) || d + b.r < a.r) return z;

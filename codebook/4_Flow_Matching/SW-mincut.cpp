@@ -7,7 +7,7 @@ struct SW { // 0-base, undirected, nonnegative weights. O(V^3)
   void addEdge(int u, int v, int w) {
     if (u != v) edge[u][v] += w, edge[v][u] += w;
   }
-  int search(int &s, int &t, int n) {
+  int search(int &s, int &t, int n) { // n>=1; one phase
     fill_n(vst, n, 0), fill_n(wei, n, 0);
     s = t = -1; int mx, cur;
     for (int j = 0; j < n; ++j) {

@@ -4,7 +4,7 @@ ll pwr(ll a, ll b, ll ret = 1) {
   for (; b; b >>= 1, a = a * a % mod) if (b & 1) ret = ret * a % mod;
   return ret;
 }
-// Residues in [0,mod); n=2^k, 0<=k<=23 (also mult); O(n log n).
+// [0,mod) residues; direct/padded n=2^k, 0<=k<=23; O(n log n).
 void ntt(vector<ll> &vec, bool inv = false) {
   int n = vec.size(); if (n == 1) return; vector<int> roots(n / 2, 1);
   ll w = pwr(g, (mod - 1) / n * (inv ? n - 1 : 1));

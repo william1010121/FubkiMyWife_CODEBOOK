@@ -1,5 +1,5 @@
-// Minimise score(state); next_state(state,rng) preserves its input.
-// Pure score; score, acceptance and cooling arithmetic finite as double.
+// Minimise pure score; State is copy-constructible and copy-assignable.
+// next_state preserves input; finite double score/acceptance/cooling math.
 // O(iterations * (proposal + scoring + state-copy cost)).
 template<class State, class Score, class NextState>
 State simulated_annealing(State current, Score score, NextState next_state,
@@ -15,5 +15,5 @@ State simulated_annealing(State current, Score score, NextState next_state,
         >= unit(rng)) current = candidate, cur = cand;
     if (cur < best_score) best = current, best_score = cur;
     temperature *= cooling;
-  } return best;
+  } return State(best); // Explicit copy also allows a deleted move ctor.
 }

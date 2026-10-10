@@ -37,6 +37,10 @@ with tempfile.TemporaryDirectory() as directory:
             ("/* comments only */\n// no tokens\n", "1,$", ""),
             ('const char *s="/*|//*/"; /* ignored */', "1,$",
              'constchar*s="/*|//*/";'),
+            ("int x=0;\r\n/* multiline\r\nignored */ int y=1;\r\n",
+             "1,$", "intx=0;inty=1;"),
+            ('const char *s="a\\\"|b\\\\c";\n', "1,$",
+             'constchar*s="a\\\"|b\\\\c";'),
             ("#error outside\nint f(){return 1;}\n#error outside\n",
              "2,2", "intf(){return1;}"),
         ]
@@ -52,4 +56,4 @@ with tempfile.TemporaryDirectory() as directory:
             assert result.returncode == 0, result.stdout + result.stderr
             assert result.stdout.strip() == digest, (i, source, result)
             assert not result.stderr, result.stderr
-print("PASS vimrc: load and execute 3 Hash pipelines on 6 edge selections")
+print("PASS vimrc: load and execute 3 Hash pipelines on 8 edge selections")
