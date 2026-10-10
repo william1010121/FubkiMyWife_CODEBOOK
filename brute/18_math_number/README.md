@@ -10,6 +10,10 @@ older `math-1` and `math-2` tests.  They cover:
   known small primes.
 - `get_mu_extra.cpp`: independent smallest-prime-factor Mobius values,
   prime-count checks, and the divisor-sum identity through 500,000.
+- `mod_tools_extra.cpp`: C++17 modular arithmetic on composite/small moduli and
+  signed 64-bit boundaries, prime-binomial/Lucas versus Pascal, signed Jacobi
+  versus prime factorization, and Cipolla square roots through small primes
+  plus `INT_MAX`.
 - `mod_inverse_extra.cpp`: complete small prime tables and large-prime
   prefixes checked against an independent extended-Euclid inverse.
 - `ax_by_extra.cpp`: zero cases, exhaustive small nonnegative inputs,

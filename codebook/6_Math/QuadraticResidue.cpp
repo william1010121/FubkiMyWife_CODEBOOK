@@ -1,10 +1,12 @@
+// Jacobi: positive odd modulus.
 int Jacobi(int a, int m) {
+  a %= m; if (a < 0) a += m;
   int s = 1;
   for (; m > 1; ) {
     a %= m;
     if (a == 0) return 0;
-    const int r = countr_zero((unsigned)a);
-    if ((r & 1) && ((m + 2) & 4)) s = -s;
+    const int r = __builtin_ctz((unsigned)a);
+    if ((r & 1) && ((m & 7) == 3 || (m & 7) == 5)) s = -s;
     a >>= r;
     if (a & m & 2) s = -s;
     swap(a, m);
@@ -12,7 +14,9 @@ int Jacobi(int a, int m) {
   return s;
 }
 
+// Cipolla: prime p; one root, or -1 if none.
 int QuadraticResidue(int a, int p) {
+  a %= p; if (a < 0) a += p;
   if (p == 2) return a & 1;
   const int jc = Jacobi(a, p);
   if (jc == 0) return 0;

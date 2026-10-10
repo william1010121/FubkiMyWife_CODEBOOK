@@ -89,6 +89,7 @@ def active_pairs() -> list[tuple[str, str]]:
 # those prerequisites here; using the whole codebook would make unrelated
 # symbols hide a stale example API.
 PREREQUISITES = {
+    "6_Math/DiscreteLog.cpp": ["6_Math/Mod_Arithmetic.cpp"],
     "2_Graph/2SAT.cpp": ["2_Graph/SCC.cpp"],
     "3_Data_Structure/Heavy_light_Decomposition.cpp": [
         "3_Data_Structure/Dynamic_2D_Segment_Tree.cpp"
@@ -110,7 +111,7 @@ IGNORED_MEMBER_NAMES = {
 
 IGNORED_CALL_NAMES = {
     # language control, STL/math, and caller-owned callbacks
-    "if", "for", "while", "switch", "catch", "sizeof", "max", "min",
+    "if", "for", "while", "switch", "catch", "sizeof", "return", "max", "min",
     "abs", "acos", "asin", "atan", "cos", "exp", "fabs", "gcd", "log",
     "pow", "round", "sin", "sqrt", "swap", "shuffle", "sort", "putchar",
     "use_factor", "get_lca", "toggle", "apply_update", "rollback_update",
@@ -163,7 +164,7 @@ def _check_fragment(source: str, example: str) -> list[str]:
             continue
         # ``Type object(args)`` is construction, not a free function call.
         if re.search(
-            rf"\b(?:static\s+)?(?:[A-Z][A-Za-z_0-9]*|mt19937_64)\s+{re.escape(call)}\s*\(",
+            rf"\b(?:static\s+)?(?:[A-Z][A-Za-z_0-9]*|mt19937_64|vector\s*<[^;]+?>)\s+{re.escape(call)}\s*\(",
             code_only,
         ):
             continue
@@ -275,7 +276,7 @@ def _structure_error(text: str) -> str | None:
 def _syntax_check(pairs: list[tuple[str, str]]) -> bool:
     """Run structural checks and one bounded compiler smoke pass.
 
-    Keeping all probes in one translation unit avoids starting 73 compiler
+    Keeping all probes in one translation unit avoids starting one compiler
     processes while retaining the statement-vs-namespace distinction needed
     by the examples.  Undefined caller names are expected and ignored; parser
     diagnostics are not.
@@ -335,8 +336,8 @@ def main() -> int:
         print("pdf examples: internal structure-check self-test failed")
         return 1
     pairs = active_pairs()
-    if len(pairs) != 73:
-        print(f"pdf examples: expected 73 active inputcodeex entries, got {len(pairs)}")
+    if len(pairs) != 79:
+        print(f"pdf examples: expected 79 active inputcodeex entries, got {len(pairs)}")
         return 1
     examples = [example for _, example in pairs]
     duplicate = sorted(path for path, count in Counter(examples).items() if count != 1)

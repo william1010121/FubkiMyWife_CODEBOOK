@@ -1,11 +1,12 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-#define N 64
+#define MAXN 64
 #define INF 0x3f3f3f3f
 #define SZ(x) ((int)(x).size())
 #define pb push_back
 
+#include "codebook/4_Flow_Matching/Dinic.cpp"
 #include "codebook/4_Flow_Matching/BoundedFlow.cpp"
 
 struct Arc {

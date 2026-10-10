@@ -91,12 +91,15 @@ int main() {
            {2, 3, 2, 2}, {1, 2, 2, -3}, {0, 3, 1, 5}}},
       {4, {{0, 1, 1, -8}, {1, 3, 1, 8}, {0, 2, 1, -2},
            {2, 3, 1, 2}, {0, 3, 0, -100}, {1, 2, 0, -100}}},
+      // Unreachable vertices must never receive INF-valued potentials.
+      {5, {{0, 1, 2, -7}, {1, 4, 1, 8}, {0, 4, 1, 5},
+           {2, 3, 2, -20}, {1, 2, 0, -100}}},
+      // Nonnegative self-loops are harmless, including reverse-edge indices.
+      {3, {{0, 0, 2, 0}, {1, 1, 2, 3}, {0, 1, 2, -2}, {1, 2, 2, 4}}},
   };
   for (const auto &item : edge_cases) {
-    bool has_negative = any_of(item.second.begin(), item.second.end(),
-                                [](const Arc &e) { return e.cost < 0; });
-    check(item.second, item.first, has_negative, cases++);
-    if (!has_negative) check(item.second, item.first, false, cases++);
+    check(item.second, item.first, true, cases++);
+    check(item.second, item.first, false, cases++);
   }
 
   // Exhaust the three basic s -> {middle} -> t routes, including parallel
@@ -110,17 +113,15 @@ int main() {
     for (int code = 0; code < 3375; ++code) {
       int x = code;
       vector<Arc> a;
-      bool nonnegative = true;
       for (auto [u, v] : topo) {
         int cap = x % 3;
         x /= 3;
         int cost = x % 5 - 2;
         x /= 5;
-        nonnegative &= cost >= 0;
         a.push_back({u, v, cap, cost});
       }
       check(a, 3, true, cases++);
-      if (nonnegative) check(a, 3, false, cases++);
+      check(a, 3, false, cases++);
     }
   }
 
@@ -134,10 +135,8 @@ int main() {
       int v = u + 1 + rng() % (n - u - 1);
       a.push_back({u, v, (int)(rng() % 4), (int)(rng() % 17) - 8});
     }
-    bool has_negative = any_of(a.begin(), a.end(),
-                               [](const Arc &e) { return e.cost < 0; });
     check(a, n, true, cases++);
-    if (!has_negative) check(a, n, false, cases++);
+    check(a, n, false, cases++);
   }
 
   cout << "mincost_maxflow_exhaustive: PASS (" << cases

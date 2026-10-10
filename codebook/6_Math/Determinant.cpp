@@ -1,3 +1,4 @@
+// Square matrix, entries in [0,P); det() overwrites M. P>0.
 struct Matrix {
   int n, m;
   ll M[MAXN][MAXN];
@@ -7,8 +8,8 @@ struct Matrix {
       swap(M[i][k], M[j][k]);
     return 1;
   }
-  ll det() { // return the number of swaps
-    int rt = 0;
+  ll det() { // determinant modulo P
+    ll rt = 0;
     for (int i = 0; i < n; ++i) {
       int piv = i;
       while (piv < n && !M[piv][i]) ++piv;
@@ -16,17 +17,16 @@ struct Matrix {
       rt += row_swap(i, piv);
       for (int j = i + 1; j < n; ++j) {
         while (M[j][i]) {
-          int tmp = P - M[i][i] / M[j][i];
+          ll tmp = P - M[i][i] / M[j][i];
           for (int k = i; k < m; ++k)
-            M[i][k] = (M[j][k] * tmp + M[i][k]) % P;
+            M[i][k] = ((__int128)M[j][k] * tmp + M[i][k]) % P;
           rt += row_swap(i, j);
         }
       }
     }
-    rt = (rt & 1) ? P - 1 : 1;
+    rt = (rt & 1) ? P - 1 : 1 % P;
     for (int i = 0; i < n; ++i)
-      rt = rt * M[i][i] % P;
+      rt = (__int128)rt * M[i][i] % P;
     return rt; 
-    // round(rt) if using double to cal. int. det
   }
 };

@@ -34,7 +34,7 @@ void check_three(int x, int y, int m) {
 
 int main() {
   long long checked = 0;
-  for (int m = 1; m <= 18; ++m)
+  for (int m = 1; m <= 150; ++m)
     for (int x = 0; x < m; ++x)
       for (int y = 0; y < m; ++y) {
         check_three(x, y, m);
@@ -77,6 +77,28 @@ int main() {
     }
     ++checked;
   }
+
+  // INT_MAX is prime, and these are all prime factors of INT_MAX-1.
+  // Prove that 7 has full order before using known exponents as the oracle.
+  const int large_prime = INT_MAX;
+  for (int q : {2, 3, 7, 11, 31, 151, 331})
+    if (fpow(7, (large_prime - 1) / q, large_prime) == 1) return 1;
+  for (int k : {101, 46340, 46341, 46342, INT_MAX - 2}) {
+    int y = fpow(7, k, large_prime);
+    if (DiscreteLog(7, y, large_prime) != k) {
+      cerr << "INT_MAX exponent mismatch k=" << k << '\n';
+      return 1;
+    }
+    ++checked;
+  }
+  if (DiscreteLog(1, 7, 1, large_prime) != large_prime - 1) return 1;
+  ++checked;
+  for (int m : {46340 * 46340, INT_MAX - 1, INT_MAX}) {
+    // x=-1 has only {1,-1} in its orbit; y=2 is impossible.
+    if (DiscreteLog(m - 1, 2, m) != -1 ||
+        DiscreteLog(1, m - 1, 2, m) != -1) return 1;
+    ++checked;
+  }
   cout << "PASS DiscreteLog extra: " << checked
-       << " exhaustive, seeded, and kStep-boundary cases\n";
+       << " exhaustive, seeded, sqrt-boundary, and INT_MAX cases\n";
 }

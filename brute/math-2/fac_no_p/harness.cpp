@@ -35,6 +35,18 @@ int main() {
         }
         ++checked;
       }
+      for (ll n : {1000000000000LL, LLONG_MAX}) {
+        ll got = fac_no_p(n, p, pk), old = 1;
+        // Independent exponentiation path checks all high exponent bits.
+        for (ll m = n; m; m /= p)
+          old = old * mpow(prod[pk], m / pk, pk) % pk * prod[m % pk] % pk;
+        if (got != old) {
+          cerr << "large-n mismatch n=" << n << " p=" << p << " pk=" << pk
+               << " want=" << old << " got=" << got << '\n';
+          return 1;
+        }
+        ++checked;
+      }
     }
   }
   cout << "fac_no_p OK: " << checked << " exhaustive cases\n";
