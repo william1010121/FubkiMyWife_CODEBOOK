@@ -25,13 +25,9 @@ struct SteinerTree { // 0-base, 0 <= n <= N, t <= T < 31
     int t = SZ(terminals), full = (1 << t) - 1;
     copy_n(vcst, n, dp[0]);
     for (int msk = 1; msk <= full; ++msk) {
-      if (!(msk & (msk - 1))) {
-        int u = terminals[__lg(msk)];
-        for (int i = 0; i < n; ++i)
-          dp[msk][i] = min<ll>(INF, (ll)vcst[u] + dst[u][i]);
-        continue; // singleton paths are already closed
-      }
-      int rest = msk & (msk - 1); fill_n(dp[msk], n, INF);
+      fill_n(dp[msk], n, INF); int rest = msk & (msk - 1);
+      if (!rest) { int u = terminals[__lg(msk)];
+        dp[msk][u] = vcst[u]; } // seed singleton, then close as usual
       for (int sub = rest; sub; sub = (sub - 1) & rest)
         for (int i = 0; i < n; ++i) // lowest bit stays in complement
           chmin(dp[msk][i], (ll)dp[sub][i] +

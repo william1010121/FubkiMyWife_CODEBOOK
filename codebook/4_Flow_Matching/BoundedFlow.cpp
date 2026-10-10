@@ -21,10 +21,8 @@ struct BoundedFlow : MaxFlow { // 0-base; n>=0; solve once, mutates graph
       if (cnt[i] > 0) add_edge(vn + 1, i, cnt[i]), sum += cnt[i];
       else if (cnt[i] < 0) add_edge(i, vn + 2, -cnt[i]);
     if (sum != maxflow(vn + 1, vn + 2)) sum = -1;
-    for (int i = 0; i < vn; ++i)
-      if (cnt[i] > 0) G[vn + 1].pop_back(), G[i].pop_back();
-      else if (cnt[i] < 0)
-        G[i].pop_back(), G[vn + 2].pop_back();
+    for (int i = 0; i < vn; ++i) if (cnt[i]) G[i].pop_back();
+    G[vn + 1].clear(), G[vn + 2].clear(); // discard demand edges
     return sum != -1;
   }
   int solve(int _s, int _t) { // max nonnegative flow; -1 if infeasible

@@ -7,11 +7,11 @@ struct BronKerbosch { // 1-base, 0 <= n < N; count fits int
   void add_edge(int u, int v) { g[u][v] = g[v][u] = 1; }
   void dfs(bitset<N> P, bitset<N> X) { // initialize S; active P/X disjoint
     if (P.none()) { if (X.none()) ++S; return; }
-    int pivot = 0, best = -1; auto U = P | X;
+    auto U = P | X; int pivot = 0, best = -1, bound = P.count() - X.none();
     for (int u = U._Find_first(); u < N; u = U._Find_next(u)) {
       int score = (P & g[u]).count();
       if (score > best) best = score, pivot = u;
-      if (X.none() && score + 1 == P.count()) break; // max score
+      if (score == bound) break; // Loopless: |P| - (X empty).
     }
     auto cand = P & ~g[pivot];
     for (int v = cand._Find_first(); v < N; v = cand._Find_next(v)) {

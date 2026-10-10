@@ -19,14 +19,12 @@ int QuadraticResidue(int a, int p) {
   if (jc <= 0) return jc;
   do b = rand() % p, d = (1LL * b * b + p - a) % p;
   while (Jacobi(d, p) != -1);
-  int f0 = b, f1 = 1, g0 = 1, g1 = 0, tmp;
-  for (int e = (1LL + p) >> 1; e; e >>= 1) {
-    if (e & 1) {
-      tmp = (1LL * g0 * f0 + 1LL * d * (1LL * g1 * f1 % p)) % p;
-      g1 = (1LL * g0 * f1 + 1LL * g1 * f0) % p, g0 = tmp;
-    }
-    tmp = (1LL * f0 * f0 + 1LL * d * (1LL * f1 * f1 % p)) % p;
-    f1 = 2LL * f0 * f1 % p, f0 = tmp;
-  }
-  return g0;
+  auto mul = [&](pair<ll, ll> x, pair<ll, ll> y) {
+    auto [u, v] = x; auto [s, t] = y;
+    return pair<ll, ll>{(u*s + d*(v*t%p))%p, (u*t + v*s)%p};
+  };
+  pair<ll, ll> f{b, 1}, g{1, 0}; // x + y*sqrt(d).
+  for (int e = (1LL + p) >> 1; e; e >>= 1, f = mul(f, f))
+    if (e & 1) g = mul(g, f);
+  return g.first;
 }

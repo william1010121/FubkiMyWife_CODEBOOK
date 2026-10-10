@@ -1,5 +1,3 @@
-#include<bits/stdc++.h>
-using namespace std;
 #ifndef BITSET_NO_MAIN
 int main() {
   bitset<4> bit;

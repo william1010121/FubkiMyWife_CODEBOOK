@@ -53,6 +53,27 @@ static void check(int n, vector<Edge> es, vector<int> term,
          << " want=" << want << '\n';
     exit(1);
   }
+  // Check every singleton DP row against independent vertex-cost Dijkstra.
+  sort(ALL(term)); term.erase(unique(ALL(term)), term.end());
+  for (int k = 0; k < SZ(term); ++k) {
+    vector<ll> d(n, INF); d[term[k]] = vc[term[k]];
+    priority_queue<pair<ll, int>, vector<pair<ll, int>>,
+                   greater<pair<ll, int>>> q;
+    q.push({d[term[k]], term[k]});
+    while (!q.empty()) {
+      auto [cost, u] = q.top(); q.pop();
+      if (cost != d[u]) continue;
+      for (auto e : es) if (e.u == u) {
+        ll next = cost + e.w + vc[e.v];
+        if (next < d[e.v]) d[e.v] = next, q.push({next, e.v});
+      }
+    }
+    for (int v = 0; v < n; ++v)
+      if (st.dp[1 << k][v] != d[v]) {
+        cerr << "Steiner singleton DP case=" << cases << '\n';
+        exit(1);
+      }
+  }
 }
 int main() {
   check(0, {}, {}, {});

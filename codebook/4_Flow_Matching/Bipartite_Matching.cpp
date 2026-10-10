@@ -15,7 +15,7 @@ struct Bipartite_Matching { // 0-base, 0 <= l,r <= N; O((E+V)sqrt(V))
       if (!~mp[i]) q.push(i), dis[i] = 0;
     while (!q.empty()) {
       int u = q.front(); q.pop();
-      if (~dis[l] && dis[u] >= dis[l]) continue;
+      if (~dis[l] && dis[u] >= dis[l]) break;
       for (int e : G[u]) if (!~dis[mq[e]])
         q.push(mq[e]), dis[mq[e]] = dis[u] + 1;
     } return dis[l] != -1;
