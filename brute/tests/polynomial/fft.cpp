@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std;
+#define ALL(v) v.begin(), v.end()
 
 #include "codebook/7_Polynomial/Fast_Fourier_Transform.cpp"
 namespace chris_fft {

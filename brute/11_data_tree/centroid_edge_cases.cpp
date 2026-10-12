@@ -2,6 +2,7 @@
 using namespace std;
 using ll = long long;
 using pll = pair<ll, ll>;
+using pii = pair<int, int>;
 #define X first
 #define Y second
 #define pb push_back
@@ -59,6 +60,18 @@ void run_case(const string &name, int n, const vector<Edge> &edges) {
     cd.init(n);
     for (auto e : edges) cd.add_edge(e.u, e.v, e.w);
     cd.build();
+    vector<int> component(n + 1);
+    for (int u = 1; u <= n; ++u)
+      for (int a = u; a; a = cd.pa[a]) ++component[a];
+    for (int u = 1; u <= n; ++u) {
+      assert(cd.done[u] == 0);
+      assert(cd.layer[u] <= __lg(n));
+      if (cd.pa[u]) assert(2 * component[u] <= component[cd.pa[u]]);
+      for (int a = u; a; a = cd.pa[a]) {
+        assert(cd.dis[cd.layer[a]][u] == d[a][u]);
+        if (cd.pa[a]) assert(cd.layer[cd.pa[a]] + 1 == cd.layer[a]);
+      }
+    }
   };
 
   rebuild();
@@ -102,15 +115,92 @@ vector<Edge> star(int n) {
 }  // namespace
 
 int main() {
+  {
+    Cent_Dec cd;
+    for (int n : {N - 1, 1, 7, N - 1, 2}) {
+      cd.init(n);
+      auto e = n == 7 ? star(n) : chain(n);
+      for (auto edge : e) cd.add_edge(edge.u, edge.v, edge.w);
+      cd.build();
+      auto d = distances(n, e);
+      check("resize-empty", cd, d, {});
+      for (int u = n; u >= 1; --u) cd.modify(u);
+      vector<int> marked(n);
+      iota(marked.begin(), marked.end(), 1);
+      check("resize-marked", cd, d, marked);
+    }
+  }
   run_case("singleton", 1, {});
   run_case("two-vertex-zero-edge", 2, {{1, 2, 0}});
   run_case("chain", 63, chain(63));
   run_case("star", 63, star(63));
+  run_case("capacity-chain", N - 1, chain(N - 1));
+  run_case("capacity-star", N - 1, star(N - 1));
+  run_case("signed-path", 5,
+           {{1, 2, -7}, {2, 3, 0}, {3, 4, 7}, {4, 5, -11}});
+  run_case("wide-signed-weights", 5,
+           {{1, 2, INT_MAX}, {2, 3, INT_MAX},
+            {3, 4, INT_MIN}, {4, 5, INT_MIN}});
+
+  {
+    // Even path: two possible centroids, labels unrelated to traversal.
+    int n = N - 2;
+    vector<Edge> e;
+    auto label = [&](int i) { return (5 * i + 17) % n + 1; };
+    for (int i = 1; i < n; ++i)
+      e.push_back({label(i - 1), label(i),
+                   i & 1 ? INT_MIN : INT_MAX});
+    reverse(e.begin(), e.end());
+    run_case("even-relabeled-signed-path", n, e);
+
+    // Repeated marks make count*distance far exceed int; ll still fits.
+    Cent_Dec cd;
+    cd.init(n);
+    for (auto &edge : e) {
+      edge.w = INT_MAX;
+      cd.add_edge(edge.u, edge.v, edge.w);
+    }
+    cd.build();
+    auto d = distances(n, e);
+    const int marked = label(0), copies = 200000;
+    for (int q = 1; q <= copies; ++q) {
+      cd.modify(marked);
+      if (q == 1 || q == copies || q % 10000 == 0)
+        for (int u = 1; u <= n; ++u)
+          assert(cd.query(u) == q * d[u][marked]);
+    }
+    assert(cd.query(marked) == 0);
+  }
 
   vector<Edge> balanced;
   for (int v = 2; v <= 63; ++v)
     balanced.push_back({v / 2, v, (v * 13) % 31});
   run_case("balanced", 63, balanced);
+
+  // All labeled trees through n=6 via independent Pruefer decoding.
+  for (int n = 2; n <= 6; ++n) {
+    int count = 1;
+    for (int i = 0; i < n - 2; ++i) count *= n;
+    for (int code = 0; code < count; ++code) {
+      int digits = code;
+      vector<int> sequence(n - 2), degree(n + 1, 1);
+      for (int &u : sequence) u = 1 + digits % n, digits /= n;
+      for (int u : sequence) ++degree[u];
+      vector<Edge> edges;
+      for (int u : sequence) {
+        int leaf = 1;
+        while (degree[leaf] != 1) ++leaf;
+        edges.push_back({leaf, u, (leaf + u + code) % 7 - 3});
+        --degree[leaf], --degree[u];
+      }
+      vector<int> ends;
+      for (int u = 1; u <= n; ++u) if (degree[u] == 1) ends.push_back(u);
+      edges.push_back({ends[0], ends[1], code % 5 - 2});
+      if (code & 1) reverse(edges.begin(), edges.end());
+      run_case("exhaustive-labeled-" + to_string(n) + "-" +
+               to_string(code), n, edges);
+    }
+  }
 
   mt19937 rng(0x11C0DE);
   for (int tc = 0; tc < 140; ++tc) {

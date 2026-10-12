@@ -1,20 +1,23 @@
-set<pii>::iterator addInterval(set<pii>& is,
-  int L, int R) {
+// Nonempty disjoint, nonadjacent [L,R); require L<=R.
+// Update O(log s + erasures), amortized O(log s).
+set<pii>::iterator addInterval(
+    set<pii>& is, int L, int R) {
   if (L == R) return is.end();
-  auto it = is.lower_bound({L, R}), before = it;
-  while (it != is.end() && it->X <= R) {
-    R = max(R, it->Y);
-    before = it = is.erase(it);
-  } if (it != is.begin() && (--it)->Y >= L) {
-    L = min(L, it->X);
-    R = max(R, it->Y);
-    is.erase(it);
-  } return is.insert(before, {L, R});
-}
+  auto it = is.upper_bound({L, INT_MAX}), before = it;
+  if (it != is.begin() && prev(it)->Y >= R)
+    return prev(it);
+  while (it != is.end() && it->X <= R)
+    R = max(R, it->Y), before = it = is.erase(it);
+  if (it != is.begin() && (--it)->Y >= L)
+    L = min(L, it->X), R = max(R, it->Y), is.erase(it);
+  return is.insert(before, {L, R}); }
 void removeInterval(set<pii>& is, int L, int R) {
   if (L == R) return;
-  auto it = addInterval(is, L, R);
-  auto [l2, r2] = *it; is.erase(it);
-  if (l2 != L) is.emplace(l2, L);
-  if (R != r2) is.emplace(R, r2);
+  auto it = is.lower_bound({L, INT_MIN});
+  if (it != is.begin() && prev(it)->Y > L) --it;
+  while (it != is.end() && it->X < R) {
+    auto [l, r] = *it; it = is.erase(it);
+    if (l < L) is.emplace_hint(it, l, L);
+    if (r > R) { is.emplace_hint(it, R, r); break; }
+  }
 }

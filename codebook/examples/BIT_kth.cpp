@@ -1,3 +1,3 @@
-// bit[] is a value-domain BIT, N = 2^k
-int v = query_kth(k); // k-th smallest
-// O(log N), walks the tree directly
+// bit[1..N], N > 0; frequencies >= 0
+int v = query_kth(k); // 1 <= k <= total
+// O(log N); arbitrary N

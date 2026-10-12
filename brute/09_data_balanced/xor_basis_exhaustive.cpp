@@ -2,8 +2,8 @@
 using namespace std;
 using ull = unsigned long long;
 
-// The PDF template is intentionally a fragment: it expects ull and a
-// zero-initialized global basis supplied by the including program.
+// The template declares its own zero-initialized basis; ull is only used by
+// this harness's oracle, not required by the template.
 #include "../../codebook/3_Data_Structure/XOR_Basis.cpp"
 
 [[noreturn]] static void fail(const string &message) {
@@ -172,7 +172,67 @@ static void randomized_histories() {
   }
 }
 
+
+static void dense_full_rank() {
+  mt19937_64 rng(0xB4515);
+  for (int tc = 0; tc < 100; ++tc) {
+    vector<ull> vectors;
+    for (int i = 0; i < 64; ++i)
+      vectors.push_back((1ULL << i) | (rng() & ((1ULL << i) - 1)));
+    // A triangular matrix is invertible; row permutation preserves rank.
+    shuffle(vectors.begin(), vectors.end(), rng);
+    clear_basis();
+    for (int i = 0; i < 64; ++i) {
+      ins(vectors[i]);
+      int rank = count_if(begin(basis), end(basis),
+                          [](ull x) { return x != 0; });
+      CHECK(rank == i + 1);
+    }
+    const BasisState full = state();
+    for (int i = 0; i < 100; ++i) {
+      ull x = rng();
+      CHECK(represented(x));
+      ins(x);
+      CHECK(state() == full);
+    }
+  }
+}
+static void parity_hyperplanes() {
+  mt19937_64 rng(0xB458);
+  for (int pivot = 0; pivot < 64; ++pivot) {
+    // These 63 independent rows span exactly the even-parity subspace.
+    vector<ull> rows;
+    for (int i = 0; i < 64; ++i) if (i != pivot)
+      rows.push_back((1ULL << i) | (1ULL << pivot));
+    shuffle(rows.begin(), rows.end(), rng);
+    clear_basis();
+    for (ull x : rows) ins(x);
+    CHECK(count_if(begin(basis), end(basis),
+                   [](ull x) { return x != 0; }) == 63);
+    const BasisState before = state();
+    for (int i = 0; i < 200; ++i) {
+      ull x = rng();
+      if (__builtin_parityll(x)) x ^= 1ULL << pivot;
+      CHECK(represented(x));
+      CHECK(!represented(x ^ (1ULL << pivot)));
+      ins(x);
+      CHECK(state() == before);
+    }
+    ins(1ULL << pivot); // Odd parity adds exactly the missing dimension.
+    CHECK(count_if(begin(basis), end(basis),
+                   [](ull x) { return x != 0; }) == 64);
+    const BasisState full = state();
+    for (int i = 0; i < 200; ++i) {
+      ull x = rng();
+      CHECK(represented(x));
+      ins(x);
+      CHECK(state() == full);
+    }
+  }
+}
 int main() {
+  parity_hyperplanes();
+  dense_full_rank();
   deterministic_edges();
   exhaustive_small_widths();
   randomized_histories();

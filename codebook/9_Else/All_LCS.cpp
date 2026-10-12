@@ -1,38 +1,32 @@
-// Return every distinct longest common subsequence, in lexicographic order.
-vector<string> all_lcs(const string &s,
-  const string &t) {
+// Sorted distinct LCS; DP O(nm), O(n) if s==t.
+// Exponential output; merges linear in string data.
+// Lengths < INT_MAX; cells fit size_t; O(n+m) stack.
+vector<string> all_lcs(const string &s, const string &t) {
+  if (s == t) return {s};
   int n = (int)s.size(), m = (int)t.size();
   vector<vector<int>> dp(n + 1, vector<int>(m + 1));
   for (int i = n - 1; i >= 0; --i)
     for (int j = m - 1; j >= 0; --j)
       dp[i][j] = s[i] == t[j] ? 1 + dp[i + 1][j + 1]
         : max(dp[i + 1][j], dp[i][j + 1]);
-  vector<vector<vector<string>>> memo(n + 1,
-    vector<vector<string>>(m + 1));
-  vector<vector<char>> seen(n + 1,
-    vector<char>(m + 1));
-  auto go = [&](auto &&self, int i,
-    int j) -> vector<string> & {
-    if (seen[i][j]) return memo[i][j];
-    seen[i][j] = 1;
-    auto &ret = memo[i][j];
+  if (!dp[0][0]) return {""};
+  vector<vector<string>> memo(size_t(n + 1) * (m + 1));
+  auto go = [&](auto &&self, int i, int j)
+      -> vector<string> & {
+    auto &ret = memo[size_t(i) * (m + 1) + j];
+    if (!ret.empty()) return ret; // Empty LCS gives {""}.
     if (!dp[i][j]) return ret.push_back(""), ret;
-    if (i < n && j < m && s[i] == t[j] &&
-        dp[i][j] == 1 + dp[i + 1][j + 1]) {
-      for (string x : self(self, i + 1,
-        j + 1)) ret.push_back(s[i] + x);
-    } else {
-      if (i < n && dp[i + 1][j] == dp[i][j])
-        for (string x : self(self,
-          i + 1, j)) ret.push_back(x);
-      if (j < m && dp[i][j + 1] == dp[i][j])
-        for (string x : self(self, i,
-          j + 1)) ret.push_back(x);
-    }
-    sort(ret.begin(), ret.end());
-    ret.erase(unique(ret.begin(),
-      ret.end()), ret.end());
-    return ret;
-  };
-  return go(go, 0, 0);
+    if (s[i] == t[j]) {
+      for (const string &x : self(self, i + 1, j + 1))
+        ret.push_back(s[i] + x);
+    } else if (dp[i + 1][j] > dp[i][j + 1])
+      ret = self(self, i + 1, j);
+    else if (dp[i + 1][j] < dp[i][j + 1])
+      ret = self(self, i, j + 1);
+    else {
+      auto &a = self(self, i + 1, j);
+      auto &b = self(self, i, j + 1);
+      set_union(ALL(a), ALL(b), back_inserter(ret));
+    } return ret;
+  }; return move(go(go, 0, 0));
 }

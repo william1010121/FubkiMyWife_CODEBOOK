@@ -7,21 +7,37 @@ void instantiate_template(int n) {
 #include "../../codebook/6_Math/floor_enumeration.cpp"
 }
 
-vector<tuple<int, int, int>> enumerate_oracle_input(int n) {
-  vector<tuple<int, int, int>> got;
-  // The bare source has no output hook, so this direct copy records its
-  // quotient blocks for comparison with the deliberately simple scan below.
-  for (int l = 1, r; l <= n; l = r + 1) {
-    int x = n / l;
-    r = n / x;
-    got.emplace_back(l, r, x);
+struct observed_n {
+  int value, left = 0, quotient = 0, next_quotient = 0;
+  bool pending = false;
+  operator int() { return next_quotient = value; }
+  vector<tuple<int,int,int>> blocks;
+  friend bool operator<=(int l, observed_n &n) {
+    if (n.pending) n.blocks.emplace_back(n.left,l-1,n.quotient);
+    n.left = l; n.quotient = n.next_quotient; n.next_quotient = 0;
+    return n.pending = l <= n.value;
   }
-  return got;
+  friend int operator/(observed_n &n, int divisor) {
+    int result = n.value / divisor;
+    if (divisor < n.left) n.quotient = divisor; // Body's r=n/x.
+    else if (divisor == n.left) n.quotient = result; // Body's x=n/l.
+    else n.next_quotient = result; // Update's x=n/next_l.
+    return result;
+  }
+};
+vector<tuple<int,int,int>> enumerate_oracle_input(int value) {
+  // Observe initial x, body/update divisions and the actual r+1 bound.
+  // A decremented x is observed as the divisor of the body's n/x.
+  observed_n n{value};
+#include "../../codebook/6_Math/floor_enumeration.cpp"
+  assert(!n.pending);
+  return n.blocks;
 }
 
 void check(int n) {
   instantiate_template(n);
   const auto got = enumerate_oracle_input(n);
+  if (n == 0) { assert(got.empty()); return; }
   if (got.empty()) {
     cerr << "empty enumeration n=" << n << '\n';
     exit(1);
@@ -71,15 +87,27 @@ void check(int n) {
 }
 
 int main() {
+  check(0);
   for (int n = 1; n <= 3000; ++n) check(n);
   const vector<int> selected = {
       9999, 10000, 10001, 46340, 46341, 1000000, 1000000007,
       2147483646};
   for (int n : selected) check(n);
 
+  // The division shortcut changes branch at perfect-square boundaries.
+  for (int k : {1,2,3,31,32,1000,32767,46339,46340})
+    for (int delta : {-1,0,1}) check(k*k+delta);
+
   mt19937 rng(190019);
   for (int tc = 0; tc < 250; ++tc)
     check(1 + static_cast<int>(rng() % 1000000000u));
 
-  cout << "PASS floor_enumeration direct blocks, maximality, and large n\n";
+  // Consecutive top-of-domain inputs exercise the final r+1 increment.
+  for (int delta = 1; delta <= 64; ++delta) check(INT_MAX-delta);
+  // k*(k+1) is the other transition of the square-root shortcut.
+  for (int k : {1,2,31,32,1000,32767,46339,46340})
+    for (int delta : {-1,0,1}) check(k*(k+1)+delta);
+
+  cout << "PASS floor_enumeration actual snippet, zero, maximality, "
+       << "and large n\n";
 }

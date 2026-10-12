@@ -1,8 +1,8 @@
-pll exgcd(ll a, ll b) {
-	if (b == 0) return pll(1, 0); pll q = exgcd(b, a % b); return pll(q.Y, q.X - q.Y * (a / b));
+pll exgcd(ll a, ll b) { // a,b>=0; ll arithmetic must fit.
+  if (!b) return {1, 0};
+  auto p = exgcd(b, a % b);
+  return {p.Y, p.X - p.Y * (a / b)};
 }
-/* ax+by=res, let x be minimum non-negative
-g, p = gcd(a, b), exgcd(a, b) * res / g
-if p.X < 0: t = (abs(p.X) + b / g - 1) / (b / g)
-else: t = -(p.X / (b / g))
-p += (b / g, -a / g) * t */
+// ax+by=res, a>=0,b>0; g=gcd(a,b) must divide res.
+// (x,y)=exgcd(a,b)*res/g; x'=x mod (b/g) in [0,b/g).
+// y' = y - (x'-x)/(b/g)*(a/g).

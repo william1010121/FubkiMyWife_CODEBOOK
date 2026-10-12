@@ -1,18 +1,17 @@
-struct fraction {
-	ll n, d;
-	fraction(const ll &_n=0, const ll &_d=1): n(_n),
-	  d(_d) { ll t = gcd(n, d);
-	n /= t, d /= t; if (d < 0) n = -n, d = -d; }
-	fraction operator-() const { return fraction(-n, d);
-	  }
-	fraction operator+(const fraction &b) const {
-	  return fraction(n * b.d + b.n * d, d * b.d); }
-	fraction operator-(const fraction &b) const {
-	  return fraction(n * b.d - b.n * d, d * b.d); }
-	fraction operator*(const fraction &b) const {
-	  return fraction(n * b.n, d * b.d); }
-	fraction operator/(const fraction &b) const {
-	  return fraction(n * b.d, d * b.n); }
-	void print() { cout << n;
-	  if (d != 1) cout << "/" << d; }
+struct fraction { // No LLONG_MIN or ll overflow.
+  ll n, d; // Nonzero denominators/divisors.
+  fraction(const ll &a=0, const ll &b=1): n(a), d(b) {
+    ll g = d == 1 ? 1 : gcd(n, d); n /= g, d /= g;
+    if (d < 0) n = -n, d = -d;
+  }
+  fraction operator-() const { return {-n, d}; }
+  fraction operator+(const fraction &b) const {
+    return {n*b.d + b.n*d, d*b.d}; }
+  fraction operator-(const fraction &b) const {
+    return {n*b.d - b.n*d, d*b.d}; }
+  fraction operator*(const fraction &b) const {
+    return {n*b.n, d*b.d}; }
+  fraction operator/(const fraction &b) const {
+    return {n*b.d, d*b.n}; }
+  void print() { cout << n; if (d != 1) cout << "/" << d; }
 };

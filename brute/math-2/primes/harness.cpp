@@ -30,13 +30,14 @@ bool is_prime(u64 n) {
   return true;
 }
 
-int main() {
-  ifstream in("codebook/6_Math/Primes.cpp");
+int main(int argc, char **argv) {
+  ifstream in(argc > 1 ? argv[1] : "codebook/6_Math/Primes.cpp");
   string source((istreambuf_iterator<char>(in)), istreambuf_iterator<char>());
   size_t begin = source.find("/*");
   if (begin == string::npos) { cerr << "missing prime-list comment\n"; return 1; }
   begin = source.find_first_not_of(" \t", begin + 2);
-  size_t end = source.find('\n', begin);
+  size_t end = source.find("*/", begin);
+  if (end == string::npos) return 1;
   vector<u64> a;
   for (size_t i = begin; i < end;) {
     if (!isdigit((unsigned char)source[i])) { ++i; continue; }

@@ -9,9 +9,15 @@ constexpr int MAXn = 4096;
 #undef SZ
 
 static vector<int> template_z(const string &input) {
-  fill(z, z + input.size(), 0);  // z[0] is intentionally left unset.
+  fill(z, z + MAXn, INT_MIN);  // No zero-initialization may be assumed.
   make_z(input);
-  return vector<int>(z, z + input.size());
+  expect(z[0] == INT_MIN, "Z-value z[0] unchanged", shown(input));
+  expect(all_of(z + max(1, (int)input.size()), z + MAXn,
+                [](int x) { return x == INT_MIN; }),
+         "Z-value no suffix write", shown(input));
+  vector<int> result(z, z + input.size());
+  if (!result.empty()) result[0] = 0; // Oracle leaves z[0] unset too.
+  return result;
 }
 
 static vector<int> direct_z(const string &input) {
@@ -24,7 +30,8 @@ static vector<int> direct_z(const string &input) {
 }
 
 static void check(const string &input) {
-  expect_equal("Z-value", shown(input), template_z(input), direct_z(input));
+  expect_equal("Z-value", shown(input),
+               template_z(input), direct_z(input));
 }
 
 int main() {
@@ -49,10 +56,36 @@ int main() {
   for (const string &input : byte_words) check(input), ++cases;
   cases += 7;
 
+  for (int c = 0; c < 256; ++c) {
+    check(string(1, char(c))); check(string(7, char(c))); cases += 2;
+  }
+
+  for (const string &input : words(string({'%', char(0), char(255)}), 8))
+    check(input), ++cases;
+  // Break a periodic box at its prefix, middle and right boundary.
+  for (int n : {31, 127, 511, 4096})
+    for (string unit : {"a", "ab", "abacaba"}) {
+      string input;
+      while ((int)input.size() < n) input += unit;
+      input.resize(n);
+      check(input); ++cases;
+      for (int at : {0, 1, n / 2 - 1, n / 2, n - 2, n - 1}) {
+        string changed = input; changed[at] = '!';
+        check(changed); ++cases;
+      }
+    }
+
   mt19937 rng(0x5A56414Cu);
   for (int tc = 0; tc < 3000; ++tc) {
     check(random_word(rng, "abc", rng() % 520));
     ++cases;
+  }
+
+  for (int tc = 0; tc < 1000; ++tc) {
+    string input(rng() % 520, '\0');
+    for (char &c : input) c = char(rng() % 256);
+    input += input; // Repeated arbitrary bytes require Z-box reuse.
+    check(input); ++cases;
   }
 
   cout << "PASS Z-value exhaustive_cases=" << cases

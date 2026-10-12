@@ -1,8 +1,7 @@
-int bit[N + 1]; // N = 2 ^ k
-int query_kth(int k) {
-    int res = 0;
-    for (int i = N; i >>= 1;)
-        if (bit[res + i] < k)
-            k -= bit[res += i];
-    return res + 1;
+int bit[N + 1]; // 1-base, N>0, freq>=0; O(log N)
+int query_kth(int k) { // 1<=k<=total; sums fit int
+  int res = 0;
+  for (int i = 1 << __lg(N); i; i >>= 1)
+    if (res+i <= N && bit[res+i] < k) k -= bit[res += i];
+  return res + 1;
 }

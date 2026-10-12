@@ -74,7 +74,8 @@ static void check_unique(int tc, int n, vector<int> keys, int &cases) {
   set<pair<int, int>> got;
   for (int u = 0; u < n; ++u) for (int v : vG[u]) {
     if (u == v) fail(tc, n, keys, "self-loop in virtual tree");
-    got.insert({u, v});
+    if (!got.insert({u, v}).second)
+      fail(tc, n, keys, "repeated virtual edge");
   }
   if (got != want.edges) fail(tc, n, keys, "virtual edges differ");
   if (got_root != -1) reset(got_root);
@@ -94,11 +95,49 @@ static void check_raw_duplicates(int tc, int n, const vector<int> &raw, int &cas
   set<pair<int, int>> got;
   for (int u = 0; u < n; ++u) for (int v : vG[u]) {
     if (u == v) fail(tc, n, raw, "duplicate keys create a self-loop");
-    got.insert({u, v});
+    if (!got.insert({u, v}).second)
+      fail(tc, n, raw, "repeated virtual edge");
   }
   if (got_root != want.root || got != want.edges)
     fail(tc, n, raw, "duplicate keys differ from their set semantics");
+  if (!is_sorted(input.begin(), input.end(),
+                 [](int a, int b) { return dfn[a] < dfn[b]; }) ||
+      adjacent_find(input.begin(), input.end()) != input.end() ||
+      set<int>(input.begin(), input.end()) != set<int>(keys.begin(), keys.end()))
+    fail(tc, n, raw, "in-place key ordering/deduplication differs");
   if (got_root != -1) reset(got_root);
+  for (int u = 0; u < n; ++u)
+    if (!vG[u].empty()) fail(tc, n, raw, "reset left stale edges");
+  ++cases;
+}
+
+// Partial key sets need LCAs absent from the input: unlike all-key trees,
+// these exercise every stack-rewiring branch of the public insert path.
+static void check_direct(int tc, int n, vector<int> keys, int &cases) {
+  sort(keys.begin(), keys.end(),
+       [](int a, int b) { return dfn[a] < dfn[b]; });
+  keys.erase(unique(keys.begin(), keys.end()), keys.end());
+  Expected want = expected_tree(keys);
+  for (int u = 0; u < n; ++u)
+    if (!vG[u].empty()) fail(tc, n, keys, "previous reset left edges");
+  top = -1;
+  for (int u : keys) insert(u);
+  while (top > 0) vG[st[top - 1]].pb(st[top]), --top;
+  int root = keys.empty() ? -1 : st[0];
+  set<pair<int, int>> got;
+  for (int u = 0; u < n; ++u) for (int v : vG[u]) {
+    if (!got.insert({u, v}).second)
+      fail(tc, n, keys, "partial direct insert repeats an edge");
+  }
+  if (root != want.root || got != want.edges)
+    fail(tc, n, keys, "partial direct insert differs");
+  if (root != -1) reset(root);
+  for (int u = 0; u < n; ++u)
+    if (!vG[u].empty()) fail(tc, n, keys, "direct reset left edges");
+  // Also cover the printed solve wrapper on a freshly cleaned graph.
+  solve(keys);
+  for (int u = 0; u < n; ++u)
+    if (!vG[u].empty()) fail(tc, n, keys, "solve wrapper left edges");
   ++cases;
 }
 
@@ -133,6 +172,7 @@ int main() {
   }
 
   mt19937 rng(0x71A2026);
+  mt19937 reroot_rng(0x5026);
   int repeated_inputs = 0;
   for (int it = 0; it < 9000; ++it) {
     int n = 2 + rng() % 38;
@@ -152,15 +192,53 @@ int main() {
     sort(keys.begin(), keys.end());
     keys.erase(unique(keys.begin(), keys.end()), keys.end());
     if (keys.size() != raw.size()) ++repeated_inputs;
-    // Virtual_Tree represents a set of keys.  Canonicalize repeated terminals
-    // at the caller boundary; passing duplicates directly creates self-edges.
     check_unique(tc++, n, keys, cases);
+    // Root and adjacency order are independent of vertex labels.
+    for (int i = 0; i < n; ++i)
+      shuffle(base[i].begin(), base[i].end(), reroot_rng);
+    int root = reroot_rng() % n;
+    timer_dfs = 0;
+    dep[root] = 0;
+    dfs(root, root);
+    check_raw_duplicates(tc++, n, raw, cases);
+    check_direct(tc++, n, raw, cases);
   }
   vector<int> empty;
   clear_virtual(1);
   if (build(empty) != -1) return 1;
-  // Directly exercise the repeated-key boundary without calling reset() until
-  // the output has been checked; the current template may create a self-loop.
+  // All N vertices, both deepest and widest trees, stress the stack bound.
+  for (bool chain : {false, true}) {
+    for (int i = 0; i < N; ++i) base[i].clear();
+    for (int i = 1; i < N; ++i) {
+      int p = chain ? i - 1 : 0;
+      base[i].pb(p), base[p].pb(i);
+    }
+    timer_dfs = 0;
+    dep[N - 1] = 0;
+    dfs(N - 1, N - 1);
+    vector<int> raw;
+    for (int i = N - 1; i >= 0; --i) raw.pb(i), raw.pb(i);
+    check_raw_duplicates(tc++, N, raw, cases);
+    // Exercise the public insert() path in its required preorder.
+    vector<int> ordered = raw;
+    sort(ordered.begin(), ordered.end(),
+         [](int a, int b) { return dfn[a] < dfn[b]; });
+    ordered.erase(unique(ordered.begin(), ordered.end()), ordered.end());
+    top = -1;
+    for (int u : ordered) insert(u);
+    while (top > 0) vG[st[top - 1]].pb(st[top]), --top;
+    Expected want = expected_tree(ordered);
+    set<pair<int, int>> got;
+    for (int u = 0; u < N; ++u) for (int v : vG[u]) {
+      if (!got.insert({u, v}).second)
+        fail(tc, N, ordered, "direct insert repeats edge");
+    }
+    if (st[0] != want.root || got != want.edges)
+      fail(tc, N, ordered, "direct insert differs");
+    reset(st[0]);
+    ++cases;
+  }
+  // Directly exercise the repeated-key boundary before calling reset().
   int duplicate_n = 5;
   for (int i = 0; i < duplicate_n; ++i) base[i].clear();
   for (int i = 1; i < duplicate_n; ++i) base[i].pb(i - 1), base[i - 1].pb(i);
@@ -170,5 +248,5 @@ int main() {
   check_raw_duplicates(tc++, duplicate_n, {4, 4, 2, 2, 0, 0}, cases);
   cout << "Virtual_Tree PASS cases=" << cases
        << " exhaustive rooted trees/subsets plus " << repeated_inputs
-       << " repeated-key canonicalization cases\n";
+       << " raw repeated-key cases, rerooting and N-boundary/direct insert\n";
 }

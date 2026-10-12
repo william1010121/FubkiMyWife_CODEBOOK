@@ -102,5 +102,30 @@ int main() {
     }
     ++checked;
   }
+  // Arbitrary short sequences cover changing order and delayed pivots.
+  for (int n = 0; n <= 9; ++n)
+    for (int mask = 0; mask < (1 << n); ++mask) {
+      vector<Mint> seq(n);
+      for (int i = 0; i < n; ++i) seq[i] = (mask >> i) & 1;
+      auto got = BerlekampMassey(seq);
+      int want = 0;
+      while (!has_recurrence(seq, want)) ++want;
+      if ((int)got.size() != want) return 1;
+      for (int i = got.size(); i < n; ++i) {
+        Mint rhs = 0;
+        for (int j = 0; j < (int)got.size(); ++j)
+          rhs += got[j] * seq[i - j - 1];
+        if (rhs != seq[i]) return 1;
+      }
+      ++checked;
+    }
+  // A periodic impulse has minimal order K; test a large shift/update.
+  const int K = 1024;
+  vector<Mint> seq(3 * K);
+  for (int i = K - 1; i < (int)seq.size(); i += K) seq[i] = 1;
+  auto got = BerlekampMassey(seq);
+  if ((int)got.size() != K) return 1;
+  for (int j = 0; j < K; ++j)
+    if (got[j] != Mint(j == K - 1)) return 1;
   cout << "Berlekamp-Massey OK: " << checked << " sequence cases\n";
 }

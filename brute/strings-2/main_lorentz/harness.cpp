@@ -13,6 +13,7 @@ static vector<int> Zalgo(const string &s) {
   }
   return z;
 }
+#define ALL(v) (v).begin(), (v).end()
 #include "../../../codebook/5_String/MainLorentz.cpp"
 
 static set<pair<int, int>> brute(const string &s) {

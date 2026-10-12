@@ -1,2 +1,1 @@
-string t = mcp(s);
-// lexicographically smallest rotation
+string t = mcp(s); // lexicographically smallest rotation

@@ -1,38 +1,36 @@
-ll road[N][N]; // input here
-struct MinimumMeanCycle {
-  ll dp[N + 1][N]; int n;
-  static bool less_frac(pll a, pll b) {
-    return (__int128)a.first *
-      b.second < (__int128)b.first * a.second;
-  }
+// N>0; ll INF>0; |walk sums, <=n edges|<INF.
+ll road[N][N]; // Fill active entries; absent=INF.
+struct MinimumMeanCycle { // init 0<=n<=N.
+  ll dp[N + 1][N]; int n; // Needs ample/static storage.
+  static bool less_frac(pll a, pll b) { // Denominators>0.
+    return (__int128)a.first * b.second <
+           (__int128)b.first * a.second; }
   pll solve() {
-    vector<tuple<int, int, ll>> edges;
-    for (int u = 0; u < n; ++u)
-      for (int v = 0; v < n; ++v)
-        if (road[u][v] < INF) edges.emplace_back(u, v, road[u][v]);
-    fill_n(dp[0], n, 0);
-    // every vertex may be the start
+    vector<vector<pair<int, ll>>> edges(n);
+    for (int u = 0; u < n; ++u) for (int v = 0; v < n; ++v)
+      if (road[u][v] < INF)
+        edges[u].emplace_back(v, road[u][v]);
+    fill_n(dp[0], n, 0); // every vertex may be the start
     for (int k = 1; k <= n; ++k) {
       fill_n(dp[k], n, INF);
-      for (auto [u, v, w] : edges)
-        if (dp[k - 1][u] < INF)
-          dp[k][v] = min(dp[k][v],
-            dp[k - 1][u] + w);
+      for (int u = 0; u < n; ++u)
+        if (ll d = dp[k - 1][u]; d < INF)
+          for (auto [v, w] : edges[u])
+            dp[k][v] = min(dp[k][v], d + w);
     }
-    bool found = false; pll ans;
-    for (int v = 0; v < n; ++v) if (dp[n][v] < INF) {
-      bool have = false; pll high;
-      for (int k = 0; k < n; ++k) if (dp[k][v] < INF) {
-        pll cur = {dp[n][v] - dp[k][v], n - k};
-        if (!have || less_frac(high,
-          cur)) high = cur, have = true;
-      }
-      if (have && (!found || less_frac(high,
-        ans))) ans = high, found = true;
+    vector<pll> high(n); vector<int> active;
+    for (int v = 0; v < n; ++v) if (dp[n][v] < INF)
+      high[v] = {dp[n][v], n}, active.push_back(v);
+    for (int k = 1; k < n; ++k) for (int v : active) {
+      pll cur = {dp[n][v] - dp[k][v], n - k};
+      if (less_frac(high[v], cur)) high[v] = cur;
     }
-    if (!found) return {-1, -1};
-    ll g = gcd(ans.first, ans.second);
-    return {ans.first / g, ans.second / g};
-  }
+    pll ans = {-1, -1}; // O(VE+V^2); dp differences fit ll
+    for (int v : active)
+      if (ans.second < 0 || less_frac(high[v], ans))
+        ans = high[v];
+    if (ans.second < 0) return ans;
+    auto [p, q] = ans; ll g = gcd(p, q);
+    return {p / g, q / g}; }
   void init(int _n) { n = _n; }
 };

@@ -99,6 +99,14 @@ int main() {
         DiscreteLog(1, m - 1, 2, m) != -1) return 1;
     ++checked;
   }
+  // Degenerate orbits at the modulus limit: no large BSGS is needed.
+  for (int m : {1000000007, INT_MAX - 1, INT_MAX})
+    for (int x : {0, 1}) for (int i = 0; i < 64; ++i) {
+      int y = i < 2 ? i : 2 + rng() % (m - 2);
+      int want = y == 1 ? 0 : (y == x ? 1 : -1);
+      if (DiscreteLog(x, y, m) != want) return 1;
+      ++checked;
+    }
   cout << "PASS DiscreteLog extra: " << checked
        << " exhaustive, seeded, sqrt-boundary, and INT_MAX cases\n";
 }

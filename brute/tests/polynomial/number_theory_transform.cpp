@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std;
+using ll = long long;
 constexpr int kN = 1 << 10;
 constexpr int kMod = 998244353;
 constexpr int kRoot = 3;

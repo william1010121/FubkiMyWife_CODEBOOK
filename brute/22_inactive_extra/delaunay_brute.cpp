@@ -1,107 +1,227 @@
 #include <bits/stdc++.h>
 using namespace std;
-
-using i128 = __int128_t;
-struct Point {
-  long long x = 0, y = 0;
-  Point() = default;
-  Point(long long x_, long long y_) : x(x_), y(y_) {}
-  Point operator-(Point b) const { return {x - b.x, y - b.y}; }
-  long long operator^(Point b) const { return x * b.y - y * b.x; }
-  long long Norm() const { return x * x + y * y; }
-  bool operator==(Point b) const { return x == b.x && y == b.y; }
-  bool operator<(Point b) const { return tie(x, y) < tie(b.x, b.y); }
-};
-constexpr long long inf = (1LL << 60);
-int Sign(long long value) { return (value > 0) - (value < 0); }
+typedef long long ll;
+#define SZ(a) ((int)a.size())
+#define ALL(v) v.begin(), v.end()
+#define pb push_back
 #include "../../codebook/8_Geometry/Triangulation.cpp"
+using delaunay::Point;
 
-static void require(bool condition, const string &message) {
-  if (!condition) {
-    cerr << "FAIL " << message << '\n';
-    exit(1);
-  }
-}
-
-static long long cross(Point a, Point b, Point c) {
-  return (b - a) ^ (c - a);
-}
-
-static vector<Point> hull(vector<Point> points) {
-  sort(points.begin(), points.end());
-  vector<Point> result;
-  for (Point p : points) {
-    while (result.size() >= 2 && cross(result[result.size() - 2], result.back(), p) <= 0)
-      result.pop_back();
-    result.push_back(p);
-  }
-  size_t lower = result.size();
-  for (int i = points.size() - 2; i >= 0; --i) {
-    while (result.size() > lower && cross(result[result.size() - 2], result.back(), points[i]) <= 0)
-      result.pop_back();
-    result.push_back(points[i]);
-  }
-  result.pop_back();
-  return result;
-}
-
-static i128 incircle_det(Point p, Point a, Point b, Point c) {
+ll cr(Point o, Point a, Point b) { return (a - o) ^ (b - o); }
+// strictly inside circumcircle of CCW triangle abc
+bool inCirc(Point p, Point a, Point b, Point c) {
   a = a - p, b = b - p, c = c - p;
-  i128 value = i128(a.Norm()) * (b ^ c) + i128(b.Norm()) * (c ^ a) +
-               i128(c.Norm()) * (a ^ b);
-  return value * Sign((b - a) ^ (c - a));
+  __int128 x = __int128(a.Norm()) * (b ^ c) + __int128(b.Norm()) * (c ^ a) + __int128(c.Norm()) * (a ^ b);
+  return x > 0;
 }
-
-static bool general_position(const vector<Point> &points) {
-  int n = points.size();
-  for (int i = 0; i < n; ++i) for (int j = i + 1; j < n; ++j)
-    for (int k = j + 1; k < n; ++k) {
-      if (!cross(points[i], points[j], points[k])) return false;
-      for (int l = k + 1; l < n; ++l)
-        if (!incircle_det(points[l], points[i], points[j], points[k])) return false;
+// boundary points count (including collinear) and doubled hull area
+pair<int, ll> hull(vector<Point> p) {
+  int n = p.size(), b = 0;
+  sort(p.begin(), p.end());
+  vector<Point> h;
+  for (int pass = 0; pass < 2; ++pass) {
+    size_t st = h.size();
+    for (auto q : p) {
+      while (h.size() >= st + 2 && cr(h[h.size() - 2], h.back(), q) <= 0) h.pop_back();
+      h.push_back(q);
     }
-  return true;
+    h.pop_back();
+    reverse(p.begin(), p.end());
+  }
+  ll A = 0;
+  for (size_t i = 0; i < h.size(); ++i) A += h[i] ^ h[(i + 1) % h.size()];
+  for (auto q : p) {
+    bool on = false;
+    for (size_t i = 0; i < h.size() && !on; ++i) {
+      Point a = h[i], c = h[(i + 1) % h.size()];
+      if (cr(a, c, q) == 0 && min(a.x, c.x) <= q.x && q.x <= max(a.x, c.x) &&
+          min(a.y, c.y) <= q.y && q.y <= max(a.y, c.y)) on = true;
+    }
+    b += on;
+  }
+  (void)n;
+  return {b, A};
 }
 
-static void check(const vector<Point> &points) {
-  auto triangles = delaunay::Triangulate(points);
-  auto boundary = hull(points);
-  require((int)triangles.size() == 2 * (int)points.size() - 2 - (int)boundary.size(),
-          "Delaunay triangle count");
-  set<array<Point, 3>> unique_triangles;
-  i128 triangle_area2 = 0;
-  for (auto triangle : triangles) {
-    for (Point p : triangle)
-      require(find(points.begin(), points.end(), p) != points.end(), "Delaunay vertex origin");
-    long long area2 = cross(triangle[0], triangle[1], triangle[2]);
-    require(area2 > 0, "Delaunay triangle CCW");
-    triangle_area2 += area2;
-    auto canonical = triangle;
-    sort(canonical.begin(), canonical.end());
-    require(unique_triangles.insert(canonical).second, "Delaunay duplicate triangle");
-    for (Point p : points)
-      require(incircle_det(p, triangle[0], triangle[1], triangle[2]) <= 0,
-              "Delaunay empty circumcircle");
+// Independent lifted 4x4 determinant; |coordinate|<=5e8 is safe.
+int lifted_sign(Point a,Point b,Point c,Point p) {
+  array<array<__int128,4>,4> m;
+  array<Point,4> pts{a,b,c,p};
+  for (int i=0;i<4;++i) {
+    __int128 x=pts[i].x,y=pts[i].y;
+    m[i]={x,y,x*x+y*y,1};
   }
-  i128 hull_area2 = 0;
-  for (int i = 0; i < (int)boundary.size(); ++i)
-    hull_area2 += boundary[i] ^ boundary[(i + 1) % boundary.size()];
-  require(triangle_area2 == hull_area2, "Delaunay area partition");
+  array<int,4> order{0,1,2,3}; __int128 det=0;
+  do {
+    __int128 term=1; int inversions=0;
+    for (int i=0;i<4;++i) {
+      term*=m[i][order[i]];
+      for (int j=0;j<i;++j) inversions+=order[j]>order[i];
+    }
+    det+=inversions%2?-term:term;
+  } while (next_permutation(order.begin(),order.end()));
+  return (det>0)-(det<0);
+}
+void adversarial(vector<Point> p) {
+  auto triangles=delaunay::Triangulate(p);
+  bool collinear=true;
+  for (int i=2;i<SZ(p);++i) collinear &= cr(p[0],p[1],p[i])==0;
+  auto req=[](bool ok,const char *msg) {
+    if (!ok) { cerr<<"FAIL Delaunay "<<msg<<'\n'; exit(1); }
+  };
+  req(delaunay::edges.size()==1,"adversarial edge reclamation");
+  if (SZ(p)<3 || collinear) {
+    req(triangles.empty(),"empty/collinear adversarial output"); return;
+  }
+  auto [b,A]=hull(p);
+  req(SZ(triangles)==2*SZ(p)-2-b,"adversarial triangle count");
+  ll sum=0; set<Point> used;
+  for (auto t:triangles) {
+    ll area=cr(t[0],t[1],t[2]); sum+=area;
+    req(area>0,"adversarial CCW triangle");
+    used.insert(t.begin(),t.end());
+    for (Point q:p) {
+      int sign=lifted_sign(t[0],t[1],t[2],q);
+      req(sign<=0,"exact empty circumcircle at coordinate limit");
+      req(delaunay::InCircle(q,t[0],t[1],t[2])==(sign>0),
+          "128-bit in-circle vs lifted determinant");
+      req(delaunay::InCircle(q,t[1],t[0],t[2])==(sign>0),
+          "in-circle orientation reversal");
+    }
+  }
+  req(sum==A,"adversarial area");
+  req(SZ(used)==SZ(p),"all distinct input vertices represented");
+  for (Point q:p) req(used.count(q),"no missing boundary point");
 }
 
 int main() {
-  check({{0, 0}, {4, 0}, {1, 3}});
-  check({{0, 0}, {5, 0}, {4, 4}, {0, 3}, {2, 1}});
-  mt19937 rng(31415926);
-  int cases = 0;
-  while (cases < 1000) {
-    int n = 3 + rng() % 9;
-    set<Point> selected;
-    while ((int)selected.size() < n)
-      selected.insert({(int)(rng() % 61) - 30, (int)(rng() % 61) - 30});
-    vector<Point> points(selected.begin(), selected.end());
-    if (!general_position(points)) continue;
-    check(points), ++cases;
+  auto *saved = delaunay::MakeEdge({-1, -2}, {-3, -4});
+  const ll M=500000000;
+  for (auto p:vector<vector<Point>>{
+      {},{{M,M}},{{-M,-M},{M,M}},
+      {{-M,-M},{M,-M},{M,M}},
+      {{-M,-M},{M,-M},{M,M},{-M,M}},
+      {{M,M},{M-1,M},{-M,-M+1},{-M,-M}},
+      {{-M,0},{M,1},{M-1,1},{0,0},{0,1}},
+      {{-M,-M},{M,-M},{M,M},{-M,M},{0,0},
+       {0,-M},{M,0},{0,M},{-M,0}}}) adversarial(p);
+  vector<Point> circle;
+  for (auto [x,y]:vector<pair<ll,ll>>{{5,0},{4,3},{3,4},{0,5},
+      {-3,4},{-4,3},{-5,0},{-4,-3},{-3,-4},{0,-5},{3,-4},{4,-3}})
+    circle.emplace_back(x*100000000,y*100000000);
+  adversarial(circle); circle.emplace_back(0,0); adversarial(circle);
+  vector<Point> boundary;
+  for (ll x:{-M,0LL,M}) for (ll y:{-M,0LL,M})
+    boundary.emplace_back(x,y);
+  adversarial(boundary);
+  // Exhaust every subset of a 4x3 grid at both small and maximum scale.
+  // Reverse input order; the first pair is often vertical or on a facet.
+  for (int mask=0;mask<4096;++mask) for (ll scale : {1LL,250000000LL}) {
+    vector<Point> points;
+    for (int i=0;i<12;++i) if (mask>>i&1)
+      points.emplace_back((i%4-2)*scale,(i/4-1)*scale);
+    reverse(points.begin(),points.end()); adversarial(points);
   }
-  cout << "Delaunay PASS\n";
+  vector<Point> line;
+  for (int i=0;i<101;++i) line.emplace_back(-M+i,-M+i);
+  adversarial(line);
+  mt19937 rng(11);
+  // Almost collinear integer strips at both coordinate extremes: many
+  // boundary points, determinant-one triangles and opposite orientations.
+  for (int tc=0;tc<300;++tc) {
+    set<pair<ll,ll>> points;
+    for (ll x:{-M,-M+1,0LL,M-1,M})
+      for (ll y:{M-1,M}) points.emplace(x,y);
+    for (int i=0;i<10;++i)
+      points.emplace(ll(rng()%1000000001)-M,M-(rng()&1));
+    vector<Point> p;
+    for (auto [x,y]:points) p.emplace_back(x,y);
+    shuffle(p.begin(),p.end(),rng); adversarial(p);
+    for (auto &q:p) q={-q.y,q.x}; adversarial(p);
+  }
+  for (int it = 0; it < 20000; ++it) {
+    int n = rng() % 30, R = 1 + rng() % 8;
+    bool big = it % 10 == 0;
+    set<pair<ll, ll>> s;
+    while ((int)s.size() < n) {
+      if (big) s.insert({(ll)(rng() % 1000000001) - 500000000, (ll)(rng() % 1000000001) - 500000000});
+      else {
+        if ((int)s.size() >= (R + 1) * (R + 1)) break;
+        s.insert({rng() % (R + 1), rng() % (R + 1)});
+      }
+    }
+    vector<Point> p;
+    for (auto [x, y] : s) p.push_back(Point(x, y));
+    n = p.size();
+    auto tri = delaunay::Triangulate(p);
+    if (delaunay::edges.size() != 1 || saved->p.x != -1 ||
+        saved->F().x != -3 || saved->r()->r() != saved) {
+      puts("FAIL edge storage lifetime"); return 1;
+    }
+    bool allcol = true;
+    for (int i = 2; i < n; ++i) if (cr(p[0], p[1], p[i]) != 0) allcol = false;
+    auto fail = [&](const char *m) {
+      printf("FAIL %s it=%d n=%d tris=%zu\n", m, it, n, tri.size());
+      for (auto q : p) printf("(%lld,%lld) ", q.x, q.y);
+      puts("");
+      exit(1);
+    };
+    if (n < 3 || allcol) { if (!tri.empty()) fail("expected empty"); continue; }
+    auto [b, A] = hull(p);
+    if ((int)tri.size() != 2 * n - 2 - b) fail("count");
+    ll sum = 0;
+    for (auto &t : tri) {
+      ll c = cr(t[0], t[1], t[2]);
+      if (c <= 0) fail("not ccw");
+      sum += c;
+      for (auto q : p) if (inCirc(q, t[0], t[1], t[2])) fail("not delaunay");
+    }
+    if (sum != A) fail("area");
+  }
+  vector<Point> grid;
+  for (int x = 0; x < 250; ++x) for (int y = 0; y < 200; ++y)
+    grid.emplace_back(x, y);
+  auto tri = delaunay::Triangulate(grid);
+  if (tri.size() != 2 * 249 * 199 || delaunay::edges.size() != 1) {
+    puts("FAIL 50000-point grid count/lifetime"); return 1;
+  }
+  for (auto t : tri) if (cr(t[0], t[1], t[2]) != 1) {
+    puts("FAIL grid triangle orientation/area"); return 1;
+  }
+  // Retain edges across full and partial arena blocks and repeated calls.
+  vector<delaunay::Quad*> retained{saved};
+  for (int n : {1024,1035,2048,2055}) {
+    while (int(retained.size())<n) {
+      ll i=retained.size();
+      retained.push_back(delaunay::MakeEdge({-10-i,-1},{-10-i,-3}));
+    }
+    size_t storage=delaunay::edges.size();
+    auto again=delaunay::Triangulate(grid);
+    if (again.size()!=2*249*199 || delaunay::edges.size()!=storage) {
+      puts("FAIL retained arena extent"); return 1;
+    }
+    for (int i=1;i<n;++i) {
+      auto q=retained[i];
+      if (q->p.x!=-10-i || q->p.y!=-1 || q->F().x!=-10-i ||
+          q->F().y!=-3 || q->r()->r()!=q || q->o!=q ||
+          q->rot->rot->rot->rot!=q) {
+        puts("FAIL retained block pointers/topology"); return 1;
+      }
+    }
+    if (saved->p.x!=-1 || saved->F().x!=-3 || saved->r()->r()!=saved) {
+      puts("FAIL original retained pointer"); return 1;
+    }
+  }
+  vector<Point> stress_line;
+  for (int i=0;i<200000;++i) stress_line.emplace_back(i,3LL*i);
+  mt19937 line_rng(917);
+  shuffle(stress_line.begin(),stress_line.end(),line_rng);
+  size_t storage=delaunay::edges.size();
+  if (!delaunay::Triangulate(stress_line).empty() ||
+      delaunay::edges.size()!=storage) {
+    puts("FAIL 200000-point collinear stress"); return 1;
+  }
+  delaunay::edges.clear();
+  puts("OK: 20000 brute cases, retained blocks, 50000-point grid, "
+       "200000-point collinear stress");
 }

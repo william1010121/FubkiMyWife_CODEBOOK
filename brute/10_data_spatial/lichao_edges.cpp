@@ -1,13 +1,19 @@
 #include <bits/stdc++.h>
 using namespace std;
 using ll = long long;
-const ll INF = (1LL << 60);
+const ll INF = LLONG_MAX;
 
 #include "../../codebook/3_Data_Structure/LiChaoST.cpp"
 
 static ll scan_max(const vector<L> &lines, ll x) {
   ll ans = -INF;
-  for (L line : lines) ans = max(ans, line.at(x));
+  for (L line : lines) {
+    __int128 product = (__int128)line.m * x;
+    __int128 value = product + line.k;
+    assert(LLONG_MIN <= product && product <= LLONG_MAX);
+    assert(-(__int128)INF <= value && value <= INF);
+    ans = max(ans, (ll)value);
+  }
   return ans;
 }
 
@@ -40,6 +46,56 @@ static void run_case(int n, const vector<L> &to_insert,
 
 int main() {
   run_case(0, {L(7, 11, 0), L(-3, 4, 1)}, "zero-x");
+  for (int n : {INT_MIN, -7, 0}) {
+    LiChao empty(n);
+    empty.insert(L(LLONG_MAX, LLONG_MAX, 0));
+    for (ll x : {LLONG_MIN, -1LL, 0LL, LLONG_MAX})
+      assert(empty.query(x) == -INF);
+  }
+  run_case(1, {L(LLONG_MIN, -INF, -2), L(LLONG_MAX, INF, -2),
+               L(0, 0, LLONG_MIN)}, "singleton-extreme-slopes-ids");
+  run_case(2, {L(LLONG_MAX, -LLONG_MAX, 0),
+               L(LLONG_MIN, LLONG_MAX, LLONG_MAX),
+               L(0, -INF, 2), L(0, INF, 3)}, "ll-boundaries");
+  run_case(3, {L(LLONG_MAX / 2, -LLONG_MAX / 2, 0),
+               L(-LLONG_MAX / 2, LLONG_MAX / 2, 1)},
+           "large-midpoint-tie");
+
+  // Exact endpoint/midpoint ties and one-integer wins, in every order.
+  // Large slopes stress products separately from intercept addition.
+  for (int n = 2; n <= 33; ++n)
+    for (int pivot : {0, n / 2, n - 1})
+      for (int delta : {-1, 0, 1}) {
+        ll slope = LLONG_MAX / (8LL * n);
+        vector<L> lines = {
+          L(0, 0, 0), L(slope, -slope * pivot + delta, 0),
+          L(-slope, slope * pivot + delta, 0),
+          L(2 * slope, -2 * slope * (n - 1) + 1, 0)
+        };
+        vector<int> order = {0, 1, 2, 3};
+        do {
+          vector<L> permuted;
+          for (int i : order) permuted.push_back(lines[i]);
+          // Reinsert a discarded or retained line after replacements.
+          permuted.push_back(lines[order.front()]);
+          run_case(n, permuted, "endpoint-pruning-permutations");
+        } while (next_permutation(order.begin(), order.end()));
+      }
+
+  // Equal slopes need only the best intercept, even on a wide domain.
+  {
+    const int n = 1 << 20;
+    LiChao tree(n), empty(n);
+    for (int q = 0; q < 200000; ++q) {
+      int x = (q * 7919LL) % n;
+      assert(empty.query(x) == -INF);
+      tree.insert(L(37, q, q));
+      tree.insert(L(37, -q, q + 200000));
+      assert(tree.query(x) == 37LL * x + q);
+    }
+    for (int x : {0, n / 2, n - 1})
+      assert(tree.query(x) == 37LL * x + 199999);
+  }
 
   run_case(1, {
       L(0, 0, 0), L(0, -7, 1), L(0, 7, 2),
@@ -60,6 +116,16 @@ int main() {
   run_case(17, exhaustive, "small-coefficient-grid");
 
   mt19937_64 rng(0x1c4a0f13ULL);
+  // Every small domain, with varied insertion order and crossing ties.
+  mt19937_64 order_rng(0x51A0);
+  vector<L> crossings;
+  for (ll m = -3; m <= 3; ++m)
+    for (ll k = -3; k <= 3; ++k) crossings.emplace_back(m, k, 0);
+  for (int n = 1; n <= 19; ++n)
+    for (int q = 0; q < 5; ++q) {
+      shuffle(crossings.begin(), crossings.end(), order_rng);
+      run_case(n, crossings, "permuted-crossings");
+    }
   for (int tc = 0; tc < 120; ++tc) {
     int n = 1 + (int)(rng() % 127);
     vector<L> lines;

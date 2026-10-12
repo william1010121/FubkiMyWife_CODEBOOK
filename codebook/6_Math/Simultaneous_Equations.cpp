@@ -1,27 +1,30 @@
-struct matrix { //m variables, n equations
+struct matrix { // 0<=n,m<=MAXN
+  // Intermediates obey Fraction.cpp preconditions.
   int n, m;
   fraction M[MAXN][MAXN + 1], sol[MAXN];
-	int solve() { //-1: inconsistent, >= 0: rank
-		int rank = 0;
-	    for (int col = 0; col < m && rank < n; ++col) {
-	      int row = rank;
-	      while (row < n && !M[row][col].n) ++row;
+  int solve() { // -1: inconsistent; else rank, free vars=0
+    int rank = 0, piv[MAXN];
+    for (int col = 0; col < m && rank < n; ++col) {
+      int row = rank;
+      while (row < n && !M[row][col].n) ++row;
       if (row == n) continue;
-      for (int k = 0; k <= m; ++k) swap(M[rank][k],
-        M[row][k]);
-		for (int j = 0; j < n; ++j) {
-			if (rank == j) continue;
-			fraction tmp = -M[j][col] / M[rank][col];
-			for (int k = 0; k <=
-			  m; ++k) M[j][k] = tmp * M[rank][k] + M[j][k];
-      }
-		++rank; }
-	for (int i = 0; i < n; ++i) { int piv = 0;
-	  while (piv < m && !M[i][piv].n) ++piv;
-	  if (piv == m && M[i][m].n) return -1; }
-	fill_n(sol, m, fraction());
-	for (int i = 0; i < n; ++i) { int piv = 0;
-	while (piv < m && !M[i][piv].n) ++piv;
-	if (piv < m) sol[piv] = M[i][m] / M[i][piv]; }
-	return rank; }
+      for (int k = col; k <= m; ++k)
+        swap(M[rank][k], M[row][k]);
+      for (int j = 0; j < n; ++j)
+        if (j != rank && M[j][col].n) {
+          fraction t = -M[j][col] / M[rank][col];
+          M[j][col] = {};
+          for (int k = col + 1; k <= m; ++k)
+            if (M[rank][k].n)
+              M[j][k] = t*M[rank][k]+M[j][k];
+        }
+      piv[rank++] = col;
+    }
+    for (int i = rank; i < n; ++i)
+      if (M[i][m].n) return -1;
+    fill_n(sol, m, fraction());
+    for (int i = 0; i < rank; ++i)
+      sol[piv[i]] = M[i][m] / M[i][piv[i]];
+    return rank;
+  }
 };

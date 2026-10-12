@@ -2,6 +2,7 @@
 using namespace std;
 #define pb push_back
 #define ALL(x) (x).begin(), (x).end()
+using pii = pair<int, int>;
 #include "../../../codebook/2_Graph/BCC_Vertex.cpp"
 
 static bool conn(int n, const vector<pair<int,int>> &e, int banv, int bane,
