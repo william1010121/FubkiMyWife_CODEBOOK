@@ -51,6 +51,8 @@
 {Hierholzer, $O(V+E)$, iterative; directed or undirected, self-loops and multi-edges OK. \texttt{solve(s)} returns the vertex sequence ($m+1$ long) of a walk from \texttt{s} using every edge once, or empty if none exists. 0-base.}{examples/Euler_Path.cpp}
 \inputcodeex{Travelling Salesman (Held-Karp)}{2_Graph/TSP.cpp}%
 {Bitmask DP over (visited set, last vertex), $O(2^nn^2)$ time, $8n2^n$ bytes ($n=20$: 160 MiB). Directed costs, \texttt{INF} = no edge. Returns min cost and the vertex order; cycle mode starts at 0. 0-base.}{examples/TSP.cpp}
+\inputcodeex{Manhattan MST}{9_Else/ManhattanMST.cpp}%
+{$O(n\log n)$; sort the returned \texttt{\{w,i,j\}} and run Kruskal. 0-base ids; differences fit \texttt{ll}.}{examples/ManhattanMST.cpp}
 
 
 \section{Data Structure}
@@ -173,6 +175,8 @@
 {Call the 3-argument version: smallest $k\ge0$ with $x^k\equiv y\pmod m$, or $-1$. Expected $O(\sqrt m)$ time/space. Requires positive \texttt{int} $m$ and $x,y\in[0,m)$; non-coprime bases work. Supply \texttt{fpow(x,k,m)} for verification. The 4-argument version is internal.}{examples/DiscreteLog.cpp}
 \inputcodeex{Berlekamp Massey}{6_Math/Berlekamp-Massey.cpp}%
 {Finds recurrence coefficients in $O(n^2)$: $a_i=\sum_j c_j a_{i-j-1}$. Requires a caller-provided field type \texttt{T} with zero value-initialization, arithmetic, division, and comparison with zero. For modular arithmetic use a prime-modulus \texttt{mint}; composite-modulus division is invalid. Returns coefficients only.}{examples/Berlekamp-Massey.cpp}
+\inputcodeex{Linear Recurrence (Kitamasa)}{6_Math/Linear_Recurrence.cpp}%
+{$n$-th term in $O(k^2\log n)$ (matrix power: $O(k^3\log n)$); \texttt{c} from Berlekamp-Massey.}{examples/Linear_Recurrence.cpp}
 \subsection{Primes}
 {\footnotesize Handy primes for hashing and NTT moduli, from small values up to $2^{61}-1$ and near $2^{64}$.\par}\vspace{-0.6em}%
 \lstinputlisting{6_Math/Primes.cpp}

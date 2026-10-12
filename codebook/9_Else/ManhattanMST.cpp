@@ -1,22 +1,21 @@
-void solve(Point *a, int n) {
-    sort(a, a + n, [](const Point &p, const Point &q) {
-        return p.x + p.y < q.x + q.y;
-    });
-    map<long long, int> sweep; // key = -y
-    for (int i = 0; i < n; ++i) {
-        for (auto it = sweep.lower_bound(-a[i].y); it != sweep.end(); it = sweep.erase(it)) {
-            int j = it->second;
-            if (a[i].x - a[j].x < a[i].y - a[j].y) break;
-            es.push_back({a[j].u, a[i].u, dist(a[j], a[i])});
-        }
-        sweep[-a[i].y] = i;
+// <=4n edges {w,i,j} containing a Manhattan MST.
+vector<array<ll, 3>> manhattan(vector<pll> p) {
+  vector<int> id(SZ(p)); iota(ALL(id), 0);
+  vector<array<ll, 3>> es;
+  for (int k = 0; k < 4; ++k) {
+    sort(ALL(id), [&](int i, int j) {
+      return p[i].X - p[j].X < p[j].Y - p[i].Y; });
+    map<ll, int> sw; // -y -> id
+    for (int i : id) {
+      for (auto it = sw.lower_bound(-p[i].Y);
+           it != sw.end(); sw.erase(it++)) {
+        int j = it->Y;
+        ll dx = p[i].X - p[j].X, dy = p[i].Y - p[j].Y;
+        if (dy > dx) break; es.pb({dx + dy, i, j});
+      }
+      sw[-p[i].Y] = i;
     }
-}
-void MST(Point *a, int n) {
-    for (int t = 0; t < 2; ++t) {
-        solve(a, n);
-        for (int i = 0; i < n; ++i) swap(a[i].x, a[i].y);
-        solve(a, n);
-        for (int i = 0; i < n; ++i) a[i].x = -a[i].x;
-    }
-}
+    for (auto &q : p) if (k & 1) q.X = -q.X;
+                      else swap(q.X, q.Y);
+  }
+  return es; }

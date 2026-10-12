@@ -338,8 +338,8 @@ def main() -> int:
         print("pdf examples: internal structure-check self-test failed")
         return 1
     pairs = active_pairs()
-    if len(pairs) != 81:
-        print(f"pdf examples: expected 81 active inputcodeex entries, got {len(pairs)}")
+    if len(pairs) != 83:
+        print(f"pdf examples: expected 83 active inputcodeex entries, got {len(pairs)}")
         return 1
     examples = [example for _, example in pairs]
     duplicate = sorted(path for path, count in Counter(examples).items() if count != 1)

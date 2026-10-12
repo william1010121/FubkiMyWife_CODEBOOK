@@ -28,24 +28,6 @@ constexpr int MAXL = 24;
 #include "../../codebook/9_Else/cyclicLCS.cpp"
 }  // namespace cyclic_template
 
-namespace manhattan_template {
-struct Point {
-  long long x = 0, y = 0;
-  int u = -1;
-  bool operator<(const Point &other) const {
-    if (x != other.x) return x > other.x;
-    if (y != other.y) return y < other.y;
-    return u < other.u;
-  }
-};
-struct Edge { int u, v; long long w; };
-vector<Edge> es;
-long long dist(const Point &a, const Point &b) {
-  return llabs(a.x - b.x) + llabs(a.y - b.y);
-}
-#include "../../codebook/9_Else/ManhattanMST.cpp"
-}  // namespace manhattan_template
-
 static int brute_cover(const vector<vector<int>> &rows, int columns, bool exact) {
   int answer = INT_MAX;
   for (int mask = 0; mask < (1 << rows.size()); ++mask) {
@@ -178,42 +160,10 @@ struct DSU {
   }
 };
 
-static long long kruskal(int n, vector<manhattan_template::Edge> edges) {
-  sort(edges.begin(), edges.end(), [](auto a, auto b) { return a.w < b.w; });
-  DSU dsu(n); long long answer = 0; int used = 0;
-  for (auto edge : edges) if (dsu.merge(edge.u, edge.v)) answer += edge.w, ++used;
-  return used == n - 1 ? answer : LLONG_MAX;
-}
-
-static void test_manhattan_mst() {
-  mt19937 rng(556677);
-  for (int test = 0; test < 3000; ++test) {
-    int n = 1 + rng() % 30;
-    vector<manhattan_template::Point> points(n), transformed;
-    for (int i = 0; i < n; ++i)
-      points[i] = {(int)(rng() % 61) - 30, (int)(rng() % 61) - 30, i};
-    transformed = points;
-    manhattan_template::es.clear();
-    manhattan_template::MST(transformed.data(), n);
-    vector<manhattan_template::Edge> complete;
-    for (int i = 0; i < n; ++i) for (int j = i + 1; j < n; ++j)
-      complete.push_back({i, j, manhattan_template::dist(points[i], points[j])});
-    long long got = kruskal(n, manhattan_template::es), want = kruskal(n, complete);
-    if (got != want) {
-      cerr << "Manhattan mismatch test=" << test << " n=" << n
-           << " candidates=" << manhattan_template::es.size()
-           << " got=" << got << " want=" << want << '\n';
-      for (auto p : points) cerr << p.x << ' ' << p.y << '\n';
-      require(false, "Manhattan MST");
-    }
-  }
-}
-
 int main() {
   test_dlx();
   test_dynamic_cht();
   test_subset_sum();
   test_cyclic_lcs();
-  test_manhattan_mst();
   cout << "inactive else PASS\n";
 }
