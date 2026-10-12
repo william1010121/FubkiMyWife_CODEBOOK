@@ -1,40 +1,43 @@
-const ll mod = 998244353, g = 3;
-// pwr: b>=0, a/ret in [0,mod).
-ll pwr(ll a, ll b, ll ret = 1) {
-  for (; b; b >>= 1, a = a * a % mod)
-    if (b & 1) ret = ret * a % mod;
-  return ret;
+#define int long long
+const int mod=998244353, g=3;
+
+int pwr(int a, int b, int ret=1) {
+  do ret = b&1?ret*a%mod:ret, a=a*a%mod;
+  while(b>>=1); return ret;
 }
-// Direct/padded n=2^k, 0<=k<=23; [0,mod); O(n log n).
-void ntt(vector<ll> &vec, bool inv = false) {
-  int n = vec.size(); if (n == 1) return;
-  vector<int> roots(n / 2, 1);
-  ll w = pwr(g, (mod - 1) / n * (inv ? n - 1 : 1));
-  for (int j = 1; j < n / 2; ++j)
-    roots[j] = roots[j - 1] * w % mod;
-  for (int len = n; len > 1; len >>= 1) { // DIF
-    for (int i = 0; i < n; i += len)
-      for (int j = 0; j < len / 2; ++j) {
-        ll a = vec[i + j], b = vec[i + j + len / 2];
-        vec[i + j] = a + b < mod ? a + b : a + b - mod;
-        vec[i + j + len/2] = (a-b+mod) * roots[j] % mod;
+
+void ntt(vector<int> &vec, bool inv=false) {
+  // The input length must be a positive power of two (at most 2^23).
+  int n = vec.size();
+  for(int i=0, j=0; i<n; ++i) { // j = 反過來模擬加法
+    if(i<j) swap(vec[i],vec[j]);
+    for(int bit=n>>1; (j^=bit)<bit; bit>>=1);
+  }
+  for(int len=2; len<=n; len<<=1) { // 循環長度 = mod-1
+    int wlen = pwr(g,(mod-1)/len);
+    if(inv) wlen = pwr(wlen,mod-2);
+    for(int i=0; i<n; i+=len) {
+      int w=1;
+      for(int j=0; j<len/2; ++j) {
+      // i = 定範圍, j = 去跑 merge
+        int a = vec[i+j], b = w*vec[i+len/2+j]%mod;
+        vec[i+j]       = a+b<mod ? a+b : a+b-mod;
+        vec[i+len/2+j] = a-b>=0  ? a-b : a-b+mod;
+        w = w*wlen%mod;
       }
-    for (int j = 1; j < len / 4; ++j)
-      roots[j] = roots[2 * j];
+    }
   }
-  ll invn = mod - (mod - 1) / n; // n divides mod-1.
-  for (int i = 0, j = 0; i < n; ++i) { // bit reversal
-    if (i < j) swap(vec[i], vec[j]);
-    if (inv) vec[i] = vec[i] * invn % mod;
-    for (int bit = n >> 1; (j ^= bit) < bit; bit >>= 1);
+  if(inv) {
+    int invn = pwr(n,mod-2);
+    for(auto &i : vec) i = i*invn%mod;
   }
 }
-void intt(vector<ll> &vec) { ntt(vec, true); }
-vector<ll> mult(vector<ll> a, vector<ll> b) {
+#define intt(vec) ntt(vec,true)
+
+vector<int> mult(vector<int> a, vector<int> b) {
   if (a.empty() || b.empty()) return {};
-  int sz = a.size() + b.size() - 1, n = 1;
-  for (; n < sz; n <<= 1);
+  int sz = a.size()+b.size()-1, n=1; while(n<sz) n<<=1;
   a.resize(n), b.resize(n), ntt(a), ntt(b);
-  for (int i = 0; i < n; ++i) a[i] = a[i] * b[i] % mod;
+  for(int i=0; i<n; ++i) a[i] = a[i]*b[i] % mod;
   intt(a), a.resize(sz); return a;
 }

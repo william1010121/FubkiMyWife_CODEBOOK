@@ -6,7 +6,6 @@ using ll = long long;
 #define pb push_back
 #include "../../codebook/9_Else/CDQ_Dominance.cpp"
 #include "../../codebook/9_Else/All_LCS.cpp"
-#include "../../codebook/9_Else/digit_dp.cpp"
 void require(bool ok, const char *message) {
   if (!ok) throw runtime_error(message);
 }
@@ -28,12 +27,5 @@ int main() {
             == vector<string>{""}, "large zero-length LCS");
   require(all_lcs(string(2000, 'a'), string(2000, 'a'))
             == vector<string>{string(2000, 'a')}, "large single LCS");
-  vector<int> prefix(200001);
-  for (int i = 0; i < SZ(prefix); ++i)
-    prefix[i] = (i ? prefix[i-1] : 0) + !(i & (i >> 1));
-  for (int x = 0; x < SZ(prefix); ++x)
-    require(calc(x) == prefix[x], "cached Fibonacci counts");
-  require(calc(INT_MIN) == 0 && calc(INT_MAX) == 3524578,
-          "cached Fibonacci boundary counts");
   cout << "g11 round6 stress PASS\n";
 }

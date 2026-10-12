@@ -1,11 +1,18 @@
-// 32-bit int, C++20; O(1+popcount(x)) time, O(1) space.
-int calc(int x) { // [0,x], no adjacent 1; x<0 -> 0.
-  if (x < 0) return 0;
-  static constexpr auto f = [] { array<int, 32> f{1, 2};
-    for (int i = 2; i < 32; ++i) f[i] = f[i-1] + f[i-2];
-    return f; }(); int ans = 0;
-  for (unsigned v = x; v;) { int i = bit_width(v)-1;
-    ans += f[i]; if ((x >> i & 3) == 3) return ans;
-    v ^= 1u << i;
-  } return ans + 1;
+int dfs(int pos, int pre, int lead, int limit, int cnt){
+    if(pos == -1)return max(cnt,1ll);
+    if(!lead && !limit && dp[pos][pre][cnt] != -1)return dp[pos][pre][cnt];
+    int lb = 0, rb = (limit ? s[pos]-'0' : 1), ret = 1;
+    for(int i=lb;i<=rb;i++){
+        ret *= dfs(pos - 1, i, lead & (i == 0), limit & (i == rb), cnt + (i==1));
+        ret %= mod;
+    }
+    if(!lead && !limit)dp[pos][pre][cnt] = ret;
+    return ret;
+}
+int calc(int x){
+    s.clear();
+    if(x==0)return 0;
+    while(x){s += (x%2 + '0');x/=2;}
+    memset(dp,-1,sizeof dp);
+    return dfs(sz(s)-1,0,1,1,0);
 }

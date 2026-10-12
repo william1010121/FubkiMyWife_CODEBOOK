@@ -8,6 +8,7 @@ namespace fft_test {
 namespace ntt_test {
 #include "../../codebook/7_Polynomial/NTT_chrislaiisme.cpp"
 }
+#undef int
 int main() {
   const int n = 1 << 17;
   auto f = fft_test::mult(vector<int>(n, 1), vector<int>(n, -1));

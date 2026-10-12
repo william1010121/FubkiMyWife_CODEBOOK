@@ -21,6 +21,7 @@ void BitReverse(vector<int> &a, int n) {
 namespace chris_ntt {
 #include "codebook/7_Polynomial/NTT_chrislaiisme.cpp"
 }
+#undef int
 
 static vector<int> oracle(const vector<int> &a, const vector<int> &b) {
   vector<int> c(a.size() + b.size() - 1);

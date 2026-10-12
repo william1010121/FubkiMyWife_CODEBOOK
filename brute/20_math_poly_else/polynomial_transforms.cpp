@@ -46,6 +46,7 @@ namespace ntt2_test {
 
 namespace ntt_pdf_test {
 #include "../../codebook/7_Polynomial/NTT_chrislaiisme.cpp"
+#undef int
 }
 
 static vector<long long> naive_conv(const vector<int> &a, const vector<int> &b,

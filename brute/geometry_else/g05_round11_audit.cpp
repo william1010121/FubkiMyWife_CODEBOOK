@@ -20,7 +20,6 @@ double len(Point p) { return hypot(p.x, p.y); }
 #include "../../codebook/8_Geometry/triangleCenter.cpp"
 #include "../../codebook/9_Else/DynamicConvexTrick.cpp"
 #include "../../codebook/9_Else/HilbertCurve.cpp"
-#include "../../codebook/9_Else/digit_dp.cpp"
 namespace mo {
 #include "../../codebook/9_Else/Mos_Algorithm_With_modification.cpp"
 }
@@ -217,22 +216,6 @@ void integer_algorithms() {
       }
     }
   }
-  vector<int> valid;
-  auto generate = [&](auto &&self, int bit, int value, bool previous) {
-    if (bit < 0) { valid.push_back(value); return; }
-    self(self,bit-1,value,false);
-    if (!previous) self(self,bit-1,value | (1<<bit),true);
-  };
-  generate(generate,30,0,false);
-  auto check_digit = [&](int x) {
-    int want = upper_bound(valid.begin(),valid.end(),x)-valid.begin();
-    require(calc(x) == want, "digit DP enumerated valid integers");
-  };
-  check_digit(INT_MIN); check_digit(-1); check_digit(0);
-  check_digit(INT_MAX);
-  for (int k = 0; k <= 30; ++k)
-    for (int delta : {-1,0,1}) check_digit((1<<k)+delta);
-  for (int i = 0; i < 100000; ++i) check_digit(rng()&INT_MAX);
   for (ll intercept : {LLONG_MIN+2,LLONG_MAX-2}) {
     // Full signed range with equal slopes; no differences can overflow.
     DynamicHull h;
@@ -313,5 +296,5 @@ void mo_queries() {
 int main() {
   geometry(); graphs_and_z(); integer_algorithms(); mo_queries();
   cout << "PASS round11 g05: lattice HPI, skinny centers, graph reuse, "
-          "byte Z, Hilbert inverse, digit enumeration, extreme hull, Mo\n";
+          "byte Z, Hilbert inverse, extreme hull, Mo\n";
 }

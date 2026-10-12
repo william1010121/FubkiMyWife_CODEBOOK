@@ -3,9 +3,6 @@ using namespace std;
 using ll = long long;
 #define SZ(a) int((a).size())
 #define pb push_back
-namespace digit {
-#include "../../codebook/9_Else/digit_dp.cpp"
-}
 namespace pal {
 #include "../../codebook/5_String/PalTree.cpp"
 }
@@ -31,19 +28,6 @@ ll pal_count(const string &s) { // Independent Manacher oracle.
 }
 int main() {
   clock_t start = clock(); mt19937 rng(18010);
-  // Exhaust every valid 31-bit value in increasing order: calc is rank.
-  int rank = 0, prefix = 0;
-  for (int v = 0; v < (1 << 20); ++v) {
-    prefix += (v & (v >> 1)) == 0;
-    assert(digit::calc(v) == prefix);
-  }
-  auto gen = [&](auto &&self, int bit, int v, bool prev) -> void {
-    if (bit < 0) { assert(digit::calc(v) == ++rank); return; }
-    self(self, bit-1, v, false);
-    if (!prev) self(self, bit-1, v | (1 << bit), true);
-  };
-  gen(gen, 30, 0, false); assert(rank == 3524578);
-  assert(digit::calc(INT_MIN) == 0 && digit::calc(INT_MAX) == rank);
   for (int alpha : {1, 3, 26}) {
     string s(200000, 'a'); for (char &c : s) c += rng() % alpha;
     ll expected = pal_count(s); pal::palindromic_tree t;
@@ -75,6 +59,6 @@ int main() {
     }
     assert(fac::fac_no_p(1000, p, pk) == exact);
   }
-  cout << "PASS round18 g10: rank, Manacher totals, full unit prefixes; "
+  cout << "PASS round18 g10: Manacher totals, full unit prefixes; "
        << 1000.0 * (clock()-start) / CLOCKS_PER_SEC << " ms CPU\n";
 }

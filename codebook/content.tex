@@ -185,10 +185,10 @@
 
 \section{Polynomial}
 \inputcodeex{Fast Fourier Transform}{7_Polynomial/FFT_chrislaiisme.cpp}%
-{Iterative complex FFT and integer convolution via \texttt{mult}, $O(n\log n)$. Direct/padded lengths must be positive powers of two $\le2^{29}$; \texttt{mult} returns empty if either coefficient vector is empty, otherwise exactly $|a|+|b|-1$ rounded coefficients. Results must fit \texttt{int}; FP error before rounding $<1/2$.}{examples/Fast_Fourier_Transform.cpp}
+{Iterative complex FFT and integer convolution via \texttt{mult}, $O(n\log n)$. \texttt{fft} requires a positive power-of-two length; \texttt{mult} returns empty if either coefficient vector is empty, otherwise exactly $|a|+|b|-1$ rounded coefficients. Double precision limits coefficient size.}{examples/Fast_Fourier_Transform.cpp}
 \input{7_Polynomial/Number_Theory_Transform_Prime}
 \inputcodeex{Number Theory Transform*}{7_Polynomial/NTT_chrislaiisme.cpp}%
-{Iterative NTT and convolution via \texttt{mult}, $O(n\log n)$ modulo 998244353. Direct/padded lengths must be positive powers of two up to $2^{23}$; coefficients are canonical residues in \texttt{vector<ll>}. \texttt{mult} returns empty if either vector is empty.}{examples/Number_Theory_Transform.cpp}
+{Iterative NTT and convolution via \texttt{mult}, $O(n\log n)$ modulo 998244353. Direct \texttt{ntt} input lengths must be positive powers of two up to $2^{23}$; coefficients are residues modulo 998244353. \texttt{mult} returns empty if either vector is empty. The listing defines \texttt{int} as \texttt{long long}; contain or undefine the macro after use.}{examples/Number_Theory_Transform.cpp}
 \inputcodeex{Fast Walsh Transform*}{7_Polynomial/Fast_Walsh_Transform.cpp}%
 {or/and/xor convolution, $O(n\log n)$; file implements or. Subset convolution: $O(2^LL^2)$, $L\le21$. $n=2^k$, $k\le29$; C++20; 528 MiB scratch. \texttt{int} arithmetic must fit.}{examples/Fast_Walsh_Transform.cpp}
 \inputcodeex{Value Polynomial}{7_Polynomial/Value_Poly.cpp}%
@@ -271,7 +271,7 @@
 \inputcodeex{N Queens Problem}{9_Else/NQueens.cpp}%
 {Appends one solution's 1-based columns in $O(n)$ by cases on $n\bmod 6$ --- no search; $n\ge0$. \textbf{No solution for $n=2,3$}; appends nothing.}{examples/NQueens.cpp}
 \inputcodeex{Digit DP}{9_Else/digit_dp.cpp}%
-{Binary digit DP compressed to Fibonacci counts; \texttt{calc(x)} counts values in $[0,x]$ with no adjacent one bits. Negative $x$ returns 0; 32-bit \texttt{int}, C++20.}{examples/digit_dp.cpp}
+{Memoized binary digit DP over \texttt{(pos,pre,lead,limit,cnt)}; as written \texttt{calc(x)} $=\prod_{v=1}^{x}\mathrm{popcount}(v)\bmod$ \texttt{mod}, \texttt{calc(0)=0}. Needs globals \texttt{s}, \texttt{dp[pos][pre][cnt]}, \texttt{mod}, macro \texttt{sz}; \texttt{int} is \texttt{long long}.}{examples/digit_dp.cpp}
 \section{Python}
 \subsection{Misc}
 {\footnotesize Importable Python fallbacks for exact decimals/fractions, matrix and fast-array parsing, modular powers, seeded random helpers, and formatting. Huge integer input raises Python 3.11+'s digit limit.\par}\vspace{-0.6em}%

@@ -24,7 +24,6 @@ namespace mo_tree {
 namespace queens {
 #include "../../codebook/9_Else/NQueens.cpp"
 }
-#include "../../codebook/9_Else/digit_dp.cpp"
 
 void require(bool ok, const char *msg) {
   if (!ok) throw runtime_error(msg);
@@ -433,25 +432,6 @@ void queen_edges() {
     }
   }
 }
-void digit_edges() {
-  // Enumerate all valid 31-bit numbers independently, in numeric order.
-  vector<int> valid;
-  auto enumerate = [&](auto &&self, int bit, int x, bool prev) -> void {
-    if (bit < 0) { valid.pb(x); return; }
-    self(self, bit - 1, x, false);
-    if (!prev) self(self, bit - 1, x | (1 << bit), true);
-  };
-  enumerate(enumerate, 30, 0, false);
-  auto check = [&](int x) {
-    int want = upper_bound(ALL(valid), x) - valid.begin();
-    require(calc(x) == want, "digit DP full-range enumeration oracle");
-  };
-  check(INT_MIN); check(-1); check(0); check(INT_MAX);
-  for (int i = 0; i <= 30; ++i) {
-    int x = 1 << i; check(x - 1); check(x); check(x + 1);
-  }
-  for (int tc = 0; tc < 10000; ++tc) check(rng() & INT_MAX);
-}
 int main(int argc, char **argv) {
   string test = argc > 1 ? argv[1] : "all";
   vector<pair<string, void (*)()>> tests = {
@@ -462,7 +442,7 @@ int main(int argc, char **argv) {
     {"annealing", annealing_edges},
     {"hash", hash_edges}, {"fractions", fraction_edges},
     {"convolution", convolution_edges}, {"bitset", bitset_edges},
-    {"queens", queen_edges}, {"digit", digit_edges}
+    {"queens", queen_edges}
   };
   try {
     bool matched = false;

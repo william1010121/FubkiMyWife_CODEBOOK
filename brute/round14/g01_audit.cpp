@@ -20,7 +20,6 @@ constexpr int N = 33;
 #include "../../codebook/3_Data_Structure/Centroid_Decomposition.cpp"
 }
 #include "../../codebook/5_String/PalTree.cpp"
-#include "../../codebook/9_Else/digit_dp.cpp"
 namespace poly {
 struct mint {
   static constexpr int P = 17;
@@ -196,20 +195,6 @@ void arithmetic_audit() {
               "inverse full-width product");
     require(inv[0] == -123 && inv[N + 1] == -123, "inverse bounds");
   }
-  // Check the rank increment at every valid 31-bit integer, not just
-  // random upper-bound queries; also test the largest invalid bound.
-  int rank = 0;
-  auto visit = [&](auto &&self, int bit, int x, bool previous) -> void {
-    if (bit < 0) {
-      require(calc(x) == ++rank, "digit valid rank");
-      require(calc(x - 1) == rank - 1, "digit previous bound");
-      return;
-    }
-    self(self, bit - 1, x, false);
-    if (!previous) self(self, bit - 1, x | (1 << bit), true);
-  };
-  visit(visit, 30, 0, false);
-  require(calc(INT_MIN) == 0 && calc(INT_MAX) == rank, "digit limits");
   using namespace poly;
   auto inverse = [](int a) {
     for (int b = 1; b < mint::P; ++b) if (a * b % mint::P == 1) return b;

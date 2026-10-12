@@ -4,6 +4,7 @@
 namespace nt {
 #include "../../codebook/7_Polynomial/NTT_chrislaiisme.cpp"
 }
+#undef int
 namespace walsh {
 #include "../../codebook/7_Polynomial/Fast_Walsh_Transform.cpp"
 }

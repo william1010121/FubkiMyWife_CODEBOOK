@@ -7,6 +7,7 @@ using ll = long long;
 namespace transform {
 #include "../../codebook/7_Polynomial/NTT_chrislaiisme.cpp"
 }
+#undef int
 namespace rotation {
 #include "../../codebook/5_String/Smallest_Rotation.cpp"
 }

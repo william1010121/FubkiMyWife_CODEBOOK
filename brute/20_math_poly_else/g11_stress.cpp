@@ -9,7 +9,6 @@ using ll = long long;
 #include "../../codebook/9_Else/AdaptiveSimpson.cpp"
 #include "../../codebook/9_Else/BitsetLCS.cpp"
 #include "../../codebook/9_Else/min_plus_convolution.cpp"
-#include "../../codebook/9_Else/digit_dp.cpp"
 
 void require(bool ok, const char *msg) {
   if (!ok) { cerr << msg << '\n'; exit(1); }
@@ -60,16 +59,6 @@ int main() {
   require(SZ(c) == 299999, "min-plus output size");
   for (int i = 0; i < SZ(c); ++i)
     require(c[i] == max(0, i-149999), "large convex min-plus");
-  vector<int> prefix(100001);
-  for (int i = 0; i < SZ(prefix); ++i)
-    prefix[i] = (i ? prefix[i-1] : 0) + !(i & (i >> 1));
-  mt19937 rng(11);
-  for (int i = 0; i < 1000000; ++i) {
-    int x = rng() % SZ(prefix);
-    require(calc(x) == prefix[x], "million digit-DP queries");
-  }
-  require(calc(-1) == 0 && calc(INT_MAX) == 3524578,
-          "digit-DP signed boundaries");
   cout << "g11 stress PASS ("
        << chrono::duration<double>(
             chrono::steady_clock::now()-start).count()

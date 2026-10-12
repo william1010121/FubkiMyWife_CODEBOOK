@@ -5,6 +5,7 @@
 namespace nt {
 #include "../../codebook/7_Polynomial/NTT_chrislaiisme.cpp"
 }
+#undef int
 namespace dt {
 constexpr int N = 65;
 #include "../../codebook/2_Graph/Dominator_Tree.cpp"

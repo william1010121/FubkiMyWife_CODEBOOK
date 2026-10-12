@@ -8,6 +8,7 @@ namespace fft_case {
 namespace ntt_case {
 #include "../../codebook/7_Polynomial/NTT_chrislaiisme.cpp"
 }
+#undef int
 namespace fwt_case {
 #include "../../codebook/7_Polynomial/Fast_Walsh_Transform.cpp"
 }

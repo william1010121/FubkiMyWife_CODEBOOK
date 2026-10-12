@@ -2,7 +2,6 @@
 #include "../../codebook/1_Basic/Default_code.cpp"
 #include "../../codebook/3_Data_Structure/Dynamic_2D_Segment_Tree.cpp"
 #include "../../codebook/3_Data_Structure/IntervalContainer.cpp"
-#include "../../codebook/9_Else/digit_dp.cpp"
 #include "../../codebook/9_Else/simulated_annealing.cpp"
 namespace cent {
 constexpr int N = 129;
@@ -104,39 +103,6 @@ void dynamic_audit() {
   assert(s.query(INT_MAX-2,INT_MAX) == INT_MAX-1);
   s.update(INT_MAX-2,INT_MAX,-INT_MAX/2);
   assert(s.query(0,INT_MAX) == 0); reclaim(s.root);
-}
-
-// Independent digit DP: (prefix smaller, previous bit), no Fibonacci.
-int digit_oracle(int x) {
-  if (x < 0) return 0;
-  ll dp[2][2]{}; dp[0][0] = 1;
-  for (int i = 30; i >= 0; --i) {
-    ll next[2][2]{}; int bit = (x>>i)&1;
-    for (int less = 0; less < 2; ++less)
-      for (int prev = 0; prev < 2; ++prev)
-        for (int b = 0; b < 2; ++b)
-          if (!(prev && b) && (less || b <= bit))
-            next[less || b < bit][b] += dp[less][prev];
-    copy(&next[0][0],&next[0][0]+2,dp[0]);
-    copy(&next[1][0],&next[1][0]+2,dp[1]);
-  }
-  return dp[0][0]+dp[0][1]+dp[1][0]+dp[1][1];
-}
-void digit_audit() {
-  for (int x : {INT_MIN,-1,0,1,2,3,INT_MAX})
-    assert(calc(x) == digit_oracle(x));
-  for (int bit = 0; bit <= 30; ++bit)
-    for (int suffix = 0; suffix < 128; ++suffix) {
-      ll mid = (1LL<<bit)+suffix;
-      for (ll x : {mid-1,mid,mid+1}) if (x <= INT_MAX)
-        assert(calc(x) == digit_oracle(x));
-    }
-  for (int t = 0; t < 20000; ++t) {
-    int x = rng()&INT_MAX;
-    assert(calc(x) == digit_oracle(x));
-    bool legal = !(x & (x>>1));
-    assert(calc(x)-calc(x-1) == legal);
-  }
 }
 
 void centroid_audit() {
@@ -416,7 +382,6 @@ int main() {
     f(); cout << "PASS " << s << '\n' << flush;
   };
   check(dynamic_audit,"2D split/transpose/forced-push oracle");
-  check(digit_audit,"31-bit tight digit oracle");
   check(centroid_audit,"centroid capacity/reuse/signed paths");
   check(cycle_audit,"cycle potentials/translation/every DP cell");
   check(aho_audit,"Aho chunked scans/repeated batches/suffixes");

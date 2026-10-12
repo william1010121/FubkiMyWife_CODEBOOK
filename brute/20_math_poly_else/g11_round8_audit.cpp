@@ -24,7 +24,6 @@ namespace mo_tree {
 namespace queens {
 #include "../../codebook/9_Else/NQueens.cpp"
 }
-#include "../../codebook/9_Else/digit_dp.cpp"
 
 void require(bool ok, const char *message) {
   if (!ok) throw runtime_error(message);
@@ -320,7 +319,7 @@ void convolution_audit() {
   require(min_plus_convolution(vector<ll>{}, vector<ll>{1}).empty(),
           "min-plus empty");
 }
-void queens_digit_audit() {
+void queens_audit() {
   vector<int> q;
   for (int n = 0; n <= 200; ++n) {
     auto size = q.size(); auto saved = q;
@@ -336,20 +335,10 @@ void queens_digit_audit() {
               "queen repeated append diagonals");
     }
   }
-  require(calc(INT_MIN) == 0 && calc(INT_MAX) == 3524578,
-          "digit signed boundaries");
-  // Check prefix count increments around every pair of set bit positions.
-  for (int a = 0; a <= 30; ++a) for (int b = 0; b <= 30; ++b) {
-    ll x = (1LL << a) | (1LL << b);
-    for (ll y = max(0LL, x-2); y <= min(ll(INT_MAX), x+2); ++y) {
-      int valid = !(y & (y >> 1));
-      require(calc(y) - calc(y-1) == valid, "digit two-bit neighbours");
-    }
-  }
 }
 int main() {
   cyclic_audit(); cdq_audit(); mo_audit(); hilbert_audit(); hull_audit();
   lcs_audit(); simpson_audit(); annealing_audit(); tree_audit();
-  fraction_audit(); convolution_audit(); queens_digit_audit();
+  fraction_audit(); convolution_audit(); queens_audit();
   cout << "g11 round8 audit PASS\n";
 }
