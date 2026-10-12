@@ -47,6 +47,10 @@
 {$O(n2^n)$ cover count modulo $2^{32}$; cancellation may overestimate. Needs OR-zeta \texttt{fwt()} and 32-bit \texttt{unsigned}; simple undirected graph, $0\le n\le N<31$, with feasible $2^N$ arrays.}{examples/Minimum_Clique_Cover.cpp}
 \inputcodeex{NumberofMaximalClique*}{2_Graph/NumberofMaximalClique.cpp}%
 {Bron-Kerbosch with pivot, $O(n\lceil N/w\rceil3^{n/3})$ ($w$: word bits). Count fits \texttt{int}. Simple undirected; GCC/libstdc++, $n<N$. 1-base.}{examples/NumberofMaximalClique.cpp}
+\inputcodeex{Euler Path/Circuit}{2_Graph/Euler_Path.cpp}%
+{Hierholzer, $O(V+E)$, iterative; directed or undirected, self-loops and multi-edges OK. \texttt{solve(s)} returns the vertex sequence ($m+1$ long) of a walk from \texttt{s} using every edge once, or empty if none exists. 0-base.}{examples/Euler_Path.cpp}
+\inputcodeex{Travelling Salesman (Held-Karp)}{2_Graph/TSP.cpp}%
+{Bitmask DP over (visited set, last vertex), $O(2^nn^2)$ time, $8n2^n$ bytes ($n=20$: 160 MiB). Directed costs, \texttt{INF} = no edge. Returns min cost and the vertex order; cycle mode starts at 0. 0-base.}{examples/TSP.cpp}
 
 
 \section{Data Structure}
@@ -276,7 +280,5 @@
 \subsection{Misc}
 {\footnotesize Importable Python fallbacks for exact decimals/fractions, matrix and fast-array parsing, modular powers, seeded random helpers, and formatting. Huge integer input raises Python 3.11+'s digit limit.\par}\vspace{-0.6em}%
 \lstinputlisting[language=Python,emptylines=0]{11_Python/misc.py}
-\section{Black-box Cards}
-\input{9_Else/blackbox.tex}
 % \subsection{Stress testing}
 % \lstinputlisting[language=bash]{9_Else/Stress_Test.sh}
