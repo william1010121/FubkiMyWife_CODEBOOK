@@ -1,8 +1,8 @@
 \section{Basic}
 %\subsection{Shell script}
 %\lstinputlisting{1_Basic/Shell_script.cpp}
-\subsection{Default code}
-\lstinputlisting{1_Basic/Default_code.cpp}
+%\subsection{Default code}
+%\lstinputlisting{1_Basic/Default_code.cpp}
 \inputcodeex{Dinic}{4_Flow_Matching/Dinic.cpp}%
 {Max flow. $O(V^2E)$; unit caps $O(E\sqrt{E})$; bipartite $O(E\sqrt{V})$. \texttt{cap} is \texttt{int}. 0-base.}{examples/Dinic.cpp}
 \subsection{vimrc}
@@ -56,6 +56,8 @@
 
 
 \section{Data Structure}
+\inputcodedesc{Sparse Table}{3_Data_Structure/Sparse_table.cpp}%
+{Static range max (swap \texttt{max} for any idempotent op). Build $O(n\log n)$, query $O(1)$; $0\le l\le r<n$.}
 \inputcodeex{BIT kth*}{3_Data_Structure/BIT_kth.cpp}%
 {$k$-th smallest from a 1-based value-domain BIT in $O(\log N)$. Any $N>0$; frequencies nonnegative, $1\le k\le\mathrm{total}$; sums fit \texttt{int}.}{examples/BIT_kth.cpp}
 \inputcodeex{Interval Container*}{3_Data_Structure/IntervalContainer.cpp}%
@@ -280,6 +282,7 @@
 {Appends one solution's 1-based columns in $O(n)$ by cases on $n\bmod 6$ --- no search; $n\ge0$. \textbf{No solution for $n=2,3$}; appends nothing.}{examples/NQueens.cpp}
 \inputcodeex{Digit DP}{9_Else/digit_dp.cpp}%
 {Memoized binary digit DP over \texttt{(pos,pre,lead,limit,cnt)}; as written \texttt{calc(x)} $=\prod_{v=1}^{x}\mathrm{popcount}(v)\bmod$ \texttt{mod}, \texttt{calc(0)=0}. Needs globals \texttt{s}, \texttt{dp[pos][pre][cnt]}, \texttt{mod}, macro \texttt{sz}; \texttt{int} is \texttt{long long}.}{examples/digit_dp.cpp}
+\inputcode{String Hashing}{5_String/Hashing.cpp}
 \section{Python}
 \subsection{Misc}
 {\footnotesize Importable Python fallbacks for exact decimals/fractions, matrix and fast-array parsing, modular powers, seeded random helpers, and formatting. Huge integer input raises Python 3.11+'s digit limit.\par}\vspace{-0.6em}%
