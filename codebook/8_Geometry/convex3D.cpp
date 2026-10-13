@@ -1,26 +1,24 @@
-double absvol(const P a,const P b,const P c,const P d)
-{ return abs(((b-a)^(c-a))*(d-a))/6; }
-struct convex3D {
+double absvol(P a, P b, P c, P d) {
+  return abs(((b-a)^(c-a))*(d-a))/6; }
+// 0<=n<=1010, m=0; distinct p; finite arithmetic.
+// O(n^2); permutes p; outward f[0..m); reliable eps.
+struct convex3D { // Degenerate input: m=0.
   static const int maxn=1010;
-  struct T{
-    int a,b,c; bool res; T(){}
-    T(int a,int b,int c,bool res=1):a(a),
-      b(b),c(c),res(res){}
+  struct T{ int a,b,c; bool res; T(){}
+    T(int a,int b,int c,bool res=1):
+      a(a),b(b),c(c),res(res){}
   };
-  int n,m;
-  P p[maxn];
-  T f[maxn*8];
-  int id[maxn][maxn];
-  bool on(T &t,P &q) { return ((p[t.c]-
-    p[t.b])^(p[t.a]-p[t.b]))*(q-p[t.a])>eps; }
+  int n,m; P p[maxn];
+  T f[maxn*8]; int id[maxn][maxn];
+  bool on(T &t,P &q) {
+    return ((p[t.c]-p[t.b])^(p[t.a]-p[t.b]))
+      *(q-p[t.a])>eps; }
+  void add(T t){
+    id[t.a][t.b]=id[t.b][t.c]=id[t.c][t.a]=m; f[m++]=t; }
   void meow(int q,int a,int b){
-    int g=id[a][b];
-    if(f[g].res){
+    int g=id[a][b]; if(f[g].res){
       if(on(f[g],p[q]))dfs(q,g);
-      else{
-        id[q][b]=id[a][q]=id[b][a]=m;
-        f[m++]=T(b,a,q,1);
-      }
+      else add(T(b,a,q));
     }
   }
   void dfs(int p,int i){ f[i].res=0;
@@ -28,46 +26,44 @@ struct convex3D {
     meow(p,f[i].c,f[i].b); meow(p,f[i].a,f[i].c); }
   void operator()(){
     if(n<4)return;
-    if([&](){
-        for(int i=1;i<n;++i)if(abs(p[0]-p[i])>eps)
-          return swap(p[1],p[i]),0;
-        return 1;
-        }() || [&](){
-        for(int i=2;i<n;++i)
-          if(abs((p[0]-p[i])^(p[1]-p[i]))>eps)
-            return swap(p[2],p[i]),0;
-        return 1;
-        }() || [&](){
-        for(int i=3;i<n;++i)
-          if(abs(((p[1]-p[0])^(p[2]-
-            p[0]))*(p[i]-p[0]))>eps)
-            return swap(p[3],p[i]),0;
-        return 1;
-        }())return;
+    auto choose = [&](int k, auto test) {
+      for(int i=k;i<n;++i)if(test(p[i])){
+        swap(p[k],p[i]); return true;
+      } return false;
+    };
+    if(!choose(1,[&](P q){return abs(p[0]-q)>eps;}) ||
+       !choose(2,[&](P q){
+         return abs((p[0]-q)^(p[1]-q))>eps;}) ||
+       !choose(3,[&](P q){
+         return abs(((p[1]-p[0])^(p[2]-p[0]))
+           *(q-p[0]))>eps;
+       }))return;
     for(int i=0;i<4;++i){
       T t((i+1)%4,(i+2)%4,(i+3)%4,1);
       if(on(t,p[i]))swap(t.b,t.c);
-      id[t.a][t.b]=id[t.b][t.c]=id[t.c][t.a]=m;
-      f[m++]=t;
-    } for(int i=4;i<n;++i)for(int j=0;j<m;++j)
-      if(f[j].res && on(f[j],p[i])){ dfs(i,j); break; }
-    int mm=m; m=0;
-    for(int i=0;i<mm;++i)if(f[i].res)f[m++]=f[i];
+      add(t);
+    } for(int i=4;i<n;++i)
+      for(int j=0;j<m;++j)
+        if(on(f[j],p[i])){
+          dfs(i,j); int mm=m; m=0;
+          for(int k=0;k<mm;++k)if(f[k].res)add(f[k]);
+          break; }
   }
   bool same(int i,int j){
-    return !(absvol(p[f[i].a],
-      p[f[i].b],p[f[i].c],p[f[j].a])>eps
-      || absvol(p[f[i].a],p[f[i].b],
-        p[f[i].c],p[f[j].b])>eps
-      || absvol(p[f[i].a],p[f[i].b],
-        p[f[i].c],p[f[j].c])>eps);
+    for(int k : {f[j].a,f[j].b,f[j].c})
+      if(absvol(p[f[i].a],p[f[i].b],p[f[i].c],p[k])>eps)
+        return false;
+    return true;
   }
-  int faces(){
-    int r=0;
-    for(int i=0;i<m;++i){
-      int iden=1;
-      for(int j=0;j<i;++j)if(same(i,j))iden=0;
-      r+=iden;
+  int faces(){ // O(m); reliable coplanarity at eps.
+    int r=0; vector<int> seen(m), q;
+    for(int i=0;i<m;++i)if(!seen[i]){
+      ++r; seen[i]=1; q={i};
+      for(int j=0;j<(int)q.size();++j){ T t=f[q[j]];
+        for(int k:{id[t.b][t.a],id[t.c][t.b],id[t.a][t.c]})
+          if(!seen[k] && same(i,k))
+            seen[k]=1,q.push_back(k);
+      }
     } return r;
   }
 } tb;

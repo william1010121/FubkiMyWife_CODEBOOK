@@ -20,6 +20,11 @@ static void check(int tc, int n, const vector<Edge> &edges) {
   SCC got(n);
   for (auto [u, v] : edges) got.add_edge(u, v);
   got.solve();
+  if (got.dft != n || !got.stk.empty() ||
+      any_of(got.instack.begin(), got.instack.end(), [](int x) { return x; })) {
+    cerr << "SCC multigraph failure tc=" << tc << ": active stack remains\n";
+    exit(1);
+  }
   auto r = closure(n, edges);
   for (int u = 0; u < n; ++u)
     for (int v = 0; v < n; ++v)
@@ -43,6 +48,12 @@ static void add_repeated(vector<Edge> &e, int u, int v, int count) {
 
 int main() {
   int tc = 0;
+  check(tc++, 0, {});
+  check(tc++, 1, {});
+  check(tc++, 1, {{0, 0}, {0, 0}});
+  // A completed SCC is reachable later but must not lower active low links.
+  check(tc++, 5, {{0, 1}, {1, 0}, {2, 1}, {2, 3},
+                  {3, 2}, {4, 3}, {4, 0}});
   check(tc++, 7, {});  // all vertices disconnected
 
   {
@@ -84,6 +95,25 @@ int main() {
       if (n) e.push_back({u, v});
     }
     check(tc++, n, e);
+  }
+
+  // A later sibling reaches both a popped SCC and an active ancestor's
+  // descendant. Relabeling changes DFS roots, and shuffling changes siblings.
+  vector<Edge> adversarial = {{0, 1}, {1, 2}, {2, 0}, {0, 3},
+      {3, 4}, {4, 1}, {4, 5}, {5, 6}, {6, 5}, {0, 7},
+      {7, 6}, {7, 3}, {8, 7}, {8, 8}, {9, 8}};
+  mt19937 order_rng(0x8085CC);
+  vector<int> labels(11);
+  iota(labels.begin(), labels.end(), 0);
+  for (int rep = 0; rep < 600; ++rep) {
+    shuffle(labels.begin(), labels.end(), order_rng);
+    vector<Edge> edges;
+    for (auto [u, v] : adversarial) {
+      edges.push_back({labels[u], labels[v]});
+      edges.push_back({labels[u], labels[v]});
+    }
+    shuffle(edges.begin(), edges.end(), order_rng);
+    check(tc++, labels.size(), edges);
   }
 
   cout << "SCC multigraph edge-case PASS " << tc << " cases\n";

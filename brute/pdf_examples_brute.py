@@ -107,6 +107,8 @@ IGNORED_MEMBER_NAMES = {
     # standard-library operations and member access used only in comments
     "begin", "end", "size", "empty", "clear", "push_back", "emplace_back",
     "back", "front", "data", "first", "second", "c_str", "v", "p", "q",
+    # Default_code.cpp shorthands (macros, not members)
+    "pb", "X", "Y",
 }
 
 IGNORED_CALL_NAMES = {
@@ -336,8 +338,8 @@ def main() -> int:
         print("pdf examples: internal structure-check self-test failed")
         return 1
     pairs = active_pairs()
-    if len(pairs) != 79:
-        print(f"pdf examples: expected 79 active inputcodeex entries, got {len(pairs)}")
+    if len(pairs) != 83:
+        print(f"pdf examples: expected 83 active inputcodeex entries, got {len(pairs)}")
         return 1
     examples = [example for _, example in pairs]
     duplicate = sorted(path for path, count in Counter(examples).items() if count != 1)

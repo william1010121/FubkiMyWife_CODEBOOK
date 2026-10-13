@@ -12,8 +12,7 @@ using namespace std;
 }
 
 int main() {
-  // The template has no EOF sentinel.  Therefore the contract is checked up
-  // to (and including) the final byte, without making an undefined extra read.
+  // Check every byte as int, so 0xff must remain distinct from EOF.
   const size_t size = 65536 + 37;
   vector<unsigned char> expected(size);
   for (size_t i = 0; i < size; ++i)
@@ -34,12 +33,34 @@ int main() {
   clearerr(stdin);
 
   for (size_t i = 0; i < expected.size(); ++i) {
-    unsigned char got = static_cast<unsigned char>(readchar());
+    int got = readchar();
     if (got != expected[i])
       fail("byte " + to_string(i) + ": got " + to_string(got) +
            ", expected " + to_string(expected[i]));
   }
+  for (int i = 0; i < 3; ++i)
+    if (readchar() != EOF) fail("EOF must be stable across repeated reads");
+
+  // Redirect only after the entire old stream and private buffer are drained.
+  for (size_t length : {0, 1, 255, 256, 257, 65535, 65536,
+                        65537, 131072, 131073, 196608, 196609}) {
+    FILE *edge = tmpfile();
+    if (!edge) fail("boundary tmpfile");
+    vector<unsigned char> bytes(length);
+    for (size_t i = 0; i < length; ++i) bytes[i] = (i * 131 + 255) & 255;
+    if (length == 256) fill(bytes.begin(), bytes.end(), 0xff);
+    if (length == 257) fill(bytes.begin(), bytes.end(), 0);
+    if (fwrite(bytes.data(), 1, length, edge) != length) fail("boundary write");
+    fflush(edge), rewind(edge);
+    if (dup2(fileno(edge), STDIN_FILENO) < 0) fail("boundary redirect");
+    clearerr(stdin);
+    for (size_t i = 0; i < length; ++i)
+      if (readchar() != bytes[i]) fail("boundary byte " + to_string(i));
+    for (int i = 0; i < 10; ++i)
+      if (readchar() != EOF) fail("boundary repeated EOF");
+    fclose(edge);
+  }
 
   cerr << "PASS readchar: " << expected.size()
-       << " bytes, embedded NUL, 0xff, full-buffer refill, final byte\n";
+       << " bytes plus 12 boundary streams, NUL, 0xff, repeated EOF\n";
 }

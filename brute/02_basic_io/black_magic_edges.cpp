@@ -18,6 +18,7 @@ void check(bool condition, const string &message) {
 
 void check_tree(const tree_set &tree, const set<int> &oracle) {
   check(tree.size() == oracle.size(), "tree size");
+  check(tree.find_by_order(tree.size()) == tree.end(), "out-of-range order");
   for (int probe : {-100000, -1, 0, 1, 7, 42, 100000})
     check(tree.order_of_key(probe) ==
               static_cast<size_t>(distance(oracle.begin(), oracle.lower_bound(probe))),
@@ -36,6 +37,7 @@ string rope_string(const __gnu_cxx::rope<char> &rope) {
 int main() {
   tree_set tree;
   set<int> tree_oracle;
+  check_tree(tree, tree_oracle);
   const vector<int> values = {INT_MIN, -100000, -1, 0, 1, 7, 42, INT_MAX,
                               7, 0, INT_MIN};
   for (int value : values) {
@@ -59,6 +61,10 @@ int main() {
 
   umap table;
   unordered_map<int, int> table_oracle;
+  for (int key : {INT_MIN, INT_MAX, 0}) {
+    table[key] = key;
+    table_oracle[key] = key;
+  }
   for (int tc = 0; tc < 1400; ++tc) {
     int key = static_cast<int>(rng() % 101) - 50;
     int value = static_cast<int>(rng());
@@ -100,6 +106,12 @@ int main() {
     heap_oracle.pop();
   }
   check(left.empty(), "melded heap drained");
+  left.join(right);
+  check(left.empty() && right.empty(), "join two empty heaps");
+  right.push(INT_MIN), left.join(right);
+  check(right.empty() && left.top() == INT_MIN, "join into empty heap");
+  left.join(right);
+  check(left.size() == 1 && right.empty(), "join from empty heap");
 
   __gnu_cxx::rope<char> rope;
   string rope_oracle;
@@ -127,6 +139,9 @@ int main() {
   rope_oracle.erase(0, 6);
   check_rope();
   check(rope_string(snapshot) == "start-middle-end", "rope copy persistence");
+  snapshot.insert(0, "copy-");
+  check_rope();
+  check(rope_string(snapshot) == "copy-start-middle-end", "modify snapshot");
 
   for (int tc = 0; tc < 300; ++tc) {
     if (rope_oracle.empty() || (rng() & 1)) {

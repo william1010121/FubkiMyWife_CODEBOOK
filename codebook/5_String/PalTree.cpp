@@ -1,39 +1,34 @@
-struct palindromic_tree {
+struct palindromic_tree { // 'a'..'z'; n+2 fits int; O(26n)
+  // Roots 0:0,1:-1; add takes char codes.
   struct node {
-    int next[26], fail, len;
-    int cnt, num; // cnt: appear times, num: number of pal. suf.
-	node(int l = 0) : fail(0), len(l), cnt(0), num(0) {
-	  fill(next, next + 26, 0); }
+    int next[26] = {}, fail = 0, len, cnt = 0, num = 0;
+    // cnt: occurrences; num: palindromic suffix count
+    node(int l = 0) : len(l) {}
   };
   vector<node> St;
   vector<char> s;
   int last, n;
-	palindromic_tree() : St(2), last(1), n(0) {
-	  St[0].fail = 1, St[1].len = -1, s.pb(-1); }
-  inline void clear() {
-	St.clear(), s.clear(), last = 1, n = 0,
-	  St.pb(0), St.pb(-1), St[0].fail = 1, s.pb(-1);
+  palindromic_tree() { St.reserve(2); clear(); }
+  void clear() {
+    St.clear(), s.clear(), last = 1, n = 0;
+    St.pb(0), St.pb(-1), St[0].fail = 1, s.pb(-1);
   }
-  inline int get_fail(int x) {
-	while (s[n - St[x].len - 1] != s[n]) x = St[x].fail;
-	return x;
+  int get_fail(int x) {
+    while (s[n - St[x].len - 1] != s[n]) x = St[x].fail;
+    return x;
   }
-  inline void add(int c) {
-		s.push_back(c -= 'a'), ++n;
-		int cur = get_fail(last);
-		if (!St[cur].next[c]) { int now = SZ(St);
-		  St.pb(St[cur].len + 2);
-		  St[now].fail =
-		    St[get_fail(St[cur].fail)].next[c],
-		    St[cur].next[c] = now,
-		    St[now].num = St[St[now].fail].num + 1;
-		  } last = St[cur].next[c], ++St[last].cnt;
+  void add(int c) {
+    s.pb(c -= 'a'), ++n; int cur = get_fail(last);
+    if (!St[cur].next[c]) { int now = SZ(St);
+      St.pb(St[cur].len + 2);
+      St[now].fail = St[get_fail(St[cur].fail)].next[c];
+      St[cur].next[c] = now;
+      St[now].num = St[St[now].fail].num + 1;
+    } last = St[cur].next[c], ++St[last].cnt;
   }
-  inline void count() { // counting cnt
-	for (auto i = St.rbegin(); i !=
-	  St.rend(); ++i) St[i->fail].cnt += i->cnt;
+  void count() { // call once after all add()
+    for (int i = SZ(St) - 1; i >= 0; --i)
+      St[St[i].fail].cnt += St[i].cnt;
   }
-	inline int size() { // The number of diff. pal.
-		return SZ(St) - 2;
-  }
+  int size() { return SZ(St) - 2; } // distinct palindromes
 };

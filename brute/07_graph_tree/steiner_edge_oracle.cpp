@@ -1,9 +1,11 @@
 #include <bits/stdc++.h>
 using namespace std;
+using ll = long long;
 
 #define N 8
 #define T 4
 #define SZ(v) ((int)(v).size())
+#define ALL(v) (v).begin(), (v).end()
 #define copy_n std::copy_n
 const int INF = 1000000000;
 #include "../../codebook/2_Graph/MinimumSteinerTree.cpp"

@@ -2,6 +2,7 @@
 using namespace std;
 
 #define pb push_back
+using pii = pair<int, int>;
 #include "../../codebook/2_Graph/BCC_Vertex.cpp"
 #include "oracle.hpp"
 
@@ -29,10 +30,33 @@ static void check_case(const string &where, int n, const vector<Edge> &edges) {
       fail_case(where, n, edges, "articulation point differs");
 
   const int base = graph.bcc.size();
+  if (graph.nbcc != base || graph.dft != n)
+    fail_case(where, n, edges, "block count/visited count differs");
+  vector<int> membership(n);
+  for (int i = 0; i < base; ++i) {
+    set<int> vertices(graph.bcc[i].begin(), graph.bcc[i].end());
+    if (vertices.size() != graph.bcc[i].size())
+      fail_case(where, n, edges, "duplicate vertex in a block");
+    for (int u : vertices) {
+      ++membership[u];
+      if (!want_ap[u] && graph.bln[u] != i)
+        fail_case(where, n, edges, "non-articulation block mapping differs");
+    }
+  }
+  for (int u = 0; u < n; ++u)
+    if ((membership[u] > 1) != (bool)want_ap[u])
+      fail_case(where, n, edges, "block membership/articulation differs");
   graph.block_cut_tree();
   const int ap_count = count(want_ap.begin(), want_ap.end(), true);
   if ((int)graph.nG.size() != base + ap_count)
     fail_case(where, n, edges, "block-cut tree node count differs");
+  if ((int)graph.nG.size() > max(n, 2 * n - 2) ||
+      graph.cir != vector<int>(base, 1))
+    fail_case(where, n, edges, "forest bound/block markers differ");
+  for (int u = 0; u < n; ++u)
+    if (graph.bln[u] < 0 || graph.bln[u] >= graph.nbcc ||
+        (graph.bln[u] >= base) != (bool)want_ap[u])
+      fail_case(where, n, edges, "block-cut mapping differs");
 
   vector<int> ap_node(n, -1);
   int next = base;
@@ -92,6 +116,11 @@ static vector<Edge> random_graph(mt19937 &rng, int n, int mode) {
 
 int main() {
   vector<pair<int, vector<Edge>>> fixed;
+  fixed.push_back({0, {}});
+  fixed.push_back({9, {}});
+  // The loop on an articulation vertex does not create another block.
+  fixed.push_back({6, {{0, 1}, {0, 2}, {0, 0}, {0, 0},
+                       {3, 4}, {3, 5}, {3, 3}, {3, 3}}});
   fixed.push_back({1, {}});
   fixed.push_back({1, {{0, 0}, {0, 0}, {0, 0}}});
   fixed.push_back({6, {{0, 1}, {1, 2}, {2, 0}, {2, 3}, {3, 4}, {4, 5},
@@ -123,6 +152,24 @@ int main() {
       check_case("seeded random", n, edges);
       ++cases;
     }
+  }
+  // Reverse endpoint orientations and relabel to move articulation roots.
+  // Nested cycles, a parallel parent link, a bridge and a loop-only component.
+  mt19937 labels_rng(0x80bcc);
+  vector<int> labels(8);
+  iota(labels.begin(), labels.end(), 0);
+  const vector<Edge> nested = {{0, 1}, {1, 2}, {2, 0}, {2, 3},
+      {3, 4}, {4, 2}, {4, 5}, {4, 5}, {5, 6}, {4, 4}, {7, 7}};
+  for (int rep = 0; rep < 96; ++rep) {
+    shuffle(labels.begin(), labels.end(), labels_rng);
+    vector<Edge> edges;
+    for (auto [u, v] : nested) {
+      if (labels_rng() & 1) swap(u, v);
+      edges.push_back({labels[u], labels[v]});
+    }
+    shuffle(edges.begin(), edges.end(), labels_rng);
+    check_case("relabeled nested blocks", labels.size(), edges);
+    ++cases;
   }
   cout << "BCC edge cases PASS " << cases
        << " targeted/permuted multigraphs\n";

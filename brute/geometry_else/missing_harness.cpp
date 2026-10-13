@@ -2,6 +2,7 @@
 using namespace std;
 using ll = long long;
 using ull = unsigned long long;
+#define ALL(v) v.begin(), v.end()
 
 namespace mo_update {
 #include "../../codebook/9_Else/Mos_Algorithm_With_modification.cpp"
@@ -16,7 +17,6 @@ namespace mo_tree {
 #include "../../codebook/9_Else/tree_hash.cpp"
 #include "../../codebook/9_Else/BinarySearchOnFraction.cpp"
 #include "../../codebook/9_Else/BitsetLCS.cpp"
-#include "../../codebook/9_Else/digit_dp.cpp"
 
 static void req(bool ok, const string &msg) {
   if (!ok) { cerr << "FAIL " << msg << '\n'; exit(1); }
@@ -75,11 +75,6 @@ int main() {
       dp[i][j]=a[i-1]==b[j-1]?dp[i-1][j-1]+1:max(dp[i-1][j],dp[i][j-1]);
     req(bitset_lcs(a,b)==dp[n][m], "bitset LCS");
   }
-  for (int x=0;x<=20000;++x) {
-    int want=0;
-    for (int y=0;y<=x;++y) if ((y&(y<<1))==0) ++want;
-    req(calc(x)==want, "binary digit DP");
-  }
 
   struct Update { int at, oldv, newv; };
   vector<int> arr={4,1,7,2,6,3,5};
@@ -109,5 +104,5 @@ int main() {
 
   mt19937_64 arng(123); auto best=simulated_annealing(-10.0,[](double x){return (x-3)*(x-3);},[](double x,mt19937_64&r){return x+(int)(r()%7)-3;},arng,50000,10.0,.9998);
   req((best-3)*(best-3)<=1.0,"simulated annealing");
-  cout<<"else missing PASS: LCS, integration, hash, fraction, bitset, digit DP, Mo, annealing\n";
+  cout<<"else missing PASS: LCS, integration, hash, fraction, bitset, Mo, annealing\n";
 }

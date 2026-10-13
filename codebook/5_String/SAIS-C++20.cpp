@@ -1,51 +1,49 @@
+// sais: nonempty positive random-access ints + final 0.
+// C++20; size, A=1+max(s) fit int; O(n+A) time/space.
+// sa: suffix order; ra: inverse; hi[i]: LCP(sa[i],sa[i-1])
 auto sais(const auto &s) {
-	const int n = SZ(s), z = ranges::max(s) + 1;
-	if (n == 1) return vector{0};
-	vector<int> c(z); for (int x : s) ++c[x];
-	partial_sum(ALL(c), begin(c));
-	vector<int> sa(n); auto I = views::iota(0, n);
-	vector<bool> t(n, true);
-	for (int i = n - 2; i >= 0; --i) t[i] = (s[i] ==
-	  s[i + 1] ? t[i + 1] : s[i] < s[i + 1]);
-	auto is_lms = views::filter([&t](int x) {
-	  return x && t[x] && !t[x - 1]; });
-	auto induce = [&] { for (auto x = c; int y :
-	  sa) if (y--) if (!t[y]) sa[x[s[y] - 1]++] = y;
-	  for (auto x = c; int y : sa | views::
-	    reverse) if (y--) if (t[y]) sa[--x[s[y]]] = y;
-	  };
-	vector<int> lms, q(n); lms.reserve(n);
-	for (auto x = c; int i : I | is_lms) q[i] = SZ(lms),
-	  lms.pb(sa[--x[s[i]]] = i);
-	induce(); vector<int> ns(SZ(lms));
-	for (int j = -1, nz = 0; int i : sa | is_lms) {
+  int n = SZ(s); if (n == 1) return vector{0};
+  int z = ranges::max(s) + 1;
+  vector<int> c(z), sa(n), lms, q(n/2+1);
+  vector<bool> t(n, true);
+  for (int x : s) ++c[x]; partial_sum(ALL(c), c.begin());
+  for (int i = n - 2; i >= 0; --i)
+    t[i] = s[i] == s[i+1] ? t[i+1] : s[i] < s[i+1];
+  auto is_lms = views::filter([&](int i) {
+    return i && t[i] && !t[i-1]; });
+  auto induce = [&] {
+    for (auto x = c; int y : sa)
+      if (y-- && !t[y]) sa[x[s[y]-1]++] = y;
+    for (auto x = c; int y : sa | views::reverse)
+      if (y-- && t[y]) sa[--x[s[y]]] = y;
+  }; lms.reserve(n/2); // nonadjacent LMS: q uses i/2
+  for (auto x = c; int i : views::iota(0, n) | is_lms)
+    q[i/2] = SZ(lms), lms.pb(sa[--x[s[i]]] = i);
+  induce(); int nz = 0; vector<int> ns(SZ(lms)), nsa;
+  for (int j = -1; int i : sa | is_lms) {
     if (j >= 0) {
-      int len = min({n - i, n - j, lms[q[i] + 1] - i});
-	      ns[q[i]] =
-	        nz += lexicographical_compare(begin(s) + j,
-	        begin(s) + j + len, begin(s) + i, begin(s) + i + len);
-    } j = i;
-  } fill(ALL(sa), 0); auto nsa = sais(ns);
-	for (auto x = c; int y : nsa | views::
-	  reverse) y = lms[y], sa[--x[s[y]]] = y;
-  return induce(), sa;
-}
-// sa[i]: sa[i]-th suffix is the i-th lexicographically smallest suffix.
-// hi[i]: LCP of suffix sa[i] and suffix sa[i - 1].
-struct Suffix {
+      int len = min({n-i, n-j, lms[q[i/2]+1]-i});
+      nz += lexicographical_compare(
+        begin(s)+j, begin(s)+j+len,
+        begin(s)+i, begin(s)+i+len);
+    } ns[q[i/2]] = nz, j = i; }
+  if (nz + 1 == SZ(lms)) { // Unique names: invert.
+    nsa.resize(SZ(lms));
+    for (int i = 0; i < SZ(lms); ++i) nsa[ns[i]] = i;
+  } else nsa = sais(ns); fill(ALL(sa), 0);
+  for (auto x = c; int y : nsa | views::reverse)
+    y = lms[y], sa[--x[s[y]]] = y;
+  return induce(), sa; }
+struct Suffix { // _s[0,n)>0; 0<=n<INT_MAX; empty OK
   int n; vector<int> sa, hi, ra;
-  Suffix(const auto &_s,
-    int _n) : n(_n), hi(n), ra(n) {
-		vector<int> s(n + 1);
-		copy_n(_s, n, begin(s));
-		// s[n] = 0; _s shouldn't contain 0
-		sa = sais(s); sa.erase(sa.begin());
-		for (int i = 0; i < n; ++i) ra[sa[i]] = i;
-	for (int i = 0, h = 0; i < n; ++i) {
-	  if (!ra[i]) { h = 0;
-	  continue;
-	  } for (int j = sa[ra[i] - 1]; max(i,
-	    j) + h < n && s[i + h] == s[j + h];) ++h;
-	  hi[ra[i]] = h ? h-- : 0; }
+  Suffix(const auto &_s, int _n) : n(_n), hi(n), ra(n) {
+    vector<int> s(n+1); copy_n(_s, n, s.begin());
+    sa = sais(s), sa.erase(sa.begin());
+    for (int i = 0; i < n; ++i) ra[sa[i]] = i;
+    for (int i = 0, h = 0; i < n; ++i) {
+      if (!ra[i]) { h = 0; continue; }
+      for (int j = sa[ra[i]-1]; max(i,j)+h < n &&
+           s[i+h] == s[j+h];) ++h;
+      hi[ra[i]] = h ? h-- : 0; }
   }
 };

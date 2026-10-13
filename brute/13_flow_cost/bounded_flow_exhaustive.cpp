@@ -14,6 +14,31 @@ struct Arc {
   bool plain;
 };
 
+static void residual_check(const BoundedFlow &bf, const vector<Arc> &a,
+                           const vector<int> &ids, int n, int s, int t,
+                           int value) {
+  vector<int> degree(n);
+  vector<long long> balance(n);
+  for (int k = 0; k < (int)a.size(); ++k) {
+    const Arc &e = a[k];
+    const auto &f = bf.G[e.u][ids[k]];
+    assert(f.to == e.v && f.cap == e.hi);
+    assert(0 <= f.rev && f.rev < (int)bf.G[e.v].size());
+    const auto &r = bf.G[e.v][f.rev];
+    assert(r.to == e.u && r.rev == ids[k] && r.cap == 0);
+    assert(e.lo <= f.flow && f.flow <= e.hi);
+    assert(f.flow + r.flow == e.lo);
+    balance[e.u] += f.flow, balance[e.v] -= f.flow;
+    ++degree[e.u], ++degree[e.v];
+  }
+  for (int v = 0; v < n; ++v) {
+    assert((int)bf.G[v].size() == degree[v]);
+    long long want = s != t ? (v == s ? value : v == t ? -value : 0) : 0;
+    assert(balance[v] == want);
+  }
+  assert(bf.G[n].empty() && bf.G[n + 1].empty() && bf.G[n + 2].empty());
+}
+
 static bool circulation_brute(const vector<Arc> &a, int at,
                               vector<int> &bal) {
   if (at == (int)a.size())
@@ -52,21 +77,29 @@ static void maxflow_brute(const vector<Arc> &a, int at, int s, int t,
 static bool run_circulation(const vector<Arc> &a, int n) {
   BoundedFlow bf;
   bf.init(n);
+  vector<int> ids;
   for (const Arc &e : a) {
+    ids.push_back(bf.G[e.u].size());
     if (e.plain) bf.add_edge(e.u, e.v, e.hi);
     else bf.add_edge(e.u, e.v, e.lo, e.hi);
   }
-  return bf.solve();
+  bool ok = bf.solve();
+  if (ok) residual_check(bf, a, ids, n, -1, -1, 0);
+  return ok;
 }
 
 static int run_maxflow(const vector<Arc> &a, int n, int s, int t) {
   BoundedFlow bf;
   bf.init(n);
+  vector<int> ids;
   for (const Arc &e : a) {
+    ids.push_back(bf.G[e.u].size());
     if (e.plain) bf.add_edge(e.u, e.v, e.hi);
     else bf.add_edge(e.u, e.v, e.lo, e.hi);
   }
-  return bf.solve(s, t);
+  int result = bf.solve(s, t);
+  if (result >= 0) residual_check(bf, a, ids, n, s, t, result);
+  return result;
 }
 
 static void dump_case(const vector<Arc> &a) {
@@ -83,6 +116,10 @@ static void check(const vector<Arc> &a, int n, int tc) {
     cerr << "bounded circulation mismatch case=" << tc << " got="
          << got_circ << " want=" << want_circ << '\n';
     dump_case(a);
+    exit(1);
+  }
+  if (n && run_maxflow(a, n, tc % n, tc % n) != (want_circ ? 0 : -1)) {
+    cerr << "bounded equal-terminal mismatch case=" << tc << '\n';
     exit(1);
   }
 
@@ -106,6 +143,7 @@ int main() {
   // Explicit contract edges: empty graph, self-loops, parallel arcs,
   // disconnected components, forced cycles, and infeasible lower bounds.
   const vector<pair<int, vector<Arc>>> edge_cases = {
+      {0, {}},
       {1, {}},
       {1, {{0, 0, 0, 0, true}, {0, 0, 1, 3, false}}},
       {2, {{0, 1, 1, 1, false}, {1, 0, 1, 1, false}}},

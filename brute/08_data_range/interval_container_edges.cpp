@@ -77,7 +77,69 @@ static void extreme_coordinates() {
     fail("INT_MIN split removal");
 }
 
+
+// Every coverage state over four compressed segments, at extreme endpoints.
+static void compressed_extremes() {
+  const vector<int> xs{INT_MIN, -1, 0, 1, INT_MAX};
+  for (int mask = 0; mask < 16; ++mask)
+    for (int l = 0; l < 5; ++l) for (int r = l; r < 5; ++r)
+      for (bool add : {false, true}) {
+        set<pii> got, want;
+        vector<bool> covered(4);
+        for (int i = 0; i < 4; ++i) if (mask >> i & 1)
+          addInterval(got, xs[i], xs[i + 1]), covered[i] = true;
+        if (add) {
+          auto it = addInterval(got, xs[l], xs[r]);
+          if (l == r ? it != got.end() :
+              it == got.end() || it->first > xs[l] || it->second < xs[r])
+            fail("returned insertion iterator at extreme endpoints");
+        } else removeInterval(got, xs[l], xs[r]);
+        for (int i = l; i < r; ++i) covered[i] = add;
+        for (int i = 0; i < 4; ) {
+          if (!covered[i]) { ++i; continue; }
+          int j = i + 1;
+          while (j < 4 && covered[j]) ++j;
+          want.emplace(xs[i], xs[j]), i = j;
+        }
+        if (got != want) fail("compressed extreme coverage/canonical form");
+      }
+}
+static void extreme_histories() {
+  const vector<int> xs{INT_MIN, INT_MIN + 1, -100, -1, 0,
+                        1, 100, INT_MAX - 1, INT_MAX};
+  mt19937 rng(0x1A78);
+  set<pii> got;
+  vector<bool> covered(xs.size() - 1);
+  for (int step = 0; step < 20000; ++step) {
+    int l = rng() % xs.size(), r = rng() % xs.size();
+    if (l > r) swap(l, r);
+    bool add = rng() & 1;
+    // Check iterator identity only when the new interval is contained.
+    auto existing = got.end();
+    if (add && l < r) for (auto it = got.begin(); it != got.end(); ++it)
+      if (it->first <= xs[l] && xs[r] <= it->second) existing = it;
+    if (add) {
+      auto it = addInterval(got, xs[l], xs[r]);
+      if (l == r ? it != got.end() :
+          it == got.end() || it->first > xs[l] || it->second < xs[r])
+        fail("extreme history insertion iterator");
+      if (existing != got.end() && it != existing)
+        fail("contained addition should preserve its node");
+    } else removeInterval(got, xs[l], xs[r]);
+    for (int i = l; i < r; ++i) covered[i] = add;
+    set<pii> want;
+    for (int i = 0; i < int(covered.size()); ) {
+      if (!covered[i]) { ++i; continue; }
+      int j = i + 1;
+      while (j < int(covered.size()) && covered[j]) ++j;
+      want.emplace(xs[i], xs[j]), i = j;
+    }
+    if (got != want) fail("extreme history compressed coverage");
+  }
+}
 int main() {
+  extreme_histories();
+  compressed_extremes();
   deterministic_edges();
   extreme_coordinates();
 

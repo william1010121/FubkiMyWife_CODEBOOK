@@ -1,6 +1,7 @@
-inline char readchar() {
-  static char buf[65536], *p = buf, *end = buf;
-  if (p == end) end = buf + fread_unlocked(buf,
-    1, sizeof buf, stdin), p = buf;
-  return *p++;
+// Private stdin buffer; don't mix readers; result is int.
+inline int readchar() { // byte or EOF; amortized O(1)
+  static char buf[65536], *p = buf, *e = buf;
+  if (p == e) p = buf,
+    e = buf + fread_unlocked(buf, 1, sizeof buf, stdin);
+  return p == e ? EOF : (unsigned char)*p++;
 }

@@ -1,4 +1,4 @@
-static KM km; km.init(n); // square; missing edge = -INF
-km.add_edge(i, j, w); // min: use -w
+static KM km; km.init(n); // square; perfect matching
+km.add_edge(i, j, w); // min: use -w; missing=-INF
 ll best = km.solve();
-// km.fl[j] = left node matched to right j
+// km.fl: left -> right; km.fr: right -> left

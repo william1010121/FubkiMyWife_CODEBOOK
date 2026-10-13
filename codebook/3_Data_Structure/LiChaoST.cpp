@@ -1,31 +1,32 @@
+// Max on integer x in [0,n); O(log n); inserted id != -1.
+// INF>0; values in [-INF,INF]; m*x and m*x+k fit ll.
+// 4*n fits int/memory; n<=0: no insert, query -INF.
 struct L {
-  ll m, k, id;
-  L() : id(-1) {}
+  ll m, k, id; L() : id(-1) {}
   L(ll a, ll b, ll c) : m(a), k(b), id(c) {}
   ll at(ll x) { return m * x + k; }
 };
-class LiChao { // maintain max
+class LiChao {
   int n; vector<L> nodes;
   void insert(int l, int r, int rt, L ln) {
-    int m = (l + r) >> 1;
-    L &o = nodes[rt];
+    int m = (l + r) >> 1; L &o = nodes[rt];
     if (o.id == -1) return o = ln, void();
-    bool a = o.at(l) < ln.at(l);
-    if (o.at(m) < ln.at(m)) a ^= 1, swap(o, ln);
-    if (r - l == 1) return;
-    if (a) insert(l, m, rt << 1, ln);
-    else insert(m, r, rt << 1 | 1, ln);
-  }
-  ll query(int l, int r, int rt, ll x) {
-    int m = (l + r) >> 1; ll ret = -INF;
-    if (nodes[rt].id != -1) ret = nodes[rt].at(x);
-    if (r - l == 1) return ret;
-    if (x < m) return max(ret,
-      query(l, m, rt << 1, x));
-    return max(ret, query(m, r, rt << 1 | 1, x));
+    if (o.at(m) < ln.at(m)) swap(o, ln);
+    if (r - l == 1 || o.m == ln.m) return;
+    if (ln.m < o.m) { // can win only left
+      if (ln.at(l) > o.at(l)) insert(l, m, rt << 1, ln);
+    } else if (ln.at(r - 1) > o.at(r - 1))
+      insert(m, r, rt << 1 | 1, ln);
   } public:
-  LiChao(int n_) : n(n_ > 0 ? n_ : 0), nodes(n * 4) {}
-  // An empty x-domain is a valid empty container: inserts are ignored and queries return the same sentinel as an otherwise empty tree.
-  void insert(L ln) { if (n > 0) insert(0, n, 1, ln); }
-  ll query(ll x) { return n > 0 ? query(0, n, 1, x) : -INF; }
+  LiChao(int n_) : n(max(n_, 0)), nodes(n * 4) {}
+  void insert(L ln) { if (n) insert(0, n, 1, ln); }
+  ll query(ll x) {
+    ll ret = -INF; int l = 0, r = n, rt = 1;
+    while (l < r && nodes[rt].id != -1) {
+      ret = max(ret, nodes[rt].at(x));
+      if (r - l == 1) break;
+      int m = (l + r) >> 1; rt = rt << 1 | (x >= m);
+      if (x < m) r = m; else l = m;
+    } return ret;
+  }
 };

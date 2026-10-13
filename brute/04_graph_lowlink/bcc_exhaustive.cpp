@@ -2,6 +2,7 @@
 using namespace std;
 
 #define pb push_back
+using pii = pair<int, int>;
 #include "../../codebook/2_Graph/BCC_Vertex.cpp"
 #include "oracle.hpp"
 

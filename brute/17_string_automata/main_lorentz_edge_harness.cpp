@@ -13,6 +13,7 @@ static vector<int> Zalgo(const string &s) {
   }
   return z;
 }
+#define ALL(v) (v).begin(), (v).end()
 #include "../../codebook/5_String/MainLorentz.cpp"
 
 static void fail(const string &message) {
@@ -30,7 +31,6 @@ static set<pair<int, int>> brute(const string &s, int offset) {
 }
 
 static void check(const string &s, int offset = 0) {
-  for (auto &v : rep) v.clear();
   main_lorentz(s, offset);
   set<pair<int, int>> got;
   for (int length = 0; length < kN; ++length)
@@ -53,12 +53,36 @@ static void check(const string &s, int offset = 0) {
 }
 
 static void check_consecutive_calls() {
-  // The second input has no tandem repeats.  It must not inherit the first
+  // The second input has no repeats. It must not inherit the first
   // call's ranges, even when both calls use nonzero coordinate offsets.
   main_lorentz("aaaa", 7);
   main_lorentz("ab", 19);
   for (const auto &ranges : rep)
-    if (!ranges.empty()) fail("stale tandem repeat after consecutive call");
+    if (!ranges.empty())
+      fail("stale tandem repeat after consecutive call");
+}
+
+static void check_accumulation() {
+  string a = "abababaabababa", b({char(0), char(255), char(0), char(255)});
+  main_lorentz(a, -100);
+  vector<vector<pair<int, int>>> old(begin(rep), end(rep));
+  main_lorentz_impl(b, 100);
+  set<pair<int, int>> got, want = brute(a, -100);
+  auto more = brute(b, 100);
+  want.insert(more.begin(), more.end());
+  for (int l = 0; l < kN; ++l) {
+    if (rep[l].size() < old[l].size() ||
+        !equal(old[l].begin(), old[l].end(), rep[l].begin()))
+      fail("helper changed earlier report intervals");
+    for (auto [left, right] : rep[l])
+      for (int p = left; p <= right; ++p)
+        if (!got.emplace(l, p).second) fail("helper duplicate repeat");
+  }
+  if (got != want) fail("helper accumulation mismatch");
+  old.assign(begin(rep), end(rep));
+  main_lorentz_impl("", INT_MAX);
+  for (int l = 0; l < kN; ++l)
+    if (rep[l] != old[l]) fail("empty helper changed report");
 }
 
 static void enumerate_words(int alphabet, int length,
@@ -91,6 +115,49 @@ int main() {
   check(string("\0\0", 2), 23), ++cases;
   check(string("\0#\0#\0", 5), 25), ++cases;
   check_consecutive_calls(), ++cases;
+  check_accumulation(), ++cases;
+
+  // Period 255 at the exact capacity boundary, with every byte value
+  // appearing in a mutation; alternates large/small scratch lifetimes.
+  string alphabet;
+  for (int c = 0; c < 255; ++c) alphabet += char(c);
+  for (int shift : {0, 1, 127, 254}) {
+    rotate(alphabet.begin(), alphabet.begin() + shift, alphabet.end());
+    string s = alphabet + alphabet;
+    for (int p : {0, 254, 255, 509}) {
+      check(s, INT_MIN), ++cases;
+      string mutated = s;
+      mutated[p] = char(255);
+      check(mutated, INT_MAX - 509), ++cases;
+      check("aa"), ++cases;
+    }
+    s += s[0]; check(s, INT_MAX - 510), ++cases;
+  }
+
+  // Every shifted input position fits int, including both limit values.
+  for (int n : {2, 3, 4, 5, 2 * kN - 2, 2 * kN - 1})
+    for (int offset : {INT_MIN, INT_MAX - (n - 1)})
+      check(string(n, char(255)), offset), ++cases;
+  // Force long cross-half matches with unequal half lengths and bytes.
+  const string bytes({char(0), char(128), char(255)});
+  for (int n : {127, 128, 129, 509, 510, 511}) {
+    string s;
+    for (int i = 0; i < n; ++i) s += bytes[i % bytes.size()];
+    check(s, -700), ++cases;
+  }
+
+  // Break one match near each recursive split, with odd/even half caps.
+  for (int period : {1, 2, 3, 7})
+    for (int n : {63, 64, 65, 253, 254, 255, 509, 510, 511}) {
+      string s(n, '\0');
+      for (int i = 0; i < n; ++i) s[i] = bytes[(i % period) % 3];
+      for (int p : {0, n / 4, n / 2 - 1, n / 2, n / 2 + 1,
+                    3 * n / 4, n - 1}) {
+        string t = s;
+        t[p] = char(17);
+        check(t, p % 2 ? INT_MIN : INT_MAX - (n - 1)), ++cases;
+      }
+    }
 
   for (int n = 0; n <= 8; ++n)
     enumerate_words(3, n, [&](const string &s) { check(s), ++cases; });

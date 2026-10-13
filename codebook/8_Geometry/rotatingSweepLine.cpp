@@ -1,39 +1,28 @@
-vector<int> rotatingSweepLineOrder(const
-  vector<pair<int,int>> &ps){
-  int n=int(ps.size()); if (!n) return {};
-  vector<int> id(n),pos(n);
-  vector<pair<int,int>> line(n*(n-1)/2);
-  int m=0;
-  for(int i=0;i<n;++i)for(int j=i+1;j<n;++j)line[m++]={
-    i,j};
-  sort(line.begin(),line.end(),[&](const pair<int,
-    int> &a,const pair<int,int> &b){
-    long long ax=1LL*ps[a.first].first-ps[a.second].first;
-    long long ay=1LL*ps[a.first].second-
-      ps[a.second].second;
-    long long bx=1LL*ps[b.first].first-ps[b.second].first;
-    long long by=1LL*ps[b.first].second-
-      ps[b.second].second;
-    // Pair directions are unoriented: canonicalize them before comparing slopes.  Without this, a negative ax reverses the cross-multiplication order and the comparator is not a strict weak ordering.
-    if (ax < 0 || (ax == 0 && ay < 0)) ax = -ax, ay = -ay;
-    if (bx < 0 || (bx == 0 && by < 0)) bx = -bx, by = -by;
-    if (ax == 0 || bx == 0) return ax == 0 && bx != 0;
-    return (__int128)ay * bx < (__int128)by * ax;
+// Distinct points, no 3 collinear; n fits int.
+// O(n^2 log n) time, O(n^2) event storage.
+vector<int> rotatingSweepLineOrder(const vector<pii> &ps) {
+  int n = ps.size(); vector<int> id(n), pos(n);
+  struct Event { int a, b; ll x, y; };
+  vector<Event> line; line.reserve(1LL * n * (n - 1) / 2);
+  for (int i = 0; i < n; ++i)
+    for (int j = i + 1; j < n; ++j) {
+      ll x = ll(ps[i].X) - ps[j].X,
+        y = ll(ps[i].Y) - ps[j].Y;
+      // x>0 or x=0,y>0; vertical events last.
+      if (x < 0 || (x == 0 && y < 0)) x = -x, y = -y;
+      line.push_back({i, j, x, y});
+    }
+  sort(ALL(line), [](const Event &a, const Event &b) {
+    return (__int128)a.y * b.x < (__int128)b.y * a.x;
   });
-  iota(id.begin(), id.end(), 0);
-  sort(id.begin(),id.end(),[&](const int &a,
-    const int &b){ return ps[a]<ps[b]; });
-  for(int i=0;i<n;++i)pos[id[i]]=i;
-
-  for(int i=0;i<m;++i){
-    auto l=line[i];
-    tie(pos[l.first],pos[l.second],id[pos[l.first]],
-      id[pos[l.second]])=make_tuple(pos[l.second],
-      pos[l.first],l.second,l.first);
-  }
+  iota(ALL(id), 0);
+  sort(ALL(id), [&](int a, int b) {
+    return ps[a] < ps[b]; });
+  for (int i = 0; i < n; ++i) pos[id[i]] = i;
+  for (auto e : line)
+    swap(id[pos[e.a]], id[pos[e.b]]),
+      swap(pos[e.a], pos[e.b]);
   return id;
 }
-
-void rotatingSweepLine(vector<pair<int,int>> &ps){
-  (void)rotatingSweepLineOrder(ps);
-}
+void rotatingSweepLine(vector<pii> &ps) {
+  rotatingSweepLineOrder(ps); }

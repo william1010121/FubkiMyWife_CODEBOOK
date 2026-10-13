@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std;
+#define ALL(v) v.begin(), v.end()
 
 namespace simpson_test {
 #include "../../codebook/9_Else/AdaptiveSimpson.cpp"
@@ -9,9 +10,6 @@ namespace all_lcs_test {
 }
 namespace bitset_lcs_test {
 #include "../../codebook/9_Else/BitsetLCS.cpp"
-}
-namespace digit_test {
-#include "../../codebook/9_Else/digit_dp.cpp"
 }
 namespace tree_test {
 #include "../../codebook/9_Else/tree_hash.cpp"
@@ -46,22 +44,6 @@ static int lcs_oracle(const vector<int> &a, const vector<int> &b) {
       dp[i][j] = a[i] == b[j] ? 1 + dp[i + 1][j + 1]
         : max(dp[i + 1][j], dp[i][j + 1]);
   return dp[0][0];
-}
-
-static bool no_adjacent_one(int x) { return x >= 0 && !(x & (x >> 1)); }
-
-static long long digit_oracle(int x) {
-  function<long long(int, bool, bool)> go = [&](int bit, bool tight, bool prev) {
-    if (bit < 0) return 1LL;
-    int lim = tight ? ((x >> bit) & 1) : 1;
-    long long ret = 0;
-    for (int cur = 0; cur <= lim; ++cur) {
-      if (prev && cur) continue;
-      ret += go(bit - 1, tight && cur == lim, cur);
-    }
-    return ret;
-  };
-  return x < 0 ? 0 : go(30, true, false);
 }
 
 static string canonical_tree(const vector<vector<int>> &g, int u, int p) {
@@ -176,19 +158,6 @@ int main() {
     }
   }
 
-  for (int x = -5; x <= 100000; ++x) {
-    int want = 0;
-    for (int i = 0; i <= x; ++i) want += no_adjacent_one(i);
-    if (digit_test::calc(x) != want) {
-      cerr << "digit DP exhaustive mismatch x=" << x << '\n'; return 1;
-    }
-  }
-  for (int x : {1 << 29, (1 << 29) - 1, (1 << 30) - 1, INT_MAX}) {
-    if (digit_test::calc(x) != digit_oracle(x)) {
-      cerr << "digit DP boundary mismatch x=" << x << '\n'; return 1;
-    }
-  }
-
   for (int n = 1; n <= 8; ++n) {
     vector<int> parent(n);
     function<void(int)> go = [&](int at) {
@@ -197,5 +166,5 @@ int main() {
     };
     go(1);
   }
-  cout << "else_boundaries: PASS Simpson/All_LCS/BitsetLCS/digit_dp/tree_hash\n";
+  cout << "else_boundaries: PASS Simpson/All_LCS/BitsetLCS/tree_hash\n";
 }

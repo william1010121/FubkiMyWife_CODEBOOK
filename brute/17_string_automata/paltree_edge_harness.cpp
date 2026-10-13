@@ -55,8 +55,7 @@ static string node_string(const palindromic_tree &pt, int v,
   return memo[v];
 }
 
-static void check(const string &s) {
-  palindromic_tree pt;
+static void check(const string &s, palindromic_tree &pt) {
   pt.clear();
   vector<int> ending, longest;
   const auto want = brute_occ(s, ending, longest);
@@ -78,13 +77,66 @@ static void check(const string &s) {
         !is_palindrome(p, 0, (int)p.size() - 1))
       fail("palindrome node reconstruction mismatch");
   }
+  for (int v = 2; v < SZ(pt.St); ++v) {
+    int f = pt.St[v].fail;
+    if (f < 0 || f >= v || pt.St[f].len < 0)
+      fail("invalid palindrome failure link");
+    const string &p = memo[v];
+    int start = 1;
+    while (start < (int)p.size() &&
+           !is_palindrome(p, start, (int)p.size() - 1)) ++start;
+    if (memo[f] != p.substr(start))
+      fail("failure link is not the longest proper palindrome suffix");
+  }
 
   pt.count();
+  if (pt.St[0].cnt != (int)s.size() ||
+      pt.St[1].cnt != (int)s.size()) fail("root occurrence counts");
   for (int v = 2; v < SZ(pt.St); ++v) {
     const string p = node_string(pt, v, memo, done);
     if (pt.St[v].cnt != want.at(p))
       fail("palindrome occurrence count mismatch for " + p);
   }
+}
+
+static void check(const string &s) {
+  palindromic_tree pt;
+  check(s, pt);
+}
+
+static void check_large() {
+  palindromic_tree pt;
+  const int n = 200000;
+  for (int i = 1; i <= n; ++i) {
+    pt.add('z');
+    if (pt.St[pt.last].len != i || pt.St[pt.last].num != i)
+      fail("large unary suffix data");
+  }
+  if (pt.size() != n) fail("large unary distinct count");
+  pt.count();
+  for (int v = 2; v < SZ(pt.St); ++v)
+    if (pt.St[v].cnt != n - pt.St[v].len + 1)
+      fail("large unary occurrence count");
+  check("azzzazzzaza", pt);
+  check("", pt);
+  check("abcdefghijklmnopqrstuvwxyzzyxwvutsrqponmlkjihgfedcba", pt);
+
+  // A long non-palindromic alphabet cycle keeps only 26 nodes while
+  // repeatedly terminating failure searches at the odd sentinel root.
+  pt.clear();
+  for (int i = 0; i < n; ++i) {
+    pt.add('a' + i % 26);
+    if (pt.St[pt.last].len != 1 || pt.St[pt.last].num != 1)
+      fail("alphabet cycle suffix data");
+  }
+  if (pt.size() != 26) fail("alphabet cycle distinct count");
+  pt.count();
+  for (int c = 0; c < 26; ++c)
+    if (pt.St[pt.St[1].next[c]].cnt != (n + 25 - c) / 26)
+      fail("alphabet cycle occurrence count");
+  if (pt.St[0].cnt != n || pt.St[1].cnt != n)
+    fail("large root occurrence counts");
+  check("zaz", pt);
 }
 
 static void enumerate_words(int alphabet, int length,
@@ -114,12 +166,37 @@ int main() {
       "aabbaa", "abcddcba", string(70, 'a'), "abcabcabcabc"};
   for (const string &s : special) check(s), ++cases;
 
+  palindromic_tree reused;
+  for (const string &s : {string(80, 'z'), string("azazazaza"),
+                          string(""), string("z"), string("zaaz")})
+    check(s, reused), ++cases;
+  check_large(), ++cases;
+
+  // Nested palindromes create long failure chains with many letters.
+  string nested;
+  for (int depth = 0; depth < 7; ++depth) {
+    nested = nested + char('a' + depth) + nested;
+    check(nested, reused), ++cases;
+    for (int p : {0, (int)nested.size() / 2, (int)nested.size() - 1}) {
+      string t = nested;
+      t[p] = 'z';
+      check(t, reused), ++cases;
+      t.erase(p, 1);
+      check(t, reused), ++cases;
+    }
+  }
+
   mt19937 rng(0x0A17EEDu);
   for (int tc = 0; tc < 600; ++tc) {
     const int n = rng() % 51;
     const int alphabet = 1 + rng() % 4;
     string s(n, 'a');
     for (char &c : s) c = char('a' + rng() % alphabet);
+    check(s), ++cases;
+  }
+  for (int tc = 0; tc < 400; ++tc) {
+    string s(rng() % 51, 'a');
+    for (char &c : s) c = char('a' + rng() % 26);
     check(s), ++cases;
   }
   cout << "PASS paltree-edge cases=" << cases

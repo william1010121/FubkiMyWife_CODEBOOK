@@ -1,15 +1,15 @@
-struct Matching { // 0-base
+struct Matching { // Undirected, loopless; 0-base; free=n
+  // n>=0; int math fits; O(n^3) with O(n^2) entries.
   queue<int> q; int n;
   vector<int> fa, s, vis, pre, match;
   vector<vector<int>> G;
-  int Find(int u) 
-  { return u == fa[u] ? u : fa[u] = Find(fa[u]); }
+  int Find(int u) { return u == fa[u] ? u :
+    fa[u] = Find(fa[u]); }
   int LCA(int x, int y) {
     static int tk = 0; tk++; x = Find(x); y = Find(y);
     for (;; swap(x, y)) if (x != n) {
       if (vis[x] == tk) return x;
-      vis[x] = tk;
-      x = Find(pre[match[x]]);
+      vis[x] = tk, x = Find(pre[match[x]]);
     }
   }
   void Blossom(int x, int y, int l) {
@@ -19,17 +19,18 @@ struct Matching { // 0-base
       for (int z: {x, y}) if (fa[z] == z) fa[z] = l;
     }
   }
-  bool Bfs(int r) {
+  bool Bfs(int r) { if (G[r].empty()) return false;
+    for (int u : G[r]) if (match[u] == n)
+      return match[r] = u, match[u] = r, true;
     iota(ALL(fa), 0); fill(ALL(s), -1);
-    q = queue<int>(); q.push(r); s[r] = 0;
+    q = {}; q.push(r); s[r] = 0;
     for (; !q.empty(); q.pop()) {
       int x = q.front(); for (int u : G[x])
         if (s[u] == -1) {
           if (pre[u] = x, s[u] = 1, match[u] == n) {
-            for (int a = u, b = x, last;
-                b != n; a = last, b = pre[a])
-              last = match[b],
-                match[b] = a, match[a] = b;
+            for (int a = u, b = x, last; b != n;
+                 a = last, b = pre[a])
+              last = match[b], match[b] = a, match[a] = b;
             return true;
           } q.push(match[u]); s[match[u]] = 0;
         } else if (!s[u] && Find(u) != Find(x)) {
@@ -40,12 +41,11 @@ struct Matching { // 0-base
   }
   Matching(int _n) : n(_n), fa(n + 1), s(n + 1),
     vis(n + 1), pre(n + 1, n), match(n + 1, n), G(n) {}
-  void add_edge(int u, int v) { G[u].pb(v), G[v].pb(u);
-    }
-  int solve() {
+  void add_edge(int u, int v) { G[u].pb(v), G[v].pb(u); }
+  int solve() { // Valid matching -> added pairs.
     int ans = 0;
     for (int x = 0; x < n; ++x)
       if (match[x] == n) ans += Bfs(x);
     return ans;
   }
-}; 
+};

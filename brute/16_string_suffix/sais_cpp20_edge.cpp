@@ -38,7 +38,8 @@ static void check(const vector<int> &s, long long id) {
 
 int main() {
   long long cases = 0;
-  enumerate_strings(7, 3, [&](const vector<int> &s) { check(s, cases++); });
+  enumerate_strings(7, 3,
+                    [&](const vector<int> &s) { check(s, cases++); });
 
   vector<vector<int>> periodic;
   add_periodic_cases(periodic);
@@ -60,6 +61,43 @@ int main() {
                                vector<int>{4095, 4095, 7, 4095, 7, 1},
                                vector<int>{1, 255, 1, 255, 1, 0 + 2}})
     check(s, cases++);
+
+  // LMS naming shapes: equal prefixes of different lengths.
+  enumerate_strings(12, 2,
+                    [&](const vector<int> &s) { check(s, cases++); });
+  for (int run = 1; run <= 30; ++run) {
+    vector<int> s;
+    for (int block = 0; block < 12; ++block) {
+      s.push_back(2 + block % 3);
+      s.insert(s.end(), run + block % 4, 1);
+    }
+    check(s, cases++);
+    reverse(s.begin(), s.end());
+    check(s, cases++);
+  }
+  check({1 << 20, 1, 1 << 20, 2, 1}, cases++);
+  Suffix empty((const int *)nullptr, 0);
+  expect(empty.sa.empty() && empty.ra.empty() && empty.hi.empty(),
+         "null source with zero length");
+  const int source[] = {2, 1, 2, 0, -1};
+  Suffix prefix(source, 3);
+  expect_vector(prefix.sa, oracle_sa(vector<int>{2, 1, 2}),
+                "wrapper reads exactly n symbols", vector<int>{2, 1, 2});
+  cases += 2;
+
+  // Ternary LMS ties beyond the old exhaustive length-seven boundary.
+  enumerate_strings(9, 3,
+                    [&](const vector<int> &s) { check(s, cases++); });
+  // Recursive words create equal LMS prefixes at several length scales.
+  for (int n : {63, 64, 65, 255, 256, 257}) {
+    vector<int> s(n);
+    for (int i = 0; i < n; ++i) s[i] = 1 + popcount((unsigned)i) % 2;
+    check(s, cases++);
+    reverse(s.begin(), s.end());
+    check(s, cases++);
+    s[n / 2] = 3;
+    check(s, cases++);
+  }
 
   cout << "PASS SAIS-C++20 exhaustive/periodic/random cases=" << cases
        << '\n';
