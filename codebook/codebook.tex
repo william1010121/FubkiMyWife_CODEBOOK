@@ -32,10 +32,10 @@
 \Mathastext[codebook]
 \normalfont
 \topmargin=0pt
-\headsep=5pt
+\headsep=3pt
 \textheight=812pt
 \footskip=0pt
-\voffset=-60pt
+\voffset=-64pt
 \textwidth=575pt
 \marginparsep=0pt
 \marginparwidth=0pt
@@ -157,7 +157,7 @@ stringstyle=\itshape\color{Green4},
 \pagestyle{fancy}
 \fancyfoot{}
 %\fancyfoot[R]{\includegraphics[width=20pt]{ironwood.jpg}}
-\fancyhead[L]{NYCU\_GBC(stolen)}
+\fancyhead[L]{NYCU\_FlowerBornWhatTree}
 \fancyhead[R]{\thepage}
 \renewcommand{\headrulewidth}{0.4pt}
 \renewcommand{\contentsname}{Contents} 
@@ -173,11 +173,10 @@ stringstyle=\itshape\color{Green4},
     \lstinputlisting{#2}
 }
 % #1 title, #2 code path, #3 description, #4 example snippet path
-% Keep the usage label and example at the same size as every other listing.
+% Keep the example at the same size as every other listing.
 \newcommand{\inputcodeex}[4]{
     \inputcodedesc{#1}{#2}{#3}%
-    \vspace{-1.0em}%
-    {\footnotesize\itshape Usage:}\par\vspace{-0.9em}%
+    \vspace{-0.8em}%
     \lstinputlisting[basicstyle=\footnotesize\ttfamily,aboveskip=0pt,belowskip=0pt]{#4}%
 }
 

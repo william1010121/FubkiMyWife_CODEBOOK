@@ -1,14 +1,10 @@
-struct Sparse_table {
-  int st[__lg(MAXN) + 1][MAXN], n;
-  void init(int _n, int *data) {
-    n = _n;
-    for (int i = 0; i < n; ++i) st[0][i] = data[i];
-    for (int i = 1, t = 2; t <= n; t <<= 1, i++)
-      for (int j = 0; j + t <= n; j++)
-        st[i][j] = max(st[i - 1][j], st[i - 1][j + t / 2]);
-  }
-  int query(int a, int b) {
-    int t = __lg(b - a + 1);
-    return max(st[t][a], st[t][b - (1 << t) + 1]);
-  }
-};
+template<class T> struct SparseTable { // [l,r], 0-base
+  vector<vector<T>> st;
+  SparseTable(const vector<T> &a) : st(1, a) {
+    for (int k = 1; (1 << k) <= SZ(a); ++k) {
+      st.emplace_back(SZ(a) - (1 << k) + 1);
+      for (int i = 0; i < SZ(st[k]); ++i) st[k][i] =
+        max(st[k - 1][i], st[k - 1][i + (1 << k >> 1)]);
+    } }
+  T query(int l, int r) { int k = __lg(r - l + 1);
+    return max(st[k][l], st[k][r - (1 << k) + 1]); } };
