@@ -10,92 +10,98 @@
 \MobiusHeading{Notation}
 
 $[P]\in\{0,1\}$ is the indicator of $P$; $p$ is prime; $H=\min(N,M)$;
-$(f*g)(n)=\sum_{d\mid n}f(d)g(n/d)$.
+$(f*g)(n)=\sum_{d\mid n}f(d)g(n/d)$ (commutative, associative).
+$\varepsilon=[n=1]$, $1(n)=1$, $\mathrm{id}_k(n)=n^k$, $\mathrm{id}=\mathrm{id}_1$,
+$\sigma_k=\mathrm{id}_k*1$, $\tau=\sigma_0$, $\sigma=\sigma_1$,
+$\omega(n)/\Omega(n)$ = \#distinct/\#all prime factors, $\lambda(n)=(-1)^{\Omega(n)}$.
 Quotient blocks over $\lfloor N/d\rfloor,\lfloor M/d\rfloor$: $O(\sqrt N+\sqrt M)$.
 Linear sieve for $\mu,\varphi$ or any multiplicative function up to $L$: $O(L)$.\par
 
-\MobiusHeading{Core identities}
+\MobiusHeading{M\"obius inversion}
 
 \MobiusStep{$\mu(1)=1$, $\mu(p)=-1$, $\mu(p^e)=0\ (e\ge2)$, multiplicative.}
 
-\MobiusStep{$\sum_{d\mid n}\mu(d)=[n=1]$ \quad(the only identity the recipe uses).}
-
-\MobiusStep{$\sum_{d\mid n}\varphi(d)=n$,\quad
-$\varphi(n)=\sum_{d\mid n}\mu(d)\,n/d=n\prod_{p\mid n}(1-1/p)$.}
-
-\MobiusStep{$f(n)=\sum_{d\mid n}g(d)\Leftrightarrow g(n)=\sum_{d\mid n}\mu(d)f(n/d)$.}
+\MobiusStep{$f=g*1\Leftrightarrow g=f*\mu$:\quad
+$f(n)=\sum_{d\mid n}g(d)\Leftrightarrow g(n)=\sum_{d\mid n}\mu(d)f(n/d)$.}
 
 \MobiusStep{$F(n)=\sum_{n\mid d}f(d)\Leftrightarrow f(n)=\sum_{n\mid d}\mu(d/n)F(d)$
 \quad(finite support).}
 
-\MobiusStep{$f,g$ multiplicative $\rightarrow f*g$ multiplicative $\rightarrow$ linear sieve.
-Any $c=f*g$ up to $L$ by looping multiples: $O(L\log L)$.}
+\MobiusHeading{Dirichlet convolution identities}
 
-\MobiusHeading{Recipe: sum of $h(\gcd)$}
+\MobiusStep{$\mu*1=\varepsilon$,\quad $\varphi*1=\mathrm{id}$,\quad $\mu*\mathrm{id}=\varphi=n\prod_{p\mid n}(1-1/p)$.}
 
-\MobiusStep{\textbf{1. Exact gcd $\rightarrow$ coprime.}
-$i=ga,\ j=gb$: $[\gcd(i,j)=g]=[\gcd(a,b)=1]$, bounds $\lfloor N/g\rfloor,\lfloor M/g\rfloor$.}
+\MobiusStep{$1*1=\tau$,\quad $\mu*\tau=1$,\quad $\mu*\sigma_k=\mathrm{id}_k$,\quad
+$\varphi*\tau=\sigma$,\quad $\mu*\log=\Lambda$ (von Mangoldt).}
 
-\MobiusStep{\textbf{2. Kill the bracket.}
-$[\gcd(i,j)=1]=\sum_{d\mid i,\ d\mid j}\mu(d)$.
-Shortcut: $h(\gcd(i,j))=\sum_{d\mid i,\ d\mid j}c(d)$ with $c=\mu*h$
-(e.g.\ $h=\mathrm{id}\rightarrow c=\varphi$), skips step 1.}
+\MobiusStep{$J_k=\mu*\mathrm{id}_k=n^k\prod_{p\mid n}(1-p^{-k})$, $J_1=\varphi$, $J_k*1=\mathrm{id}_k$.}
 
-\MobiusStep{\textbf{3. Swap sums, $d$ outermost.}
-$\#\{1\le i\le N: d\mid i\}=\lfloor N/d\rfloor$, independent per variable.}
+\MobiusStep{$\mu^2*1=2^{\omega}$,\quad $2^{\omega}*1=\tau(n^2)$,\quad
+$\mu^2(n)=\sum_{d^2\mid n}\mu(d)$.}
 
-\MobiusStep{\textbf{4. Merge $T=gd$.}
-$\lfloor\lfloor N/g\rfloor/d\rfloor=\lfloor N/(gd)\rfloor$;
-everything not in the floors becomes $c(T)=\sum_{g\mid T}h(g)\mu(T/g)$.}
+\MobiusStep{$\lambda*1=[n\text{ is a square}]$,\quad $\lambda*\mu^2=\varepsilon$.}
 
-\MobiusStep{\textbf{5. Evaluate.}
-Final shape $\sum_T c(T)\prod\lfloor N_\cdot/T\rfloor$:
-sieve $c$, prefix sums, quotient blocks.}
+\MobiusStep{$g$ completely multiplicative: $(fg)*(hg)=(f*h)g$, $g^{-1}=\mu g$.
+$\rightarrow(\mu\,\mathrm{id}_k)*\mathrm{id}_k=\varepsilon$,
+$(\varphi\,\mathrm{id})*\mathrm{id}=\mathrm{id}_2$,
+$(\mu\,\mathrm{id})*\mathrm{id}=\varepsilon$.}
 
-\MobiusHeading{Example: $S(N,M)=\sum_{i\le N}\sum_{j\le M}\gcd(i,j)$}
+\MobiusStep{$f$ multiplicative: $f*g$ and $f^{-1}$ multiplicative, $f^{-1}(p)=-f(p)$;
+$\sum_{d\mid n}\mu(d)f(d)=\prod_{p\mid n}(1-f(p))$.}
 
-\MobiusStep{(1) $S=\sum_g g\sum_{a\le\lfloor N/g\rfloor}\sum_{b\le\lfloor M/g\rfloor}[\gcd(a,b)=1]$.}
+\MobiusStep{$\tau(p^e)=e+1$, $\varphi(p^e)=p^{e-1}(p-1)$,
+$\sigma_k(p^e)=(p^{k(e+1)}-1)/(p^k-1)$.}
 
-\MobiusStep{(2,3) $\rightarrow S=\sum_g g\sum_d\mu(d)
-\lfloor N/(gd)\rfloor\lfloor M/(gd)\rfloor$.}
+\MobiusStep{$[\gcd(i,j)=1]=\sum_{d\mid\gcd}\mu(d)$,\quad
+$\gcd(i,j)=\sum_{d\mid\gcd}\varphi(d)$,\quad
+$h(\gcd(i,j))=\sum_{d\mid\gcd}(\mu*h)(d)$.}
 
-\MobiusStep{(4) $T=gd\rightarrow S=\sum_{T=1}^H\lfloor N/T\rfloor\lfloor M/T\rfloor
-\sum_{g\mid T}g\,\mu(T/g)$.}
+\MobiusStep{$\tau(ij)=\sum_{x\mid i}\sum_{y\mid j}[\gcd(x,y)=1]$,\quad
+$\sigma(ij)=\sum_{x\mid i}\sum_{y\mid j}[\gcd(x,y)=1]\,xj/y$.}
 
-\MobiusStep{(5) $\sum_{g\mid T}g\,\mu(T/g)=\varphi(T)
-\rightarrow S=\sum_{T=1}^H\varphi(T)\lfloor N/T\rfloor\lfloor M/T\rfloor$.}
+\MobiusStep{$\varphi(ij)=\varphi(i)\varphi(j)\,g/\varphi(g)$, $g=\gcd(i,j)$.}
 
-\MobiusHeading{Example: $\sum_{i=1}^k\gcd(i,n)$}
+\MobiusStep{$\sum_{i\le n,\gcd(i,n)=1}i=(n\varphi(n)+[n=1])/2$,\quad
+$\sum_{i=1}^n\mathrm{lcm}(i,n)=\frac n2\bigl(1+\sum_{d\mid n}d\varphi(d)\bigr)$.}
 
-\MobiusStep{(2) $\gcd(i,n)=\sum_{d\mid i,\ d\mid n}\varphi(d)$.}
+\MobiusStep{Any $c=f*g$ up to $L$ by looping multiples: $O(L\log L)$.}
 
-\MobiusStep{(3) $\rightarrow\sum_{i=1}^k\gcd(i,n)=\sum_{d\mid n}\varphi(d)\lfloor k/d\rfloor$.
-Given divisors of $n$: $O(\tau(n))$.}
+\MobiusHeading{Results ($\sum_{i\le N}\sum_{j\le M}$)}
 
-\MobiusHeading{Results}
+\MobiusStep{$[\gcd(i,j)=1]\rightarrow\sum_{d=1}^H\mu(d)\lfloor N/d\rfloor\lfloor M/d\rfloor$;\quad
+$[\gcd=g]$: same with $N,M\rightarrow\lfloor N/g\rfloor,\lfloor M/g\rfloor$.}
 
-\MobiusStep{$\sum_{i\le N}\sum_{j\le M}[\gcd(i,j)=1]=\sum_{d=1}^H\mu(d)\lfloor N/d\rfloor\lfloor M/d\rfloor$.}
+\MobiusStep{$h(\gcd(i,j))\rightarrow\sum_{d=1}^H(\mu*h)(d)\lfloor N/d\rfloor\lfloor M/d\rfloor$;\quad
+$\gcd\rightarrow c=\varphi$,\quad $\gcd^s\rightarrow c=J_s$.}
 
-\MobiusStep{$\sum_{i\le N}\sum_{j\le M}[\gcd(i,j)=g]$: same with $N,M\rightarrow\lfloor N/g\rfloor,\lfloor M/g\rfloor$.}
+\MobiusStep{$\mathrm{lcm}(i,j)\rightarrow\sum_{T=1}^H S(\lfloor N/T\rfloor)S(\lfloor M/T\rfloor)\,c(T)$,
+$S(x)=\frac{x(x+1)}2$, $c(T)=T\prod_{p\mid T}(1-p)$.}
 
-\MobiusStep{$\sum_{i\le N}\sum_{j\le M}h(\gcd(i,j))=\sum_{d=1}^H(\mu*h)(d)\lfloor N/d\rfloor\lfloor M/d\rfloor$.}
-
-\MobiusStep{$h(n)=n^s\rightarrow\mu*h=J_s(d)=d^s\prod_{p\mid d}(1-p^{-s})$.}
+\MobiusStep{$\tau(ij)\rightarrow\sum_{d=1}^H\mu(d)F(\lfloor N/d\rfloor)F(\lfloor M/d\rfloor)$,
+$F(x)=\sum_{i\le x}\lfloor x/i\rfloor$.}
 
 \MobiusStep{$k$ variables:
 $\sum_{i_1..i_k\le N}[\gcd=1]=\sum_d\mu(d)\lfloor N/d\rfloor^k$,\quad
 $\sum_{i_1..i_k\le N}\gcd=\sum_T\varphi(T)\lfloor N/T\rfloor^k$.}
 
-\MobiusStep{$\sum_{a\le x}[\gcd(a,m)=1]=\sum_{e\mid m}\mu(e)\lfloor x/e\rfloor$.}
+\MobiusStep{$\sum_{i=1}^k\gcd(i,n)=\sum_{d\mid n}\varphi(d)\lfloor k/d\rfloor$,\quad
+$\sum_{a\le x}[\gcd(a,m)=1]=\sum_{e\mid m}\mu(e)\lfloor x/e\rfloor$.}
 
-\MobiusHeading{Prefix recurrences (Du Jiao)}
+\MobiusHeading{Prefix sums (Du Jiao)}
 
-\MobiusStep{$\mathcal M(N)=\sum_{d\le N}\mu(d)=1-\sum_{i=2}^N\mathcal M(\lfloor N/i\rfloor)$.}
+\MobiusStep{$f*g=h$, $S_f(N)=\sum_{i\le N}f(i)$:
+$g(1)S_f(N)=S_h(N)-\sum_{i=2}^N g(i)S_f(\lfloor N/i\rfloor)$.
+Sieve up to $N^{2/3}$ + memo: $O(N^{2/3})$.}
 
-\MobiusStep{$\Phi(N)=\sum_{d\le N}\varphi(d)=N(N+1)/2-\sum_{i=2}^N\Phi(\lfloor N/i\rfloor)$.}
+\MobiusStep{$\mu$: $g=1,h=\varepsilon$;\quad $\varphi$: $g=1,h=\mathrm{id}$;\quad
+$\mu\,\mathrm{id}$: $g=\mathrm{id},h=\varepsilon$;\quad $\varphi\,\mathrm{id}$: $g=\mathrm{id},h=\mathrm{id}_2$.}
 
-\MobiusStep{Why: $\sum_{i=1}^N\sum_{d\le\lfloor N/i\rfloor}f(d)=\sum_{t\le N}(f*1)(t)$.
-Sieve up to $B=\Theta(N^{2/3})$ + memo: $O(N^{2/3})$.}
+\MobiusHeading{Dirichlet prefix sum, $O(L\log\log L)$}
+
+\MobiusStep{For each prime $p$:
+$f*1$: \texttt{for i=1..L/p: f[i*p]+=f[i]};
+$f*\mu$: \texttt{for i=L/p..1: f[i*p]-=f[i]};
+$\sum_{n\mid d}f(d)$: \texttt{for i=L/p..1: f[i]+=f[i*p]}.}
 
 \MobiusHeading{Quotient blocks}
 

@@ -226,8 +226,8 @@
 {Area centroid of a nonzero-area simple polygon in $O(|p|)$ by signed-area weighting, so concave shapes are fine. Processes the whole vector; parameter \texttt{n} is unused.}
 \inputcodedesc{Maximum Triangle}{8_Geometry/maxTriangleOfConvex.cpp}%
 {Largest triangle inscribed in a convex polygon in $O(n^2)$: fix one vertex and advance the other two monotonically. Hull indices must be in cyclic order (CW or CCW).}
-\inputcodeex{Point in Convex Polygon}{8_Geometry/PointInConvex.cpp}%
-{Fan binary search, $O(\log K)$ per query; integer \texttt{IPoint} with \texttt{\_\_int128} cross products. Returns 0 outside, 1 on the boundary, 2 strictly inside. Input is CCW, without repeated or collinear intermediate vertices (do not repeat the first vertex). Empty/point/segment inputs supported; all coordinates, including queries, have absolute value $\le 10^{18}$.}{examples/PointInConvex.cpp}
+\inputcodeex{Point in Polygon}{8_Geometry/PointInPolygon.cpp}%
+{Ray casting, $O(n)$ per query; works for any simple polygon (concave ok), CW or CCW. Returns 0 outside, 1 on the boundary, 2 strictly inside. Uses \texttt{double} with \texttt{eps}; no repeated adjacent vertices (zero-length edge divides by zero), do not repeat the first vertex.}{examples/PointInPolygon.cpp}
 \inputcodedesc{Circle}{8_Geometry/circle.cpp}%
 {Nonnegative-radius circle intersection points and area, circle-segment crossing, and circle $\cap$ triangle area. All $O(1)$. Coincident circles return an empty finite-point list; a zero-length segment is treated as one point. Triangle circle is at the origin; vector takes 3 vertices.}
 \inputcodedesc{Tangent of Circles and Points to Circle}{8_Geometry/CircleTangent.cpp}%
